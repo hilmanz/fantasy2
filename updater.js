@@ -6,20 +6,23 @@ var fs = require('fs');
 var path = require('path');
 var config = require('./config').config;
 var xmlparser = require('xml2json');
+var master = require('./libs/master');
 
 var FILE_PREFIX = config.updater_file_prefix+config.competition.id+'-'+config.competition.year;
 
 //first check if the file is exists
+console.log('Updating Squad Database');
 var squad_file = FILE_PREFIX+'-squads.xml';
 open_squad_file(squad_file,function(err,doc){
 		//console.log(xmlparser.toJson(doc.toString()));
-		process_data(JSON.parse(xmlparser.toJson(doc.toString())),onDataProcessed);
+		console.log('opening file');
+		master.update_team_data(JSON.parse(xmlparser.toJson(doc.toString())),onDataProcessed);
 });
-function process_data(data,done){
-	console.log(data.SoccerFeed.SoccerDocument.Team);
-}
-function onDataProcessed(){
-	console.log('kelar nih !');
+
+
+function onDataProcessed(team_data){
+	console.log(team_data);
+	console.log('squad data updated !');
 }
 
 function open_squad_file(squad_file,done){
