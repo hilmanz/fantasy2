@@ -1,0 +1,1102 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- Copyright 2001-2010 Opta Sportsdata Ltd. All rights reserved. -->
+
+<!-- PRODUCTION HEADER
+     produced on:        jobqueue02.sportingstatz.com
+     production time:    20100919T060012,641Z
+     production module:  Opta::Feed::XML::Soccer::F2
+-->
+<MatchPreviews>
+  <Entities>
+    <Teams>
+      <Team uID="t35">West Bromwich Albion</Team>
+      <Team uID="t11">Everton</Team>
+      <Team uID="t21">West Ham United</Team>
+      <Team uID="t3">Arsenal</Team>
+      <Team uID="t41">Birmingham City</Team>
+      <Team uID="t14">Liverpool</Team>
+      <Team uID="t8">Chelsea</Team>
+      <Team uID="t1">Manchester United</Team>
+      <Team uID="t4">Newcastle United</Team>
+      <Team uID="t88">Hull City</Team>
+      <Team uID="t56">Sunderland</Team>
+      <Team uID="t43">Manchester City</Team>
+      <Team uID="t110">Stoke City</Team>
+      <Team uID="t54">Fulham</Team>
+    </Teams>
+    <Seasons>
+      <Season uID="s11">Season 1992/1993</Season>
+      <Season uID="s7">Season 2006/2007</Season>
+      <Season uID="s2">Season 2001/2002</Season>
+      <Season uID="s1">Season 2000/2001</Season>
+      <Season uID="s13">Season 1994/1995</Season>
+      <Season uID="s16">Season 1997/1998</Season>
+      <Season uID="s2009">Season 2009/2010</Season>
+      <Season uID="s6">Season 2005/2006</Season>
+      <Season uID="s2010">Season 2010/2011</Season>
+      <Season uID="s3">Season 2002/2003</Season>
+      <Season uID="s2008">Season 2008/2009</Season>
+      <Season uID="s9">Season 1998/1999</Season>
+      <Season uID="s12">Season 1993/1994</Season>
+      <Season uID="s15">Season 1996/1997</Season>
+      <Season uID="s14">Season 1995/1996</Season>
+      <Season uID="s8">Season 2007/2008</Season>
+      <Season uID="s4">Season 2003/2004</Season>
+      <Season uID="s10">Season 1999/2000</Season>
+      <Season uID="s5">Season 2004/2005</Season>
+    </Seasons>
+    <Competitions>
+      <Competition uID="c8">English Barclays Premier League</Competition>
+    </Competitions>
+    <Players>
+      <Player uID="p7995">Ian Rush</Player>
+      <Player uID="p19520">Ryan Babel</Player>
+      <Player uID="p1844">Gary Pallister</Player>
+      <Player uID="p2034">Rio Ferdinand</Player>
+      <Player uID="p1831">Ole Gunnar Solskjaer</Player>
+      <Player uID="p8758">Mikel Arteta</Player>
+      <Player uID="p11958">Andrea Dossena</Player>
+      <Player uID="p10775">Stephen Bruce</Player>
+      <Player uID="p1795">Michael Owen</Player>
+      <Player uID="p4857">Ruud van Nistelrooy</Player>
+      <Player uID="p20312">Carlos Tévez</Player>
+      <Player uID="p1632">Gareth Barry</Player>
+      <Player uID="p1794">Robbie Fowler</Player>
+      <Player uID="p1797">Sami Hyypiä</Player>
+      <Player uID="p15009">Brian McClair</Player>
+      <Player uID="p7989">John Barnes</Player>
+      <Player uID="p1816">Ronny Johnsen</Player>
+      <Player uID="p15284">Brede Hangeland</Player>
+      <Player uID="p14937">Cristiano Ronaldo</Player>
+      <Player uID="p1829">Dwight Yorke</Player>
+      <Player uID="p8003">Nigel Clough</Player>
+      <Player uID="p1814">Steven Gerrard</Player>
+      <Player uID="p3736">John O'Shea</Player>
+      <Player uID="p2051">Frank Lampard</Player>
+      <Player uID="p3273">Tim Cahill</Player>
+      <Player uID="p12882">Park Ji-Sung</Player>
+      <Player uID="p1819">Nicky Butt</Player>
+      <Player uID="p14295">Darren Fletcher</Player>
+      <Player uID="p8432">José Reina</Player>
+      <Player uID="p1818">David Beckham</Player>
+      <Player uID="p15663">Eric Cantona</Player>
+      <Player uID="p1841">Wes Brown</Player>
+      <Player uID="p14402">Fernando Torres</Player>
+      <Player uID="p12273">Diego Forlán</Player>
+      <Player uID="p1747">Don Hutchison</Player>
+      <Player uID="p1796">Jamie Redknapp</Player>
+      <Player uID="p1853">Paul Ince</Player>
+      <Player uID="p363">Paul Scholes</Player>
+      <Player uID="p7525">Steven Pienaar</Player>
+      <Player uID="p2041">Neil Ruddock</Player>
+      <Player uID="p14965">Nemanja Vidic</Player>
+      <Player uID="p38328">David Ngog</Player>
+      <Player uID="p1851">Mikaël Silvestre</Player>
+      <Player uID="p1799">Patrik Berger</Player>
+      <Player uID="p1820">Andrew Cole</Player>
+      <Player uID="p1809">Jamie Carragher</Player>
+      <Player uID="p1925">Mark Hughes</Player>
+      <Player uID="p159">Harry Kewell</Player>
+      <Player uID="p4098">John Arne Riise</Player>
+      <Player uID="p2559">Simon Davies</Player>
+      <Player uID="p8595">Dimitar Berbatov</Player>
+      <Player uID="p3">Ryan Giggs</Player>
+      <Player uID="p1810">Denis Irwin</Player>
+      <Player uID="p2329">Andrei Kanchelskis</Player>
+      <Player uID="p38530">Nani</Player>
+      <Player uID="p13017">Wayne Rooney</Player>
+      <Player uID="p3665">Fabio Aurelio</Player>
+      <Player uID="p12303">Didier Drogba</Player>
+      <Player uID="p2399">Danny Higginbotham</Player>
+      <Player uID="p1812">Danny Murphy</Player>
+    </Players>
+  </Entities>
+  <Match Id="f321701" AwayId="t14" HomeId="t1" MatchdayId="d5">
+    <PreviousMeetings>
+      <MatchData Id="f284305" SeasonId="s2009" CompetitionId="c8">
+        <TeamData Score="2" TeamRef="t1" Side="Home">
+          <Goal Type="Goal" PlayerRef="p13017" Minute="12" />
+          <Goal Type="Goal" PlayerRef="p12882" Minute="60" />
+        </TeamData>
+        <TeamData Score="1" TeamRef="t14" Side="Away">
+          <Goal Type="Goal" PlayerRef="p14402" Minute="5" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v28">Old Trafford</Venue>
+          <Date>2010-03-21 13:30:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f284095" SeasonId="s2009" CompetitionId="c8">
+        <TeamData Score="2" TeamRef="t14" Side="Home">
+          <Goal Type="Goal" PlayerRef="p14402" Minute="65" />
+          <Goal Type="Goal" PlayerRef="p38328" Minute="96" />
+        </TeamData>
+        <TeamData Score="0" TeamRef="t1" Side="Away" />
+        <MatchInfo>
+          <Venue uID="v39">Anfield</Venue>
+          <Date>2009-10-25 14:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f266530" SeasonId="s2008" CompetitionId="c8">
+        <TeamData Score="1" TeamRef="t1" Side="Home">
+          <Goal Type="Penalty" PlayerRef="p14937" Minute="23" />
+        </TeamData>
+        <TeamData Score="4" TeamRef="t14" Side="Away">
+          <Goal Type="Goal" PlayerRef="p14402" Minute="28" />
+          <Goal Type="Penalty" PlayerRef="p1814" Minute="44" />
+          <Goal Type="Goal" PlayerRef="p3665" Minute="77" />
+          <Goal Type="Goal" PlayerRef="p11958" Minute="91" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v28">Old Trafford</Venue>
+          <Date>2009-03-14 12:45:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f266276" SeasonId="s2008" CompetitionId="c8">
+        <TeamData Score="2" TeamRef="t14" Side="Home">
+          <Goal Type="Goal" PlayerRef="p19520" Minute="77" />
+        </TeamData>
+        <TeamData Score="1" TeamRef="t1" Side="Away">
+          <Goal Type="Goal" PlayerRef="p20312" Minute="3" />
+          <Goal Type="Own" PlayerRef="p1841" Minute="26" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v39">Anfield</Venue>
+          <Date>2008-09-13 12:45:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f128741" SeasonId="s8" CompetitionId="c8">
+        <TeamData Score="3" TeamRef="t1" Side="Home">
+          <Goal Type="Goal" PlayerRef="p1841" Minute="34" />
+          <Goal Type="Goal" PlayerRef="p14937" Minute="79" />
+          <Goal Type="Goal" PlayerRef="p38530" Minute="81" />
+        </TeamData>
+        <TeamData Score="0" TeamRef="t14" Side="Away" />
+        <MatchInfo>
+          <Venue uID="v28">Old Trafford</Venue>
+          <Date>2008-03-23 13:30:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f128600" SeasonId="s8" CompetitionId="c8">
+        <TeamData Score="0" TeamRef="t14" Side="Home" />
+        <TeamData Score="1" TeamRef="t1" Side="Away">
+          <Goal Type="Goal" PlayerRef="p20312" Minute="43" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v39">Anfield</Venue>
+          <Date>2007-12-16 13:30:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f44390" SeasonId="s7" CompetitionId="c8">
+        <TeamData Score="0" TeamRef="t14" Side="Home" />
+        <TeamData Score="1" TeamRef="t1" Side="Away">
+          <Goal Type="Goal" PlayerRef="p3736" Minute="91" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v39">Anfield</Venue>
+          <Date>2007-03-03 12:45:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f44180" SeasonId="s7" CompetitionId="c8">
+        <TeamData Score="2" TeamRef="t1" Side="Home">
+          <Goal Type="Goal" PlayerRef="p363" Minute="39" />
+          <Goal Type="Goal" PlayerRef="p2034" Minute="66" />
+        </TeamData>
+        <TeamData Score="0" TeamRef="t14" Side="Away" />
+        <MatchInfo>
+          <Venue uID="v28">Old Trafford</Venue>
+          <Date>2006-10-22 13:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f41122" SeasonId="s6" CompetitionId="c8">
+        <TeamData Score="1" TeamRef="t1" Side="Home">
+          <Goal Type="Goal" PlayerRef="p2034" Minute="90" />
+        </TeamData>
+        <TeamData Score="0" TeamRef="t14" Side="Away" />
+        <MatchInfo>
+          <Venue uID="v28">Old Trafford</Venue>
+          <Date>2006-01-22 16:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f20443" SeasonId="s6" CompetitionId="c8">
+        <TeamData Score="0" TeamRef="t14" Side="Home" />
+        <TeamData Score="0" TeamRef="t1" Side="Away" />
+        <MatchInfo>
+          <Venue uID="v39">Anfield</Venue>
+          <Date>2005-09-18 12:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f6122" SeasonId="s5" CompetitionId="c8">
+        <TeamData Score="0" TeamRef="t14" Side="Home" />
+        <TeamData Score="1" TeamRef="t1" Side="Away">
+          <Goal Type="Goal" PlayerRef="p13017" Minute="21" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v39">Anfield</Venue>
+          <Date>2005-01-15 12:30:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f3705" SeasonId="s5" CompetitionId="c8">
+        <TeamData Score="2" TeamRef="t1" Side="Home">
+          <Goal Type="Goal" PlayerRef="p1851" Minute="20" />
+          <Goal Type="Own" PlayerRef="p3736" Minute="54" />
+          <Goal Type="Goal" PlayerRef="p1851" Minute="66" />
+        </TeamData>
+        <TeamData Score="1" TeamRef="t14" Side="Away" />
+        <MatchInfo>
+          <Venue uID="v28">Old Trafford</Venue>
+          <Date>2004-09-20 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f3773" SeasonId="s4" CompetitionId="c8">
+        <TeamData Score="0" TeamRef="t1" Side="Home" />
+        <TeamData Score="1" TeamRef="t14" Side="Away">
+          <Goal Type="Penalty" PlayerRef="p1812" Minute="62" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v28">Old Trafford</Venue>
+          <Date>2004-04-24 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f6008" SeasonId="s4" CompetitionId="c8">
+        <TeamData Score="1" TeamRef="t14" Side="Home">
+          <Goal Type="Goal" PlayerRef="p159" Minute="76" />
+        </TeamData>
+        <TeamData Score="2" TeamRef="t1" Side="Away">
+          <Goal Type="Goal" PlayerRef="p3" Minute="59" />
+          <Goal Type="Goal" PlayerRef="p3" Minute="70" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v39">Anfield</Venue>
+          <Date>2003-11-09 12:30:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16776" SeasonId="s3" CompetitionId="c8">
+        <TeamData Score="4" TeamRef="t1" Side="Home">
+          <Goal Type="Penalty" PlayerRef="p4857" Minute="5" />
+          <Goal Type="Penalty" PlayerRef="p4857" Minute="65" />
+          <Goal Type="Goal" PlayerRef="p3" Minute="78" />
+          <Goal Type="Goal" PlayerRef="p1831" Minute="90" />
+        </TeamData>
+        <TeamData Score="0" TeamRef="t14" Side="Away" />
+        <MatchInfo>
+          <Venue uID="v28">Old Trafford</Venue>
+          <Date>2003-04-05 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16769" SeasonId="s3" CompetitionId="c8">
+        <TeamData Score="1" TeamRef="t14" Side="Home">
+          <Goal Type="Goal" PlayerRef="p1797" Minute="82" />
+        </TeamData>
+        <TeamData Score="2" TeamRef="t1" Side="Away">
+          <Goal Type="Goal" PlayerRef="p12273" Minute="64" />
+          <Goal Type="Goal" PlayerRef="p12273" Minute="67" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v39">Anfield</Venue>
+          <Date>2002-12-01 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16756" SeasonId="s2" CompetitionId="c8">
+        <TeamData Score="0" TeamRef="t1" Side="Home" />
+        <TeamData Score="1" TeamRef="t14" Side="Away">
+          <Goal Type="Goal" PlayerRef="p1812" Minute="85" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v28">Old Trafford</Venue>
+          <Date>2002-01-22 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16750" SeasonId="s2" CompetitionId="c8">
+        <TeamData Score="3" TeamRef="t14" Side="Home">
+          <Goal Type="Goal" PlayerRef="p1795" Minute="32" />
+          <Goal Type="Goal" PlayerRef="p4098" Minute="39" />
+          <Goal Type="Goal" PlayerRef="p1795" Minute="51" />
+        </TeamData>
+        <TeamData Score="1" TeamRef="t1" Side="Away">
+          <Goal Type="Goal" PlayerRef="p1818" Minute="50" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v39">Anfield</Venue>
+          <Date>2001-11-04 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16744" SeasonId="s1" CompetitionId="c8">
+        <TeamData Score="2" TeamRef="t14" Side="Home">
+          <Goal Type="Goal" PlayerRef="p1814" Minute="16" />
+          <Goal Type="Goal" PlayerRef="p1794" Minute="41" />
+        </TeamData>
+        <TeamData Score="0" TeamRef="t1" Side="Away" />
+        <MatchInfo>
+          <Venue uID="v39">Anfield</Venue>
+          <Date>2001-03-31 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16737" SeasonId="s1" CompetitionId="c8">
+        <TeamData Score="0" TeamRef="t1" Side="Home" />
+        <TeamData Score="1" TeamRef="t14" Side="Away">
+          <Goal Type="Goal" PlayerRef="p1812" Minute="43" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v28">Old Trafford</Venue>
+          <Date>2000-12-17 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16725" SeasonId="s10" CompetitionId="c8">
+        <TeamData Score="1" TeamRef="t1" Side="Home">
+          <Goal Type="Goal" PlayerRef="p1831" Minute="45" />
+        </TeamData>
+        <TeamData Score="1" TeamRef="t14" Side="Away">
+          <Goal Type="Goal" PlayerRef="p1799" Minute="27" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v28">Old Trafford</Venue>
+          <Date>2000-03-04 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16714" SeasonId="s10" CompetitionId="c8">
+        <TeamData Score="2" TeamRef="t14" Side="Home">
+          <Goal Type="Own" PlayerRef="p1809" Minute="3" />
+          <Goal Type="Goal" PlayerRef="p1797" Minute="23" />
+          <Goal Type="Own" PlayerRef="p1809" Minute="44" />
+          <Goal Type="Goal" PlayerRef="p1799" Minute="68" />
+        </TeamData>
+        <TeamData Score="3" TeamRef="t1" Side="Away">
+          <Goal Type="Goal" PlayerRef="p1820" Minute="18" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v39">Anfield</Venue>
+          <Date>1999-09-11 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16708" SeasonId="s9" CompetitionId="c8">
+        <TeamData Score="2" TeamRef="t14" Side="Home">
+          <Goal Type="Penalty" PlayerRef="p1796" Minute="69" />
+          <Goal Type="Goal" PlayerRef="p1853" Minute="89" />
+        </TeamData>
+        <TeamData Score="2" TeamRef="t1" Side="Away">
+          <Goal Type="Goal" PlayerRef="p1829" Minute="23" />
+          <Goal Type="Penalty" PlayerRef="p1810" Minute="56" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v39">Anfield</Venue>
+          <Date>1999-05-05 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16696" SeasonId="s9" CompetitionId="c8">
+        <TeamData Score="2" TeamRef="t1" Side="Home">
+          <Goal Type="Penalty" PlayerRef="p1810" Minute="19" />
+          <Goal Type="Goal" PlayerRef="p363" Minute="79" />
+        </TeamData>
+        <TeamData Score="0" TeamRef="t14" Side="Away" />
+        <MatchInfo>
+          <Venue uID="v28">Old Trafford</Venue>
+          <Date>1998-09-24 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16691" SeasonId="s16" CompetitionId="c8">
+        <TeamData Score="1" TeamRef="t1" Side="Home">
+          <Goal Type="Goal" PlayerRef="p1816" Minute="12" />
+        </TeamData>
+        <TeamData Score="1" TeamRef="t14" Side="Away">
+          <Goal Type="Goal" PlayerRef="p1795" Minute="37" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v28">Old Trafford</Venue>
+          <Date>1998-04-10 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16684" SeasonId="s16" CompetitionId="c8">
+        <TeamData Score="1" TeamRef="t14" Side="Home">
+          <Goal Type="Penalty" PlayerRef="p1794" Minute="60" />
+        </TeamData>
+        <TeamData Score="3" TeamRef="t1" Side="Away">
+          <Goal Type="Goal" PlayerRef="p1820" Minute="51" />
+          <Goal Type="Goal" PlayerRef="p1818" Minute="70" />
+          <Goal Type="Goal" PlayerRef="p1820" Minute="74" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v39">Anfield</Venue>
+          <Date>1997-12-06 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16675" SeasonId="s15" CompetitionId="c8">
+        <TeamData Score="1" TeamRef="t14" Side="Home">
+          <Goal Type="Goal" PlayerRef="p7989" Minute="19" />
+        </TeamData>
+        <TeamData Score="3" TeamRef="t1" Side="Away">
+          <Goal Type="Goal" PlayerRef="p1844" Minute="13" />
+          <Goal Type="Goal" PlayerRef="p1844" Minute="42" />
+          <Goal Type="Goal" PlayerRef="p1820" Minute="63" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v39">Anfield</Venue>
+          <Date>1997-04-19 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16663" SeasonId="s15" CompetitionId="c8">
+        <TeamData Score="1" TeamRef="t1" Side="Home">
+          <Goal Type="Goal" PlayerRef="p1818" Minute="23" />
+        </TeamData>
+        <TeamData Score="0" TeamRef="t14" Side="Away" />
+        <MatchInfo>
+          <Venue uID="v28">Old Trafford</Venue>
+          <Date>1996-10-12 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16648" SeasonId="s14" CompetitionId="c8">
+        <TeamData Score="2" TeamRef="t14" Side="Home">
+          <Goal Type="Goal" PlayerRef="p1794" Minute="45" />
+          <Goal Type="Goal" PlayerRef="p1794" Minute="86" />
+        </TeamData>
+        <TeamData Score="0" TeamRef="t1" Side="Away" />
+        <MatchInfo>
+          <Venue uID="v39">Anfield</Venue>
+          <Date>1995-12-17 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16641" SeasonId="s14" CompetitionId="c8">
+        <TeamData Score="2" TeamRef="t1" Side="Home">
+          <Goal Type="Goal" PlayerRef="p1819" Minute="2" />
+          <Goal Type="Penalty" PlayerRef="p15663" Minute="71" />
+        </TeamData>
+        <TeamData Score="2" TeamRef="t14" Side="Away">
+          <Goal Type="Goal" PlayerRef="p1794" Minute="33" />
+          <Goal Type="Goal" PlayerRef="p1794" Minute="52" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v28">Old Trafford</Venue>
+          <Date>1995-10-01 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16630" SeasonId="s13" CompetitionId="c8">
+        <TeamData Score="2" TeamRef="t14" Side="Home">
+          <Goal Type="Goal" PlayerRef="p1796" Minute="25" />
+        </TeamData>
+        <TeamData Score="0" TeamRef="t1" Side="Away">
+          <Goal Type="Own" PlayerRef="p10775" Minute="85" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v39">Anfield</Venue>
+          <Date>1995-03-19 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16617" SeasonId="s13" CompetitionId="c8">
+        <TeamData Score="2" TeamRef="t1" Side="Home">
+          <Goal Type="Goal" PlayerRef="p2329" Minute="71" />
+          <Goal Type="Goal" PlayerRef="p15009" Minute="73" />
+        </TeamData>
+        <TeamData Score="0" TeamRef="t14" Side="Away" />
+        <MatchInfo>
+          <Venue uID="v28">Old Trafford</Venue>
+          <Date>1994-09-17 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16609" SeasonId="s12" CompetitionId="c8">
+        <TeamData Score="1" TeamRef="t1" Side="Home">
+          <Goal Type="Goal" PlayerRef="p1853" Minute="36" />
+        </TeamData>
+        <TeamData Score="0" TeamRef="t14" Side="Away" />
+        <MatchInfo>
+          <Venue uID="v28">Old Trafford</Venue>
+          <Date>1994-03-30 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16604" SeasonId="s12" CompetitionId="c8">
+        <TeamData Score="3" TeamRef="t14" Side="Home">
+          <Goal Type="Goal" PlayerRef="p8003" Minute="25" />
+          <Goal Type="Goal" PlayerRef="p8003" Minute="38" />
+          <Goal Type="Goal" PlayerRef="p2041" Minute="79" />
+        </TeamData>
+        <TeamData Score="3" TeamRef="t1" Side="Away">
+          <Goal Type="Goal" PlayerRef="p10775" Minute="9" />
+          <Goal Type="Goal" PlayerRef="p3" Minute="20" />
+          <Goal Type="Goal" PlayerRef="p1810" Minute="24" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v39">Anfield</Venue>
+          <Date>1994-01-04 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16581" SeasonId="s11" CompetitionId="c8">
+        <TeamData Score="1" TeamRef="t14" Side="Home">
+          <Goal Type="Goal" PlayerRef="p7995" Minute="50" />
+        </TeamData>
+        <TeamData Score="2" TeamRef="t1" Side="Away">
+          <Goal Type="Goal" PlayerRef="p1925" Minute="42" />
+          <Goal Type="Goal" PlayerRef="p15009" Minute="56" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v39">Anfield</Venue>
+          <Date>1993-03-06 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+      <MatchData Id="f16571" SeasonId="s11" CompetitionId="c8">
+        <TeamData Score="2" TeamRef="t1" Side="Home">
+          <Goal Type="Goal" PlayerRef="p1925" Minute="78" />
+          <Goal Type="Goal" PlayerRef="p1925" Minute="90" />
+        </TeamData>
+        <TeamData Score="2" TeamRef="t14" Side="Away">
+          <Goal Type="Goal" PlayerRef="p1747" Minute="23" />
+          <Goal Type="Goal" PlayerRef="p7995" Minute="44" />
+        </TeamData>
+        <MatchInfo>
+          <Venue uID="v28">Old Trafford</Venue>
+          <Date>1992-10-18 00:00:00</Date>
+        </MatchInfo>
+      </MatchData>
+    </PreviousMeetings>
+    <Rankings>
+      <Team uID="t1">
+        <Home>
+          <Stat Type="last_goal_scored">
+            <Rank Total="1" Level="1">
+              <Player>p8595</Player>
+              <Player>p3</Player>
+            </Rank>
+          </Stat>
+          <Stat Type="first_goal_scored">
+            <Rank Total="1" Level="1">
+              <Player>p8595</Player>
+              <Player>p13017</Player>
+            </Rank>
+          </Stat>
+          <Stat Type="goals_scored">
+            <Rank Total="2" Level="1">
+              <Player>p8595</Player>
+            </Rank>
+            <Rank Total="1" Level="2">
+              <Player>p3</Player>
+              <Player>p13017</Player>
+              <Player>p38530</Player>
+              <Player>p14295</Player>
+            </Rank>
+          </Stat>
+        </Home>
+        <Overall>
+          <Stat Type="last_goal_scored">
+            <Rank Total="1" Level="1">
+              <Player>p8595</Player>
+              <Player>p3</Player>
+            </Rank>
+          </Stat>
+          <Stat Type="first_goal_scored">
+            <Rank Total="1" Level="1">
+              <Player>p363</Player>
+              <Player>p8595</Player>
+              <Player>p13017</Player>
+            </Rank>
+          </Stat>
+          <Stat Type="goals_scored">
+            <Rank Total="3" Level="1">
+              <Player>p8595</Player>
+            </Rank>
+            <Rank Total="2" Level="2">
+              <Player>p14295</Player>
+            </Rank>
+            <Rank Total="1" Level="3">
+              <Player>p363</Player>
+            </Rank>
+          </Stat>
+        </Overall>
+        <Away>
+          <Stat Type="first_goal_scored">
+            <Rank Total="1" Level="1">
+              <Player>p363</Player>
+            </Rank>
+          </Stat>
+          <Stat Type="goals_scored">
+            <Rank Total="1" Level="1">
+              <Player>p363</Player>
+              <Player>p8595</Player>
+              <Player>p14965</Player>
+              <Player>p14295</Player>
+            </Rank>
+          </Stat>
+        </Away>
+      </Team>
+      <Team uID="t14">
+        <Home>
+          <Stat Type="last_goal_scored">
+            <Rank Total="1" Level="1">
+              <Player>p14402</Player>
+            </Rank>
+          </Stat>
+          <Stat Type="first_goal_scored">
+            <Rank Total="1" Level="1">
+              <Player>p38328</Player>
+              <Player>p14402</Player>
+            </Rank>
+          </Stat>
+          <Stat Type="goals_scored">
+            <Rank Total="1" Level="1">
+              <Player>p38328</Player>
+              <Player>p14402</Player>
+              <Player>p8432</Player>
+            </Rank>
+          </Stat>
+        </Home>
+        <Overall>
+          <Stat Type="last_goal_scored">
+            <Rank Total="1" Level="1">
+              <Player>p14402</Player>
+            </Rank>
+          </Stat>
+          <Stat Type="first_goal_scored">
+            <Rank Total="1" Level="1">
+              <Player>p38328</Player>
+              <Player>p14402</Player>
+            </Rank>
+          </Stat>
+          <Stat Type="goals_scored">
+            <Rank Total="1" Level="1">
+              <Player>p38328</Player>
+              <Player>p14402</Player>
+              <Player>p8432</Player>
+            </Rank>
+          </Stat>
+        </Overall>
+      </Team>
+    </Rankings>
+    <Totals>
+      <Team uID="t1">
+        <Stat Type="tackle_success">73.8</Stat>
+        <Stat Type="goals_conceded_per_game">1.2</Stat>
+        <Stat Type="duel_lost">191</Stat>
+        <Stat Type="blocked_scoring_att">23</Stat>
+        <Stat Type="total_yel_card">6</Stat>
+        <Stat Type="win">2</Stat>
+        <Stat Type="accurate_cross">36</Stat>
+        <Stat Type="total_fwd_zone_pass">1457</Stat>
+        <Stat Type="games_played">4</Stat>
+        <Stat Type="total_cross">123</Stat>
+        <Stat Type="second_yellow">0</Stat>
+        <Stat Type="shot_accuracy">48.1</Stat>
+        <Stat Type="duel_won">174</Stat>
+        <Stat Type="total_red_card">0</Stat>
+        <Stat Type="fk_foul_lost">41</Stat>
+        <Stat Type="accurate_fwd_zone_pass">1100</Stat>
+        <Stat Type="accurate_pass">1835</Stat>
+        <Stat Type="won_tackle">59</Stat>
+        <Stat Type="passing_accuracy">85.0</Stat>
+        <Stat Type="total_pass">2159</Stat>
+        <Stat Type="fk_foul_won">34</Stat>
+        <Stat Type="goal_conversion">21.2</Stat>
+        <Stat Type="lost_corners">18</Stat>
+        <Stat Type="draw">2</Stat>
+        <Stat Type="won_corners">30</Stat>
+        <Stat Type="possession_percentage">57.8</Stat>
+        <Stat Type="goals_conceded">5</Stat>
+        <Stat Type="total_tackle">80</Stat>
+        <Stat Type="lose">0</Stat>
+        <Stat Type="total_offside">12</Stat>
+        <Stat Type="goals">11</Stat>
+        <Stat Type="total_scoring_att">52</Stat>
+        <Stat Type="ontarget_scoring_att">25</Stat>
+      </Team>
+      <Team uID="t14">
+        <Stat Type="tackle_success">71.4</Stat>
+        <Stat Type="goals_conceded_per_game">1.0</Stat>
+        <Stat Type="duel_lost">214</Stat>
+        <Stat Type="blocked_scoring_att">16</Stat>
+        <Stat Type="total_yel_card">2</Stat>
+        <Stat Type="win">1</Stat>
+        <Stat Type="accurate_cross">14</Stat>
+        <Stat Type="total_fwd_zone_pass">994</Stat>
+        <Stat Type="games_played">4</Stat>
+        <Stat Type="total_cross">85</Stat>
+        <Stat Type="second_yellow">0</Stat>
+        <Stat Type="shot_accuracy">43.2</Stat>
+        <Stat Type="duel_won">197</Stat>
+        <Stat Type="total_red_card">1</Stat>
+        <Stat Type="fk_foul_lost">45</Stat>
+        <Stat Type="accurate_fwd_zone_pass">654</Stat>
+        <Stat Type="accurate_pass">1227</Stat>
+        <Stat Type="won_tackle">60</Stat>
+        <Stat Type="passing_accuracy">78.1</Stat>
+        <Stat Type="total_pass">1572</Stat>
+        <Stat Type="fk_foul_won">43</Stat>
+        <Stat Type="goal_conversion">5.4</Stat>
+        <Stat Type="lost_corners">26</Stat>
+        <Stat Type="draw">2</Stat>
+        <Stat Type="won_corners">23</Stat>
+        <Stat Type="possession_percentage">46.9</Stat>
+        <Stat Type="goals_conceded">4</Stat>
+        <Stat Type="total_tackle">84</Stat>
+        <Stat Type="lose">1</Stat>
+        <Stat Type="total_offside">10</Stat>
+        <Stat Type="goals">2</Stat>
+        <Stat Type="total_scoring_att">37</Stat>
+        <Stat Type="ontarget_scoring_att">16</Stat>
+      </Team>
+    </Totals>
+    <MatchData SeasonId="s2010" CompetitionId="c8">
+      <MatchInfo>
+        <Venue uID="v28">Old Trafford</Venue>
+        <Date>2010-09-19 13:30:00</Date>
+      </MatchInfo>
+    </MatchData>
+    <Editorial lang="en">
+      <Report id="1">The Red Devils have won 12 of their last 13 Premier League games at home. </Report>
+      <Report id="2">Nemanja Vidic has been sent off three times against Liverpool in the Premier League &amp;ndash; more than any player versus a single opponent in the competition. </Report>
+      <Report id="3">There have been six red cards shown in the last seven Premier League meetings between Man Utd and Liverpool. </Report>
+      <Report id="4">Three of the last four meetings between Liverpool &amp;amp; Man Utd have seen the scorer of the first goal go on to lose the game. </Report>
+      <Report id="5">Fernando Torres has scored in his last three Premier League games against Man Utd. </Report>
+      <Report id="6">Only one of the last 20 Premier League meetings between Man Utd and Liverpool has ended as a draw. </Report>
+      <Report id="7">Only Chelsea (five times) have won away at Old Trafford more often than Liverpool (4) in the Premier League era. </Report>
+      <Report id="8">Liverpool have won just one of their last 11 Premier League away games and failed to score in the last three. </Report>
+      <Report id="9">Liverpool have won only one of their last six Premier League north west derbies away from home. </Report>
+      <Report id="10">31 of United's crosses this season have found a team-mate, a league-high. </Report>
+    </Editorial>
+    <Averages>
+      <Team uID="t1">
+        <Overall>
+          <Stat Type="second_yellow">0.0</Stat>
+          <Stat Type="total_cross">30.8</Stat>
+          <Stat Type="duel_won">43.5</Stat>
+          <Stat Type="total_red_card">0.0</Stat>
+          <Stat Type="fk_foul_lost">10.2</Stat>
+          <Stat Type="first_goal_conceded_time">47:38</Stat>
+          <Stat Type="accurate_fwd_zone_pass">275.0</Stat>
+          <Stat Type="accurate_pass">458.8</Stat>
+          <Stat Type="duel_lost">47.8</Stat>
+          <Stat Type="blocked_scoring_att">9.5</Stat>
+          <Stat Type="won_tackle">14.8</Stat>
+          <Stat Type="total_yel_card">1.5</Stat>
+          <Stat Type="total_pass">539.8</Stat>
+          <Stat Type="fk_foul_won">8.5</Stat>
+          <Stat Type="first_goal_scored_time">29:41</Stat>
+          <Stat Type="lost_corners">4.5</Stat>
+          <Stat Type="win">0.5</Stat>
+          <Stat Type="draw">0.5</Stat>
+          <Stat Type="last_goal_scored_time">75:33</Stat>
+          <Stat Type="won_corners">7.5</Stat>
+          <Stat Type="accurate_cross">9.0</Stat>
+          <Stat Type="total_fwd_zone_pass">364.2</Stat>
+          <Stat Type="possession_percentage">57.8</Stat>
+          <Stat Type="last_goal_conceded_time">90:26</Stat>
+          <Stat Type="goals_conceded">1.2</Stat>
+          <Stat Type="total_tackle">20.0</Stat>
+          <Stat Type="ontarget_scoring_att">6.2</Stat>
+          <Stat Type="total_scoring_att">13.0</Stat>
+          <Stat Type="goals">2.8</Stat>
+          <Stat Type="total_offside">3.0</Stat>
+          <Stat Type="lose">0.0</Stat>
+        </Overall>
+        <Home>
+          <Stat Type="second_yellow">0.0</Stat>
+          <Stat Type="total_cross">32.0</Stat>
+          <Stat Type="duel_won">50.0</Stat>
+          <Stat Type="total_red_card">0.0</Stat>
+          <Stat Type="fk_foul_lost">7.5</Stat>
+          <Stat Type="first_goal_conceded_time">00:00</Stat>
+          <Stat Type="accurate_fwd_zone_pass">312.0</Stat>
+          <Stat Type="accurate_pass">515.0</Stat>
+          <Stat Type="duel_lost">52.0</Stat>
+          <Stat Type="blocked_scoring_att">11.0</Stat>
+          <Stat Type="won_tackle">20.5</Stat>
+          <Stat Type="total_yel_card">1.5</Stat>
+          <Stat Type="total_pass">594.5</Stat>
+          <Stat Type="fk_foul_won">8.0</Stat>
+          <Stat Type="first_goal_scored_time">32:48</Stat>
+          <Stat Type="lost_corners">3.0</Stat>
+          <Stat Type="win">1.0</Stat>
+          <Stat Type="draw">0.0</Stat>
+          <Stat Type="last_goal_scored_time">76:32</Stat>
+          <Stat Type="won_corners">7.0</Stat>
+          <Stat Type="accurate_cross">6.5</Stat>
+          <Stat Type="total_fwd_zone_pass">405.5</Stat>
+          <Stat Type="possession_percentage">63.2</Stat>
+          <Stat Type="last_goal_conceded_time">00:00</Stat>
+          <Stat Type="goals_conceded">0.0</Stat>
+          <Stat Type="total_tackle">27.0</Stat>
+          <Stat Type="ontarget_scoring_att">5.5</Stat>
+          <Stat Type="total_scoring_att">12.5</Stat>
+          <Stat Type="goals">3.0</Stat>
+          <Stat Type="total_offside">2.5</Stat>
+          <Stat Type="lose">0.0</Stat>
+        </Home>
+        <Away>
+          <Stat Type="second_yellow">0.0</Stat>
+          <Stat Type="total_cross">29.5</Stat>
+          <Stat Type="duel_won">37.0</Stat>
+          <Stat Type="total_red_card">0.0</Stat>
+          <Stat Type="fk_foul_lost">13.0</Stat>
+          <Stat Type="first_goal_conceded_time">47:38</Stat>
+          <Stat Type="accurate_fwd_zone_pass">238.0</Stat>
+          <Stat Type="accurate_pass">402.5</Stat>
+          <Stat Type="duel_lost">43.5</Stat>
+          <Stat Type="blocked_scoring_att">8.0</Stat>
+          <Stat Type="won_tackle">9.0</Stat>
+          <Stat Type="total_yel_card">1.5</Stat>
+          <Stat Type="total_pass">485.0</Stat>
+          <Stat Type="fk_foul_won">9.0</Stat>
+          <Stat Type="first_goal_scored_time">26:34</Stat>
+          <Stat Type="lost_corners">6.0</Stat>
+          <Stat Type="win">0.0</Stat>
+          <Stat Type="draw">1.0</Stat>
+          <Stat Type="last_goal_scored_time">74:34</Stat>
+          <Stat Type="won_corners">8.0</Stat>
+          <Stat Type="accurate_cross">11.5</Stat>
+          <Stat Type="total_fwd_zone_pass">323.0</Stat>
+          <Stat Type="possession_percentage">52.5</Stat>
+          <Stat Type="last_goal_conceded_time">90:26</Stat>
+          <Stat Type="goals_conceded">2.5</Stat>
+          <Stat Type="total_tackle">13.0</Stat>
+          <Stat Type="ontarget_scoring_att">7.0</Stat>
+          <Stat Type="total_scoring_att">13.5</Stat>
+          <Stat Type="goals">2.5</Stat>
+          <Stat Type="total_offside">3.5</Stat>
+          <Stat Type="lose">0.0</Stat>
+        </Away>
+      </Team>
+      <Team uID="t14">
+        <Overall>
+          <Stat Type="second_yellow">0.0</Stat>
+          <Stat Type="total_cross">21.2</Stat>
+          <Stat Type="duel_won">49.2</Stat>
+          <Stat Type="total_red_card">0.2</Stat>
+          <Stat Type="fk_foul_lost">11.2</Stat>
+          <Stat Type="first_goal_conceded_time">50:53</Stat>
+          <Stat Type="accurate_fwd_zone_pass">163.5</Stat>
+          <Stat Type="accurate_pass">306.8</Stat>
+          <Stat Type="duel_lost">53.5</Stat>
+          <Stat Type="blocked_scoring_att">7.0</Stat>
+          <Stat Type="won_tackle">15.0</Stat>
+          <Stat Type="total_yel_card">0.5</Stat>
+          <Stat Type="total_pass">393.0</Stat>
+          <Stat Type="fk_foul_won">10.8</Stat>
+          <Stat Type="first_goal_scored_time">55:26</Stat>
+          <Stat Type="lost_corners">6.5</Stat>
+          <Stat Type="win">0.2</Stat>
+          <Stat Type="draw">0.5</Stat>
+          <Stat Type="last_goal_scored_time">55:26</Stat>
+          <Stat Type="won_corners">5.8</Stat>
+          <Stat Type="accurate_cross">3.5</Stat>
+          <Stat Type="total_fwd_zone_pass">248.5</Stat>
+          <Stat Type="possession_percentage">46.9</Stat>
+          <Stat Type="last_goal_conceded_time">78:19</Stat>
+          <Stat Type="goals_conceded">1.0</Stat>
+          <Stat Type="total_tackle">21.0</Stat>
+          <Stat Type="ontarget_scoring_att">4.0</Stat>
+          <Stat Type="total_scoring_att">9.2</Stat>
+          <Stat Type="goals">0.5</Stat>
+          <Stat Type="total_offside">2.5</Stat>
+          <Stat Type="lose">0.2</Stat>
+        </Overall>
+        <Home>
+          <Stat Type="second_yellow">0.0</Stat>
+          <Stat Type="total_cross">21.0</Stat>
+          <Stat Type="duel_won">53.0</Stat>
+          <Stat Type="total_red_card">0.5</Stat>
+          <Stat Type="fk_foul_lost">11.5</Stat>
+          <Stat Type="first_goal_conceded_time">89:38</Stat>
+          <Stat Type="accurate_fwd_zone_pass">142.0</Stat>
+          <Stat Type="accurate_pass">273.5</Stat>
+          <Stat Type="duel_lost">54.0</Stat>
+          <Stat Type="blocked_scoring_att">4.0</Stat>
+          <Stat Type="won_tackle">18.0</Stat>
+          <Stat Type="total_yel_card">0.5</Stat>
+          <Stat Type="total_pass">358.5</Stat>
+          <Stat Type="fk_foul_won">11.0</Stat>
+          <Stat Type="first_goal_scored_time">55:26</Stat>
+          <Stat Type="lost_corners">8.5</Stat>
+          <Stat Type="win">0.5</Stat>
+          <Stat Type="draw">0.5</Stat>
+          <Stat Type="last_goal_scored_time">55:26</Stat>
+          <Stat Type="won_corners">8.0</Stat>
+          <Stat Type="accurate_cross">4.5</Stat>
+          <Stat Type="total_fwd_zone_pass">223.0</Stat>
+          <Stat Type="possession_percentage">43.3</Stat>
+          <Stat Type="last_goal_conceded_time">89:38</Stat>
+          <Stat Type="goals_conceded">0.5</Stat>
+          <Stat Type="total_tackle">28.0</Stat>
+          <Stat Type="ontarget_scoring_att">4.0</Stat>
+          <Stat Type="total_scoring_att">7.5</Stat>
+          <Stat Type="goals">1.0</Stat>
+          <Stat Type="total_offside">3.0</Stat>
+          <Stat Type="lose">0.0</Stat>
+        </Home>
+        <Away>
+          <Stat Type="second_yellow">0.0</Stat>
+          <Stat Type="total_cross">21.5</Stat>
+          <Stat Type="duel_won">45.5</Stat>
+          <Stat Type="total_red_card">0.0</Stat>
+          <Stat Type="fk_foul_lost">11.0</Stat>
+          <Stat Type="first_goal_conceded_time">12:8</Stat>
+          <Stat Type="accurate_fwd_zone_pass">185.0</Stat>
+          <Stat Type="accurate_pass">340.0</Stat>
+          <Stat Type="duel_lost">53.0</Stat>
+          <Stat Type="blocked_scoring_att">10.0</Stat>
+          <Stat Type="won_tackle">12.0</Stat>
+          <Stat Type="total_yel_card">0.5</Stat>
+          <Stat Type="total_pass">427.5</Stat>
+          <Stat Type="fk_foul_won">10.5</Stat>
+          <Stat Type="first_goal_scored_time">00:00</Stat>
+          <Stat Type="lost_corners">4.5</Stat>
+          <Stat Type="win">0.0</Stat>
+          <Stat Type="draw">0.5</Stat>
+          <Stat Type="last_goal_scored_time">00:00</Stat>
+          <Stat Type="won_corners">3.5</Stat>
+          <Stat Type="accurate_cross">2.5</Stat>
+          <Stat Type="total_fwd_zone_pass">274.0</Stat>
+          <Stat Type="possession_percentage">50.5</Stat>
+          <Stat Type="last_goal_conceded_time">67:1</Stat>
+          <Stat Type="goals_conceded">1.5</Stat>
+          <Stat Type="total_tackle">14.0</Stat>
+          <Stat Type="ontarget_scoring_att">4.0</Stat>
+          <Stat Type="total_scoring_att">11.0</Stat>
+          <Stat Type="goals">0.0</Stat>
+          <Stat Type="total_offside">2.0</Stat>
+          <Stat Type="lose">0.5</Stat>
+        </Away>
+      </Team>
+    </Averages>
+    <Form>
+      <Team uID="t1">
+        <MatchData Id="f284367" SeasonId="s2009" CompetitionId="c8">
+          <TeamData Score="0" TeamRef="t56" Side="Home" />
+          <TeamData Score="1" TeamRef="t1" Side="Away">
+            <Goal Type="Goal" PlayerRef="p38530" Minute="28" />
+          </TeamData>
+          <MatchInfo>
+            <Venue uID="v72">Stadium of Light</Venue>
+            <Date>2010-05-02</Date>
+          </MatchInfo>
+        </MatchData>
+        <MatchData Id="f284377" SeasonId="s2009" CompetitionId="c8">
+          <TeamData Score="4" TeamRef="t1" Side="Home">
+            <Goal Type="Goal" PlayerRef="p14295" Minute="31" />
+            <Goal Type="Goal" PlayerRef="p3" Minute="38" />
+            <Goal Type="Goal" PlayerRef="p12882" Minute="84" />
+          </TeamData>
+          <TeamData Score="0" TeamRef="t110" Side="Away">
+            <Goal Type="Own" PlayerRef="p2399" Minute="54" />
+          </TeamData>
+          <MatchInfo>
+            <Venue uID="v28">Old Trafford</Venue>
+            <Date>2010-05-09</Date>
+          </MatchInfo>
+        </MatchData>
+        <MatchData Id="f321663" SeasonId="s2010" CompetitionId="c8">
+          <TeamData Score="3" TeamRef="t1" Side="Home">
+            <Goal Type="Goal" PlayerRef="p8595" Minute="33" />
+            <Goal Type="Goal" PlayerRef="p14295" Minute="41" />
+            <Goal Type="Goal" PlayerRef="p3" Minute="85" />
+          </TeamData>
+          <TeamData Score="0" TeamRef="t4" Side="Away" />
+          <MatchInfo>
+            <Venue uID="v28">Old Trafford</Venue>
+            <Date>2010-08-16</Date>
+          </MatchInfo>
+        </MatchData>
+        <MatchData Id="f321670" SeasonId="s2010" CompetitionId="c8">
+          <TeamData Score="2" TeamRef="t54" Side="Home">
+            <Goal Type="Goal" PlayerRef="p2559" Minute="57" />
+            <Goal Type="Own" PlayerRef="p15284" Minute="84" />
+            <Goal Type="Goal" PlayerRef="p15284" Minute="89" />
+          </TeamData>
+          <TeamData Score="2" TeamRef="t1" Side="Away">
+            <Goal Type="Goal" PlayerRef="p363" Minute="11" />
+          </TeamData>
+          <MatchInfo>
+            <Venue uID="v70">Craven Cottage</Venue>
+            <Date>2010-08-22</Date>
+          </MatchInfo>
+        </MatchData>
+        <MatchData Id="f321683" SeasonId="s2010" CompetitionId="c8">
+          <TeamData Score="3" TeamRef="t1" Side="Home">
+            <Goal Type="Penalty" PlayerRef="p13017" Minute="33" />
+            <Goal Type="Goal" PlayerRef="p38530" Minute="50" />
+            <Goal Type="Goal" PlayerRef="p8595" Minute="69" />
+          </TeamData>
+          <TeamData Score="0" TeamRef="t21" Side="Away" />
+          <MatchInfo>
+            <Venue uID="v28">Old Trafford</Venue>
+            <Date>2010-08-28</Date>
+          </MatchInfo>
+        </MatchData>
+        <MatchData Id="f321689" SeasonId="s2010" CompetitionId="c8">
+          <TeamData Score="3" TeamRef="t11" Side="Home">
+            <Goal Type="Goal" PlayerRef="p7525" Minute="39" />
+            <Goal Type="Goal" PlayerRef="p3273" Minute="91" />
+            <Goal Type="Goal" PlayerRef="p8758" Minute="92" />
+          </TeamData>
+          <TeamData Score="3" TeamRef="t1" Side="Away">
+            <Goal Type="Goal" PlayerRef="p14295" Minute="43" />
+            <Goal Type="Goal" PlayerRef="p14965" Minute="47" />
+            <Goal Type="Goal" PlayerRef="p8595" Minute="66" />
+          </TeamData>
+          <MatchInfo>
+            <Venue uID="v37">Goodison Park</Venue>
+            <Date>2010-09-11</Date>
+          </MatchInfo>
+        </MatchData>
+        <FormText>WWWDWD</FormText>
+      </Team>
+      <Team uID="t14">
+        <MatchData Id="f284363" SeasonId="s2009" CompetitionId="c8">
+          <TeamData Score="0" TeamRef="t14" Side="Home" />
+          <TeamData Score="2" TeamRef="t8" Side="Away">
+            <Goal Type="Goal" PlayerRef="p12303" Minute="33" />
+            <Goal Type="Goal" PlayerRef="p2051" Minute="54" />
+          </TeamData>
+          <MatchInfo>
+            <Venue uID="v39">Anfield</Venue>
+            <Date>2010-05-02</Date>
+          </MatchInfo>
+        </MatchData>
+        <MatchData Id="f284376" SeasonId="s2009" CompetitionId="c8">
+          <TeamData Score="0" TeamRef="t88" Side="Home" />
+          <TeamData Score="0" TeamRef="t14" Side="Away" />
+          <MatchInfo>
+            <Venue uID="v2638">The Kingston Communications Stadium</Venue>
+            <Date>2010-05-09</Date>
+          </MatchInfo>
+        </MatchData>
+        <MatchData Id="f321662" SeasonId="s2010" CompetitionId="c8">
+          <TeamData Score="1" TeamRef="t14" Side="Home">
+            <Goal Type="Goal" PlayerRef="p38328" Minute="46" />
+            <Goal Type="Own" PlayerRef="p8432" Minute="90" />
+          </TeamData>
+          <TeamData Score="1" TeamRef="t3" Side="Away" />
+          <MatchInfo>
+            <Venue uID="v39">Anfield</Venue>
+            <Date>2010-08-15</Date>
+          </MatchInfo>
+        </MatchData>
+        <MatchData Id="f321671" SeasonId="s2010" CompetitionId="c8">
+          <TeamData Score="3" TeamRef="t43" Side="Home">
+            <Goal Type="Goal" PlayerRef="p1632" Minute="13" />
+            <Goal Type="Goal" PlayerRef="p20312" Minute="52" />
+            <Goal Type="Penalty" PlayerRef="p20312" Minute="68" />
+          </TeamData>
+          <TeamData Score="0" TeamRef="t14" Side="Away" />
+          <MatchInfo>
+            <Venue uID="v2691">City of Manchester Stadium</Venue>
+            <Date>2010-08-23</Date>
+          </MatchInfo>
+        </MatchData>
+        <MatchData Id="f321682" SeasonId="s2010" CompetitionId="c8">
+          <TeamData Score="1" TeamRef="t14" Side="Home">
+            <Goal Type="Goal" PlayerRef="p14402" Minute="65" />
+          </TeamData>
+          <TeamData Score="0" TeamRef="t35" Side="Away" />
+          <MatchInfo>
+            <Venue uID="v39">Anfield</Venue>
+            <Date>2010-08-29</Date>
+          </MatchInfo>
+        </MatchData>
+        <MatchData Id="f321688" SeasonId="s2010" CompetitionId="c8">
+          <TeamData Score="0" TeamRef="t41" Side="Home" />
+          <TeamData Score="0" TeamRef="t14" Side="Away" />
+          <MatchInfo>
+            <Venue uID="v57">St Andrews</Venue>
+            <Date>2010-09-12</Date>
+          </MatchInfo>
+        </MatchData>
+        <FormText>LDDLWD</FormText>
+      </Team>
+    </Form>
+  </Match>
+</MatchPreviews>

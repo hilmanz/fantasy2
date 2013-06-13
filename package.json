@@ -9,6 +9,8 @@
     "express": "3.1.1",
     "jade": "*",
     "xml2json": "*",
-    "mysql": "*"
+    "mysql": "*",
+    "mu2": "*",
+    "handlebars": "*"
   }
 }

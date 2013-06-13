@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- Copyright 2001-2011 Opta Sportsdata Ltd. All rights reserved. -->
+
+<!-- PRODUCTION HEADER
+     produced on:        jobqueue03.sportingstatz.com
+     production time:    20111018T134453,314Z
+     production module:  Opta::Feed::XML::Soccer::F9
+-->
+<SoccerFeed TimeStamp="20111018T144451+0100">
+  <SoccerDocument Type="Result" uID="{{game_id}}">
+    <Competition uID="c8">
+      <Country>England</Country>
+      <Name>English Barclays Premier League</Name>
+      <Stat Type="season_id">2011</Stat>
+      <Stat Type="season_name">Season 2011/2012</Stat>
+      <Stat Type="symid">EN_PR</Stat>
+      <Stat Type="matchday">8</Stat>
+    </Competition>
+    <MatchData>
+      <MatchInfo MatchType="Regular" Period="FullTime" TimeStamp="20111016T152326+0100">
+        <Attendance>{{attendance}}</Attendance>
+        <Date>20111016T133000+0100</Date>
+        <Result Type="NormalResult" Winner="{{winner}}" />
+      </MatchInfo>
+      <MatchOfficial uID="o17676">
+        <OfficialData>
+          <OfficialRef Type="Main" />
+        </OfficialData>
+        <OfficialName>
+          <First>Howard</First>
+          <Last>Webb</Last>
+        </OfficialName>
+      </MatchOfficial>
+      <Stat Type="match_time">95</Stat>
+      <TeamData Score="{{team_data.home.goals}}" Side="Home" TeamRef="{{team_data.home.team_id}}">
+        {{#team_data.home.booking_data}}
+        <Booking Card="{{card_type}}" CardType="{{card_type}}" EventID="{{event_id}}" EventNumber="{{event_number}}" Period="{{period}}" PlayerRef="{{player_id}}" Reason="{{reason}}" Time="{{time}}" TimeStamp="20111016T144431+0100" uID="b3-1" />
+        {{/team_data.home.booking_data}}
+        {{#team_data.home.goal_data}}
+        <Goal EventID="{{event_id}}" EventNumber="{{event_number}}" Period="{{period}}" PlayerRef="{{player_id}}" Time="{{time}}" TimeStamp="20111016T133110+0100" Type="Goal" uID="g3-1">
+          <Assist PlayerRef="p43274">p43274</Assist>
+        </Goal>
+        {{/team_data.home.goal_data}}
+        <PlayerLineUp>
+        {{#team_data.home.lineup.starters}}
+          <MatchPlayer PlayerRef="{{player.uid}}" Position="{{player.position}}" ShirtNumber="{{player.jersey_num}}" Status="Start">
+            {{#stats_data}}
+            <Stat Type="{{name}}">{{value}}</Stat>
+            {{/stats_data}}
+          </MatchPlayer>
+        {{/team_data.home.lineup.starters}}
+         {{#team_data.home.lineup.substitutions}}
+          <MatchPlayer PlayerRef="{{player.uid}}" Position="Substitute" ShirtNumber="{{player.jersey_num}}" Status="Sub">
+            {{#stats_data}}
+            <Stat Type="{{name}}">{{value}}</Stat>
+            {{/stats_data}}
+          </MatchPlayer>
+        {{/team_data.home.lineup.substitutions}}
+        </PlayerLineUp>
+        <Stat FH="6" SH="1" Type="total_through_ball">7</Stat>
+        <Stat FH="3" SH="5" Type="total_flick_on">8</Stat>
+        <Stat FH="21" SH="21" Type="duel_lost">42</Stat>
+        <Stat FH="1" SH="0" Type="diving_save">1</Stat>
+        <Stat FH="1" SH="0" Type="interceptions_in_box">1</Stat>
+        <Stat FH="0" SH="6" Type="blocked_scoring_att">6</Stat>
+        <Stat FH="21" SH="10" Type="leftside_pass">31</Stat>
+        <Stat FH="0" SH="1" Type="blocked_cross">1</Stat>
+        <Stat FH="4" SH="3" Type="total_corners_intobox">7</Stat>
+        <Stat FH="0" SH="1" Type="att_miss_right">1</Stat>
+        <Stat FH="3" SH="1" Type="att_bx_centre">4</Stat>
+        <Stat FH="11" SH="10" Type="dispossessed">21</Stat>
+        <Stat FH="1" SH="0" Type="post_scoring_att">1</Stat>
+        <Stat FH="3" SH="7" Type="ontarget_att_assist">10</Stat>
+        <Stat FH="2" SH="1" Type="accurate_cross">3</Stat>
+        <Stat FH="52" SH="37" Type="long_pass_own_to_opp">89</Stat>
+        <Stat FH="3" SH="9" Type="att_rf_total">12</Stat>
+        <Stat FH="1" SH="0" Type="att_ibox_goal">1</Stat>
+        <Stat FH="1" SH="3" Type="att_bx_right">4</Stat>
+        <Stat FH="5" SH="6" Type="accurate_chipped_pass">11</Stat>
+        <Stat FH="1" SH="0" Type="total_keeper_sweeper">1</Stat>
+        <Stat FH="32" SH="34" Type="duel_won">66</Stat>
+        <Stat FH="262" SH="221" Type="accurate_pass">483</Stat>
+        <Stat FH="6" SH="8" Type="won_tackle">14</Stat>
+        <Stat FH="1" SH="0" Type="att_assist_setplay">1</Stat>
+        <Stat FH="55" SH="79" Type="successful_final_third_passes">134</Stat>
+        <Stat FH="0" SH="2" Type="shield_ball_oop">2</Stat>
+        <Stat FH="1" SH="0" Type="att_rf_goal">1</Stat>
+        <Stat FH="0" SH="3" Type="att_freekick_miss">3</Stat>
+        <Stat FH="9" SH="9" Type="total_cross_nocorner">18</Stat>
+        <Stat FH="9" SH="10" Type="fk_foul_won">19</Stat>
+        <Stat FH="2" SH="2" Type="keeper_throws">4</Stat>
+        <Stat FH="2" SH="1" Type="att_miss_left">3</Stat>
+        <Stat FH="77" SH="99" Type="total_final_third_passes">176</Stat>
+        <Stat FH="70" SH="62" Type="rightside_pass">132</Stat>
+        <Stat FH="1" SH="3" Type="att_bx_left">4</Stat>
+        <Stat FH="1" SH="0" Type="accurate_through_ball">1</Stat>
+        <Stat FH="0" SH="1" Type="att_obox_goal">1</Stat>
+        <Stat FH="3" SH="1" Type="attempts_conceded_ibox">4</Stat>
+        <Stat FH="405" SH="367" Type="touches">772</Stat>
+        <Stat FH="8" SH="11" Type="total_tackle">19</Stat>
+        <Stat FH="2" SH="0" Type="total_offside">2</Stat>
+        <Stat FH="0" SH="2" Type="att_sv_low_left">2</Stat>
+        <Stat FH="27" SH="23" Type="passes_left">50</Stat>
+        <Stat FH="1" SH="0" Type="att_sv_high_right">1</Stat>
+        <Stat FH="0" SH="1" Type="good_high_claim">1</Stat>
+        <Stat FH="3" SH="0" Type="accurate_launches">3</Stat>
+        <Stat FH="77" SH="79" Type="poss_lost_all">156</Stat>
+        <Stat FH="182" SH="177" Type="total_fwd_zone_pass">359</Stat>
+        <Stat FH="0" SH="1" Type="att_goal_high_right">1</Stat>
+        <Stat FH="5" SH="9" Type="att_assist_openplay">14</Stat>
+        <Stat FH="8" SH="5" Type="won_contest">13</Stat>
+        <Stat FH="2" SH="1" Type="challenge_lost">3</Stat>
+        <Stat FH="16" SH="13" Type="accurate_long_balls">29</Stat>
+        <Stat FH="0" SH="1" Type="att_freekick_goal">1</Stat>
+        <Stat FH="13" SH="12" Type="total_cross">25</Stat>
+        <Stat FH="135" SH="140" Type="accurate_fwd_zone_pass">275</Stat>
+        <Stat FH="1" SH="0" Type="att_goal_low_right">1</Stat>
+        <Stat FH="0" SH="2" Type="att_obox_blocked">2</Stat>
+        <Stat FH="1" SH="2" Type="accurate_goal_kicks">3</Stat>
+        <Stat FH="2" SH="1" Type="att_ibox_miss">3</Stat>
+        <Stat FH="12" SH="10" Type="total_chipped_pass">22</Stat>
+        <Stat FH="5" SH="4" Type="effective_head_clearance">9</Stat>
+        <Stat FH="1" SH="1" Type="lost_corners">2</Stat>
+        <Stat FH="3" SH="8" Type="unsuccessful_touch">11</Stat>
+        <Stat FH="4" SH="5" Type="shot_off_target">9</Stat>
+        <Stat FH="1" SH="1" Type="forward_goals">2</Stat>
+        <Stat FH="1" SH="0" Type="goals_conceded">1</Stat>
+        <Stat FH="3" SH="3" Type="ontarget_scoring_att">6</Stat>
+        <Stat FH="7" SH="14" Type="total_scoring_att">21</Stat>
+        <Stat FH="75" SH="74" Type="poss_lost_ctrl">149</Stat>
+        <Stat FH="1" SH="1" Type="hand_ball">2</Stat>
+        <Stat FH="0" SH="1" Type="total_high_claim">1</Stat>
+        <Stat FH="0" SH="4" Type="att_ibox_blocked">4</Stat>
+        <Stat FH="1" SH="3" Type="accurate_flick_on">4</Stat>
+        <Stat FH="3" SH="2" Type="aerial_lost">5</Stat>
+        <Stat FH="2" SH="2" Type="attempts_conceded_obox">4</Stat>
+        <Stat FH="1" SH="0" Type="att_sv_low_right">1</Stat>
+        <Stat FH="36" SH="41" Type="final_third_entries">77</Stat>
+        <Stat FH="5" SH="6" Type="crosses_18yard">11</Stat>
+        <Stat FH="28" SH="29" Type="ball_recovery">57</Stat>
+        <Stat FH="0" SH="3" Type="overrun">3</Stat>
+        <Stat FH="0" SH="3" Type="subs_made">3</Stat>
+        <Stat FH="3" SH="0" Type="att_hd_total">3</Stat>
+        <Stat FH="1" SH="1" Type="accurate_cross_nocorner">2</Stat>
+        <Stat FH="1" SH="0" Type="att_ibox_post">1</Stat>
+        <Stat FH="14" SH="12" Type="poss_won_def_3rd">26</Stat>
+        <Stat FH="10" SH="5" Type="effective_clearance">15</Stat>
+        <Stat FH="129" SH="82" Type="accurate_back_zone_pass">211</Stat>
+        <Stat FH="2" SH="0" Type="att_cmiss_left">2</Stat>
+        <Stat FH="5" SH="6" Type="fk_foul_lost">11</Stat>
+        <Stat FH="1" SH="0" Type="att_hd_miss">1</Stat>
+        <Stat FH="1" SH="0" Type="goal_assist_openplay">1</Stat>
+        <Stat FH="46" SH="43" Type="passes_right">89</Stat>
+        <Stat FH="9" SH="11" Type="total_throws">20</Stat>
+        <Stat FH="4" SH="5" Type="won_corners">9</Stat>
+        <Stat FH="65.5" SH="59.7" Type="possession_percentage">62.7</Stat>
+        <Stat FH="8" SH="9" Type="interception">17</Stat>
+        <Stat FH="40" SH="38" Type="backward_pass">78</Stat>
+        <Stat FH="138" SH="92" Type="total_back_zone_pass">230</Stat>
+        <Stat FH="8" SH="7" Type="interception_won">15</Stat>
+        <Stat Type="first_half_goals">1</Stat>
+        <Stat FH="11" SH="12" Type="pen_area_entries">23</Stat>
+        <Stat FH="21" SH="3" Type="accurate_layoffs">24</Stat>
+        <Stat FH="23" SH="20" Type="total_long_balls">43</Stat>
+        <Stat FH="0" SH="1" Type="att_lf_goal">1</Stat>
+        <Stat FH="0" SH="3" Type="total_yel_card">3</Stat>
+        <Stat FH="2" SH="2" Type="accurate_keeper_throws">4</Stat>
+        <Stat FH="1" SH="7" Type="att_obx_centre">8</Stat>
+        <Stat FH="11" SH="15" Type="poss_won_mid_3rd">26</Stat>
+        <Stat FH="9" SH="10" Type="accurate_throws">19</Stat>
+        <Stat FH="1" SH="0" Type="goals_conceded_obox">1</Stat>
+        <Stat FH="23" SH="4" Type="total_layoffs">27</Stat>
+        <Stat FH="1" SH="0" Type="error_lead_to_shot">1</Stat>
+        <Stat FH="2" SH="2" Type="att_ibox_target">4</Stat>
+        <Stat FH="0" SH="4" Type="att_freekick_total">4</Stat>
+        <Stat FH="2" SH="0" Type="att_hd_target">2</Stat>
+        <Stat FH="1" SH="0" Type="hit_woodwork">1</Stat>
+        <Stat FH="9" SH="8" Type="total_contest">17</Stat>
+        <Stat FH="6" SH="6" Type="head_clearance">12</Stat>
+        <Stat FH="3" SH="4" Type="goal_kicks">7</Stat>
+        <Stat FH="12" SH="10" Type="total_clearance">22</Stat>
+        <Stat FH="1" SH="5" Type="att_lf_total">6</Stat>
+        <Stat FH="35" SH="25" Type="long_pass_own_to_opp_success">60</Stat>
+        <Stat FH="1" SH="0" Type="goal_assist_intentional">1</Stat>
+        <Stat FH="0" SH="2" Type="total_pull_back">2</Stat>
+        <Stat FH="1" SH="0" Type="accurate_corners_intobox">1</Stat>
+        <Stat FH="7" SH="8" Type="aerial_won">15</Stat>
+        <Stat FH="1" SH="0" Type="goal_assist">1</Stat>
+        <Stat FH="1" SH="0" Type="saved_ibox">1</Stat>
+        <Stat FH="7" SH="9" Type="total_att_assist">16</Stat>
+        <Stat FH="307" SH="257" Type="total_pass">564</Stat>
+        <Stat FH="0" SH="2" Type="att_lf_target">2</Stat>
+        <Stat FH="1" SH="0" Type="att_post_left">1</Stat>
+        <Stat FH="1" SH="2" Type="att_miss_high">3</Stat>
+        <Stat FH="4" SH="2" Type="offtarget_att_assist">6</Stat>
+        <Stat FH="7" SH="8" Type="total_launches">15</Stat>
+        <Stat FH="176" SH="147" Type="fwd_pass">323</Stat>
+        <Stat FH="1" SH="4" Type="att_obox_miss">5</Stat>
+        <Stat FH="4" SH="5" Type="corner_taken">9</Stat>
+        <Stat FH="0" SH="1" Type="effective_blocked_cross">1</Stat>
+        <Stat FH="0" SH="2" Type="outfielder_block">2</Stat>
+        <Stat FH="0" SH="1" Type="att_miss_high_right">1</Stat>
+        <Stat FH="3" SH="3" Type="crosses_18yardplus">6</Stat>
+        <Stat FH="1" SH="1" Type="goals">2</Stat>
+        <Stat Type="formation_used">4231</Stat>
+        {{#team_data.home.substitute_data}}
+        <Substitution EventID="{{event_id}}" EventNumber="{{event_number}}" Period="{{time}}" Reason="{{reason}}" SubOff="{{suboff}}" SubOn="{{player_id}}" SubstitutePosition="2" Time="51" TimeStamp="20111016T143834+0100" uID="s3-1" />
+        {{/team_data.home.substitute_data}}
+      </TeamData>
+      <TeamData Score="{{team_data.away.goals}}" Side="Away" TeamRef="{{team_data.away.team_id}}">
+        {{#team_data.away.booking_data}}
+        <Booking Card="{{card_type}}" CardType="{{card_type}}" EventID="{{event_id}}" EventNumber="{{event_number}}" Period="{{period}}" PlayerRef="{{player_id}}" Reason="{{reason}}" Time="{{time}}" TimeStamp="20111016T144431+0100" uID="b3-1" />
+        {{/team_data.away.booking_data}}
+        {{#team_data.away.goal_data}}
+        <Goal EventID="{{event_id}}" EventNumber="{{event_number}}" Period="{{period}}" PlayerRef="{{player_id}}" Time="{{time}}" TimeStamp="20111016T133110+0100" Type="Goal" uID="g3-1">
+          <Assist PlayerRef="p43274">p43274</Assist>
+        </Goal>
+        {{/team_data.away.goal_data}}
+        <PlayerLineUp>
+         {{#team_data.away.lineup.starters}}
+          <MatchPlayer PlayerRef="{{player.uid}}" Position="{{player.position}}" 
+            ShirtNumber="{{player.jersey_num}}" Status="Start">
+            {{#stats_data}}
+            <Stat Type="{{name}}">{{value}}</Stat>
+            {{/stats_data}}
+          </MatchPlayer>
+        {{/team_data.away.lineup.starters}}
+         {{#team_data.away.lineup.substitutions}}
+          <MatchPlayer PlayerRef="{{player.uid}}" Position="Substitute" ShirtNumber="{{player.jersey_num}}" Status="Sub">
+            {{#stats_data}}
+            <Stat Type="{{name}}">{{value}}</Stat>
+            {{/stats_data}}
+          </MatchPlayer>
+        {{/team_data.away.lineup.substitutions}}
+        </PlayerLineUp>
+        <Stat FH="6" SH="7" Type="total_flick_on">13</Stat>
+        <Stat FH="32" SH="34" Type="duel_lost">66</Stat>
+        <Stat FH="0" SH="2" Type="diving_save">2</Stat>
+        <Stat FH="1" SH="0" Type="interceptions_in_box">1</Stat>
+        <Stat FH="0" SH="2" Type="blocked_scoring_att">2</Stat>
+        <Stat FH="13" SH="9" Type="leftside_pass">22</Stat>
+        <Stat FH="2" SH="4" Type="blocked_cross">6</Stat>
+        <Stat FH="1" SH="1" Type="total_corners_intobox">2</Stat>
+        <Stat FH="1" SH="0" Type="att_miss_right">1</Stat>
+        <Stat FH="1" SH="1" Type="att_bx_centre">2</Stat>
+        <Stat FH="4" SH="5" Type="dispossessed">9</Stat>
+        <Stat FH="1" SH="2" Type="ontarget_att_assist">3</Stat>
+        <Stat FH="1" SH="0" Type="att_cmiss_high">1</Stat>
+        <Stat FH="3" SH="0" Type="accurate_cross">3</Stat>
+        <Stat FH="32" SH="43" Type="long_pass_own_to_opp">75</Stat>
+        <Stat FH="1" SH="2" Type="att_rf_total">3</Stat>
+        <Stat FH="2" SH="6" Type="accurate_chipped_pass">8</Stat>
+        <Stat FH="21" SH="21" Type="duel_won">42</Stat>
+        <Stat FH="116" SH="131" Type="accurate_pass">247</Stat>
+        <Stat FH="8" SH="10" Type="won_tackle">18</Stat>
+        <Stat FH="1" SH="1" Type="att_assist_setplay">2</Stat>
+        <Stat FH="17" SH="27" Type="successful_final_third_passes">44</Stat>
+        <Stat FH="0" SH="1" Type="shield_ball_oop">1</Stat>
+        <Stat FH="1" SH="0" Type="att_rf_goal">1</Stat>
+        <Stat FH="6" SH="4" Type="total_cross_nocorner">10</Stat>
+        <Stat FH="4" SH="5" Type="fk_foul_won">9</Stat>
+        <Stat FH="0" SH="1" Type="keeper_throws">1</Stat>
+        <Stat FH="0" SH="1" Type="att_miss_left">1</Stat>
+        <Stat FH="39" SH="48" Type="total_final_third_passes">87</Stat>
+        <Stat FH="40" SH="30" Type="rightside_pass">70</Stat>
+        <Stat FH="1" SH="0" Type="att_obox_goal">1</Stat>
+        <Stat FH="6" SH="7" Type="attempts_conceded_ibox">13</Stat>
+        <Stat FH="249" SH="276" Type="touches">525</Stat>
+        <Stat FH="12" SH="13" Type="total_tackle">25</Stat>
+        <Stat FH="2" SH="3" Type="total_offside">5</Stat>
+        <Stat FH="15" SH="14" Type="passes_left">29</Stat>
+        <Stat FH="3" SH="2" Type="accurate_launches">5</Stat>
+        <Stat FH="76" SH="79" Type="poss_lost_all">155</Stat>
+        <Stat FH="93" SH="109" Type="total_fwd_zone_pass">202</Stat>
+        <Stat FH="1" SH="0" Type="att_sv_low_centre">1</Stat>
+        <Stat FH="2" SH="2" Type="att_assist_openplay">4</Stat>
+        <Stat FH="2" SH="1" Type="won_contest">3</Stat>
+        <Stat FH="8" SH="5" Type="challenge_lost">13</Stat>
+        <Stat FH="9" SH="6" Type="accurate_long_balls">15</Stat>
+        <Stat FH="1" SH="0" Type="att_freekick_goal">1</Stat>
+        <Stat FH="7" SH="5" Type="total_cross">12</Stat>
+        <Stat FH="56" SH="70" Type="accurate_fwd_zone_pass">126</Stat>
+        <Stat FH="0" SH="2" Type="att_obox_blocked">2</Stat>
+        <Stat FH="1" SH="4" Type="accurate_goal_kicks">5</Stat>
+        <Stat FH="1" SH="0" Type="clearance_off_line">1</Stat>
+        <Stat FH="2" SH="1" Type="att_ibox_miss">3</Stat>
+        <Stat FH="9" SH="12" Type="total_chipped_pass">21</Stat>
+        <Stat FH="2" SH="8" Type="effective_head_clearance">10</Stat>
+        <Stat FH="4" SH="5" Type="lost_corners">9</Stat>
+        <Stat FH="4" SH="8" Type="unsuccessful_touch">12</Stat>
+        <Stat FH="3" SH="1" Type="shot_off_target">4</Stat>
+        <Stat FH="1" SH="1" Type="goals_conceded">2</Stat>
+        <Stat FH="2" SH="0" Type="ontarget_scoring_att">2</Stat>
+        <Stat FH="5" SH="3" Type="total_scoring_att">8</Stat>
+        <Stat FH="68" SH="73" Type="poss_lost_ctrl">141</Stat>
+        <Stat FH="3" SH="2" Type="accurate_flick_on">5</Stat>
+        <Stat FH="7" SH="8" Type="aerial_lost">15</Stat>
+        <Stat FH="1" SH="7" Type="attempts_conceded_obox">8</Stat>
+        <Stat FH="30" SH="32" Type="final_third_entries">62</Stat>
+        <Stat FH="4" SH="2" Type="crosses_18yard">6</Stat>
+        <Stat FH="28" SH="29" Type="ball_recovery">57</Stat>
+        <Stat FH="0" SH="3" Type="subs_made">3</Stat>
+        <Stat FH="2" SH="1" Type="att_hd_total">3</Stat>
+        <Stat FH="2" SH="0" Type="accurate_cross_nocorner">2</Stat>
+        <Stat FH="11" SH="21" Type="poss_won_def_3rd">32</Stat>
+        <Stat FH="4" SH="13" Type="effective_clearance">17</Stat>
+        <Stat FH="63" SH="61" Type="accurate_back_zone_pass">124</Stat>
+        <Stat FH="9" SH="10" Type="fk_foul_lost">19</Stat>
+        <Stat FH="1" SH="1" Type="att_hd_miss">2</Stat>
+        <Stat FH="29" SH="34" Type="passes_right">63</Stat>
+        <Stat FH="11" SH="7" Type="total_throws">18</Stat>
+        <Stat FH="1" SH="1" Type="won_corners">2</Stat>
+        <Stat FH="1" SH="0" Type="att_goal_high_left">1</Stat>
+        <Stat FH="34.5" SH="40.3" Type="possession_percentage">37.3</Stat>
+        <Stat FH="11" SH="7" Type="interception">18</Stat>
+        <Stat FH="19" SH="23" Type="backward_pass">42</Stat>
+        <Stat FH="73" SH="68" Type="total_back_zone_pass">141</Stat>
+        <Stat FH="6" SH="5" Type="interception_won">11</Stat>
+        <Stat Type="first_half_goals">1</Stat>
+        <Stat FH="6" SH="7" Type="pen_area_entries">13</Stat>
+        <Stat FH="3" SH="5" Type="accurate_layoffs">8</Stat>
+        <Stat FH="21" SH="21" Type="total_long_balls">42</Stat>
+        <Stat FH="0" SH="3" Type="total_yel_card">3</Stat>
+        <Stat FH="0" SH="1" Type="accurate_keeper_throws">1</Stat>
+        <Stat FH="1" SH="0" Type="goals_conceded_ibox">1</Stat>
+        <Stat FH="2" SH="2" Type="att_obx_centre">4</Stat>
+        <Stat FH="12" SH="7" Type="poss_won_mid_3rd">19</Stat>
+        <Stat FH="8" SH="6" Type="accurate_throws">14</Stat>
+        <Stat FH="0" SH="1" Type="goals_conceded_obox">1</Stat>
+        <Stat FH="3" SH="5" Type="total_layoffs">8</Stat>
+        <Stat FH="1" SH="0" Type="big_chance_created">1</Stat>
+        <Stat FH="1" SH="0" Type="error_lead_to_shot">1</Stat>
+        <Stat FH="1" SH="0" Type="big_chance_missed">1</Stat>
+        <Stat FH="1" SH="0" Type="att_ibox_target">1</Stat>
+        <Stat FH="1" SH="0" Type="att_freekick_total">1</Stat>
+        <Stat FH="1" SH="0" Type="att_hd_target">1</Stat>
+        <Stat FH="6" SH="7" Type="total_contest">13</Stat>
+        <Stat FH="7" SH="11" Type="head_clearance">18</Stat>
+        <Stat FH="5" SH="8" Type="goal_kicks">13</Stat>
+        <Stat FH="12" SH="19" Type="total_clearance">31</Stat>
+        <Stat FH="2" SH="0" Type="att_lf_total">2</Stat>
+        <Stat FH="13" SH="22" Type="long_pass_own_to_opp_success">35</Stat>
+        <Stat FH="1" SH="0" Type="accurate_corners_intobox">1</Stat>
+        <Stat FH="3" SH="2" Type="aerial_won">5</Stat>
+        <Stat FH="2" SH="2" Type="saved_ibox">4</Stat>
+        <Stat FH="3" SH="3" Type="total_att_assist">6</Stat>
+        <Stat FH="159" SH="172" Type="total_pass">331</Stat>
+        <Stat FH="0" SH="1" Type="att_setpiece">1</Stat>
+        <Stat FH="1" SH="0" Type="midfielder_goals">1</Stat>
+        <Stat FH="1" SH="0" Type="att_miss_high">1</Stat>
+        <Stat FH="2" SH="1" Type="offtarget_att_assist">3</Stat>
+        <Stat FH="16" SH="17" Type="total_launches">33</Stat>
+        <Stat FH="87" SH="110" Type="fwd_pass">197</Stat>
+        <Stat FH="1" SH="0" Type="att_obox_miss">1</Stat>
+        <Stat FH="1" SH="1" Type="corner_taken">2</Stat>
+        <Stat FH="2" SH="4" Type="effective_blocked_cross">6</Stat>
+        <Stat FH="1" SH="6" Type="outfielder_block">7</Stat>
+        <Stat FH="1" SH="2" Type="crosses_18yardplus">3</Stat>
+        <Stat FH="1" SH="0" Type="att_miss_high_left">1</Stat>
+        <Stat FH="1" SH="0" Type="goals">1</Stat>
+        <Stat Type="formation_used">451</Stat>
+        {{#team_data.away.substitute_data}}
+        <Substitution EventID="{{event_id}}" EventNumber="{{event_number}}" Period="{{time}}" Reason="{{reason}}" SubOff="{{suboff}}" SubOn="{{player_id}}" SubstitutePosition="2" Time="51" TimeStamp="20111016T143834+0100" uID="s3-1" />
+        {{/team_data.away.substitute_data}}
+        </TeamData>
+    </MatchData>
+    <Team uID="{{team_data.home.team_id}}">
+      <Country>England</Country>
+      <Name>{{team_data.home.name}}</Name>
+      {{#team_data.home.lineup.starters}}
+      <Player Position="{{player.position}}" uID="{{player.uid}}">
+        <PersonName>
+          <First>{{player.first_name}}</First>
+          <Last>{{player.last_name}}</Last>
+        </PersonName>
+      </Player>
+      {{/team_data.home.lineup.starters}}
+      {{#team_data.home.lineup.substitutions}}
+      <Player Position="{{player.position}}" uID="{{player.uid}}">
+        <PersonName>
+          <First>{{player.first_name}}</First>
+          <Last>{{player.last_name}}</Last>
+        </PersonName>
+      </Player>
+      {{/team_data.home.lineup.substitutions}}
+      {{#team_data.home.officials}}
+      <TeamOfficial Type="{{type}}" uID="{{uid}}">
+        <PersonName>
+          <First>{{first_name}}</First>
+          <Last>{{last_name}}</Last>
+        </PersonName>
+      </TeamOfficial>
+      {{/team_data.home.officials}}
+    </Team>
+    <Team uID="{{team_data.away.team_id}}">
+      <Country>England</Country>
+      <Name>{{team_data.away.name}}</Name>
+     {{#team_data.away.lineup.starters}}
+      <Player Position="{{player.position}}" uID="{{player.uid}}">
+        <PersonName>
+          <First>{{player.first_name}}</First>
+          <Last>{{player.last_name}}</Last>
+        </PersonName>
+      </Player>
+      {{/team_data.away.lineup.starters}}
+       {{#team_data.away.lineup.substitutions}}
+      <Player Position="{{player.position}}" uID="{{player.uid}}">
+        <PersonName>
+          <First>{{player.first_name}}</First>
+          <Last>{{player.last_name}}</Last>
+        </PersonName>
+      </Player>
+      {{/team_data.away.lineup.substitutions}}
+       {{#team_data.away.officials}}
+      <TeamOfficial Type="{{type}}" uID="{{uid}}">
+        <PersonName>
+          <First>{{first_name}}</First>
+          <Last>{{last_name}}</Last>
+        </PersonName>
+      </TeamOfficial>
+      {{/team_data.away.officials}}
+    </Team>
+    <Venue uID="v3250">
+      <Country>England</Country>
+      <Name>Emirates Stadium</Name>
+    </Venue>
+  </SoccerDocument>
+</SoccerFeed>
