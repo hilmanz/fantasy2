@@ -73,28 +73,28 @@ function onJsonData(data,done){
 				//home stats
 				//console.log(data[0].PlayerLineUp.MatchPlayer);
 				console.log('Processing Home Stats');
-				/*
+				
 				getPlayerStats(game_id,
 								data[0].TeamRef,
 								data[0].PlayerLineUp.MatchPlayer,
 								function(err,result){
 									callback(null,game_id,data);
 				});
-	*/
-				callback(null,game_id,data);
+	
+				//callback(null,game_id,data);
 			},
 			function(game_id,data,callback){
 				//away stats
 				console.log('Processing Away Stats');
-				/*
+				
 				getPlayerStats(game_id,
 								data[1].TeamRef,
 								data[1].PlayerLineUp.MatchPlayer,
 								function(err,result){
 					callback(null,game_id,data);
 				});
-				*/
-				callback(null,game_id,data);
+				
+				//callback(null,game_id,data);
 			},
 			function(game_id,data,callback){
 				console.log('assign points');
@@ -105,8 +105,14 @@ function onJsonData(data,done){
 			},
 			function(game_id,callback){
 				calculateTeamOverallPoints(game_id,function(err){
-					callback(err,'done');
+					callback(err,game_id,data);
 				})
+			},
+			function(game_id,data,callback){
+				updateGameFixtures(game_id,data,function(err){
+					callback(err,'done');
+				});
+				
 			}
 		],
 		function(err,result){
@@ -115,6 +121,72 @@ function onJsonData(data,done){
 		}
 	);
 }
+
+/**
+*	update game final fixtures
+*/
+function updateGameFixtures(game_id,data,done){
+
+	console.log('update game fixtures');
+	var attendance = data.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Attendance;
+	
+	var home_score = 0;
+	var away_score = 0;
+	var home_id,away_id;
+	var period = data.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Period;
+	var matchday = 1;
+	for(var i in data.SoccerFeed.SoccerDocument.MatchData.TeamData){
+		var team_data = data.SoccerFeed.SoccerDocument.MatchData.TeamData[i];
+		if(team_data.Side=='Home'){
+			home_score = team_data.Score;
+			home_id = team_data.TeamRef;
+
+		}else{
+			away_score = team_data.Score;
+			away_id = team_data.TeamRef;
+		}
+	}
+	for(var i in data.SoccerFeed.SoccerDocument.Competition.Stat){
+		if(data.SoccerFeed.SoccerDocument.Competition.Stat[i].Type=='matchday'){
+			matchday = data.SoccerFeed.SoccerDocument.Competition.Stat[i].$t;
+		}
+	}
+
+	pool.getConnection(function(err,conn){
+		async.waterfall(
+			[
+				function(callback){
+					conn.query("INSERT INTO ffgame.game_fixtures\
+								(game_id,home_id,away_id,period,matchday,\
+								competition_id,session_id,home_score,away_score,attendance)\
+								VALUES(?,?,?,?,?,?,?,?,?,?)\
+								ON DUPLICATE KEY UPDATE\
+								home_score = VALUES(home_score),\
+								away_score = VALUES(away_score),\
+								attendance = VALUES(attendance),\
+								period = VALUES(period),\
+								matchday = VALUES(matchday);",
+								[game_id,home_id,away_id,period,matchday,
+								config.competition.id,config.competition.year,
+								home_score,away_score,attendance],
+								function(err,res){
+									callback(null,res);
+								});
+				}
+			],
+			function(err,results){
+				conn.end(function(err){
+					console.log(game_id,'update fixtures completed');
+				});
+				done(err);		
+			}
+		);
+		
+	});
+}
+/**
+* calculate team's overall points
+*/
 function calculateTeamOverallPoints(game_id,callback){
 	console.log('calculate team overall points for game #',game_id);
 	pool.getConnection(

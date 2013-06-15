@@ -12,24 +12,45 @@ steps :
 remember, each files is related to 1 game_id. so every summary must be grouped by game_id.
 PS : these only process the master data.
 
-as for player's data, it will executed by seperate app.
 
 
 **/
-
+/////THE MODULES/////////
 var fs = require('fs');
 var path = require('path');
 var config = require('./config').config;
 var xmlparser = require('xml2json');
 var master = require('./libs/master');
-var FILE_PREFIX = config.updater_file_prefix+config.competition.id+'-'+config.competition.year;
+var async = require('async');
 
+/////DECLARATIONS/////////
+var FILE_PREFIX = config.updater_file_prefix+config.competition.id+'-'+config.competition.year;
 var stat_maps = require('./libs/stats_map').getStats();
 
 var match_results = require('./libs/match_results');
 game_id = 'f2895';
-match_results.getReports(game_id,function(err,rs){
-	//console.log(rs.SoccerFeed.SoccerDocument.MatchData);
-	//console.log(rs);
+
+
+/////THE LOGICS///////////////
+//1st step - get master reports for recent matches.
+/*match_results.getReports(game_id,function(err,rs){
 	console.log('done');
 });
+*/
+
+//2nd step - calculate all affected user's lineup stats.
+//match_results.
+var lineup_stats = require('./libs/gamestats/lineup_stats');
+
+
+lineup_stats.update(game_id,0,onLineupUpdate);
+function onLineupUpdate(err,is_done,next_offset){
+	console.log('lineup stats updated !');
+	if(!is_done){
+		console.log('processing next batch');
+		lineup_stats.update(game_id,next_offset,onLineupUpdate);
+	}else{
+		console.log('all batches has been processed');
+	}
+}
+
