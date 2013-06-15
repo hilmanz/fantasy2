@@ -112,6 +112,7 @@ var non_keeper_stats = [
 var fs = require('fs');
 var path = require('path');
 var mysql = require('mysql');
+var dateformat = require('dateformat');
 var config = require('./config').config;
 var player_team = 't1'; //we use Manchester United as example
 var squads = [];
@@ -121,28 +122,7 @@ var pool = mysql.createPool({
 			password: config.database.password
 		});
 
-/*
-var conn = mysql.createConnection(
-	{
-		host: config.database.host,
-		user: config.database.username,
-		password: config.database.password,
-	}
-);
 
-conn.query("SELECT * FROM ffgame.master_team LIMIT 100",function(err,result){
-	if(!err){
-		squads.push(result);
-	}
-});
-conn.end(function(err){
-	if(!err){
-		console.log('Db Disconnected !');
-	}else{
-		throw err;
-	}
-});
-*/
 function getTeamData(callback){
 	console.log('[team data] pool opened');
 	pool.getConnection(function(err,conn){
@@ -266,21 +246,21 @@ function setupMatch(){
 		winner = game_settings.away.team_id;
 	}
 
-
 	var toTemplateData = {
-		game_id: 'f'+(Math.ceil(Math.random()*10000)+10),
+		game_id: 'f1'+dateformat(new Date(),'mmddhhMMss'),
 		attendance: Math.ceil(75000 - (((Math.random()*30)/100)*75000)),
 		team_data: game_settings,
 		winner : winner
 	}
 	var handlebars = require('handlebars'); // notice the "2" which matches the npm repo, sorry..
-
 	handlebars.root = __dirname + '/views/templates';
 
 	
 	//mu.clearCache();
 	var strOut = "";
-	var file_output = "sample.xml";
+	var season_id = '2011';
+	var competition_id = '8'
+	var file_output = "srml-"+competition_id+"-"+season_id+"-"+toTemplateData.game_id+"-matchresults.xml";
 	var raw = fs.readFileSync(path.resolve(__dirname + '/views/templates/matchresults-freekick-goals.xml'), 'utf8');
 	var template = handlebars.compile(raw.toString());
 	strOut = template(toTemplateData);
@@ -293,24 +273,7 @@ function setupMatch(){
 	        console.log("The file was saved!");
 	    }
 	}); 
-	/*
-	template.render(toTemplateData)
-	  .on('data',function(data){
-	  		strOut+=data;/
-	  })
-	  .on('end', function (data){
-	  		
-	  		var filepath = path.resolve('./data/'+file_output);
-			fs.writeFile(filepath, strOut, function(err) {
-			    if(err) {
-			        console.log(err);
-			    } else {
-			        console.log("The file was saved!");
-			    }
-			}); 
-	    	
-	  });
-	*/
+	
 }
 /**
 simulate goals, using 24-dice

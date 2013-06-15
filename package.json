@@ -11,6 +11,8 @@
     "xml2json": "*",
     "mysql": "*",
     "mu2": "*",
-    "handlebars": "*"
+    "handlebars": "*",
+    "async": "*",
+    "dateformat": "*"
   }
 }

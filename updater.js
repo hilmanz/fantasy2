@@ -10,8 +10,8 @@ var master = require('./libs/master');
 
 var FILE_PREFIX = config.updater_file_prefix+config.competition.id+'-'+config.competition.year;
 
+
 //first check if the file is exists
-console.log('Updating Squad Database');
 var squad_file = FILE_PREFIX+'-squads.xml';
 open_squad_file(squad_file,function(err,doc){
 		//console.log(xmlparser.toJson(doc.toString()));
