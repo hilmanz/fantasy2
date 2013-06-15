@@ -140,8 +140,6 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 	});
 }
 function update_individual_team_stats(game_id,team,summary,player_stats,done){
-	
-	
 		async.waterfall(
 			[
 				function(callback){
@@ -152,10 +150,17 @@ function update_individual_team_stats(game_id,team,summary,player_stats,done){
 					
 				},
 				function(lineups,callback){
+					//step 2 - update lineup stats
 					updateLineupStats(game_id,lineups,summary,player_stats,function(err,rs){
 						callback(err,rs);
 					});
 					
+				},
+				function(rs,callback){
+					//final steps, add entry on lineup_history
+					addToHistory(game_id,team,function(err){
+						callback(err,rs);	
+					});
 				}
 			],
 				function(err,result){
@@ -164,6 +169,20 @@ function update_individual_team_stats(game_id,team,summary,player_stats,done){
 			);
 	
 	
+}
+function addToHistory(game_id,team,done){
+	pool.getConnection(function(err,conn){
+		conn.query("INSERT IGNORE INTO \
+					ffgame.game_team_lineups_history\
+					(game_id,game_team_id,player_id,position_no,last_update)\
+					SELECT ? AS game_id,game_team_id,player_id,position_no,NOW() AS last_update\
+					FROM ffgame.game_team_lineups WHERE game_team_id=?;",[game_id,team.id],
+					function(err,rs){
+						conn.end(function(err){
+							done(err);
+						});
+					});
+	});
 }
 function getTeamLineups(team,done){
 	pool.getConnection(function(err,conn){
@@ -219,5 +238,4 @@ function updateLineupStats(game_id,lineups,summary,player_stats,done){
 							});
 						});
 	});
-	
 }
