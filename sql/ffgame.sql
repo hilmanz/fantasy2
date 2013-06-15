@@ -27,14 +27,15 @@ CREATE TABLE `game_fixtures` (
   `session_id` varchar(12) DEFAULT NULL,
   `home_score` tinyint(3) DEFAULT '0',
   `away_score` tinyint(3) DEFAULT '0',
+  `attendance` int(10) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `IDX_GAME_ID` (`game_id`),
   KEY `game_id` (`game_id`,`home_id`,`away_id`,`competition_id`,`session_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 /*Data for the table `game_fixtures` */
 
-insert  into `game_fixtures`(`id`,`game_id`,`home_id`,`away_id`,`period`,`matchday`,`competition_id`,`session_id`,`home_score`,`away_score`) values (1,'1','t1','t3','PreMatch',1,'8','2011',0,0),(2,'2','t3','t1','PreMatch',2,'8','2011',0,0);
+insert  into `game_fixtures`(`id`,`game_id`,`home_id`,`away_id`,`period`,`matchday`,`competition_id`,`session_id`,`home_score`,`away_score`,`attendance`) values (1,'1','t1','t3','PreMatch',1,'8','2011',0,0,0),(2,'2','t3','t1','PreMatch',2,'8','2011',0,0,0),(3,'f2895','t1','t52','FullTime',8,'8','2011',2,3,54920);
 
 /*Table structure for table `game_matchstats_modifier` */
 
@@ -85,9 +86,11 @@ CREATE TABLE `game_team_lineups_history` (
   `last_update` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `game_team_id` (`game_team_id`,`player_id`,`game_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
 /*Data for the table `game_team_lineups_history` */
+
+insert  into `game_team_lineups_history`(`id`,`game_id`,`game_team_id`,`player_id`,`position_no`,`last_update`) values (1,'f2895',1,'p51940',1,'2013-06-16 00:19:51'),(2,'f2895',1,'p54772',2,'2013-06-16 00:19:51'),(3,'f2895',1,'p2034',3,'2013-06-16 00:19:51'),(4,'f2895',1,'p14965',4,'2013-06-16 00:19:51'),(5,'f2895',1,'p12882',5,'2013-06-16 00:19:51'),(6,'f2895',1,'p18892',6,'2013-06-16 00:19:51'),(7,'f2895',1,'p3',7,'2013-06-16 00:19:51'),(8,'f2895',1,'p20695',8,'2013-06-16 00:19:51'),(9,'f2895',1,'p13017',9,'2013-06-16 00:19:51'),(10,'f2895',1,'p8595',10,'2013-06-16 00:19:51'),(11,'f2895',1,'p14075',11,'2013-06-16 00:19:51');
 
 /*Table structure for table `game_team_players` */
 

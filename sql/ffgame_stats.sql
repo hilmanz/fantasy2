@@ -12,6 +12,26 @@ MySQL - 5.5.28-1 : Database - ffgame_stats
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*Table structure for table `game_match_player_points` */
+
+DROP TABLE IF EXISTS `game_match_player_points`;
+
+CREATE TABLE `game_match_player_points` (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `game_id` varchar(20) DEFAULT NULL,
+  `game_team_id` bigint(21) DEFAULT NULL,
+  `player_id` varchar(20) DEFAULT NULL,
+  `points` int(11) DEFAULT NULL,
+  `performance` float(6,4) DEFAULT '0.0000',
+  `last_update` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IDX_GAME_TEAM_PLAYERS` (`game_id`,`game_team_id`,`player_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
+
+/*Data for the table `game_match_player_points` */
+
+insert  into `game_match_player_points`(`id`,`game_id`,`game_team_id`,`player_id`,`points`,`performance`,`last_update`) values (1,'f2895',1,'p51940',0,0.0000,'2013-06-15 23:48:14'),(2,'f2895',1,'p54772',0,0.0000,'2013-06-15 23:48:14'),(3,'f2895',1,'p2034',0,0.0000,'2013-06-15 23:48:14'),(4,'f2895',1,'p14965',0,0.0000,'2013-06-15 23:48:14'),(5,'f2895',1,'p12882',81,5.5375,'2013-06-15 23:48:14'),(6,'f2895',1,'p18892',0,0.0000,'2013-06-15 23:48:14'),(7,'f2895',1,'p3',0,0.0000,'2013-06-15 23:48:15'),(8,'f2895',1,'p20695',0,0.0000,'2013-06-15 23:48:15'),(9,'f2895',1,'p13017',0,0.0000,'2013-06-15 23:48:15'),(10,'f2895',1,'p8595',0,0.0000,'2013-06-15 23:48:15'),(11,'f2895',1,'p14075',0,0.0000,'2013-06-15 23:48:15');
+
 /*Table structure for table `master_match_player_points` */
 
 DROP TABLE IF EXISTS `master_match_player_points`;
@@ -25,11 +45,11 @@ CREATE TABLE `master_match_player_points` (
   `last_update` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `IDX_UNIQUE_PLAYER` (`game_id`,`team_id`,`player_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=176 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=526 DEFAULT CHARSET=utf8;
 
 /*Data for the table `master_match_player_points` */
 
-insert  into `master_match_player_points`(`id`,`game_id`,`team_id`,`player_id`,`points`,`last_update`) values (1,'f2895','t1','p10135',69,'2013-06-15 20:00:20'),(2,'f2895','t52','p103328',78,'2013-06-15 20:00:20'),(3,'f2895','t52','p1059',60,'2013-06-15 20:00:20'),(4,'f2895','t1','p106603',127,'2013-06-15 20:00:20'),(5,'f2895','t1','p106611',155,'2013-06-15 20:00:20'),(6,'f2895','t1','p109322',103,'2013-06-15 20:00:21'),(7,'f2895','t1','p12882',81,'2013-06-15 20:00:21'),(8,'f2895','t52','p19196',128,'2013-06-15 20:00:21'),(9,'f2895','t52','p1930',122,'2013-06-15 20:00:21'),(10,'f2895','t52','p19645',105,'2013-06-15 20:00:21'),(11,'f2895','t52','p19740',97,'2013-06-15 20:00:21'),(12,'f2895','t1','p2404',93,'2013-06-15 20:00:21'),(13,'f2895','t1','p27258',98,'2013-06-15 20:00:21'),(14,'f2895','t52','p39765',88,'2013-06-15 20:00:21'),(15,'f2895','t1','p43020',59,'2013-06-15 20:00:21'),(16,'f2895','t1','p46695',46,'2013-06-15 20:00:21'),(17,'f2895','t52','p49281',109,'2013-06-15 20:00:21'),(18,'f2895','t52','p53238',63,'2013-06-15 20:00:21'),(19,'f2895','t1','p55909',140,'2013-06-15 20:00:21'),(20,'f2895','t52','p73446',63,'2013-06-15 20:00:21'),(21,'f2895','t52','p87117',110,'2013-06-15 20:00:21'),(22,'f2895','t1','p90517',73,'2013-06-15 20:00:21'),(23,'f2895','t1','p91126',82,'2013-06-15 20:00:21'),(24,'f2895','t52','p92789',93,'2013-06-15 20:00:21'),(25,'f2895','t1','p94217',102,'2013-06-15 20:00:21');
+insert  into `master_match_player_points`(`id`,`game_id`,`team_id`,`player_id`,`points`,`last_update`) values (1,'f2895','t1','p10135',69,'2013-06-15 21:46:56'),(2,'f2895','t52','p103328',78,'2013-06-15 21:46:56'),(3,'f2895','t52','p1059',60,'2013-06-15 21:46:56'),(4,'f2895','t1','p106603',127,'2013-06-15 21:46:56'),(5,'f2895','t1','p106611',155,'2013-06-15 21:46:56'),(6,'f2895','t1','p109322',103,'2013-06-15 21:46:56'),(7,'f2895','t1','p12882',81,'2013-06-15 21:46:56'),(8,'f2895','t52','p19196',128,'2013-06-15 21:46:56'),(9,'f2895','t52','p1930',122,'2013-06-15 21:46:56'),(10,'f2895','t52','p19645',105,'2013-06-15 21:46:57'),(11,'f2895','t52','p19740',97,'2013-06-15 21:46:57'),(12,'f2895','t1','p2404',93,'2013-06-15 21:46:57'),(13,'f2895','t1','p27258',98,'2013-06-15 21:46:57'),(14,'f2895','t52','p39765',88,'2013-06-15 21:46:57'),(15,'f2895','t1','p43020',59,'2013-06-15 21:46:57'),(16,'f2895','t1','p46695',46,'2013-06-15 21:46:57'),(17,'f2895','t52','p49281',109,'2013-06-15 21:46:57'),(18,'f2895','t52','p53238',63,'2013-06-15 21:46:57'),(19,'f2895','t1','p55909',140,'2013-06-15 21:46:57'),(20,'f2895','t52','p73446',63,'2013-06-15 21:46:57'),(21,'f2895','t52','p87117',110,'2013-06-15 21:46:57'),(22,'f2895','t1','p90517',73,'2013-06-15 21:46:57'),(23,'f2895','t1','p91126',82,'2013-06-15 21:46:57'),(24,'f2895','t52','p92789',93,'2013-06-15 21:46:57'),(25,'f2895','t1','p94217',102,'2013-06-15 21:46:57');
 
 /*Table structure for table `master_match_points` */
 
@@ -43,11 +63,11 @@ CREATE TABLE `master_match_points` (
   `last_update` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `IDX_TEAM_GAME` (`game_id`,`team_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 
 /*Data for the table `master_match_points` */
 
-insert  into `master_match_points`(`id`,`game_id`,`team_id`,`overall_points`,`last_update`) values (1,'f2895','t1',1228,'2013-06-15 20:00:22'),(2,'f2895','t52',1116,'2013-06-15 20:00:22');
+insert  into `master_match_points`(`id`,`game_id`,`team_id`,`overall_points`,`last_update`) values (1,'f2895','t1',1228,'2013-06-15 21:46:57'),(2,'f2895','t52',1116,'2013-06-15 21:46:57');
 
 /*Table structure for table `master_match_result_stats` */
 
@@ -63,7 +83,7 @@ CREATE TABLE `master_match_result_stats` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQUE_GAME_PLAYERS` (`game_id`,`player_id`,`stats_name`,`team_id`),
   KEY `IDX_STATSNAME` (`stats_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3948 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5393 DEFAULT CHARSET=utf8;
 
 /*Data for the table `master_match_result_stats` */
 
