@@ -13,7 +13,6 @@ remember, each files is related to 1 game_id. so every summary must be grouped b
 PS : these only process the master data.
 
 
-
 **/
 /////THE MODULES/////////
 var fs = require('fs');
@@ -30,8 +29,14 @@ var stat_maps = require('./libs/stats_map').getStats();
 var match_results = require('./libs/match_results');
 game_id = 'f2895';
 
+var lineup_stats = require('./libs/gamestats/lineup_stats');
+var business_stats = require('./libs/gamestats/business_stats');
 
 /////THE LOGICS///////////////
+/*
+@todo
+make steps in sequences using async module.
+*/
 //1st step - get master reports for recent matches.
 /*match_results.getReports(game_id,function(err,rs){
 	console.log('done');
@@ -40,8 +45,6 @@ game_id = 'f2895';
 
 //2nd step - calculate all affected user's lineup stats.
 //match_results.
-var lineup_stats = require('./libs/gamestats/lineup_stats');
-
 
 lineup_stats.update(game_id,0,onLineupUpdate);
 function onLineupUpdate(err,is_done,next_offset){
@@ -50,7 +53,14 @@ function onLineupUpdate(err,is_done,next_offset){
 		console.log('processing next batch');
 		lineup_stats.update(game_id,next_offset,onLineupUpdate);
 	}else{
-		console.log('all batches has been processed');
+		console.log('updating the business_stats')
+		business_stats.update(game_id,0,function(err){
+			console.log('business stats update completed');
+			console.log('all batches has been processed');
+		});
+		
 	}
 }
+
+
 
