@@ -30,6 +30,19 @@ function getTeams(callback){
 	
 
 }
-
+function getPlayers(team_uid,callback){
+	conn = prepareDb();
+	conn.query("SELECT uid,NAME,birth_date,POSITION,country \
+				FROM ffgame.master_player \
+				WHERE team_id=? LIMIT 100",
+				[team_uid],
+		function(err,players){
+			
+			conn.end(function(err){
+				callback(err,players);
+		});
+	});
+}
 //make it accessable from anywhere
 exports.getTeams = getTeams;
+exports.getPlayers = getPlayers;

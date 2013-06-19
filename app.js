@@ -10,8 +10,8 @@ var express = require('express')
   , path = require('path');
 
 //our api libs
-var team = require('./libs/services/team');
-
+var team = require('./libs/services/team'); // soccer team
+//var player = require('./libs/services/player'); //soccer player 
 var app = express();
 
 // all environments
@@ -34,7 +34,7 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/fixtures', user.list);
-app.get('/players', user.list);
+app.get('/players/:team_id', team.getPlayers);
 app.get('/teams', team.getTeams);
 app.get('/match/preview', user.list);
 app.get('/match/results', user.list);
