@@ -9,6 +9,9 @@ var express = require('express')
   , http = require('http')
   , path = require('path');
 
+//our api libs
+var team = require('./libs/services/team');
+
 var app = express();
 
 // all environments
@@ -32,7 +35,7 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/fixtures', user.list);
 app.get('/players', user.list);
-app.get('/teams', user.list);
+app.get('/teams', team.getTeams);
 app.get('/match/preview', user.list);
 app.get('/match/results', user.list);
 app.get('/match/livestats', user.list);

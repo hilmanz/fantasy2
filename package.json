@@ -13,6 +13,8 @@
     "mu2": "*",
     "handlebars": "*",
     "async": "*",
-    "dateformat": "*"
+    "dateformat": "*",
+    "vows": "*",
+    "passport": "*"
   }
 }

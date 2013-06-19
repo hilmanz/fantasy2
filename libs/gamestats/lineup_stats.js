@@ -114,7 +114,7 @@ function get_user_teams(start,limit,done){
 function update_team_stats(game_id,team,player_stats,team_summary,done){
 	//console.log(team,player_stats,team_summary);
 	console.log(team_summary);
-	var summary = {};
+	var summary = {}; //team summary, this will be used for player's performance change modifier.
 	for(var i in team_summary){
 		summary[team_summary[i].team_id] = {points:team_summary[i].overall_points,
 											average:team_summary[i].avg_points};
