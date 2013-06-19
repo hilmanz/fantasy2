@@ -34,6 +34,9 @@ exports.stadium_earning_category = {
 	standard: {from:4,to:10},
 	low: {from:11,to:20}
 }
+exports.cost_modifiers = {
+	operating_cost: 0.4,
+}
 exports.stadium_earnings = {
 	q1:{
 		price:{

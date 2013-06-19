@@ -73,7 +73,7 @@ CREATE TABLE `game_officials` (
 
 /*Data for the table `game_officials` */
 
-insert  into `game_officials`(`id`,`name`,`salary`,`sponsor_bonus`,`attendance_bonus`,`op_cost_bonus`,`transfer_bonus`) values (1,'Commercial Director',5500,0.05,0.15,0.00,0.00),(2,'Marketing Manager',2500,0.02,0.10,0.00,0.00),(3,'Public Relation Office',2000,0.01,0.05,0.00,0.00),(4,'Head of Security',2000,0.00,1.00,0.00,0.00),(5,'Football Director',15000,0.00,0.00,0.00,0.30),(6,'Chief Scout',7000,0.00,0.00,0.00,0.00),(7,'General Scout',1500,0.00,0.00,0.00,0.00),(8,'Finance Director',5000,0.00,0.00,-0.20,0.00),(9,'Tax Consultant',2000,0.00,0.00,-0.15,0.00),(10,'Accountant',2000,0.00,0.00,-0.05,0.00);
+insert  into `game_officials`(`id`,`name`,`salary`,`sponsor_bonus`,`attendance_bonus`,`op_cost_bonus`,`transfer_bonus`) values (1,'Commercial Director',5500,0.05,0.15,0.00,0.00),(2,'Marketing Manager',2500,0.02,0.10,0.00,0.00),(3,'Public Relation Officer',2000,0.01,0.05,0.00,0.00),(4,'Head of Security',2000,0.00,1.00,0.00,0.00),(5,'Football Director',15000,0.00,0.00,0.00,0.30),(6,'Chief Scout',7000,0.00,0.00,0.00,0.00),(7,'General Scout',1500,0.00,0.00,0.00,0.00),(8,'Finance Director',5000,0.00,0.00,-0.20,0.00),(9,'Tax Consultant',2000,0.00,0.00,-0.15,0.00),(10,'Accountant',2000,0.00,0.00,-0.05,0.00);
 
 /*Table structure for table `game_sponsorships` */
 
@@ -99,15 +99,17 @@ CREATE TABLE `game_team_expenditures` (
   `id` bigint(21) NOT NULL AUTO_INCREMENT,
   `game_team_id` bigint(21) DEFAULT NULL,
   `item_name` varchar(30) DEFAULT NULL,
-  `item_type` tinyint(3) DEFAULT '1' COMMENT '1-> income, 2->outcome',
+  `item_type` tinyint(3) DEFAULT '1' COMMENT '1-> incomes, 2->expenses',
   `amount` int(11) DEFAULT '0',
   `game_id` varchar(20) DEFAULT NULL,
   `match_day` int(3) DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `game_team_id` (`game_team_id`,`item_type`,`game_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  UNIQUE KEY `game_team_id` (`game_team_id`,`item_type`,`game_id`,`item_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
 
 /*Data for the table `game_team_expenditures` */
+
+insert  into `game_team_expenditures`(`id`,`game_team_id`,`item_name`,`item_type`,`amount`,`game_id`,`match_day`) values (1,1,'tickets_sold',1,2746000,'f2895',8),(2,1,'commercial_director_bonus',1,411900,'f2895',8),(3,1,'marketing_manager_bonus',1,274600,'f2895',8),(4,1,'public_relation_officer_bonus',1,137300,'f2895',8),(5,1,'sponsorship',1,5000000,'f2895',8),(6,1,'commercial_director_sponsor_bo',1,250000,'f2895',8),(7,1,'marketing_manager_sponsor_bonu',1,100000,'f2895',8),(8,1,'public_relation_officer_sponso',1,50000,'f2895',8),(9,1,'operating_cost',2,-659040,'f2895',8),(10,1,'commercial_director',2,-5500,'f2895',8),(11,1,'marketing_manager',2,-2500,'f2895',8),(12,1,'public_relation_officer',2,-2000,'f2895',8),(13,1,'head_of_security',2,-2000,'f2895',8),(14,1,'football_director',2,-15000,'f2895',8),(15,1,'chief_scout',2,-7000,'f2895',8),(16,1,'general_scout',2,-1500,'f2895',8),(17,1,'finance_director',2,-5000,'f2895',8),(18,1,'tax_consultant',2,-2000,'f2895',8),(19,1,'accountant',2,-2000,'f2895',8);
 
 /*Table structure for table `game_team_lineups` */
 
@@ -139,7 +141,7 @@ CREATE TABLE `game_team_lineups_history` (
   `last_update` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `game_team_id` (`game_team_id`,`player_id`,`game_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 /*Data for the table `game_team_lineups_history` */
 
@@ -156,7 +158,7 @@ CREATE TABLE `game_team_officials` (
   `recruit_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQUE_TEAM_OFFICIALS` (`game_team_id`,`official_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 /*Data for the table `game_team_officials` */
 
@@ -199,11 +201,14 @@ CREATE TABLE `game_team_sponsors` (
   `id` bigint(21) NOT NULL AUTO_INCREMENT,
   `game_team_id` bigint(21) DEFAULT NULL,
   `sponsor_id` int(11) DEFAULT NULL,
-  `expire_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `valid_for` int(3) DEFAULT '52' COMMENT 'valid for n games.',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IDX_TEAM_SPONSOR` (`game_team_id`,`sponsor_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*Data for the table `game_team_sponsors` */
+
+insert  into `game_team_sponsors`(`id`,`game_team_id`,`sponsor_id`,`valid_for`) values (1,1,1,38);
 
 /*Table structure for table `game_teams` */
 
