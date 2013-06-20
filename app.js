@@ -52,8 +52,8 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/fixtures', user.list);
-app.get('/players/:team_id', team.getPlayers);
-app.get('/teams', team.getTeams);
+app.get('/players/:team_id',[auth.canAccess],team.getPlayers);
+app.get('/teams', [auth.canAccess],team.getTeams);
 app.get('/match/preview', user.list);
 app.get('/match/results', user.list);
 app.get('/match/livestats', user.list);
@@ -82,3 +82,7 @@ app.post('/auth',auth.authenticate);
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+
+function accessDenied(req,res){
+	res.send(401,'Access Denied');
+}

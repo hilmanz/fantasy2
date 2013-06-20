@@ -106,3 +106,23 @@ function getRequestCodeHash(api_key,challenge_code,secret_key){
 }
 
 exports.authenticate = authenticate;
+
+exports.canAccess = function(req,res,next){
+	var access_token;
+	if(req.body.access_token!=null){
+		access_token = req.body.access_token;
+	}else{
+		access_token = req.query.access_token;
+	}
+	if(access_token!=null){
+		req.redisClient.get(access_token,function(err,rs){
+			if(rs==null){
+				res.send(401,{error:'access denied !'});
+			}else{
+				next();
+			}
+		});
+	}else{
+		res.send(401,{error:'access denied !'});
+	}
+}
