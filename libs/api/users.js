@@ -1,5 +1,5 @@
 /**
-api for authentication
+api related to user management.
 */
 
 var crypto = require('crypto');

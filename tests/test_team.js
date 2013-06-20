@@ -91,6 +91,15 @@ describe('team',function(){
 					done();
 			});
 		});
+
+		it('should return the user\'s team',function(done){
+			team.getUserTeam('123123123',function(err,team){
+				should.equal(team.team_id,'t8');
+				should.equal(team.user_id,50);
+				done();
+			});
+		});
+
 		it('should remove successfully',function(done){
 			team.remove_team(
 				team_id,function(err,rs){
@@ -99,5 +108,7 @@ describe('team',function(){
 				}
 			);
 		});
+
+		
 		
 });

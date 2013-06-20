@@ -42,6 +42,17 @@ exports.create = function(req,res){
 		}
 	});
 }
+exports.getUserTeam = function(req,res){
+	team.getUserTeam(req.params.fb_id,function(err,team){
+		console.log(team);
+		if(err) handleError(res);
+		if(team!=null){
+			res.send(200,team);
+		}else{
+			res.send(200,{error:'team is not available yet. please create one.'});
+		}
+	});
+}
 function handleError(res){
 	res.send(501,{error:'no data available'});
 }

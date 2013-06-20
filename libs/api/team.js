@@ -18,6 +18,7 @@ function prepareDb(){
 	return connection;
 }
 
+/** get master team data**/
 function getTeams(callback){
 	
 	conn = prepareDb();
@@ -30,6 +31,7 @@ function getTeams(callback){
 	
 
 }
+/** get master player data **/
 function getPlayers(team_uid,callback){
 	conn = prepareDb();
 	conn.query("SELECT uid,name,birth_date,position,country \
@@ -43,6 +45,8 @@ function getPlayers(team_uid,callback){
 		});
 	});
 }
+
+/** get team detail from master **/
 function getTeamById(team_uid,callback){
 	conn = prepareDb();
 	conn.query("SELECT uid,name FROM ffgame.master_team WHERE uid = ? LIMIT 1;",
@@ -53,6 +57,7 @@ function getTeamById(team_uid,callback){
 	});
 }
 
+/** create user team **/
 function create(data,callback){
 	conn = prepareDb();
 	async.waterfall(
@@ -112,6 +117,10 @@ function create(data,callback){
 	);
 	
 }
+
+/**
+remove user team
+**/
 function remove_team(game_team_id,callback){
 	conn = prepareDb();
 	async.waterfall(
@@ -140,9 +149,42 @@ function remove_team(game_team_id,callback){
 		}
 	);
 }
+
+function getUserTeam(fb_id,done){
+	conn = prepareDb();
+	async.waterfall(
+		[
+			function(callback){
+				conn.query("SELECT id FROM ffgame.game_users WHERE fb_id=? LIMIT 1",
+							[fb_id],
+							function(err,rs){
+								callback(null,rs[0]);
+							});
+				
+			},
+			function(user,callback){
+				conn.query("SELECT * FROM ffgame.game_teams WHERE user_id = ? LIMIT 1",[
+					user.id
+				],
+					function(err,team){
+						console.log(team);
+						console.log(this.sql);
+						callback(err,team[0]);
+				});
+			},
+		],
+		function(err,result){
+			conn.end(function(e){
+				done(err,result);	
+			});
+		}
+	);
+}
+
 //make it accessable from anywhere
 exports.getTeams = getTeams;
 exports.getPlayers = getPlayers;
 exports.getTeamById = getTeamById;
 exports.create = create;
 exports.remove_team = remove_team;
+exports.getUserTeam = getUserTeam;

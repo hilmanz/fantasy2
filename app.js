@@ -16,7 +16,7 @@ var auth = require('./libs/api/auth');
 var users = require('./libs/services/users');
 var team = require('./libs/services/team'); // soccer team
 //var player = require('./libs/services/player'); //soccer player 
-
+var gameplay = require('./libs/services/gameplay'); // gameplay service
 
 
 var app = express();
@@ -55,6 +55,7 @@ app.get('/', routes.index);
 app.get('/fixtures', user.list);
 app.get('/players/:team_id',[auth.canAccess],team.getPlayers);
 app.get('/teams', [auth.canAccess],team.getTeams);
+app.get('/team/get/:fb_id',[auth.canAccess],team.getUserTeam);
 app.get('/teams/:id',[auth.canAccess],team.getTeamById);
 app.get('/match/preview', user.list);
 app.get('/match/results', user.list);
@@ -80,6 +81,8 @@ app.get('/test',function(req,res){
 	res.send(200,'');
 
 });
+app.get('/team/lineup/:id',[auth.canAccess],gameplay.getLineup);
+app.get('/team/list/:id',[auth.canAccess],gameplay.getPlayers);
 app.post('/auth',auth.authenticate);
 
 http.createServer(app).listen(app.get('port'), function(){
