@@ -15,6 +15,10 @@
     "async": "*",
     "dateformat": "*",
     "vows": "*",
-    "passport": "*"
+    "passport": "*",
+    "should": "*",
+    "crypto": "*",
+    "connect-redis": "*",
+    "redis": "*"
   }
 }

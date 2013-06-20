@@ -1,0 +1,108 @@
+/**
+api for authentication
+*/
+
+var crypto = require('crypto');
+var fs = require('fs');
+var path = require('path');
+var xmlparser = require('xml2json');
+var async = require('async');
+var config = require(path.resolve('./config')).config;
+var mysql = require('mysql');
+var dateFormat = require('dateformat');
+var redis = require('redis');
+
+function prepareDb(){
+	var connection = mysql.createConnection({
+  		host     : config.database.host,
+	   	user     : config.database.username,
+	   	password : config.database.password,
+	});
+	
+	return connection;
+}
+
+
+function authenticate(req,res){
+	var api_key = req.body.api_key;
+	var request_code = req.body.request_code;
+	if(request_code==null){
+		askForChallengeCode(req,res,api_key);
+	}else{
+		authenticateCode(req,res,api_key,request_code);
+	}
+}
+function askForChallengeCode(req,res,api_key){
+	conn = prepareDb();
+	conn.query("SELECT * FROM ffgame.api_keys WHERE api_key = ? LIMIT 1",
+				[api_key],function(err,rs){
+					conn.end(function(err){
+						if(!err){
+							if(rs[0].api_key == api_key){
+								console.log(req.session);
+								req.session.challenge_code = {};
+								req.session.challenge_code[api_key] = generateChallengeCode(api_key);
+								
+							    res.send(200,{challenge_code:req.session.challenge_code[api_key]});
+							}else{
+								res.send(401,{error:'Invalid API Key'});	
+							}
+						}else{
+							res.send(401,{error:'Invalid API Key'});
+						}
+					});
+	});
+}
+function authenticateCode(req,res,api_key,request_code){
+	conn = prepareDb();
+	console.log('session',req.session);
+	if(typeof req.session.challenge_code !== 'undefined'){
+		conn.query("SELECT * FROM ffgame.api_keys WHERE api_key = ? LIMIT 1",
+					[api_key],function(err,rs){
+						conn.end(function(err){
+							if(!err){
+								if(rs[0].api_key == api_key){
+									var hash = getRequestCodeHash(rs[0].api_key,
+																	req.session.challenge_code[api_key],
+																	rs[0].secret_key);
+									
+									if(hash==request_code){
+										var access_token = generateAccessToken(api_key,request_code);
+										req.session.access_token = access_token;
+										//save the newly created access_token to redis, and set expiry time to
+										//1 hour
+										var client = req.redisClient;
+								    	client.set(access_token,'1');
+								    	client.expire(access_token,60*60);
+								    	res.send(200,{access_token:access_token});
+									   
+									}else{
+										res.send(403,{err:'Access Denied !'});
+									}
+								}else{
+									res.send(401,{error:'Invalid API Key'});	
+								}
+							}else{
+								res.send(401,{error:'Invalid API Key'});
+							}
+						});
+		});
+	}else{
+		res.send(403,{err:'wrong challenge code'});
+	}
+}
+function generateAccessToken(api_key,request_code){
+	var str = api_key+'-'+request_code+'-'+dateFormat(new Date(), "ddmmyyyyHHMM")+'-'+Math.random()*999999;
+	return crypto.createHash('sha1').update(str).digest("hex");
+}
+function generateChallengeCode(api_key){
+	var challenge_code = api_key+'-'+dateFormat(new Date(), "ddmmyyyyHHMM")+'-'+Math.random()*999999;
+	return crypto.createHash('sha1').update(challenge_code).digest("hex");
+}
+function getRequestCodeHash(api_key,challenge_code,secret_key){
+	var str = api_key+'|'+challenge_code+'|'+secret_key;
+	console.log(str);
+	return crypto.createHash('sha1').update(str).digest("hex");	
+}
+
+exports.authenticate = authenticate;
