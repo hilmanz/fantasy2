@@ -13,6 +13,7 @@ var redis = require('redis');
 var dummy_api_key = '1234567890';
 var auth = require('./libs/api/auth');
 //our api libs
+var users = require('./libs/services/users');
 var team = require('./libs/services/team'); // soccer team
 //var player = require('./libs/services/player'); //soccer player 
 
@@ -54,6 +55,7 @@ app.get('/', routes.index);
 app.get('/fixtures', user.list);
 app.get('/players/:team_id',[auth.canAccess],team.getPlayers);
 app.get('/teams', [auth.canAccess],team.getTeams);
+app.get('/teams/:id',[auth.canAccess],team.getTeamById);
 app.get('/match/preview', user.list);
 app.get('/match/results', user.list);
 app.get('/match/livestats', user.list);
@@ -61,7 +63,8 @@ app.get('/game/stats', user.list);
 app.get('/team/:id',user.list);
 app.get('/player/:id',user.list);
 app.get('/score/:id',user.list);
-app.post('/user/register',user.list);
+app.post('/user/register',[auth.canAccess],users.register);
+app.post('/create_team',[auth.canAccess],team.create);
 app.get('/user/info',user.list);
 app.get('/user/budget',user.list);
 app.get('/user/financial_statement',user.list);
