@@ -14,11 +14,33 @@ exports.getLineup = function(req,res){
 exports.getPlayers = function(req,res){
 	gameplay.getPlayers(req.params.id,function(err,rs){
 		if(rs!=null){
-			res.send(200,rs);
+			res.json(200,rs);
 		}else{
 			res.send(200,[]);
 		}
 	});
+}
+exports.setLineup = function(req,res){
+	console.log(req.body.team_id);
+	console.log(JSON.parse(req.body.players));
+	console.log(req.body.formation);
+	gameplay.setLineup(req.body.team_id,
+						JSON.parse(req.body.players),
+						req.body.formation,
+		function(err,rs){
+
+			if(err){
+				console.log(err.message);
+				handleError(res);
+			}else{
+				if(rs!=null){
+					res.json(200,{status:1,lineup:rs});
+				}else{
+					res.send(200,{status:0});
+				}
+			}
+	});
+	
 }
 function handleError(res){
 	res.send(501,{error:'no data available'});

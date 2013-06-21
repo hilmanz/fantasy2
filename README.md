@@ -26,3 +26,6 @@ o. sign a sponsorship
 p. view available staff to recruit
 q. hire a staff
 r. sack a staff
+
+
+4. fix issue where the JSON Output unable to convert utf8 character correctly.

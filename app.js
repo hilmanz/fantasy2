@@ -81,6 +81,7 @@ app.get('/test',function(req,res){
 	res.send(200,'');
 
 });
+app.post('/team/lineup/save',[auth.canAccess],gameplay.setLineup);
 app.get('/team/lineup/:id',[auth.canAccess],gameplay.getLineup);
 app.get('/team/list/:id',[auth.canAccess],gameplay.getPlayers);
 app.post('/auth',auth.authenticate);

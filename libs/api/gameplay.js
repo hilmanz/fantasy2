@@ -11,7 +11,7 @@ var config = require(path.resolve('./config')).config;
 var mysql = require('mysql');
 var dateFormat = require('dateformat');
 var redis = require('redis');
-
+var formations = require(path.resolve('./libs/game_config')).formations;
 function prepareDb(){
 	var connection = mysql.createConnection({
   		host     : config.database.host,
@@ -25,19 +25,21 @@ function prepareDb(){
 //get current lineup setup
 function getLineup(game_team_id,callback){
 	conn = prepareDb();
-	conn.query("SELECT player_id,position_no \
-				FROM ffgame.game_team_lineups \
-				WHERE game_team_id=? LIMIT 11",
+	conn.query("SELECT a.player_id,a.position_no,b.name,b.position \
+				FROM ffgame.game_team_lineups a\
+				INNER JOIN ffgame.master_player b\
+				ON a.player_id = b.uid\
+				WHERE a.game_team_id=? LIMIT 11",
 				[game_team_id],
 				function(err,rs){
-					console.log(this.sql);
+					
 					conn.end(function(e){
 
 						callback(err,rs);	
 					});
 				});
 }
-function setLineup(game_team_id,setup,done){
+function setLineup(game_team_id,setup,formation,done){
 	conn = prepareDb();
 	var players = [];
 	for(var i in setup){
@@ -48,25 +50,34 @@ function setLineup(game_team_id,setup,done){
 			function(callback){
 
 				//first, make sure that the players are actually owned by the team
-				conn.query("SELECT player_id \
-							FROM ffgame.game_team_players \
-							WHERE game_team_id = ? AND player_id IN (?) LIMIT 11",
+				conn.query("SELECT player_id,b.position \
+							FROM ffgame.game_team_players a \
+							INNER JOIN ffgame.master_player b\
+							ON a.player_id = b.uid\
+							WHERE a.game_team_id = ? AND a.player_id IN (?) LIMIT 11",
 							[game_team_id,players],
 							function(err,rs){
+								console.log(this.sql);
+								console.log(rs);
 								callback(null,rs);
 							});
 				
 			},
 			function(players,callback){
-				console.log(players);
 				if(players.length==11){
-					//player exists
-					//then remove the existing lineup
-					conn.query("DELETE FROM ffgame.game_team_lineups WHERE game_team_id = ? ",
-						[game_team_id],function(err,rs){
-							console.log(this.sql);
-							callback(err,rs);
-						});
+					//make sure that the composition is correct
+					//like position 1 must be placed by goalkeeper.
+					//the rest is optional
+					if(position_valid(players,setup,formation)){
+						//player exists
+						//then remove the existing lineup
+						conn.query("DELETE FROM ffgame.game_team_lineups WHERE game_team_id = ? ",
+							[game_team_id],function(err,rs){
+								callback(err,rs);
+							});
+					}else{
+						callback(new Error('invalid player positions'),[]);
+					}
 				}else{
 					callback(new Error('one or more player doesnt belong to the team'),[]);
 				}
@@ -87,7 +98,7 @@ function setLineup(game_team_id,setup,done){
 					data.push(setup[i].no);
 				}
 				conn.query(sql,data,function(err,rs){
-								console.log(this.sql);
+								
 								callback(err,rs);
 				});
 			}
@@ -101,13 +112,35 @@ function setLineup(game_team_id,setup,done){
 	);
 
 }
+//check if the player's formation is valid
+//saat ini kita cuman memastikan bahwa nomor 1 itu harus kiper.
+//nomor yg lain mau penyerang semua sih gak masalah.
+function position_valid(players,setup,formation){
+	console.log(players);
+	
+	var my_formation = formations[formation];
+	
+	for(var i in setup){
+		for(var j in players){
+			if(players[j].player_id == setup[i].player_id){
+				console.log(setup[i].no,' ',players[j].position,' vs ',my_formation[setup[i].no]);
+				if(players[j].position != my_formation[setup[i].no]){
+					return false;
+				}
+				break;
+			}
+		}
+	}
+	return true;
+}
 //get user's players
 function getPlayers(game_team_id,callback){
 	conn = prepareDb();
 	conn.query("SELECT b.uid,b.name,b.position FROM ffgame.game_team_players a\
 				INNER JOIN ffgame.master_player b \
 				ON a.player_id = b.uid\
-				WHERE game_team_id = ? LIMIT 200;",
+				WHERE game_team_id = ? ORDER BY b.name ASC \
+				LIMIT 200;",
 				[game_team_id],
 				function(err,rs){
 					conn.end(function(e){

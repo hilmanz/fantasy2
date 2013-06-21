@@ -87,3 +87,28 @@ exports.stadium_earnings = {
 		},
 	},
 }
+/*
+<option value="4-4-2">4-4-2</option>
+			<option value="4-4-1-1">4-4-1-1</option>
+			<option value="4-3-3">4-3-3</option>
+			<option value="4-3-2-1">4-3-2-1</option>
+			<option value="4-3-1-2">4-3-1-2</option>
+			<option value="5-3-2">5-3-2</option>
+			<option value="5-3-1-1">5-3-1-1</option>
+			<option value="5-2-2-1">5-2-2-1</option>
+			<option value="4-2-4">4-2-4</option>
+			<option value="3-4-3">3-4-3</option>
+			<option value="3-4-2-1">3-4-2-1</option>
+*/
+exports.formations = {
+	'4-4-2': ['','Goalkeeper','Defender','Defender','Defender','Defender','Midfielder','Midfielder','Midfielder','Midfielder','Forward','Forward'],
+	'4-3-3': ['','Goalkeeper','Defender','Defender','Defender','Defender','Midfielder','Midfielder','Midfielder','Forward','Forward','Forward'],
+	'4-3-2-1': ['','Goalkeeper','Defender','Defender','Defender','Defender','Midfielder','Midfielder','Midfielder','Forward/Midfielder','Forward/Midfielder','Forward'],
+	'4-3-1-2': ['','Goalkeeper','Defender','Defender','Defender','Defender','Midfielder','Midfielder','Midfielder','Forward/Midfielder','Forward','Forward'],
+	'5-3-2': ['','Goalkeeper','Defender','Defender','Defender','Defender','Defender','Midfielder','Midfielder','Midfielder','Forward','Forward'],
+	'5-3-1-1': ['','Goalkeeper','Defender','Defender','Defender','Defender','Defender','Midfielder','Midfielder','Midfielder','Forward/Midfielder','Forward'],
+	'5-2-2-1': ['','Goalkeeper','Defender','Defender','Defender','Defender','Defender','Midfielder','Midfielder','Forward/Midfielder','Forward/Midfielder','Forward'],
+	'4-2-4': ['','Goalkeeper','Defender','Defender','Defender','Defender','Midfielder','Midfielder','Forward/Midfielder','Forward/Midfielder','Forward','Forward'],
+	'3-4-3': ['','Goalkeeper','Defender','Defender','Defender','Midfielder','Midfielder','Midfielder','Midfielder','Forward','Forward','Forward'],
+	'3-4-2-1': ['','Goalkeeper','Defender','Defender','Defender','Midfielder','Midfielder','Midfielder','Midfielder','Forward/Midfielder','Forward/Midfielder','Forward'],
+}
