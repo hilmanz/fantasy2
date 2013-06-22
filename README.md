@@ -29,3 +29,11 @@ r. sack a staff
 
 
 4. fix issue where the JSON Output unable to convert utf8 character correctly.
+
+5. harus ada table reference untuk mendata tanggal untuk tiap2 matchday.
+example : 
+
+matchday | matchdate
+----------------------------
+1		 | 22/08/2013
+2        | 23/08/2013

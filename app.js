@@ -60,6 +60,7 @@ app.get('/teams/:id',[auth.canAccess],team.getTeamById);
 app.get('/match/preview', user.list);
 app.get('/match/results', user.list);
 app.get('/match/livestats', user.list);
+app.get('/match/list',[auth.canAccess],gameplay.fixtures);
 app.get('/game/stats', user.list);
 app.get('/team/:id',user.list);
 app.get('/player/:id',user.list);
@@ -86,6 +87,9 @@ app.get('/team/lineup/:id',[auth.canAccess],gameplay.getLineup);
 app.get('/team/list/:id',[auth.canAccess],gameplay.getPlayers);
 app.post('/auth',auth.authenticate);
 
+app.get('/ping',function(req,res){
+	res.send(200,{status:1,message:'Server Alive'});
+});
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });

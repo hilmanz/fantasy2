@@ -1,6 +1,7 @@
 var path = require('path');
 var gameplay = require(path.resolve('./libs/api/gameplay'));
 
+
 exports.getLineup = function(req,res){
 	gameplay.getLineup(req.params.id,
 		function(err,rs){
@@ -21,9 +22,7 @@ exports.getPlayers = function(req,res){
 	});
 }
 exports.setLineup = function(req,res){
-	console.log(req.body.team_id);
-	console.log(JSON.parse(req.body.players));
-	console.log(req.body.formation);
+	
 	gameplay.setLineup(req.body.team_id,
 						JSON.parse(req.body.players),
 						req.body.formation,
@@ -41,6 +40,20 @@ exports.setLineup = function(req,res){
 			}
 	});
 	
+}
+exports.fixtures = function(req,res){
+	gameplay.match.fixtures(function(err,rs){
+		if(err){
+			
+			handleError(res);
+		}else{
+			if(rs!=null){
+				res.json(200,{status:1,matches:rs});
+			}else{
+				res.send(200,{status:0});
+			}
+		}
+	});
 }
 function handleError(res){
 	res.send(501,{error:'no data available'});
