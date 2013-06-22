@@ -11,9 +11,9 @@ b. select team for user (can only be use once) -> done
 c. select players for user default to the user's choosen team. (can only be use once) -> done
 d. set lineup. -> DONE
 e. view fixtures -> DONE
-f. view player stats
+f. view player stats (master stats, and player specific stats)
 g. view balance / budget -> DONE
-h. view match reports
+h. view match reports -> DONE
 i. view transfer window
 j. check if transfer window is opened.
 k. check if user can still set a lineups.
@@ -45,8 +45,10 @@ matchday | matchdate
 
 ----TODO-----
 f. view player stats
-h. view match reports
+s. view financial statements
+
+
+#ini menyusul
 i. view transfer window
 l. buy a player
 m. sell a player 
-s. view financial statements
