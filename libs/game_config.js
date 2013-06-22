@@ -115,3 +115,4 @@ exports.formations = {
 
 //initial amount of money the user will have.
 exports.initial_money = 100000000;
+exports.sponsorship_chance = 0.4;

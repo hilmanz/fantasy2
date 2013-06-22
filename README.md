@@ -10,11 +10,9 @@ a. create user -> done
 b. select team for user (can only be use once) -> done
 c. select players for user default to the user's choosen team. (can only be use once) -> done
 d. set lineup. -> DONE
-
-
 e. view fixtures -> DONE
 f. view player stats
-g. view balance
+g. view balance / budget -> DONE
 h. view match reports
 i. view transfer window
 j. check if transfer window is opened.
@@ -23,9 +21,10 @@ l. buy a player
 m. sell a player 
 n. view available sponsorships
 o. sign a sponsorship
-p. view available staff to recruit
-q. hire a staff
-r. sack a staff
+p. view available staff to recruit -> DONE
+q. hire a staff -> DONE
+r. sack a staff -> DONE
+
 s. view financial statements
 
 4. fix issue where the JSON Output unable to convert utf8 character correctly.

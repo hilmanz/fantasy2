@@ -166,9 +166,13 @@ function getBudget(game_team_id,callback){
 					});
 				});
 }
+
+
+
 exports.getLineup = getLineup;
 exports.setLineup = setLineup;
 exports.getPlayers = getPlayers;
 exports.getBudget = getBudget;
 exports.match = require(path.resolve('./libs/api/match'));
 exports.officials = require(path.resolve('./libs/api/officials'));
+exports.sponsorship = require(path.resolve('./libs/api/sponsorship'));
