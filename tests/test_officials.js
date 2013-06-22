@@ -13,11 +13,30 @@ var dummy = {
 	fb_id: '111111',
 	email:'foo@bar.com',
 	phone:'123123123',
-	game_team_id: 1
+	game_team_id: 1,
+	official_id:1
 }
 describe('gameplay-officials',function(){
 	it('get the officials hiring window',function(done){
 		gameplay.officials.official_list(dummy.game_team_id,function(err,rs){
+			should.not.exist(err);
+			should.exist(rs);
+			done();
+		});
+	});
+	it('can hire an official',function(done){
+		gameplay.officials.hire_official(dummy.game_team_id,
+										dummy.official_id,
+										function(err,rs){
+			should.not.exist(err);
+			should.exist(rs);
+			done();
+		});
+	});
+	it('can fire an official',function(done){
+		gameplay.officials.remove_official(dummy.game_team_id,
+										dummy.official_id,
+										function(err,rs){
 			should.not.exist(err);
 			should.exist(rs);
 			done();

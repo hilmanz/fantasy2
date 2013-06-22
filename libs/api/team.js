@@ -7,7 +7,7 @@ var xmlparser = require('xml2json');
 var async = require('async');
 var config = require(path.resolve('./config')).config;
 var mysql = require('mysql');
-
+var initial_money = require(path.resolve('./libs/game_config')).initial_money;
 function prepareDb(){
 	var connection = mysql.createConnection({
   		host     : config.database.host,
@@ -106,6 +106,18 @@ function create(data,callback){
 					});
 				}else{
 					callback(new Error('no result'),'');
+				}
+			},
+			function(game_team_id,callback){
+
+				if(game_team_id!=null){
+					conn.query(
+						"INSERT IGNORE INTO ffgame.game_team_purse(game_team_id,budget)\
+						 VALUES(?,?)"
+					,[game_team_id,initial_money],
+					function(err,rs){
+						callback(err,game_team_id);
+					});
 				}
 			}
 		],

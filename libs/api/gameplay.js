@@ -150,8 +150,25 @@ function getPlayers(game_team_id,callback){
 					});
 				});
 }
+
+//get user's budget
+function getBudget(game_team_id,callback){
+	sql = "SELECT SUM(initial_budget+total) AS budget \
+			FROM (SELECT budget AS initial_budget,0 AS total FROM ffgame.game_team_purse WHERE game_team_id = ?\
+			UNION ALL\
+			SELECT 0,SUM(amount) AS total FROM ffgame.game_team_expenditures WHERE game_team_id = ?) a;";
+	conn = prepareDb();
+	conn.query(sql,
+				[game_team_id,game_team_id],
+				function(err,rs){
+					conn.end(function(e){
+						callback(err,rs);	
+					});
+				});
+}
 exports.getLineup = getLineup;
 exports.setLineup = setLineup;
 exports.getPlayers = getPlayers;
+exports.getBudget = getBudget;
 exports.match = require(path.resolve('./libs/api/match'));
 exports.officials = require(path.resolve('./libs/api/officials'));

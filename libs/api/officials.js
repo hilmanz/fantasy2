@@ -21,7 +21,7 @@ function prepareDb(){
 	
 	return connection;
 }
-
+/** get the list of officials **/
 function official_list(game_team_id,done){
 	var conn = prepareDb();
 	async.waterfall([
@@ -42,6 +42,28 @@ function official_list(game_team_id,done){
 			});
 		});
 }
+
+function hire_official(game_team_id,official_id,callback){
+	var conn = prepareDb();
+	conn.query("INSERT IGNORE INTO ffgame.game_team_officials\
+				(game_team_id,official_id,recruit_date)\
+				VALUES\
+				(?,?,NOW());",[game_team_id,official_id],function (err,rs){
+					conn.end(function(e){
+						callback(err,rs);
+					});
+				});
+}
+function remove_official(game_team_id,official_id,callback){
+	var conn = prepareDb();
+	conn.query("DELETE FROM ffgame.game_team_officials WHERE game_team_id = ? AND official_id = ?",
+				[game_team_id,official_id],function (err,rs){
+					conn.end(function(e){
+						callback(err,rs);
+					});
+				});
+}
+
 function get_master_officials(conn,callback){
 	conn.query("SELECT * FROM ffgame.game_officials ORDER BY id LIMIT 20;",[],callback);
 }
@@ -73,3 +95,5 @@ function get_user_officials(conn,game_team_id,officials,done){
 	);
 }
 exports.official_list = official_list;
+exports.hire_official = hire_official;
+exports.remove_official = remove_official;

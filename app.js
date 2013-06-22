@@ -85,7 +85,10 @@ app.get('/test',function(req,res){
 app.post('/team/lineup/save',[auth.canAccess],gameplay.setLineup);
 app.get('/team/lineup/:id',[auth.canAccess],gameplay.getLineup);
 app.get('/team/list/:id',[auth.canAccess],gameplay.getPlayers);
+app.get('/team/budget/:game_team_id',[auth.canAccess],gameplay.getBudget);
 app.get('/official/list/:game_team_id',[auth.canAccess],gameplay.official_list);
+app.post('/official/hire',[auth.canAccess],gameplay.hire_staff);
+app.post('/official/fire',[auth.canAccess],gameplay.fire_staff);
 app.post('/auth',auth.authenticate);
 
 app.get('/ping',function(req,res){

@@ -69,6 +69,43 @@ exports.official_list = function(req,res){
 			}
 	});
 }
+exports.hire_staff = function(req,res){
+	gameplay.officials.hire_official(req.body.team_id,
+									 req.body.official_id,
+		function(err,rs){
+			console.log('hello !');
+			if(err){
+				handleError(res);
+			}else{
+				res.json(200,{status:1,officials:rs.insertId});
+			}
+	});
+}
+exports.fire_staff = function(req,res){
+	gameplay.officials.remove_official(req.body.team_id,
+									 req.body.official_id,
+		function(err,rs){
+			if(err){
+				handleError(res);
+			}else{
+				res.json(200,{status:1,message:'the staff is been removed successfully !'});
+			}
+	});
+}
+exports.getBudget = function(req,res){
+	gameplay.getBudget(req.params.game_team_id,
+		function(err,rs){
+			if(err){
+				handleError(res);
+			}else{
+				if(rs!=null){
+					res.json(200,{status:1,budget:rs[0].budget});
+				}else{
+					res.send(200,{status:0});
+				}
+			}
+	});
+}
 function handleError(res){
 	res.send(501,{error:'no data available'});
 }

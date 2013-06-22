@@ -52,5 +52,13 @@ describe('gameplay',function(){
 				done();
 			});
 		});
+
+		it('should return the team\'s current budget',function(done){
+			gameplay.getBudget(1,function(err,budget){
+				should.not.exist(err);
+				should.exist(budget);
+				done();
+			});
+		});
 	
 });
