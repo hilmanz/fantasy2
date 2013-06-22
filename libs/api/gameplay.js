@@ -12,7 +12,7 @@ var mysql = require('mysql');
 var dateFormat = require('dateformat');
 var redis = require('redis');
 var formations = require(path.resolve('./libs/game_config')).formations;
-var match = require(path.resolve('./libs/api/match'));
+
 
 function prepareDb(){
 	var connection = mysql.createConnection({
@@ -153,4 +153,5 @@ function getPlayers(game_team_id,callback){
 exports.getLineup = getLineup;
 exports.setLineup = setLineup;
 exports.getPlayers = getPlayers;
-exports.match = match;
+exports.match = require(path.resolve('./libs/api/match'));
+exports.officials = require(path.resolve('./libs/api/officials'));

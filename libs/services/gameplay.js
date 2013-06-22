@@ -55,6 +55,20 @@ exports.fixtures = function(req,res){
 		}
 	});
 }
+exports.official_list = function(req,res){
+	gameplay.officials.official_list(req.params.game_team_id,
+		function(err,rs){
+			if(err){
+				handleError(res);
+			}else{
+				if(rs!=null){
+					res.json(200,{status:1,officials:rs});
+				}else{
+					res.send(200,{status:0});
+				}
+			}
+	});
+}
 function handleError(res){
 	res.send(501,{error:'no data available'});
 }
