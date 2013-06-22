@@ -19,6 +19,7 @@
     "should": "*",
     "crypto": "*",
     "connect-redis": "*",
-    "redis": "*"
+    "redis": "*",
+    "optimist": "0.5.2"
   }
 }

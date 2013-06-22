@@ -24,7 +24,7 @@ o. sign a sponsorship -> DONE
 p. view available staff to recruit -> DONE
 q. hire a staff -> DONE
 r. sack a staff -> DONE
-s. dummy for sponsorship page
+s. dummy for sponsorship page -> DONE
 
 s. view financial statements
 
@@ -39,4 +39,14 @@ matchday | matchdate
 2        | 23/08/2013
 
 
-6. make sure the newly created team, must given an initial budget of  GBP xxxxx
+6. make sure the newly created team, must given an initial budget of  GBP xxxxx -> DONE
+
+
+
+----TODO-----
+f. view player stats
+h. view match reports
+i. view transfer window
+l. buy a player
+m. sell a player 
+s. view financial statements

@@ -1,5 +1,5 @@
 /**
-* Opta Dummy Server - Random Matches
+* Opta Dummy Server - Random Matches, but we set the home team manually.
 * these application will simulate Opta Server.
 * it will produce the following xml files on interval-basis
 * 1. match-preview
@@ -264,13 +264,13 @@ function setupMatch(){
 	var raw = fs.readFileSync(path.resolve(__dirname + '/views/templates/matchresults-freekick-goals.xml'), 'utf8');
 	var template = handlebars.compile(raw.toString());
 	strOut = template(toTemplateData);
-	
+
 	var filepath = path.resolve('./data/'+file_output);
 	fs.writeFile(filepath, strOut, function(err) {
 	    if(err) {
 	        console.log(err);
 	    } else {
-	        console.log("The file was saved!");
+	        console.log("The file was saved! -> "+file_output);
 	    }
 	}); 
 	

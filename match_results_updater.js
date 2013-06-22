@@ -12,7 +12,8 @@ steps :
 remember, each files is related to 1 game_id. so every summary must be grouped by game_id.
 PS : these only process the master data.
 
-
+@TODO
+let's process unprocessed match.
 **/
 /////THE MODULES/////////
 var fs = require('fs');

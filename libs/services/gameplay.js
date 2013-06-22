@@ -152,6 +152,23 @@ exports.applySponsorship = function(req,res){
 				}
 		});
 };
+
+exports.match_results = function(req,res){
+	gameplay.match.results(
+		req.params.game_id,
+		
+			function(err,rs){
+				if(err){
+					handleError(res);
+				}else{
+					if(rs){
+						res.json(200,{status:1,data:rs});
+					}else{
+						res.send(200,{status:0,data:[]});
+					}
+				}
+		});
+}
 function handleError(res){
 	res.send(501,{error:'no data available'});
 }

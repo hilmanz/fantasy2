@@ -1,9 +1,13 @@
 /**
-* Opta Dummy Server - Random Matches
+* Opta Dummy Server - based_on_schedule
 * these application will simulate Opta Server.
 * it will produce the following xml files on interval-basis
 * 1. match-preview
 * 2. match-results
+
+* step 1 check unplayed game on game_fixtures.
+* step 2 pick one. and then generate the report
+* step 3 sleep for  ehm... 5 minutes and then go to step 1
 */
 
 var keeper_stats = [

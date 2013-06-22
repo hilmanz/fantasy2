@@ -12,11 +12,20 @@ var dummy = {
 	name: 'foo',
 	fb_id: '111111',
 	email:'foo@bar.com',
-	phone:'123123123'
+	phone:'123123123',
+	game_id:'f2895'
 }
 describe('gameplay-match',function(){
 	it('get the current fixtures',function(done){
 		gameplay.match.fixtures(function(err,rs){
+			should.not.exist(err);
+			should.exist(rs);
+			done();
+		});
+	});
+
+	it('able to show match results',function(done){
+		gameplay.match.results(dummy.game_id,function(err,rs){
 			should.not.exist(err);
 			should.exist(rs);
 			done();

@@ -58,7 +58,7 @@ app.get('/teams', [auth.canAccess],team.getTeams);
 app.get('/team/get/:fb_id',[auth.canAccess],team.getUserTeam);
 app.get('/teams/:id',[auth.canAccess],team.getTeamById);
 app.get('/match/preview', user.list);
-app.get('/match/results', user.list);
+app.get('/match/results/:game_id',[auth.canAccess],gameplay.match_results);
 app.get('/match/livestats', user.list);
 app.get('/match/list',[auth.canAccess],gameplay.fixtures);
 app.get('/game/stats', user.list);
