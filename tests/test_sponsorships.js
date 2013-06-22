@@ -32,4 +32,12 @@ describe('gameplay-sponsorship',function(){
 			done();
 		});
 	});
+	it('get applied sponsors',function(done){
+		gameplay.sponsorship.getActiveSponsors(1,function(err,rs){
+			console.log('result : ',rs);
+			should.not.exist(err);
+			should.exist(rs);
+			done();
+		});
+	});
 });

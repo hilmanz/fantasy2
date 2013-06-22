@@ -19,11 +19,12 @@ j. check if transfer window is opened.
 k. check if user can still set a lineups.
 l. buy a player
 m. sell a player 
-n. view available sponsorships
-o. sign a sponsorship
+n. view available sponsorships -> DONE
+o. sign a sponsorship -> DONE
 p. view available staff to recruit -> DONE
 q. hire a staff -> DONE
 r. sack a staff -> DONE
+s. dummy for sponsorship page
 
 s. view financial statements
 

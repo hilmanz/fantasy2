@@ -106,6 +106,52 @@ exports.getBudget = function(req,res){
 			}
 	});
 }
+exports.getSponsors = function(req,res){
+	gameplay.sponsorship.getAvailableSponsorship(
+		req.params.team_id,
+			function(err,rs){
+				if(err){
+					handleError(res);
+				}else{
+					if(rs!=null){
+						res.json(200,{status:1,sponsorships:rs});
+					}else{
+						res.send(200,{status:0});
+					}
+				}
+		});
+}
+exports.getActiveSponsors = function(req,res){
+	gameplay.sponsorship.getActiveSponsors(
+		req.params.game_team_id,
+			function(err,rs){
+				if(err){
+					handleError(res);
+				}else{
+					if(rs!=null){
+						res.json(200,{status:1,sponsors:rs});
+					}else{
+						res.send(200,{status:0});
+					}
+				}
+		});
+}
+exports.applySponsorship = function(req,res){
+	gameplay.sponsorship.applySponsorship(
+		req.body.team_id,
+		req.body.sponsor_id,
+			function(err,rs){
+				if(err){
+					handleError(res);
+				}else{
+					if(rs){
+						res.json(200,{status:1,message:'Sponsorship Accepted'});
+					}else{
+						res.send(200,{status:0,message:'Sponsorship Denied !'});
+					}
+				}
+		});
+};
 function handleError(res){
 	res.send(501,{error:'no data available'});
 }

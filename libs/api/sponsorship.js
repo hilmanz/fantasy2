@@ -26,7 +26,7 @@ function prepareDb(){
 
 function getAvailableSponsorship(game_team_id,callback){
 	conn = prepareDb();
-	conn.query("SELECT NAME,VALUE,expiry_time,is_available \
+	conn.query("SELECT a.id,name,value,expiry_time,is_available \
 				FROM ffgame.game_sponsorships a\
 				WHERE a.is_available = 1 AND NOT EXISTS(\
 					SELECT 1 FROM ffgame.game_team_sponsors b\
@@ -62,14 +62,19 @@ function applySponsorship(game_team_id,sponsor_id,callback){
 				});
 			},
 			function(sponsor,callback){
-				conn.query("INSERT IGNORE INTO ffgame.game_team_sponsors\
-							(game_team_id,sponsor_id,valid_for)\
-							VALUES(?,?,?)",
-							[game_team_id,sponsor.id,sponsor.expiry_time],
-							function(err,result){
-								console.log(this.sql);
-								callback(err,sponsor,result);
-							});
+				if(sponsor!=null){
+					conn.query("INSERT IGNORE INTO ffgame.game_team_sponsors\
+								(game_team_id,sponsor_id,valid_for)\
+								VALUES(?,?,?)",
+								[game_team_id,sponsor.id,sponsor.expiry_time],
+								function(err,result){
+									console.log(this.sql);
+									callback(err,sponsor,result);
+								});
+				}else{
+					
+					callback(new Error('the sponsorship is not available anymore !'),null,null)
+				}
 			},
 			function(sponsor,insertResult,callback){
 				conn.query("UPDATE ffgame.game_sponsorships SET is_available=0 WHERE id = ?",
@@ -93,6 +98,20 @@ function applySponsorship(game_team_id,sponsor_id,callback){
 		callback(null,false);
 	}
 }
+function getActiveSponsors(game_team_id,callback){
+	conn = prepareDb();
+	conn.query("SELECT b.name,b.value,a.valid_for \
+				FROM ffgame.game_team_sponsors a\
+				INNER JOIN ffgame.game_sponsorships b\
+				ON a.sponsor_id = b.id\
+				WHERE a.game_team_id = ?;",
+				[game_team_id],
+				function(err,rs){
+					conn.end(function(e){
+						callback(err,rs);	
+					});
+				});
+}
 function roll(){
 	var n = Math.random()*24;
 	return Math.round(n);
@@ -100,3 +119,4 @@ function roll(){
 }
 exports.getAvailableSponsorship = getAvailableSponsorship;
 exports.applySponsorship = applySponsorship;
+exports.getActiveSponsors = getActiveSponsors;
