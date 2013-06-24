@@ -4,6 +4,11 @@
 * we only calculate unprocessed team.
 * the processed team will have an entry in game_team_lineups_history.
 * if there's no existing game_id on the history, we will do the calculation.
+* 
+* here's the rule
+* 1. we only update the lineup history for team which playes in the game (game_id)
+* 2. for those team which not played in the game, we only track for the player who played in the real-world.
+*    and add the stats to the team.
 */
 
 /**
@@ -113,7 +118,7 @@ function get_user_teams(start,limit,done){
 }
 function update_team_stats(game_id,team,player_stats,team_summary,done){
 	//console.log(team,player_stats,team_summary);
-	console.log(team_summary);
+	console.log('team_summary',team_summary);
 	var summary = {}; //team summary, this will be used for player's performance change modifier.
 	for(var i in team_summary){
 		summary[team_summary[i].team_id] = {points:team_summary[i].overall_points,
@@ -150,17 +155,28 @@ function update_individual_team_stats(game_id,team,summary,player_stats,done){
 					
 				},
 				function(lineups,callback){
+					var in_game = true;
+					if(typeof summary[team.team_id] === 'undefined'){
+						in_game = false;
+					}
 					//step 2 - update lineup stats
-					updateLineupStats(game_id,lineups,summary,player_stats,function(err,rs){
+					updateLineupStats(game_id,lineups,summary,player_stats,in_game,function(err,rs){
 						callback(err,rs);
 					});
 					
 				},
 				function(rs,callback){
 					//final steps, add entry on lineup_history
-					addToHistory(game_id,team,function(err){
-						callback(err,rs);	
-					});
+					console.log(team,'vs',summary);
+					if(typeof summary[team.team_id]!=='undefined'){
+						console.log('track the lineup history for #',team.team_id);
+						addToHistory(game_id,team,function(err){
+							callback(err,rs);	
+						});
+					}else{
+						console.log('no need to track the lineup history for #',team.team_id);
+						callback(null,rs);	
+					}
 				}
 			],
 				function(err,result){
@@ -200,7 +216,7 @@ function getTeamLineups(team,done){
 		});
 	});	
 }
-function updateLineupStats(game_id,lineups,summary,player_stats,done){
+function updateLineupStats(game_id,lineups,summary,player_stats,in_game,done){
 	pool.getConnection(function(err,conn){
 		async.eachSeries(lineups,
 						function(item,callback){
@@ -208,28 +224,38 @@ function updateLineupStats(game_id,lineups,summary,player_stats,done){
 							var stats = {player_id:item.player_id,
 										 points: 0,
 										 performance: 0};
+							var is_found = false;
 							for(var i in player_stats){
 								if(item.player_id==player_stats[i].player_id){
 									stats.points = player_stats[i].points;
 									var apts =  summary[player_stats[i].team_id].average;
 									stats.performance = ((stats.points - apts)/apts)*100;
+									is_found = true;
 									break;
 								}
 							}
-							conn.query("INSERT INTO ffgame_stats.game_match_player_points\
-								(game_id,game_team_id,player_id,points,performance,last_update)\
-								VALUES(?,?,?,?,?,NOW())\
-								ON DUPLICATE KEY UPDATE\
-								points = VALUES(points),\
-								performance = VALUES(performance);",
-								[	game_id,
-									item.game_team_id,
-									stats.player_id,
-									stats.points,
-									stats.performance ],
-								function(err,rs){
-									callback();	
-							});
+							if(!is_found && !in_game){
+								//we skip it if the player is not matched one of the player_stats,
+								//and the team is not involve with the game at all.
+								console.log('skip #',item.player_id,' from team #',item.game_team_id);
+								callback();
+							}else{
+								console.log('add #',item.player_id,' from team #',item.game_team_id,' stats');
+								conn.query("INSERT INTO ffgame_stats.game_match_player_points\
+									(game_id,game_team_id,player_id,points,performance,last_update)\
+									VALUES(?,?,?,?,?,NOW())\
+									ON DUPLICATE KEY UPDATE\
+									points = VALUES(points),\
+									performance = VALUES(performance);",
+									[	game_id,
+										item.game_team_id,
+										stats.player_id,
+										stats.points,
+										stats.performance ],
+									function(err,rs){
+										callback();	
+								});
+							}
 							
 						},
 						function(err){
