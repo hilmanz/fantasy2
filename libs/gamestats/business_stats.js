@@ -30,7 +30,7 @@ var pool  = mysql.createPool({
    user     : config.database.username,
    password : config.database.password,
 });
-
+console.log('business_stats : pool opened');
 exports.update = function(game_id,start,done){
 	
 	async.waterfall(
@@ -67,15 +67,20 @@ exports.update = function(game_id,start,done){
 			}
 		],
 		function(err,result){
-			pool.end(function(err){
-				console.log('pool destroyed');
-
-			});
+			
 			done(null);			
+		
+			
 		}
 
 	);
 	
+}
+exports.done = function(){
+	pool.end(function(err){
+		if(err) console.log('business_stats','error',err.message);
+		console.log('business_stats','pool closed');
+	});
 }
 function calculateIncomeForAllHomeTeams(game_id,game,home_team,away_team,done){
 	console.log('calculate all home teams');
@@ -537,7 +542,13 @@ function getOfficial(official_name,officials){
 		if(officials[i].name==official_name){
 			return officials[i];
 		}
-	}	
+	}
+	return {
+		sponsor_bonus:0,
+		attendance_bonus:0,
+		op_cost_bonus:0,
+		transfer_bonus:0
+	};
 }
 /* Stadium Income
 *  High = Against Top 3 Teams in EPL

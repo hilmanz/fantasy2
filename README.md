@@ -11,7 +11,7 @@ b. select team for user (can only be use once) -> done
 c. select players for user default to the user's choosen team. (can only be use once) -> done
 d. set lineup. -> DONE
 e. view fixtures -> DONE
-f. view player stats (master stats, and player specific stats)
+f. view player stats (master stats, and player specific stats) -> DONE
 g. view balance / budget -> DONE
 h. view match reports -> DONE
 i. view transfer window
@@ -42,9 +42,6 @@ matchday | matchdate
 6. make sure the newly created team, must given an initial budget of  GBP xxxxx -> DONE
 
 
-
-----TODO-----
-f. view player stats
 s. view financial statements
 
 

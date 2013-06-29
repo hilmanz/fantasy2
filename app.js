@@ -52,25 +52,24 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.get('/fixtures', user.list);
+
+app.get('/fixtures', [auth.canAccess],gameplay.fixtures);
+app.get('/match/list',[auth.canAccess],gameplay.fixtures);
+
+
 app.get('/players/:team_id',[auth.canAccess],team.getPlayers);
 app.get('/teams', [auth.canAccess],team.getTeams);
 app.get('/team/get/:fb_id',[auth.canAccess],team.getUserTeam);
 app.get('/teams/:id',[auth.canAccess],team.getTeamById);
-app.get('/match/preview', user.list);
 app.get('/match/results/:game_id',[auth.canAccess],gameplay.match_results);
-app.get('/match/livestats', user.list);
-app.get('/match/list',[auth.canAccess],gameplay.fixtures);
-app.get('/game/stats', user.list);
-app.get('/team/:id',user.list);
-app.get('/player/:id',user.list);
-app.get('/score/:id',user.list);
+app.get('/player/:id',[auth.canAccess],gameplay.player_data);
 app.post('/user/register',[auth.canAccess],users.register);
 app.post('/create_team',[auth.canAccess],team.create);
-app.get('/user/info',user.list);
-app.get('/user/budget',user.list);
+
+
 app.get('/user/financial_statement',user.list);
 app.get('/game/rank',user.list);
+
 app.get('/test',function(req,res){
 	client.get(req.query.access_token,function(err,rs){
 		console.log(rs);
@@ -85,6 +84,7 @@ app.get('/test',function(req,res){
 app.post('/team/lineup/save',[auth.canAccess],gameplay.setLineup);
 app.get('/team/lineup/:id',[auth.canAccess],gameplay.getLineup);
 app.get('/team/list/:id',[auth.canAccess],gameplay.getPlayers);
+app.get('/team/player/:game_team_id/:id',[auth.canAccess],gameplay.player_team_data);
 app.get('/team/sponsors/:game_team_id',[auth.canAccess],gameplay.getActiveSponsors);
 app.get('/team/budget/:game_team_id',[auth.canAccess],gameplay.getBudget);
 app.get('/official/list/:game_team_id',[auth.canAccess],gameplay.official_list);

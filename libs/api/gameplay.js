@@ -138,7 +138,8 @@ function position_valid(players,setup,formation){
 //get user's players
 function getPlayers(game_team_id,callback){
 	conn = prepareDb();
-	conn.query("SELECT b.uid,b.name,b.position FROM ffgame.game_team_players a\
+	conn.query("SELECT b.uid,b.name,b.position \
+				FROM ffgame.game_team_players a\
 				INNER JOIN ffgame.master_player b \
 				ON a.player_id = b.uid\
 				WHERE game_team_id = ? ORDER BY b.name ASC \
@@ -167,8 +168,74 @@ function getBudget(game_team_id,callback){
 				});
 }
 
+/**
+* get player master detail
+*/
+function getPlayerDetail(player_id,callback){
+	sql = "SELECT a.uid AS player_id,a.name,a.position,\
+		a.first_name,a.last_name,a.known_name,a.birth_date,\
+		a.weight,a.height,a.jersey_num,a.real_position,a.real_position_side,\
+		a.country,team_id AS original_team_id,\
+		b.name AS original_team_name\
+		FROM ffgame.master_player a\
+		INNER JOIN ffgame.master_team b\
+		ON a.team_id = b.uid\
+		WHERE a.uid = ? LIMIT 1;";
+	conn = prepareDb();
+	conn.query(sql,
+				[player_id],
+				function(err,rs){
+					conn.end(function(e){
+						if(rs.length==1){
+							callback(err,rs[0]);	
+						}else{
+							callback(err,null);
+						}
+					});
+				});
+}
+/**
+* get player master stats
+*/
+function getPlayerStats(player_id,callback){
+	sql = "SELECT a.game_id,a.points,a.performance,b.matchday\
+			FROM ffgame_stats.master_player_performance a\
+			INNER JOIN ffgame.game_fixtures b\
+			ON a.game_id = b.game_id \
+			WHERE player_id = ? ORDER BY a.id ASC;";
+	conn = prepareDb();
+	conn.query(sql,
+				[player_id],
+				function(err,rs){
+					conn.end(function(e){
+						callback(err,rs);	
+					});
+				});
+}
+/*
+* get player's team stats
+*/
+function getPlayerTeamStats(game_team_id,player_id,callback){
+	sql = "SELECT a.game_id,a.points,a.performance,b.matchday\
+			FROM ffgame_stats.game_match_player_points a\
+			INNER JOIN\
+			ffgame.game_fixtures b\
+			ON a.game_id = b.game_id\
+			WHERE a.game_team_id = ?\
+			AND a.player_id = ? LIMIT 300;";
+	conn = prepareDb();
+	conn.query(sql,
+				[game_team_id,player_id],
+				function(err,rs){
 
-
+					conn.end(function(e){
+						callback(err,rs);	
+					});
+				});
+}
+exports.getPlayerDetail = getPlayerDetail;
+exports.getPlayerTeamStats = getPlayerTeamStats;
+exports.getPlayerStats = getPlayerStats;
 exports.getLineup = getLineup;
 exports.setLineup = setLineup;
 exports.getPlayers = getPlayers;

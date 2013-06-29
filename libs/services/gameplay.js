@@ -169,6 +169,71 @@ exports.match_results = function(req,res){
 				}
 		});
 }
+
+exports.player_data = function(req,res){
+	var async = require('async');
+	async.waterfall(
+		[
+			function(callback){
+				gameplay.getPlayerDetail(req.params.id,function(err,player){
+					callback(err,player);
+				});
+			},
+			function(player,callback){
+				gameplay.getPlayerStats(
+							req.params.id,
+							function(err,rs){
+								callback(err,{player:player,stats:rs});	
+							});
+			},
+		],
+		function(err,result){
+			if(err){
+				handleError(res);
+			}else{
+				if(result){
+					res.json(200,{status:1,data:result});
+				}else{
+					res.send(200,{status:0,data:{player:{},stats:[]}});
+				}
+			}
+		}
+	);
+	
+}
+
+exports.player_team_data = function(req,res){
+	var async = require('async');
+	async.waterfall(
+		[
+			function(callback){
+				gameplay.getPlayerDetail(req.params.id,function(err,player){
+					callback(err,player);
+				});
+			},
+			function(player,callback){
+				gameplay.getPlayerTeamStats(
+							req.params.game_team_id,
+							req.params.id,
+							function(err,rs){
+								callback(err,{player:player,stats:rs});	
+							});
+			},
+		],
+		function(err,result){
+			if(err){
+				handleError(res);
+			}else{
+				if(result){
+					res.json(200,{status:1,data:result});
+				}else{
+					res.send(200,{status:0,data:{player:{},stats:[]}});
+				}
+			}
+		}
+	);
+	
+}
 function handleError(res){
 	res.send(501,{error:'no data available'});
 }

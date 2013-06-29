@@ -61,6 +61,33 @@ describe('gameplay',function(){
 			});
 		});
 
+		it('retrieves player master statistics',function(done){
+			gameplay.getPlayerStats('p19557',
+			function(err,stats){
+				should.not.exist(err);
+				should.exist(stats);
+				
+				done();
+			});
+		});
+
+		it('retrieves player game_team statistics',function(done){
+			gameplay.getPlayerTeamStats(296,'p19557',
+			function(err,stats){
+				should.not.exist(err);
+				should.exist(stats);
+				
+				done();
+			});
+		});
 		
+		it('retrieves player master detail',function(done){
+			gameplay.getPlayerDetail('p19557',
+			function(err,rs){
+				should.not.exist(err);
+				should.exist(rs);
+				done();
+			});
+		});
 	
 });

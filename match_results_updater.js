@@ -22,45 +22,82 @@ var config = require('./config').config;
 var xmlparser = require('xml2json');
 var master = require('./libs/master');
 var async = require('async');
-
+var mysql = require('mysql');
 /////DECLARATIONS/////////
 var FILE_PREFIX = config.updater_file_prefix+config.competition.id+'-'+config.competition.year;
 var stat_maps = require('./libs/stats_map').getStats();
 
-var match_results = require('./libs/match_results');
-game_id = 'f2895';
 
+var match_results = require('./libs/match_results');
 var lineup_stats = require('./libs/gamestats/lineup_stats');
 var business_stats = require('./libs/gamestats/business_stats');
 
+
 /////THE LOGICS///////////////
-/*
-@todo
-make steps in sequences using async module.
-*/
-//1st step - get master reports for recent matches.
-/*match_results.getReports(game_id,function(err,rs){
-	console.log('done');
+var conn = mysql.createConnection({
+ 	host     : config.database.host,
+   user     : config.database.username,
+   password : config.database.password,
 });
-*/
 
-//2nd step - calculate all affected user's lineup stats.
-//match_results.
-
-lineup_stats.update(game_id,0,onLineupUpdate);
-function onLineupUpdate(err,is_done,next_offset){
-	console.log('lineup stats updated !');
-	if(!is_done){
-		console.log('processing next batch');
-		lineup_stats.update(game_id,next_offset,onLineupUpdate);
-	}else{
-		console.log('updating the business_stats')
-		business_stats.update(game_id,0,function(err){
-			console.log('business stats update completed');
-			console.log('all batches has been processed');
+conn.query("SELECT * FROM ffgame.game_fixtures \
+		WHERE is_processed=0 \
+		ORDER BY id ASC LIMIT 100;",[],function(err,games){
+			conn.end(function(err){
+				generateReports(games);
 		});
-		
-	}
+});
+
+function generateReports(games){
+	async.eachSeries(games,function(item,callback){
+		console.log(item.game_id);
+		process_report(item.game_id,function(err,result){
+			callback();	
+		});
+	},function(err){
+		console.log('Done generating report.');
+		match_results.done();
+		lineup_stats.done();
+		business_stats.done();
+	});
+}
+
+
+/*
+@todo generate master player performance summary ( ffgame_stats.master_player_performance)
+*/
+function process_report(game_id,done){
+
+	async.waterfall([
+		//1st step - get master reports for recent matches.
+		function(callback){
+			match_results.getReports(game_id,function(err,rs){
+				callback(err,rs);
+			});
+		},
+		function(result,callback){
+			
+			console.log('update lineup');
+			lineup_stats.update(game_id,0,function(err,is_done,next_offset){
+				console.log('lineup stats updated !');
+				if(!is_done){
+					console.log('processing next batch');
+					lineup_stats.update(game_id,next_offset,this.done);
+				}else{
+					console.log('updating the business_stats')
+					business_stats.update(game_id,0,function(err){
+						console.log('business stats update completed');
+						console.log('all batches has been processed');
+						callback(err,'done');
+					});
+				}
+			});
+		}
+	],
+	function(err,result){
+		done(err,result);
+		console.log('done');
+	});
 }
 
 

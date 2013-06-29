@@ -25,7 +25,7 @@ var pool  = mysql.createPool({
    user     : config.database.username,
    password : config.database.password,
 });
-
+console.log('lineup_stats - creating pool');
 exports.update = function(game_id,start,done){
 	//the updates will run for each 100 entries.
 	
@@ -62,15 +62,18 @@ exports.update = function(game_id,start,done){
 			}
 		],
 		function(err,result){		
-			pool.end(function(err){
-				done(err,is_complete,start);
-			});
-
+			done(err,is_complete,start);
 		}
 	);	
 		
 	
 	
+}
+exports.done = function(){
+	pool.end(function(err){
+		if(err) console.log('match_results','error',err.message);
+		console.log('lineup_stats','pool closed');
+	});
 }
 function get_master_team_stats(game_id,done){
 	pool.getConnection(function(err,conn){
@@ -78,7 +81,7 @@ function get_master_team_stats(game_id,done){
 					WHERE game_id = ? LIMIT 30",
 					[game_id],
 		function(err,rs){
-			if(err){console.log(err.message);}
+			if(err){console.log('lineupstats - ERROR - ',err.message);}
 			conn.end(function(err){
 				done(err,rs);	
 			});
@@ -105,6 +108,7 @@ function get_master_match_summary(game_id,done){
 }
 function get_user_teams(start,limit,done){
 	pool.getConnection(function(err,conn){
+		if(err) console.log(err.message);
 		conn.query("SELECT * FROM ffgame.game_teams LIMIT ?,?",
 				[start,limit],
 		function(err,rs){

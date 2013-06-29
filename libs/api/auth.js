@@ -116,6 +116,7 @@ exports.canAccess = function(req,res,next){
 	}
 	if(access_token!=null){
 		req.redisClient.get(access_token,function(err,rs){
+			console.log(rs);
 			if(rs==null){
 				res.send(401,{error:'access denied !'});
 			}else{

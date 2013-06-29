@@ -28,28 +28,37 @@ exports.getReports = function(game_id,done){
 			function(callback){
 				fs.stat(filepath,function(err,rs){
 					callback(err,filepath);
-				});			
+				});
 			},
 			function(filepath,callback){
+				console.log('read ',filepath);
 				fs.readFile(filepath, function(err,rs){
 					callback(err,rs);
 				});
 			},
 			function(doc,callback){
+				console.log('parse json output');
 				var json = JSON.parse(xmlparser.toJson(doc.toString()));
 				callback(null,json);
 			},
 			function(json,callback){
+				console.log('process the data');
 				onJsonData(json,function(err,rs){
 					callback(null,json);
 				});
 			}
 		],
 		function(err,result){
-			pool.end();
-			done(err,result);
+			if(err) console.log(err.message);
+			done(err,result);	
 		}
 	);	
+}
+exports.done = function(){
+	pool.end(function(err){
+		if(err) console.log('match_results','error',err.message);
+		console.log('match_results','pool closed');
+	});
 }
 /**
 * @todo
@@ -65,8 +74,14 @@ function onJsonData(data,done){
 					callback(null,
 							 data.SoccerFeed.SoccerDocument.uID,
 							 data.SoccerFeed.SoccerDocument.MatchData.TeamData);
+				}else if(data.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Period=='PreMatch'){
+					//console.log(data.SoccerFeed.SoccerDocument.MatchData.TeamData);
+					callback(null,
+							 data.SoccerFeed.SoccerDocument.uID,
+							 data.SoccerFeed.SoccerDocument.MatchData.TeamData);
 				}else{
-					callback(null,'not finished yet');
+					callback(new Error('the game is not played yet, or it has been postponed'),
+							'not finished yet');
 				}
 			},
 			function(game_id,data,callback){
@@ -78,7 +93,7 @@ function onJsonData(data,done){
 								data[0].TeamRef,
 								data[0].PlayerLineUp.MatchPlayer,
 								function(err,result){
-									callback(null,game_id,data);
+									callback(err,game_id,data);
 				});
 	
 				//callback(null,game_id,data);
@@ -91,7 +106,7 @@ function onJsonData(data,done){
 								data[1].TeamRef,
 								data[1].PlayerLineUp.MatchPlayer,
 								function(err,result){
-					callback(null,game_id,data);
+					callback(err,game_id,data);
 				});
 				
 				//callback(null,game_id,data);
@@ -109,6 +124,11 @@ function onJsonData(data,done){
 				})
 			},
 			function(game_id,data,callback){
+				calculatePlayerPerformance(game_id,function(err){
+					callback(err,game_id,data);
+				});
+			},
+			function(game_id,data,callback){
 				updateGameFixtures(game_id,data,function(err){
 					callback(err,'done');
 				});
@@ -123,11 +143,76 @@ function onJsonData(data,done){
 }
 
 /**
+*
+*
+*/
+function calculatePlayerPerformance(game_id,done){
+	console.log('match_results - calculatePlayerPerformance game_id #',game_id);
+	pool.getConnection(function(err,conn){
+		async.waterfall([
+			function(callback){
+				//1. get the overall points for each team
+				conn.query("SELECT team_id,overall_points \
+							FROM ffgame_stats.master_match_points\
+							WHERE game_id=? LIMIT 2",[game_id],function(err,team_points){
+								callback(err,team_points);
+							});
+			},
+			function(team_points,callback){
+				console.log(team_points);
+				console.log('calculate player performance summary for team #',team_points[0].team_id);
+				var avg_points = team_points[0]['overall_points'] / 16;
+				conn.query("INSERT INTO ffgame_stats.master_player_performance\
+							(game_id,player_id,points,performance)\
+							SELECT game_id,player_id,points,\
+							((points-(?))/(?))*100 AS performance\
+							FROM ffgame_stats.master_match_player_points \
+							WHERE game_id=? AND team_id=?\
+							ON DUPLICATE KEY UPDATE\
+							points = VALUES(points),\
+							performance = VALUES(performance)\
+							",
+							[avg_points,avg_points,game_id,team_points[0].team_id],
+							function(err,rs){
+								callback(err,team_points);
+							});
+			},
+			function(team_points,callback){
+				console.log('calculate player performance summary for team #',team_points[1].team_id);
+				var avg_points = team_points[1]['overall_points'] / 16;
+				conn.query("INSERT INTO ffgame_stats.master_player_performance\
+							(game_id,player_id,points,performance)\
+							SELECT game_id,player_id,points,\
+							((points-(?))/(?))*100 AS performance\
+							FROM ffgame_stats.master_match_player_points \
+							WHERE game_id=? AND team_id=?\
+							ON DUPLICATE KEY UPDATE\
+							points = VALUES(points),\
+							performance = VALUES(performance)\
+							",
+							[avg_points,avg_points,game_id,team_points[1].team_id],
+							function(err,rs){
+								callback(err,team_points);
+							});
+			}
+
+		],
+		function(err,result){
+			conn.end(function(err){
+				done(err);	
+			});
+			
+		});
+
+	});
+}
+/**
 *	update game final fixtures
 */
 function updateGameFixtures(game_id,data,done){
 
 	console.log('update game fixtures');
+
 	var attendance = data.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Attendance;
 	
 	var home_score = 0;
@@ -135,6 +220,7 @@ function updateGameFixtures(game_id,data,done){
 	var home_id,away_id;
 	var period = data.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Period;
 	var matchday = 1;
+	var is_processed = (period=='PreMatch') ? 0 : 1;
 	for(var i in data.SoccerFeed.SoccerDocument.MatchData.TeamData){
 		var team_data = data.SoccerFeed.SoccerDocument.MatchData.TeamData[i];
 		if(team_data.Side=='Home'){
@@ -158,17 +244,18 @@ function updateGameFixtures(game_id,data,done){
 				function(callback){
 					conn.query("INSERT INTO ffgame.game_fixtures\
 								(game_id,home_id,away_id,period,matchday,\
-								competition_id,session_id,home_score,away_score,attendance)\
-								VALUES(?,?,?,?,?,?,?,?,?,?)\
+								competition_id,session_id,home_score,away_score,attendance,is_processed)\
+								VALUES(?,?,?,?,?,?,?,?,?,?,?)\
 								ON DUPLICATE KEY UPDATE\
 								home_score = VALUES(home_score),\
 								away_score = VALUES(away_score),\
 								attendance = VALUES(attendance),\
 								period = VALUES(period),\
-								matchday = VALUES(matchday);",
+								matchday = VALUES(matchday),\
+								is_processed = VALUES(is_processed);",
 								[game_id,home_id,away_id,period,matchday,
 								config.competition.id,config.competition.year,
-								home_score,away_score,attendance],
+								home_score,away_score,attendance,is_processed],
 								function(err,res){
 									callback(null,res);
 								});
@@ -177,8 +264,9 @@ function updateGameFixtures(game_id,data,done){
 			function(err,results){
 				conn.end(function(err){
 					console.log(game_id,'update fixtures completed');
+					done(err);
 				});
-				done(err);		
+					
 			}
 		);
 		
@@ -336,7 +424,7 @@ function calculatePlayerPoints(conn,points,game_id,player,done){
 						 	if(err) console.log(err);
 							callback(null,'ok');			 	
 						 });
-		}
+		},
 	]
 	,function(err,result){
 		done(null);
@@ -376,18 +464,18 @@ function savePlayerStats(game_id,team_id,data,callback){
 				data.Stat.push({Type:'sub',$t:1});
 			}
 			async.eachSeries(data.Stat,
-			function(item,onDone){
-				var q = conn.query("INSERT INTO ffgame_stats.master_match_result_stats\
-							(game_id,team_id,player_id,stats_name,stats_value)\
-							VALUES(?,?,?,?,?);",
-							[game_id,team_id,data.PlayerRef,item.Type,item.$t],
-							function(err,rs){
-								//if(err) console.log(err.message);
-								//console.log(this.sql);
-								onDone();	
-							});
+				function(item,onDone){
+					var q = conn.query("INSERT INTO ffgame_stats.master_match_result_stats\
+								(game_id,team_id,player_id,stats_name,stats_value)\
+								VALUES(?,?,?,?,?);",
+								[game_id,team_id,data.PlayerRef,item.Type,item.$t],
+								function(err,rs){
+									//if(err) console.log(err.message);
+									//console.log(this.sql);
+									onDone();	
+								});
 
-			},
+				},
 			function(err){
 				conn.end(function(err){
 					console.log('saving stats for player ',data.PlayerRef,'finished');

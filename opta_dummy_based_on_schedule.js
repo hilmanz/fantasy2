@@ -117,6 +117,7 @@ var fs = require('fs');
 var path = require('path');
 var mysql = require('mysql');
 var dateformat = require('dateformat');
+var async = require('async');
 var config = require('./config').config;
 var player_team = 't1'; //we use Manchester United as example
 var squads = [];
@@ -126,101 +127,114 @@ var pool = mysql.createPool({
 			password: config.database.password
 		});
 
-
-function getTeamData(callback){
-	console.log('[team data] pool opened');
+var argv = require('optimist').argv;
+var is_finished = (typeof argv.is_finished !== 'undefined') ? argv.is_finished : 0;
+var matchday = 0;
+async.waterfall(
+	[
+		getUnProcessedSchedule,
+		getTeams,
+		setupMatch,
+		flagDone
+	],
+	function(err,result){
+		pool.end(function(e){
+			console.log('result : ',result);
+		});
+	}
+);
+function flagDone(game_id,done){
+	if(is_finished==1){
+		pool.getConnection(function(err,conn){
+			conn.query("UPDATE ffgame.game_fixtures SET period='FullTime' WHERE game_id=?",
+						[game_id],
+						function(err,fixtures){
+				conn.end(function(err){
+					done(err,game_id);
+				});	
+			});
+		});
+	}
+}
+function getUnProcessedSchedule(done){
 	pool.getConnection(function(err,conn){
-		conn.query("SELECT * FROM ffgame.master_team LIMIT 100",function(err,result){
-			if(!err){
-				squads = result;
-			}
+		conn.query("SELECT a.*,b.name AS home_name,b.stadium_capacity,\
+					b.stadium_name,b.stadium_id,\
+					c.name AS away_name\
+					FROM ffgame.game_fixtures a\
+					INNER JOIN ffgame.master_team b\
+					ON a.home_id = b.uid\
+					INNER JOIN ffgame.master_team c\
+					ON a.away_id = c.uid\
+					WHERE a.is_dummy = 1 AND a.is_processed=0\
+					AND period = 'PreMatch'\
+					ORDER BY a.id ASC LIMIT 1;",
+					[],
+					function(err,fixtures){
 			conn.end(function(err){
-				if(!err){
-					console.log('[team data] pool closed');
-					onGetTeamData(callback);
-				}
+				done(err,fixtures[0]);
 			});	
 		});
 		
 	});
-	
 }
-function onGetTeamData(callback){
+function getTeams(fixture,done){
+	var home_team;
+	var away_team;
+	matchday = fixture.matchday;
 	pool.getConnection(function(err,conn){
-		//console.log(squads);
-		var n_squads = squads.length;
-		var n_done = 0;
-		for(var i in squads){
-			(function(){
-				var n = i;
-				conn.query("SELECT * FROM ffgame.master_player WHERE team_id=? LIMIT 100",
-							[squads[i].uid],function(err,players){
-								//console.log(players);
-								//console.log(squads[n]);
-								squads[n].players = players;
-								n_done++;
-								if(n_done==n_squads){
-									conn.end(function(err){
-										onGetOfficialData(callback);
-									});
-								}
-							});
-			}());	
-		}
+		async.waterfall(
+			[
+				function(callback){
+					conn.query("SELECT * FROM ffgame.master_team\
+								WHERE uid = ? LIMIT 1;",[fixture.home_id],
+					function(err,team){
+						callback(err,team);
+					});
+				},
+				function(team,callback){
+					home_team = team[0];
+					conn.query("SELECT * FROM ffgame.master_player \
+								WHERE team_id=? LIMIT 100;",[fixture.home_id],
+					function(err,players){
+						console.log(this.sql);
+						home_team.players = players;
+						callback(err);
+					});
+				},
+				function(callback){
+					conn.query("SELECT * FROM ffgame.master_team\
+								WHERE uid = ? LIMIT 1;",[fixture.away_id],
+					function(err,team){
+						callback(err,team);
+					});
+				},
+				function(team,callback){
+					away_team = team[0];
+					conn.query("SELECT * FROM ffgame.master_player \
+								WHERE team_id=? LIMIT 100;",[fixture.away_id],
+					function(err,players){
+						away_team.players = players;
+						callback(err);
+					});
+				},
+			],
+
+			function(err,rs){
+				conn.end(function(err){
+					done(null,
+								fixture.game_id,
+								fixture.stadium_capacity,
+								home_team,
+								away_team);
+				});
+			}
+		);
 	});
 }
-function onGetOfficialData(callback){
-	pool.getConnection(function(err,conn){
-		//console.log(squads);
-		var n_squads = squads.length;
-		var n_done = 0;
-		for(var i in squads){
-			(function(){
-				var n = i;
-				conn.query("SELECT * FROM ffgame.master_officials WHERE team_id=? LIMIT 100",
-							[squads[i].uid],function(err,officials){
-								//console.log(players);
-								//console.log(squads[n]);
-								squads[n].officials = officials;
-								n_done++;
-								if(n_done==n_squads){
-									conn.end(function(err){
-										callback();
-									});
-								}
-							});
-			}());	
-		}
-	});
-}
-function onQueryFinished(){
-	console.log('done');
-	pool.end();
-	
-	setupMatch();
-}
+function setupMatch(game_id,capacity,home_team,away_team,done){
 
-//step 1 get team data
-getTeamData(onQueryFinished);
-
-function setupMatch(){
-	//step 2 simulate the match schedule.
-	//assume that the player team is a home team.
-	var home_team,away_team;
-	var n_home = 0;
-	for(var i in squads){
-		if(squads[i].uid=='t1'){
-			home_team = squads[i];
-			n_home = i;
-			break;
-		}
-	}
-	do{
-		var n_index = Math.floor(Math.random()*squads.length);
-	}
-	while(n_index==n_home);
-	
-	away_team = squads[n_index];
+	console.log(home_team);
 	var game_settings = {
 		home:{
 			team_id:home_team.uid,
@@ -241,29 +255,42 @@ function setupMatch(){
 			officials:away_team.officials
 		}
 	}
+	
+	var period = 'FullTime';
+    if(is_finished!=1){
+    	period = 'PreMatch';
+    	game_settings.home.goals = 0;	
+    	game_settings.away.goals = 0;
+    }
+
+    console.log(game_settings);
+
+
 	game_settings = generateStats(game_settings);
 	
-	var winner = 't1';
+	var winner = '';
 	if(game_settings.home.goals>game_settings.away.goals){
-		winner = 't1';
+		winner = game_settings.home.team_id;
 	}else{
 		winner = game_settings.away.team_id;
 	}
 
 	var toTemplateData = {
-		game_id: 'f1'+dateformat(new Date(),'mmddhhMMss'),
-		attendance: Math.ceil(75000 - (((Math.random()*30)/100)*75000)),
+		game_id: game_id,
+		attendance: Math.ceil(capacity - (((Math.random()*30)/100)*capacity)),
 		team_data: game_settings,
-		winner : winner
+		winner : winner,
+		period : period,
+		matchday: matchday
 	}
 	var handlebars = require('handlebars'); // notice the "2" which matches the npm repo, sorry..
 	handlebars.root = __dirname + '/views/templates';
 
 	
-	//mu.clearCache();
+	
 	var strOut = "";
-	var season_id = '2011';
-	var competition_id = '8'
+	var season_id = config.competition.year;
+	var competition_id = config.competition.id;
 	var file_output = "srml-"+competition_id+"-"+season_id+"-"+toTemplateData.game_id+"-matchresults.xml";
 	var raw = fs.readFileSync(path.resolve(__dirname + '/views/templates/matchresults-freekick-goals.xml'), 'utf8');
 	var template = handlebars.compile(raw.toString());
@@ -275,10 +302,15 @@ function setupMatch(){
 	        console.log(err);
 	    } else {
 	        console.log("The file was saved!");
+
+	        console.log()
 	    }
+	    done(err,game_id);
 	}); 
 	
+	done(null,game_id);
 }
+
 /**
 simulate goals, using 24-dice
 **/
@@ -449,9 +481,20 @@ function generateStats(settings){
 				person.stats[keeper_stats[s]] = Math.floor(Math.random()*11);
 			}
 			person.stats['goals'] = 0;
+			person.stats['yellow_card'] = 0;
+			person.stats['red_card'] = 0;
 			for(var t in home_goals){
 				if(home_goals[t].player_id==person.player.uid){
 					person.stats['goals']++;
+				}
+			}
+			for(var t in home_bookings){
+				if(home_bookings[t].player_id == person.player.uid){
+					if(home_bookings[t].card_type=="Yellow"){
+						person.stats['yellow_card']++;
+					}else{
+						person.stats['red_card']++;
+					}
 				}
 			}
 		}else{
@@ -459,9 +502,22 @@ function generateStats(settings){
 				person.stats[non_keeper_stats[s]] = Math.floor(Math.random()*11);
 			}
 			person.stats['goals'] = 0;
+			person.stats['yellow_card'] = 0;
+			person.stats['red_card'] = 0;
+
 			for(var t in home_goals){
 				if(home_goals[t].player_id==person.player.uid){
 					person.stats['goals']++;
+				}
+			}
+
+			for(var t in home_bookings){
+				if(home_bookings[t].player_id == person.player.uid){
+					if(home_bookings[t].card_type=="Yellow"){
+						person.stats['yellow_card']++;
+					}else{
+						person.stats['red_card']++;
+					}
 				}
 			}
 		}
@@ -480,19 +536,47 @@ function generateStats(settings){
 				person.stats[keeper_stats[s]] = Math.floor(Math.random()*11);
 			}
 			person.stats['goals'] = 0;
-			for(var t in home_goals){
-				if(home_goals[t].player_id==person.player.uid){
+			person.stats['yellow_card'] = 0;
+			person.stats['red_card'] = 0;
+
+
+			for(var t in away_goals){
+				if(away_goals[t].player_id==person.player.uid){
 					person.stats['goals']++;
 				}
 			}
+
+			for(var t in away_bookings){
+				if(away_bookings[t].player_id == person.player.uid){
+					if(away_bookings[t].card_type=="Yellow"){
+						person.stats['yellow_card']++;
+					}else{
+						person.stats['red_card']++;
+					}
+				}
+			}
+
 		}else{
 			for(var s in non_keeper_stats){
 				person.stats[non_keeper_stats[s]] = Math.floor(Math.random()*11);
 			}
 			person.stats['goals'] = 0;
+			person.stats['yellow_card'] = 0;
+			person.stats['red_card'] = 0;
+			
 			for(var t in away_goals){
 				if(away_goals[t].player_id==person.player.uid){
 					person.stats['goals']++;
+				}
+			}
+
+			for(var t in away_bookings){
+				if(away_bookings[t].player_id == person.player.uid){
+					if(away_bookings[t].card_type=="Yellow"){
+						person.stats['yellow_card']++;
+					}else{
+						person.stats['red_card']++;
+					}
 				}
 			}
 		}

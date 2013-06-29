@@ -14,10 +14,10 @@
       <Stat Type="season_id">2011</Stat>
       <Stat Type="season_name">Season 2011/2012</Stat>
       <Stat Type="symid">EN_PR</Stat>
-      <Stat Type="matchday">8</Stat>
+      <Stat Type="matchday">{{matchday}}</Stat>
     </Competition>
     <MatchData>
-      <MatchInfo MatchType="Regular" Period="FullTime" TimeStamp="20111016T152326+0100">
+      <MatchInfo MatchType="Regular" Period="{{period}}" TimeStamp="20111016T152326+0100">
         <Attendance>{{attendance}}</Attendance>
         <Date>20111016T133000+0100</Date>
         <Result Type="NormalResult" Winner="{{winner}}" />
