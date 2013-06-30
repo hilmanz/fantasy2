@@ -92,6 +92,7 @@ app.post('/official/hire',[auth.canAccess],gameplay.hire_staff);
 app.post('/official/fire',[auth.canAccess],gameplay.fire_staff);
 app.get('/sponsorship/list/:team_id',[auth.canAccess],gameplay.getSponsors);
 app.post('/sponsorship/apply',[auth.canAccess],gameplay.applySponsorship);
+app.get('/finance/:game_team_id',[auth.canAccess],gameplay.financial_statements);
 
 app.post('/auth',auth.authenticate);
 

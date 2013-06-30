@@ -89,5 +89,14 @@ describe('gameplay',function(){
 				done();
 			});
 		});
+
+		it('can retrieve financial statements',function(done){
+			gameplay.getFinancialStatement(286,function(err,rs){
+				should.not.exist(err);
+				should.exist(rs);
+				console.log(rs);
+				done();
+			});
+		});
 	
 });

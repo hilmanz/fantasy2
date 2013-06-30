@@ -49,3 +49,9 @@ s. view financial statements
 i. view transfer window
 l. buy a player
 m. sell a player 
+
+
+SELECT item_name,item_type,SUM(amount) AS total
+FROM ffgame.game_team_expenditures 
+WHERE game_team_id=286 
+GROUP BY item_name;

@@ -233,6 +233,53 @@ function getPlayerTeamStats(game_team_id,player_id,callback){
 					});
 				});
 }
+
+
+/**
+* get user's financial statement
+*/
+function getFinancialStatement(game_team_id,done){
+	var async = require('async');
+	conn = prepareDb();
+	async.waterfall(
+		[
+			function(callback){
+				//get the total matches by these team
+				conn.query("SELECT COUNT(DISTINCT game_team_id) AS total_matches \
+							FROM ffgame.game_team_expenditures WHERE game_team_id = ?;",
+					[game_team_id],
+					function(err,result){
+					if(typeof result !== 'undefined'){
+						callback(err,result[0]);
+					}else{
+						callback(err,null);
+					}
+				});
+			},
+			function(matches,callback){
+				if(matches!=null){
+					conn.query("SELECT item_name,item_type,SUM(amount) AS total\
+								FROM ffgame.game_team_expenditures\
+								WHERE game_team_id=?\
+								GROUP BY item_name;",
+						[game_team_id],
+						function(err,result){
+							callback(err,{total_matches:matches.total_matches,
+										  report:result});
+					});
+				}else{	
+					callback(null,null);
+				}
+			}
+		],
+		function(err,result){
+			conn.end(function(e){
+				done(err,result);
+			});
+		}
+	);
+}
+exports.getFinancialStatement = getFinancialStatement;
 exports.getPlayerDetail = getPlayerDetail;
 exports.getPlayerTeamStats = getPlayerTeamStats;
 exports.getPlayerStats = getPlayerStats;

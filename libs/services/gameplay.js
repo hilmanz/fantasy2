@@ -234,6 +234,34 @@ exports.player_team_data = function(req,res){
 	);
 	
 }
+exports.financial_statements = function(req,res){
+	var async = require('async');
+	async.waterfall([
+		function(callback){
+			gameplay.getBudget(req.params.game_team_id,function(err,result){
+				callback(err,result[0]);
+			});
+		},
+		function(budget,callback){
+			gameplay.getFinancialStatement(req.params.game_team_id,function(err,result){
+				result.budget = budget.budget;
+				callback(err,result);
+			});
+		}
+	],
+	function(err,result){
+		if(err){
+			handleError(res);
+		}else{
+			if(result){
+				res.json(200,{status:1,data:result});
+			}else{
+				res.send(200,{status:0});
+			}
+		}
+	});
+	
+}
 function handleError(res){
 	res.send(501,{error:'no data available'});
 }
