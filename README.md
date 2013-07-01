@@ -26,7 +26,7 @@ q. hire a staff -> DONE
 r. sack a staff -> DONE
 s. dummy for sponsorship page -> DONE
 
-s. view financial statements
+s. view financial statements -> DONE
 
 4. fix issue where the JSON Output unable to convert utf8 character correctly.
 
@@ -42,16 +42,10 @@ matchday | matchdate
 6. make sure the newly created team, must given an initial budget of  GBP xxxxx -> DONE
 
 
-s. view financial statements
+s. view financial statements -> DONE
 
 
 #ini menyusul
 i. view transfer window
 l. buy a player
 m. sell a player 
-
-
-SELECT item_name,item_type,SUM(amount) AS total
-FROM ffgame.game_team_expenditures 
-WHERE game_team_id=286 
-GROUP BY item_name;

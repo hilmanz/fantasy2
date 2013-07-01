@@ -20,6 +20,7 @@
     "crypto": "*",
     "connect-redis": "*",
     "redis": "*",
-    "optimist": "0.5.2"
+    "optimist": "0.5.2",
+    "winston": "*"
   }
 }
