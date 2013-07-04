@@ -1,0 +1,208 @@
+/*
+Theme Name: FANTASY FOOTBALL LEAGUE
+Version: 1.0
+Author: ACIT JAZZ 
+*/
+.p1{
+	bottom:40px;left:185px;
+}
+.p2{
+	bottom:150px; left:40px;
+}
+.p3{
+	bottom:150px; left:135px;
+}
+.p4{
+	bottom:150px; right:135px;
+}
+.p5{
+	bottom:150px; right:40px;
+}
+.p6{
+	bottom:320px;left:40px;
+}
+.p7{
+	bottom:320px; left:135px;
+}
+.p8{
+	bottom:320px; right:135px;
+}
+.p9{
+	bottom:320px; right:40px;
+}
+.p10{
+	bottom:500px; right:140px;
+}
+.p11{
+	bottom:500px; left:140px;
+}
+/*==== formation-4-4-2 ====*/
+.formation-4-4-2 .p1{
+	bottom:40px;left:185px;
+}
+.formation-4-4-2 .p2{
+	bottom:150px; left:40px;
+}
+.formation-4-4-2 .p3{
+	bottom:150px; left:135px;
+}
+.formation-4-4-2 .p4{
+	bottom:150px; right:135px;
+}
+.formation-4-4-2 .p5{
+	bottom:150px; right:40px;
+}
+.formation-4-4-2 .p6{
+	bottom:320px;left:40px;
+}
+.formation-4-4-2 .p7{
+	bottom:320px; left:135px;
+}
+.formation-4-4-2 .p8{
+	bottom:320px; right:135px;
+}
+.formation-4-4-2 .p9{
+	bottom:320px; right:40px;
+}
+.formation-4-4-2 .p10{
+	bottom:500px; right:140px;
+}
+.formation-4-4-2 .p11{
+	bottom:500px; left:140px;
+}
+/*==== formation-4-4-2-A ====*/
+.formation-4-4-2-A .p1{
+	bottom:40px;left:185px;
+}
+.formation-4-4-2-A .p2{
+	bottom:150px; left:40px;
+}
+.formation-4-4-2-A .p3{
+	bottom:150px; left:135px;
+}
+.formation-4-4-2-A .p4{
+	bottom:150px; right:135px;
+}
+.formation-4-4-2-A .p5{
+	bottom:150px; right:40px;
+}
+.formation-4-4-2-A .p6{
+	bottom:320px;left:70px;
+}
+.formation-4-4-2-A .p7{
+	bottom:320px; left:184px;
+}
+.formation-4-4-2-A .p8{
+	bottom:430px; right:184px;
+}
+.formation-4-4-2-A .p9{
+	bottom:320px; right:70px;
+}
+.formation-4-4-2-A .p10{
+	bottom:540px; right:140px;
+}
+.formation-4-4-2-A .p11{
+	bottom:540px; left:140px;
+}
+/*==== formation-4-3-3 ====*/
+.formation-4-3-3 .p1{
+	bottom:40px;left:185px;
+}
+.formation-4-3-3 .p2{
+	bottom:150px; left:40px;
+}
+.formation-4-3-3 .p3{
+	bottom:150px; left:135px;
+}
+.formation-4-3-3 .p4{
+	bottom:150px; right:135px;
+}
+.formation-4-3-3 .p5{
+	bottom:150px; right:40px;
+}
+.formation-4-3-3 .p6{
+	bottom:320px;left:100px;
+}
+.formation-4-3-3 .p7{
+	bottom:380px; left:184px;
+}
+.formation-4-3-3 .p8{
+	bottom:320px; right:100px;
+}
+.formation-4-3-3 .p9{
+	bottom:500px; right:40px;
+}
+.formation-4-3-3 .p10{
+	bottom:570px; right:184px;
+}
+.formation-4-3-3 .p11{
+	bottom:500px; left:40px;
+}
+/*==== formation-4-2-3-1 ====*/
+.formation-4-2-3-1 .p1{
+	bottom:40px;left:185px;
+}
+.formation-4-2-3-1 .p2{
+	bottom:150px; left:40px;
+}
+.formation-4-2-3-1 .p3{
+	bottom:150px; left:135px;
+}
+.formation-4-2-3-1 .p4{
+	bottom:150px; right:135px;
+}
+.formation-4-2-3-1 .p5{
+	bottom:150px; right:40px;
+}
+.formation-4-2-3-1 .p6{
+	bottom:320px;left:100px;
+}
+.formation-4-2-3-1 .p7{
+	bottom:450px; left:184px;
+}
+.formation-4-2-3-1 .p8{
+	bottom:320px; right:100px;
+}
+.formation-4-2-3-1 .p9{
+	bottom:450px; right:40px;
+}
+.formation-4-2-3-1 .p10{
+	bottom:570px; right:184px;
+}
+.formation-4-2-3-1 .p11{
+	bottom:450px; left:40px;
+}
+/*==== formation-3-5-2 ====*/
+.formation-3-5-2 .p1{
+	bottom:40px;left:185px;
+}
+.formation-3-5-2 .p2{
+	bottom:150px; left:70px;
+}
+.formation-3-5-2 .p3{
+	bottom:150px; left:184px;
+}
+.formation-3-5-2 .p4{
+	bottom:250px; right:120px;
+}
+.formation-3-5-2 .p5{
+	bottom:150px; right:70px;
+}
+.formation-3-5-2 .p6{
+	bottom:420px;left:70px;
+}
+.formation-3-5-2 .p7{
+	bottom:250px; left:120px;
+}
+.formation-3-5-2 .p8{
+	bottom:420px; right:184px;
+}
+.formation-3-5-2 .p9{
+	bottom:420px; right:70px;
+}
+.formation-3-5-2 .p10{
+	bottom:540px; right:140px;
+}
+.formation-3-5-2 .p11{
+	bottom:540px; left:140px;
+}
