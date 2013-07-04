@@ -6,5 +6,6 @@ exports.config = {
 		username:'root',
 		password:'root',
 		database:'ffgame'
-	}
+	},
+	port: 3002
 };

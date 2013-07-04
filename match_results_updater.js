@@ -50,12 +50,12 @@ conn.query("SELECT * FROM ffgame.game_fixtures \
 
 function generateReports(games){
 	async.eachSeries(games,function(item,callback){
-		console.log(item.game_id);
+		//console.log(item.game_id);
 		process_report(item.game_id,function(err,result){
 			callback();	
 		});
 	},function(err){
-		console.log('Done generating report.');
+		//console.log('Done generating report.');
 		match_results.done();
 		lineup_stats.done();
 		business_stats.done();
