@@ -32,6 +32,7 @@ App::uses('Controller', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
+
 	protected $FB_APP_ID;
 	protected $FB_SECRET;
 	public function beforeFilter(){
@@ -57,3 +58,4 @@ class AppController extends Controller {
 	}
 
 }
+

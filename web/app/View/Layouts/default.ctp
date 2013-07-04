@@ -1,63 +1,66 @@
-<?php
-/**
- *
- * PHP 5
- *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       app.View.Layouts
- * @since         CakePHP(tm) v 0.10.0.1076
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
- */
-
-$cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework');
-?>
 <!DOCTYPE html>
 <html>
 <head>
 	<?php echo $this->Html->charset(); ?>
-	<title>
-		<?php echo $cakeDescription ?>:
-		<?php echo $title_for_layout; ?>
-	</title>
-	<?php
-		echo $this->Html->meta('icon');
-
-		echo $this->Html->css('cake.generic');
-
-		echo $this->fetch('meta');
-		echo $this->fetch('css');
-		echo $this->fetch('script');
-	?>
+	<?php echo $this->element('meta'); ?>
 </head>
 <body>
 	<div id="fb-root"></div>
-	<div id="container">
-		<div id="header">
-			<h1><?php echo $this->Html->link($cakeDescription, 'http://cakephp.org'); ?></h1>
-		</div>
-		<div id="content">
+	<div id="effect"></div>
+   	<div id="flag"></div>
+ 	<div id="body">
+        <div id="universal">
+           <div id="header">
+                <a id="logo" href="index.php" title="SUPER SOCCER - FANTASY FOOTBALL LEAGUE">&nbsp;</a>
+            	
+                <div id="user-info">
+        			<a href="#" class="thumb40 fl"><img src="content/thumb/1_40.jpg" /></a>
+                    <div class="entry fl">
+                        <h3 class="username"><a href="#">Jason</a></h3>
+                        <span class="points red">1400 Pts</span>
+                        <span class="user-exp">Rookie</span>
+                    </div><!-- end .entry -->
+                </div>
+          		
+            </div><!-- end #header -->
+            
+            <div id="navigation">
+            	<ul>
+                	<li>
+                    	<a href="index.php?menu=team">MANAGE TEAM</a>
+                    </li>
+                	<li>
+                    	<a href="index.php?menu=my-club">MY CLUB</a>
+                    </li>
+                	<li>
+                    	<a href="index.php?menu=my-profile">MY PROFILE</a>
+                    </li>
+                	<li>
+                    	<a href="index.php?menu=leaderboard">LEADERBOARD</a>
+                    </li>
+                	<li>
+                    	<a href="index.php?menu=transfer-market">TRANSFER MARKET</a>
+                    </li>
+                	<li><a href="index.php?menu=faq">HELP & FAQ</a></li>
+                </ul>
+            </div>
+          
+            <div id="container">
+				<?php echo $this->fetch('content'); ?>
+            </div><!-- end #container -->
+            <div id="footer">
+                <div id="footNav">
+                    <ul>
+                        <li><a href="index.php?menu=about">ABOUT FANTASY FOOTBALL LEAGUE</a></li>
+                        <li><a href="index.php?menu=tos">term & conditions</a></li>
+                        <li><a href="index.php?menu=contact">contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div><!-- end #universal -->
+    </div><!-- end #body -->
+	<?php echo $this->element('js'); ?>
 
-			<?php echo $this->Session->flash(); ?>
-
-			<?php echo $this->fetch('content'); ?>
-		</div>
-		<div id="footer">
-			<?php echo $this->Html->link(
-					$this->Html->image('cake.power.gif', array('alt' => $cakeDescription, 'border' => '0')),
-					'http://www.cakephp.org/',
-					array('target' => '_blank', 'escape' => false)
-				);
-			?>
-		</div>
-	</div>
 	<?php echo $this->element('sql_dump'); ?>
 </body>
 </html>

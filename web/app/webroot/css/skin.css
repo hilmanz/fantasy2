@@ -1,0 +1,51 @@
+
+.jcarousel-direction-rtl {
+	direction: rtl;
+}
+.jcarousel-clip {
+    overflow: hidden;
+}
+.jcarousel-item {
+    width: 305px;
+    height: 175px;
+}
+.jcarousel-item-horizontal {
+	margin-left: 0;
+}
+.jcarousel-direction-rtl .jcarousel-item-horizontal {
+    margin-right: 0;
+}
+.jcarousel-item-placeholder {
+    background: #fff;
+    color: #000;
+}
+/*  Horizontal TANGGAL */
+.jcarousel-next-horizontal {
+    position: absolute;
+    top: 58px;
+    right: 0;
+    width:31px;
+    height:57px;
+    cursor: pointer;
+	z-index:100;
+    background: transparent url(../images/arrow_right2.png) no-repeat 0 0;
+}
+.jcarousel-next-horizontal:hover{
+    background-position: 0 -57px;
+}
+.jcarousel-prev-horizontal {
+    position: absolute;
+    top: 58px;
+    left: 0;
+    width:31px;
+    height:57px;
+    cursor: pointer;
+	z-index:100;
+    background: transparent url(../images/arrow_left2.png) no-repeat 0 0;
+}
+.jcarousel-prev-horizontal:hover{
+    background-position: 0 -57px;
+}
+.jcarousel-next-disabled-horizontal,.jcarousel-prev-disabled-horizontal{
+	opacity:0.5;
+}
