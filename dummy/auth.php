@@ -4,7 +4,7 @@
  */
 include_once "functions.php";
 session_start();
-$api_url = "http://localhost:3000";
+$api_url = "http://198.199.110.39:3002";
 $api_key = "1234567890";
 $salt = md5("hello world");
 

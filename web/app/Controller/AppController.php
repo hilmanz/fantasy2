@@ -32,4 +32,28 @@ App::uses('Controller', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
+	protected $FB_APP_ID;
+	protected $FB_SECRET;
+	public function beforeFilter(){
+		$this->set('FB_APP_ID',Configure::read('FB.APP_ID'));
+		$this->set('FB_SECRET',Configure::read('FB.SECRET'));
+		$this->set('FB_AFTER_LOGIN_URL',Configure::read('FB.AFTER_LOGIN_REDIRECT_URL'));
+		$this->set('DOMAIN',Configure::read('DOMAIN'));
+		$this->FB_APP_ID = Configure::read('FB.APP_ID');
+		$this->FB_SECRET = Configure::read('FB.SECRET');
+
+		if($this->isUserLogin()){
+			$this->set('USER_IS_LOGIN',true);
+			$this->set('USER_DATA',$this->getUserData);
+		}
+	}
+	public function isUserLogin(){
+		if($this->Session->read('Userlogin.is_login')==true){
+	  		return true;
+	  	}
+	}
+	public function getUserData(){
+		return $this->Session->read('Userlogin.info');
+	}
+
 }
