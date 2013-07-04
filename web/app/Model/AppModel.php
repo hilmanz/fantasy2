@@ -32,4 +32,35 @@ App::uses('Model', 'Model');
  * @package       app.Model
  */
 class AppModel extends Model {
+	protected $access_token = '';
+	public function api_post($uri,$params,$cookie_file='',$timeout=15){
+		App::import("Vendor","common");
+		if($this->getAccessToken()!=null){
+			$params['access_token'] = $this->getAccessToken();
+		}
+		$params['api_key'] = $this->getAPIKey();
+		$response = json_decode(curlPost($this->getAPIUrl().$uri,$params,$cookie_file,$timeout),true);
+		return $response;
+	}
+	public function api_call($uri,$params,$cookie_file='',$timeout=15){
+		App::import("Vendor","common");
+		if($this->getAccessToken()!=null){
+			$params['access_token'] = $this->getAccessToken();
+		}
+		$params['api_key'] = $this->getAPIKey();
+		$response = json_decode(curlGet($this->getAPIUrl().$uri,$params,$cookie_file,$timeout),true);
+		return $response;
+	}
+	public function getAccessToken(){
+		return $this->access_token;
+	}
+	public function setAccessToken($access_token){
+		$this->access_token = $access_token;
+	}
+	public function getAPIUrl(){
+		return Configure::read('API_URL');
+	}
+	public function getAPIKey(){
+		return Configure::read('API_KEY');
+	}
 }

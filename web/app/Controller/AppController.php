@@ -68,9 +68,7 @@ class AppController extends Controller {
 									$ckfile);
 
 		$challenge_code = $response['challenge_code'];
-
 		$request_code = sha1($this->getAPIKey().'|'.$challenge_code.'|'.$this->salt());
-
 		$response = $this->api_post('/auth',
 									array('request_code'=>$request_code),
 									$ckfile);
