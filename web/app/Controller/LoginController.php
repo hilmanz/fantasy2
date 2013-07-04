@@ -47,6 +47,8 @@ class LoginController extends AppController {
 
 	public function index(){
 		App::import("Vendor", "facebook/facebook");
+		
+
 		$fb = new Facebook(array(
 				  'appId'  => $this->FB_APP_ID,
 				  'secret' => $this->FB_SECRET)
@@ -56,31 +58,15 @@ class LoginController extends AppController {
 			$fb_id = $fb->getUser();
 			
 			if(intval($fb_id) > 0){
-				//$user = $this->User->findByFb_id($fb_id);
-				/*
-				if(!isset($user['User'])){
-					//register
-					$this->addFromFb($fb->api('/me'));
-					$user = $this->User->findByFb_id($fb_id);
-					$this->Session->write('Userlogin.is_login', true);
-					$this->Session->write('Userlogin.info',array('id'=>$user['User']['id'],
-												'username'=>$user['User']['username'],
-												'name'=>$user['User']['name'],
-												'role'=>$user['User']['role']));
-					$this->redirect('/users/edit');
-				}else{
-					$this->Session->write('Userlogin.is_login', true);
-					$this->Session->write('Userlogin.info',array('id'=>$user['User']['id'],
-												'username'=>$user['User']['username'],
-												'name'=>$user['User']['name'],
-												'role'=>$user['User']['role']));
-					$this->redirect('/');
-				}*/
+
+				
+				
 				$this->Session->write('Userlogin.is_login', true);
-				$this->Session->write('Userlogin.info',array('id'=>1,
+				$this->Session->write('Userlogin.info',array('fb_id'=>$fb_id,
 											'username'=>'foo',
 											'name'=>'Lt. Foo',
-											'role'=>1));
+											'role'=>1,
+											'access_token'=>$this->getAccessToken()));
 				$this->redirect('/login/success');
 			}else{
 				$this->redirect("/login/error");
@@ -91,9 +77,12 @@ class LoginController extends AppController {
 		die();
 	}
 	private function addFromFb($me){
-
+		$userInfo = $this->getUserData();
+		$access_token = $this->getAccessToken();
 	}
+
 	public function success(){
+		$access_token = $this->getAccessToken();
 		
 	}
 	public function error(){

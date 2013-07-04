@@ -233,3 +233,42 @@ function unique_id($id)
 {
   return $id;
 }
+function curlGet($url,$params,$cookie_file='',$timeout=15){
+  if(count($params) > 0){
+    $url .= "?".http_build_query($params);
+  }
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL,$url);
+  curl_setopt($ch,CURLOPT_TIMEOUT,$timeout);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);  
+  curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  if($cookie_file!=''){
+    curl_setopt($ch,CURLOPT_COOKIEJAR, $cookie_file);
+    curl_setopt($ch,CURLOPT_COOKIEFILE, $cookie_file); 
+  }
+  $response = curl_exec ($ch);
+  $info = curl_getinfo($ch);
+  curl_close ($ch);
+  return $response;
+}
+function curlPost($url,$params,$cookie_file='',$timeout=15){
+  
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL,$url);
+  curl_setopt($ch,CURLOPT_TIMEOUT,$timeout);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);  
+  curl_setopt($ch, CURLOPT_POST, 1);
+  curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+  
+  if($cookie_file!=''){
+    curl_setopt($ch,CURLOPT_COOKIEJAR, $cookie_file);
+    curl_setopt($ch,CURLOPT_COOKIEFILE, $cookie_file); 
+  }
+  $response = curl_exec ($ch);
+  $info = curl_getinfo($ch);
+  curl_close ($ch);
+  return $response;
+}

@@ -42,7 +42,7 @@ class AppController extends Controller {
 		$this->set('DOMAIN',Configure::read('DOMAIN'));
 		$this->FB_APP_ID = Configure::read('FB.APP_ID');
 		$this->FB_SECRET = Configure::read('FB.SECRET');
-
+		$this->initAccessToken();
 		if($this->isUserLogin()){
 			$this->set('USER_IS_LOGIN',true);
 			$this->set('USER_DATA',$this->getUserData);
@@ -56,6 +56,58 @@ class AppController extends Controller {
 	public function getUserData(){
 		return $this->Session->read('Userlogin.info');
 	}
+	public function getAccessToken(){
 
+		$access_token = $this->Session->read('access_token');
+		
+		return $access_token;
+	}
+	public function initAccessToken(){
+		$ckfile = tempnam ("/tmp", "CURLCOOKIE");
+		$response = $this->api_post('/auth',array(),
+									$ckfile);
+
+		$challenge_code = $response['challenge_code'];
+
+		$request_code = sha1($this->getAPIKey().'|'.$challenge_code.'|'.$this->salt());
+
+		$response = $this->api_post('/auth',
+									array('request_code'=>$request_code),
+									$ckfile);
+
+		unlink($ckfile);
+		$this->Session->write('access_token',$response['access_token']);
+		$access_token = $this->Session->read('access_token');
+		return $access_token;
+	}
+	public function getAPIUrl(){
+		return Configure::read('API_URL');
+	}
+	public function getAPIKey(){
+		return Configure::read('API_KEY');
+	}
+
+
+	public function api_post($uri,$params,$cookie_file='',$timeout=15){
+		App::import("Vendor","common");
+		if($this->getAccessToken()!=null){
+			$params['access_token'] = $this->getAccessToken();
+		}
+		$params['api_key'] = $this->getAPIKey();
+		$response = json_decode(curlPost($this->getAPIUrl().$uri,$params,$cookie_file,$timeout),true);
+		return $response;
+	}
+	public function api_call($uri,$params,$cookie_file='',$timeout=15){
+		App::import("Vendor","common");
+		if($this->getAccessToken()!=null){
+			$params['access_token'] = $this->getAccessToken();
+		}
+		$params['api_key'] = $this->getAPIKey();
+		$response = json_decode(curlGet($this->getAPIUrl().$uri,$params,$cookie_file,$timeout),true);
+		return $response;
+	}
+	public function salt(){
+		return Configure::read('API_SALT');
+	}
 }
 
