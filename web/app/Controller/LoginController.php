@@ -56,7 +56,6 @@ class LoginController extends AppController {
 
 		try{
 			$fb_id = $fb->getUser();
-			
 			if(intval($fb_id) > 0){
 
 				
@@ -67,7 +66,7 @@ class LoginController extends AppController {
 											'name'=>'Lt. Foo',
 											'role'=>1,
 											'access_token'=>$this->getAccessToken()));
-				$this->redirect('/login/success');
+				$this->redirect('/profile/details');
 			}else{
 				$this->redirect("/login/error");
 			}
@@ -83,7 +82,7 @@ class LoginController extends AppController {
 
 	public function success(){
 		$access_token = $this->getAccessToken();
-		
+		var_dump($this->getUserData());
 	}
 	public function error(){
 		

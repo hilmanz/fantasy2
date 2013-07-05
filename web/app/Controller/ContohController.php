@@ -56,7 +56,7 @@ class ContohController extends AppController {
 		//semua model harus di set accessToken
 		$this->Contoh->setAccessToken($this->getAccessToken());
 		$team_id = 1; //ceritanya team_id nya 1.
-		print "budgetnya : ".$this->Contoh->getBudget($team_id));
+		print "budgetnya : ".$this->Contoh->getBudget($team_id);
 		die();
 	}
 }
