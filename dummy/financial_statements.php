@@ -5,7 +5,7 @@
 include_once "functions.php";
 session_start();
 $access_token = $_SESSION['access_token'];
-$api_url = "http://localhost:3000";
+$api_url = "http://198.199.110.39:3002";
 $fb_id = "123123123";
 $player_id = "p19557";
 $team_id = "296";
