@@ -33,7 +33,7 @@
                     	<a href="index.php?menu=my-club">MY CLUB</a>
                     </li>
                 	<li>
-                    	<a href="index.php?menu=my-profile">MY PROFILE</a>
+                    	<a href="profile">MY PROFILE</a>
                     </li>
                 	<li>
                     	<a href="index.php?menu=leaderboard">LEADERBOARD</a>

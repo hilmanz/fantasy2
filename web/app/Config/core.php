@@ -349,10 +349,10 @@ Cache::config('_cake_model_', array(
 
 
 //Additional configurations
-Configure::write('FB.APP_ID','491900054220103');
-Configure::write('FB.SECRET','da627aba8b812be62ba21acc9d96965b');
-Configure::write('FB.AFTER_LOGIN_REDIRECT_URL','http://localhost/fantasy/login');
-Configure::write('DOMAIN','localhost/fantasy');
+Configure::write('FB.APP_ID','188142638017915');
+Configure::write('FB.SECRET','7093966539bf3a4362ad5f7ce8f84994');
+Configure::write('FB.AFTER_LOGIN_REDIRECT_URL','http://localhost/football_fantasy/web/login');
+Configure::write('DOMAIN','localhost/football_fantasy/web');
 Configure::write('API_URL','http://198.199.110.39:3002');
 Configure::write('API_KEY','1234567890');
 Configure::write('API_SALT',md5("hello world"));
