@@ -11,8 +11,8 @@
  	<div id="body">
         <div id="universal">
            <div id="header">
-                <a id="logo" href="index.php" title="SUPER SOCCER - FANTASY FOOTBALL LEAGUE">&nbsp;</a>
-            	
+                <!--<a id="logo" href="index.php" title="SUPER SOCCER - FANTASY FOOTBALL LEAGUE">&nbsp;</a>-->
+            	<?php if($USER_IS_LOGIN):?>
                 <div id="user-info">
         			<a href="#" class="thumb40 fl"><img src="content/thumb/1_40.jpg" /></a>
                     <div class="entry fl">
@@ -21,39 +21,42 @@
                         <span class="user-exp">Rookie</span>
                     </div><!-- end .entry -->
                 </div>
-          		
+          		<?php endif;?>
             </div><!-- end #header -->
-            
-            <div id="navigation">
-            	<ul>
-                	<li>
-                    	<a href="index.php?menu=team">MANAGE TEAM</a>
-                    </li>
-                	<li>
-                    	<a href="index.php?menu=my-club">MY CLUB</a>
-                    </li>
-                	<li>
-                    	<a href="profile">MY PROFILE</a>
-                    </li>
-                	<li>
-                    	<a href="index.php?menu=leaderboard">LEADERBOARD</a>
-                    </li>
-                	<li>
-                    	<a href="index.php?menu=transfer-market">TRANSFER MARKET</a>
-                    </li>
-                	<li><a href="index.php?menu=faq">HELP & FAQ</a></li>
-                </ul>
-            </div>
-          
+            <?php
+                if($USER_IS_LOGIN):
+            ?>
+                <div id="navigation">
+                	<ul>
+                    	<li>
+                        	<a href="/team">MANAGE TEAM</a>
+                        </li>
+                    	<li>
+                        	<a href="/club">MY CLUB</a>
+                        </li>
+                    	<li>
+                        	<a href="/profile">MY PROFILE</a>
+                        </li>
+                    	<li>
+                        	<a href="/leaderboard">LEADERBOARD</a>
+                        </li>
+                    	<li>
+                        	<a href="/market">TRANSFER MARKET</a>
+                        </li>
+                    	<li><a href="/pages/faq">HELP & FAQ</a></li>
+                    </ul>
+                </div>
+           
+            <?php endif;?>
             <div id="container">
 				<?php echo $this->fetch('content'); ?>
             </div><!-- end #container -->
             <div id="footer">
                 <div id="footNav">
-                    <ul>
+                    <ul><!--
                         <li><a href="index.php?menu=about">ABOUT FANTASY FOOTBALL LEAGUE</a></li>
                         <li><a href="index.php?menu=tos">term & conditions</a></li>
-                        <li><a href="index.php?menu=contact">contact</a></li>
+                        <li><a href="index.php?menu=contact">contact</a></li>-->
                     </ul>
                 </div>
             </div>

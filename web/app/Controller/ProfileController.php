@@ -44,14 +44,17 @@ class ProfileController extends AppController {
  * @var array
  */
 	public $uses = array();
-
+	public function beforeFilter(){
+		parent::beforeFilter();
+		$this->loadModel('ProfileModel');
+		$this->ProfileModel->setAccessToken($this->getAccessToken());
+	}
 	public function index(){
 		$this->redirect("/profile/details");
 	}
 	private function getBudget($team_id){
 		/*Budget*/
-		$this->loadModel('ProfileModel');
-		$this->ProfileModel->setAccessToken($this->getAccessToken());
+		
 		$team_id = 1; // sample
 		$this->set('team_bugdet',$this->ProfileModel->getBudget($team_id));
 	}
@@ -95,6 +98,41 @@ class ProfileController extends AppController {
 		}
 
 	}
+	public function register_team(){
+		$userData = $this->getUserData();
+		if($this->request->is('post')){
+			if(strlen($this->request->data['team_name']) > 0
+				&& strlen($this->request->data['team_id']) > 0
+				&& strlen($this->request->data['fb_id']) > 0){
+				$this->Session->write('TeamRegister',$this->request->data);
+				$this->redirect('/profile/select_player');
+			}else{
+				$this->Session->setFlash('Kamu harus memilih salah satu team terlebih dahulu !');
+				$this->redirect('/profile/team_error');
+			}
+			
+		}else{
+			$teams = $this->Game->getTeams();
+			$this->set('team_list',$teams);
+			$this->set('INITIAL_BUDGET',Configure::read('INITIAL_BUDGET'));
+		}
+	}
+	/**
+	/*@todo harus pastiin bahwa halaman ini hanya bisa diakses kalo user uda ada register
+	*/
+	public function select_player(){
+		$userData = $this->getUserData();
+
+		if(is_array($this->Session->read('TeamRegister'))){
+			$userData = $this->getUserData();
+			$this->set('INITIAL_BUDGET',Configure::read('INITIAL_BUDGET'));
+			$teams = $this->Game->getTeams();
+			$this->set('team_list',$teams);
+			$this->set('selected_team',$this->Session->read('TeamRegister'));
+		}else{
+			$this->redirect('/profile/register_team');
+		}
+	}
 	public function players(){
 		$this->getBudget($team_id);
 	}
@@ -111,5 +149,61 @@ class ProfileController extends AppController {
 	}
 	public function invite_friends(){
 
+	}
+
+	public function register(){
+		$this->loadModel('User');
+	
+		$this->set('INITIAL_BUDGET',Configure::read('INITIAL_BUDGET'));
+		$user_fb = $this->Session->read('UserFBDetail');
+		$this->set('user',$user_fb);
+		
+		if($this->request->is('post')){
+			$data = array('fb_id'=>$user_fb['id'],
+						  'name'=>$this->request->data['name'],
+						  'email'=>$this->request->data['email'],
+						  'location'=>$this->request->data['city'],
+						  'register_date'=>date("Y-m-d H:i:s"),
+						  'survey_about'=>$this->request->data['hearffl'],
+						  'survey_daily_email'=>$this->request->data['daylyemail'],
+						  'survey_daily_sms'=>$this->request->data['daylysms'],
+						  'survey_has_play'=>$this->request->data['firstime'],
+						  'n_status'=>1,
+						  'register_completed'=>0
+						  );
+			//make sure that the fb_id is unregistered
+			$check = $this->User->findByFb_id($user_fb['id']);
+
+			if(isset($check['User'])){
+				$this->Session->destroy();
+				$this->Session->setFlash('Mohon maaf, akun kamu sudah terdaftar sebelumnya. !');
+				$this->redirect('/profile/error');
+			}else{
+				$this->User->create();
+				$rs = $this->User->save($data);
+				if(isset($rs['User'])){
+
+					//register user into gameAPI.
+					
+					$response = $this->ProfileModel->setProfile($data);
+					if($response['status']==1){
+						$this->redirect("/profile/teams");
+					}else{
+						$this->User->delete($this->User->id);
+						$this->Session->setFlash('Mohon maaf, tidak berhasil mendaftarkan akun kamu. 
+													Silahkan coba kembali beberapa saat lagi!');
+						$this->redirect('/profile/error');
+					}
+				}
+			}
+		}
+	}
+	public function error(){
+
+		$this->render('error');
+	}
+	public function team_error(){
+		$this->set('error_type','team');
+		$this->render('error');
 	}
 }

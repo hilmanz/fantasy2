@@ -33,7 +33,10 @@ App::uses('Model', 'Model');
  */
 class AppModel extends Model {
 	protected $access_token = '';
-	public function api_post($uri,$params,$cookie_file='',$timeout=15){
+	public function api_post($uri,$params=null,$cookie_file='',$timeout=15){
+		if($params==null){
+			$params = array();
+		}
 		App::import("Vendor","common");
 		if($this->getAccessToken()!=null){
 			$params['access_token'] = $this->getAccessToken();
@@ -42,7 +45,10 @@ class AppModel extends Model {
 		$response = json_decode(curlPost($this->getAPIUrl().$uri,$params,$cookie_file,$timeout),true);
 		return $response;
 	}
-	public function api_call($uri,$params,$cookie_file='',$timeout=15){
+	public function api_call($uri,$params=null,$cookie_file='',$timeout=15){
+		if($params==null){
+			$params = array();
+		}
 		App::import("Vendor","common");
 		if($this->getAccessToken()!=null){
 			$params['access_token'] = $this->getAccessToken();

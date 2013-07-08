@@ -47,8 +47,6 @@ class LoginController extends AppController {
 
 	public function index(){
 		App::import("Vendor", "facebook/facebook");
-		
-
 		$fb = new Facebook(array(
 				  'appId'  => $this->FB_APP_ID,
 				  'secret' => $this->FB_SECRET)
@@ -57,29 +55,66 @@ class LoginController extends AppController {
 		try{
 			$fb_id = $fb->getUser();
 			if(intval($fb_id) > 0){
-
-				
-				
+				$this->Session->write('UserFBDetail',$fb->api('/me'));
 				$this->Session->write('Userlogin.is_login', true);
 				$this->Session->write('Userlogin.info',array('fb_id'=>$fb_id,
-											'username'=>'foo',
-											'name'=>'Lt. Foo',
+											'username'=>'',
+											'name'=>'',
 											'role'=>1,
 											'access_token'=>$this->getAccessToken()));
-				$this->redirect('/profile/details');
+				$this->afterLogin();
 			}else{
 				$this->redirect("/login/error");
 			}
 		}catch(Exception $e){
+			pr($e->getMessage());
 			$this->redirect("/login/error?e=1");	
 		}
 		die();
 	}
-	private function addFromFb($me){
-		$userInfo = $this->getUserData();
-		$access_token = $this->getAccessToken();
+	private function afterLogin(){
+		$this->loadModel('User');
+		
+		$user_session = $this->Session->read('Userlogin.info');
+		//1. check if the user is already registered in database
+		$rs = $this->User->findByFb_id($user_session['fb_id']);
+		if($rs['User']['fb_id']==$user_session['fb_id']){
+			$user_session['fb_id'] = $rs['User']['fb_id'];
+			$user_session['username'] = $rs['User']['name'];
+			$this->Session->write('Userlogin.info',$user_session);
+			//get team 
+			$team = $this->Game->getTeam($user_session['fb_id']);
+			if($user_session['team']==null){
+				$this->redirect('/profile/register_team');
+			}else{
+				$this->redirect('/club');
+			}
+		}else{
+			$this->redirect('/profile/register');
+		}
 	}
-
+	public function test(){
+		$this->loadModel('User');
+		
+		$user_session = $this->Session->read('Userlogin.info');
+		//1. check if the user is already registered in database
+		$rs = $this->User->findByFb_id($user_session['fb_id']);
+		if($rs['User']['fb_id']==$user_session['fb_id']){
+			$user_session['fb_id'] = $rs['User']['fb_id'];
+			$user_session['username'] = $rs['User']['name'];
+			//get team 
+			$user_session['team'] = $this->Game->getTeam($user_session['fb_id']);
+			$this->Session->write('Userlogin.info',$user_session);
+			if($user_session['team']==null){
+				$this->redirect('/profile/team');
+			}else{
+				$this->redirect('/club');
+			}
+			
+		}else{
+			$this->redirect('/profile/register');
+		}
+	}
 	public function success(){
 		$access_token = $this->getAccessToken();
 		var_dump($this->getUserData());

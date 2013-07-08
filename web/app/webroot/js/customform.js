@@ -26,7 +26,7 @@ Visit http://ryanfait.com/ for more information.
 var checkboxHeight = "25";
 var radioHeight = "25";
 var selectWidth = "190";
-
+var selectedVal = {};
 
 /* No need to change anything after this */
 
@@ -136,7 +136,10 @@ var Custom = {
 		option = this.getElementsByTagName("option");
 		for(d = 0; d < option.length; d++) {
 			if(option[d].selected == true) {
+				selectedVal[this.name] = {label:option[d].childNodes[0].nodeValue,
+										  value:option[d].value};
 				document.getElementById("select" + this.name).childNodes[0].nodeValue = option[d].childNodes[0].nodeValue;
+				$("select[name='"+this.name+"']").trigger('custom_select', selectedVal[this.name]);
 			}
 		}
 	}

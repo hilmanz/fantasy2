@@ -1,7 +1,5 @@
 // JAVASCRIPT FFL
 // ACIT JAZZ v.1.2
-
-
 $("#formation-select").change(function () {
   $("#the-formation").removeClass();
   var str = "";
@@ -152,10 +150,11 @@ $(function() {
 		},
 		
 		// the jScrollPane instance
-		jspapi 			= $el.data('jsp');
+		jspapi 	= $el.data('jsp');
 		
 	// extend the jScollPane by merging	
 	$.extend( true, jspapi, extensionPlugin );
 	jspapi.addHoverFunc();
 
 });
+

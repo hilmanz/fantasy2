@@ -45,8 +45,12 @@ class AppController extends Controller {
 		$this->initAccessToken();
 		if($this->isUserLogin()){
 			$this->set('USER_IS_LOGIN',true);
-			$this->set('USER_DATA',$this->getUserData);
+			$this->set('USER_DATA',$this->getUserData());
+		}else{
+			$this->set('USER_IS_LOGIN',false);
 		}
+		$this->loadModel('Game');
+		$this->Game->setAccessToken($this->getAccessToken());
 	}
 	public function isUserLogin(){
 		if($this->Session->read('Userlogin.is_login')==true){

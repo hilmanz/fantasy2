@@ -1,6 +1,6 @@
 <head>
 	<meta charset="utf-8">
-	<title>SUPER SOCCER - FANTASY FOOTBALL LEAGUE</title>
+	<!-- <title>SUPER SOCCER - FANTASY FOOTBALL LEAGUE</title> -->
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
@@ -8,15 +8,20 @@
 
 	<!-- Le styles -->
 	<?php echo $this->Html->css(
-			  array('ffl','../js/fancybox/jquery.fancybox-1.3.4'),
+			  array('ffl','fancybox/jquery.fancybox-1.3.4'),
 		null,array('media'=>'all')); 
 	?>
+	<?php echo $this->Html->script(
+	  array('jquery-1.9.1',
+			'jquery-ui.min',
+	  ));
+?>
 	<!--[if IE 6]>
 	<link rel="stylesheet" type="text/css" href="js/slider/themes/default/jquery.slider.ie6.css" />
 	<?php echo $this->Html->css(
-			  array('../js/slider/themes/default/jquery.slider.ie6'
+			  array('slider/themes/default/jquery.slider.ie6'
 			  ),
-		null,array('media'=>'all')); 
+				null,array('media'=>'all')); 
 	?>
 	<![endif]-->
 	<!--[if gte IE 9]>
