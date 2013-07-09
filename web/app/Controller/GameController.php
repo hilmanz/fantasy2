@@ -69,5 +69,5 @@ class GameController extends AppController {
 		print json_encode($lineup);
 		die();
 	}
-	
+
 }

@@ -54,13 +54,13 @@
                 <a class="view-more" href="#">View Leaderboard</a>
             </div><!-- end .widget -->
             <div class="widget tr action-button">
-                <a class="button" href="#">Save Information</a>
+                <a class="button" href="#">Save Formations</a>
             </div><!-- end .widget -->
         </div><!-- end .box4 -->
         <div class="box3 tr fl">
             <div class="field-container">
                 <div class="selectFormation">
-                <select id="formation-select" class="styled">
+                <select name="formations" id="formation-select" class="styled">
                     <option>Select Formation</option>
                     <option>4-4-2</option>
                     <option>4-4-2-A</option>
@@ -126,7 +126,9 @@ $(document).ready(function(){
             $("#formation-select option").filter(function() {
                 return $(this).text() == data.formation; 
             }).prop('selected', true);
-
+            $("#the-formation").removeClass().addClass('formation-'+data.formation);
+            selectedVal['formations'] = {label:data.formation,
+                                        value:data.formation};
             if(data.lineup.length==0){
                 render_view(defaultformation,'#the-formation',{});
             }
