@@ -1,6 +1,6 @@
 <?php
 /**
- * Static content controller.
+ * Profile Controller
  *
  * This file will render views from views/pages/
  *
@@ -169,16 +169,28 @@ class ProfileController extends AppController {
 			'team_id'=>Sanitize::paranoid($team['team_id']),
 			'fb_id'=>Sanitize::paranoid($userData['fb_id'])
 		);
+		
 		foreach($players as $n=>$p){
 				$players[$n] = Sanitize::paranoid(trim($p));
 		}
 		$data['players'] = json_encode($players);
+
+
 		$result = $this->Game->create_team($data);
 		if(isset($result['error'])){
 			$this->Session->setFlash('Sorry, cannot create another team. Your team probably already created !');
 			$this->redirect('/profile/team_error');
 		}else{
+			$this->loadModel('User');			
+			$user = $this->User->findByFb_id($userData['fb_id']);
 			$userData['team'] = $this->Game->getTeam(Sanitize::paranoid($userData['fb_id']));
+			$this->loadModel('Team');
+			$this->Team->create();
+			$InsertTeam = $this->Team->save(array(
+				'user_id'=>$user['User']['id'],
+				'team_id'=>Sanitize::paranoid($team['team_id']),
+				'team_name'=>Sanitize::paranoid($team['team_name'])
+			));
 			$this->Session->write('Userlogin.info',$userData);
 			$this->Session->write('TeamRegister',null);
 			$this->Session->setFlash('Congratulations, Your team is ready !');
