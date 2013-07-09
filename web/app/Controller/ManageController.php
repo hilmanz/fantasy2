@@ -107,6 +107,9 @@ class ManageController extends AppController {
 		$this->set('officials',$officials);
 		$this->set('weekly_salaries',$total_weekly_salary);
 	}
+	public function team(){
+		
+	}
 	public function error(){
 		$this->render('error');
 	}
