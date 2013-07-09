@@ -87,9 +87,6 @@
 	               <li><a href="#/team">Fill in Your Team</a></li>
 	               <li><a href="#/player">Fill in Your Players</a></li>
 	               <li><a href="#/staff">Fill in Your Staff</a></li>
-	               <li><a href="#/club">Fill in Your Club</a></li>
-	               <li><a href="#/formation">Set Your First Formation</a></li>
-	               <li><a href="#/invite_friends">Invite Friends</a></li>
 	            </ul>
 	        </div><!-- end .nav-side -->
 	    </div><!-- end .widget -->

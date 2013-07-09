@@ -59,9 +59,7 @@
 	               <li class="current"><a href="#">Fill in Your Team</a></li>
 	               <li><a href="#">Fill in Your Players</a></li>
 	               <li><a href="#">Fill in Your Staff</a></li>
-	               <li><a href="#">Fill in Your Club</a></li>
-	               <li><a href="#">Set Your First Formation</a></li>
-	               <li><a href="#">Invite Friends</a></li>
+	              
 	            </ul>
 	        </div><!-- end .nav-side -->
 	    </div><!-- end .widget -->

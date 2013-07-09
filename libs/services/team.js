@@ -34,12 +34,17 @@ exports.create = function(req,res){
 		players: JSON.parse(req.body.players),
 	},
 	function(err,result){
-		if(err) handleError(res);
-		if(result!=null){
-			res.send(200,{status:1,message:'Your team has been successfully created !'});
+		if(err){
+			handleError(res);
 		}else{
-			res.send(200,{status:0,message:'Oops, cannot create the team.'});
+			if(result!=null){
+				res.send(200,{status:1,message:'Your team has been successfully created !'});
+			}else{
+				res.send(200,{status:0,message:'Oops, cannot create the team.'});
+			}	
 		}
+		
+		
 	});
 }
 exports.getUserTeam = function(req,res){

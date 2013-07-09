@@ -20,7 +20,7 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 App::uses('AppController', 'Controller');
-
+App::uses('Sanitize', 'Utility');
 /**
  * Static content controller
  *
@@ -46,11 +46,55 @@ class ProfileController extends AppController {
 	public $uses = array();
 	public function beforeFilter(){
 		parent::beforeFilter();
+		$userData = $this->getUserData();
 		$this->loadModel('ProfileModel');
 		$this->ProfileModel->setAccessToken($this->getAccessToken());
 	}
+	public function hasTeam(){
+		$userData = $this->getUserData();
+		if(is_array($userData['team'])){
+			return true;
+		}
+	}
 	public function index(){
-		$this->redirect("/profile/details");
+		if($this->hasTeam()){
+			$userData = $this->getUserData();
+			
+			$this->loadModel('User');
+			//data user
+			$user = $this->User->findByFb_id($userData['fb_id']);
+			$this->set('user',$user['User']);
+			//budget
+			$budget = $this->Game->getBudget($userData['team']['id']);
+			$this->set('team_bugdet',$budget);
+			$this->render('details');
+		}else{
+			$this->redirect('/');
+		}
+		
+	}
+
+	public function update(){
+		$data = array(
+			'name'=>$this->request->data['name'],
+			'email'=>$this->request->data['email'],
+			'city'=>$this->request->data['city']
+		);
+		$userData = $this->getUserData();
+		$this->loadModel('User');
+		$user = $this->User->findByFb_id($userData['fb_id']);
+
+		$this->User->id = $user['User']['id'];
+		$rs = $this->User->save($data);
+		if(isset($rs)){
+			$this->Session->setFlash('Your profile has been changed successfully!');
+			$this->redirect('/profile/success');
+		}else{
+			$this->Session->setFlash('Cannot save your changes, please try again later !');
+			$this->redirect('/profile/error');
+		}
+	
+		die();
 	}
 	private function getBudget($team_id){
 		/*Budget*/
@@ -117,6 +161,30 @@ class ProfileController extends AppController {
 			$this->set('INITIAL_BUDGET',Configure::read('INITIAL_BUDGET'));
 		}
 	}
+	public function create_team(){
+		$userData = $this->getUserData();
+		$team = $this->Session->read('TeamRegister');
+		$players = explode(',',$this->request->data['players']);
+		$data = array(
+			'team_id'=>Sanitize::paranoid($team['team_id']),
+			'fb_id'=>Sanitize::paranoid($userData['fb_id'])
+		);
+		foreach($players as $n=>$p){
+				$players[$n] = Sanitize::paranoid(trim($p));
+		}
+		$data['players'] = json_encode($players);
+		$result = $this->Game->create_team($data);
+		if(isset($result['error'])){
+			$this->Session->setFlash('Sorry, cannot create another team. Your team probably already created !');
+			$this->redirect('/profile/team_error');
+		}else{
+			$userData['team'] = $this->Game->getTeam(Sanitize::paranoid($userData['fb_id']));
+			$this->Session->write('Userlogin.info',$userData);
+			$this->Session->write('TeamRegister',null);
+			$this->Session->setFlash('Congratulations, Your team is ready !');
+			$this->redirect('/profile/success');
+		}
+	}
 	/**
 	/*@todo harus pastiin bahwa halaman ini hanya bisa diakses kalo user uda ada register
 	*/
@@ -132,17 +200,6 @@ class ProfileController extends AppController {
 		}else{
 			$this->redirect('/profile/register_team');
 		}
-	}
-	public function players(){
-		$this->getBudget($team_id);
-	}
-	public function staffs(){
-		$this->getBudget($team_id);
-
-	}
-	public function clubs(){
-		$this->getBudget($team_id);
-
 	}
 	public function formations(){
 
@@ -184,10 +241,11 @@ class ProfileController extends AppController {
 				if(isset($rs['User'])){
 
 					//register user into gameAPI.
-					
+				
 					$response = $this->ProfileModel->setProfile($data);
+					
 					if($response['status']==1){
-						$this->redirect("/profile/teams");
+						$this->redirect("/profile/register_team");
 					}else{
 						$this->User->delete($this->User->id);
 						$this->Session->setFlash('Mohon maaf, tidak berhasil mendaftarkan akun kamu. 
@@ -199,11 +257,13 @@ class ProfileController extends AppController {
 		}
 	}
 	public function error(){
-
 		$this->render('error');
 	}
 	public function team_error(){
 		$this->set('error_type','team');
 		$this->render('error');
+	}
+	public function success(){
+		$this->render('success');
 	}
 }

@@ -37,4 +37,9 @@ class Game extends AppModel {
 		$response = $this->api_call('/players/'.$team_id);
 		return $response;
 	}
+	public function create_team($data){
+		$response = $this->api_post('/create_team',$data);
+		pr($response);
+		return $response;
+	}
 }

@@ -53,4 +53,5 @@ class GameController extends AppController {
 		print json_encode($this->Game->getMasterTeam($team_id));
 		die();
 	}
+	
 }

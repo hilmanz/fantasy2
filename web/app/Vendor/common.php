@@ -249,6 +249,9 @@ function curlGet($url,$params,$cookie_file='',$timeout=15){
   }
   $response = curl_exec ($ch);
   $info = curl_getinfo($ch);
+  if($info['http_code']==0){
+    $response = json_encode(array('error'=>'unable to connect to web service !'));
+  }
   curl_close ($ch);
   return $response;
 }
@@ -269,6 +272,9 @@ function curlPost($url,$params,$cookie_file='',$timeout=15){
   }
   $response = curl_exec ($ch);
   $info = curl_getinfo($ch);
+  if($info['http_code']==0){
+    $response = json_encode(array('error'=>'unable to connect to web service !'));
+  }
   curl_close ($ch);
   return $response;
 }

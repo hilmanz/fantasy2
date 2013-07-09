@@ -81,7 +81,10 @@ function create(data,callback){
 							VALUES\
 							(?,?,NOW(),1);",[user.id,data.team_id],function(err,rs){
 								console.log(this.sql);
-								callback(null,rs);
+								if(err){
+									console.log(err.message);
+								}
+								callback(err,rs);
 							});
 				}
 			},
@@ -122,6 +125,7 @@ function create(data,callback){
 			}
 		],
 		function(err,result){
+			
 			conn.end(function(e){
 				callback(err,result);	
 			});
@@ -175,14 +179,18 @@ function getUserTeam(fb_id,done){
 				
 			},
 			function(user,callback){
-				conn.query("SELECT * FROM ffgame.game_teams WHERE user_id = ? LIMIT 1",[
-					user.id
-				],
-					function(err,team){
-						console.log(team);
-						console.log(this.sql);
-						callback(err,team[0]);
-				});
+				if(typeof user.id !=='undefined'){
+					conn.query("SELECT * FROM ffgame.game_teams WHERE user_id = ? LIMIT 1",[
+						user.id
+					],
+						function(err,team){
+							console.log(team);
+							console.log(this.sql);
+							callback(err,team[0]);
+					});
+				}else{
+					callback(new Error('user not found'),[]);
+				}
 			},
 		],
 		function(err,result){

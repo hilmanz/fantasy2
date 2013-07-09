@@ -353,7 +353,7 @@ Configure::write('FB.APP_ID','491900054220103');
 Configure::write('FB.SECRET','da627aba8b812be62ba21acc9d96965b');
 Configure::write('FB.AFTER_LOGIN_REDIRECT_URL','http://localhost/fantasy/login');
 Configure::write('DOMAIN','localhost/fantasy');
-Configure::write('API_URL','http://198.199.110.39:3002');
+Configure::write('API_URL','http://localhost:3002');
 Configure::write('API_KEY','1234567890');
 Configure::write('API_SALT',md5("hello world"));
 Configure::write('INITIAL_BUDGET','100000000');

@@ -26,7 +26,7 @@
                     <h1 class="red">Choose Your Players</h1>
                     <p>Please choose 11 initial players for your team !</p>
     			</div><!-- end .row-2 -->
-                <form class="theForm">
+                <form class="theForm" method="post" action="<?=$this->Html->url('/profile/create_team')?>" enctype="multipart/form-data">
                     <div class="row-2">
                         <div class="col2">
                             <select class="styled" name="select_team">
@@ -87,7 +87,8 @@
                     </div>
                     -->
                     <div class="row-2">
-                        <input type="submit" value="Save &amp; Continue" class="button" />
+                        <input type="hidden" name="players" value="">
+                        <input type="button" value="Save &amp; Continue" class="button" onclick="create_team();return false;"/>
                     </div><!-- end .row-2 -->
                 </form>
 			</div><!-- end .content -->
@@ -100,9 +101,7 @@
 	               <li><a href="teams">Fill in Your Team</a></li>
 	               <li class="current"><a href="players">Fill in Your Players</a></li>
 	               <li><a href="staffs">Fill in Your Staff</a></li>
-	               <li><a href="clubs">Fill in Your Club</a></li>
-	               <li><a href="formations">Set Your First Formation</a></li>
-	               <li><a href="invite_friends">Invite Friends</a></li>
+	              
 	            </ul>
 	        </div><!-- end .nav-side -->
 	    </div><!-- end .widget -->
@@ -118,6 +117,12 @@
     </div><!-- end #thecontent -->
 </div><!-- end #fillDetailsPage -->
 <script>
+function create_team(){
+    populate_selected(function(s){
+        $("input[name='players']").val(s);
+        $("form.theForm").submit();
+    });
+}
 //EVENTS
 $("select[name='select_team']").on('custom_select', function(event, data) {
    getPlayers(data.value);

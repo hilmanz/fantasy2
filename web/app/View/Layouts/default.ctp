@@ -11,13 +11,13 @@
  	<div id="body">
         <div id="universal">
            <div id="header">
-                <!--<a id="logo" href="index.php" title="SUPER SOCCER - FANTASY FOOTBALL LEAGUE">&nbsp;</a>-->
+                <a id="logo" href="index.php" title="SUPER SOCCER - FANTASY FOOTBALL LEAGUE">&nbsp;</a>
             	<?php if($USER_IS_LOGIN):?>
                 <div id="user-info">
-        			<a href="#" class="thumb40 fl"><img src="content/thumb/1_40.jpg" /></a>
+        			<a href="#" class="thumb40 fl"><img src="http://graph.facebook.com/<?=$USER_DATA['fb_id']?>/picture" /></a>
                     <div class="entry fl">
-                        <h3 class="username"><a href="#">Jason</a></h3>
-                        <span class="points red">1400 Pts</span>
+                        <h3 class="username"><a href="<?=$this->Html->url('/profile')?>"><?=$USER_DATA['name']?></a></h3>
+                        <span class="points red">0 Pts</span>
                         <span class="user-exp">Rookie</span>
                     </div><!-- end .entry -->
                 </div>
@@ -29,21 +29,21 @@
                 <div id="navigation">
                 	<ul>
                     	<li>
-                        	<a href="/team">MANAGE TEAM</a>
+                        	<a href="<?=$this->Html->url('/manage/team')?>">MANAGE TEAM</a>
                         </li>
                     	<li>
-                        	<a href="/club">MY CLUB</a>
+                        	<a href="<?=$this->Html->url('/manage/club')?>">MY CLUB</a>
                         </li>
                     	<li>
-                        	<a href="/profile">MY PROFILE</a>
+                        	<a href="<?=$this->Html->url('/profile')?>">MY PROFILE</a>
                         </li>
                     	<li>
-                        	<a href="/leaderboard">LEADERBOARD</a>
+                        	<a href="<?=$this->Html->url('/leaderboard')?>">LEADERBOARD</a>
                         </li>
                     	<li>
-                        	<a href="/market">TRANSFER MARKET</a>
+                        	<a href="<?=$this->Html->url('/market')?>">TRANSFER MARKET</a>
                         </li>
-                    	<li><a href="/pages/faq">HELP & FAQ</a></li>
+                    	<li><a href="<?=$this->Html->url('/pages/faq')?>">HELP & FAQ</a></li>
                     </ul>
                 </div>
            
@@ -53,10 +53,10 @@
             </div><!-- end #container -->
             <div id="footer">
                 <div id="footNav">
-                    <ul><!--
-                        <li><a href="index.php?menu=about">ABOUT FANTASY FOOTBALL LEAGUE</a></li>
-                        <li><a href="index.php?menu=tos">term & conditions</a></li>
-                        <li><a href="index.php?menu=contact">contact</a></li>-->
+                    <ul>
+                        <li><a href="<?=$this->Html->url('/pages/about')?>">ABOUT FANTASY FOOTBALL LEAGUE</a></li>
+                        <li><a href="<?=$this->Html->url('/pages/tos')?>">term & conditions</a></li>
+                        <li><a href="<?=$this->Html->url('/pages/contact')?>">contact</a></li>
                     </ul>
                 </div>
             </div>

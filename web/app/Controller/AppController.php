@@ -70,17 +70,26 @@ class AppController extends Controller {
 		$ckfile = tempnam ("/tmp", "CURLCOOKIE");
 		$response = $this->api_post('/auth',array(),
 									$ckfile);
+		if(!isset($response['error'])){
+			$challenge_code = $response['challenge_code'];
+			$request_code = sha1($this->getAPIKey().'|'.$challenge_code.'|'.$this->salt());
+			$response = $this->api_post('/auth',
+										array('request_code'=>$request_code),
+										$ckfile);
 
-		$challenge_code = $response['challenge_code'];
-		$request_code = sha1($this->getAPIKey().'|'.$challenge_code.'|'.$this->salt());
-		$response = $this->api_post('/auth',
-									array('request_code'=>$request_code),
-									$ckfile);
-
-		unlink($ckfile);
-		$this->Session->write('access_token',$response['access_token']);
-		$access_token = $this->Session->read('access_token');
-		return $access_token;
+			unlink($ckfile);
+			$this->Session->write('access_token',$response['access_token']);
+			$access_token = $this->Session->read('access_token');
+			return $access_token;
+			
+		}else{
+			
+			if($this->request->params['controller']!='login'
+				&& $this->request->params['action']!='service_unavailable'){
+				$this->redirect('/login/service_unavailable');
+			}
+		}
+		return 0;
 	}
 	public function getAPIUrl(){
 		return Configure::read('API_URL');
