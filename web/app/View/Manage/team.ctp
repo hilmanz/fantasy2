@@ -62,7 +62,7 @@
                 <div class="selectFormation">
                 <select id="formation-select" class="styled">
                     <option>Select Formation</option>
-                    <option selected="selected">4-4-2</option>
+                    <option>4-4-2</option>
                     <option>4-4-2-A</option>
                     <option>4-3-3</option>
                     <option>4-2-3-1</option>
@@ -71,50 +71,7 @@
                 </div>
                 <div class="field-formation">
                     <div id="the-formation">
-                        <div class="jersey-player p11">
-                            <div class="jersey j-red">10</div>
-                            <span class="player-name">Shevchenko</span>
-                        </div><!-- end .jersey-player -->
-                        <div class="jersey-player p10">
-                            <div class="jersey j-red">7</div>
-                            <span class="player-name">Boas S</span>
-                        </div><!-- end .jersey-player -->
-                        <div class="jersey-player p9">
-                            <div class="jersey j-yellow">11</div>
-                            <span class="player-name">C. Ronaldo</span>
-                        </div><!-- end .jersey-player -->
-                        <div class="jersey-player p8">
-                            <div class="jersey j-yellow">23</div>
-                            <span class="player-name">Messi</span>
-                        </div><!-- end .jersey-player -->
-                        <div class="jersey-player p7">
-                            <div class="jersey j-yellow">14</div>
-                            <span class="player-name">Xavi</span>
-                        </div><!-- end .jersey-player -->
-                        <div class="jersey-player p6">
-                            <div class="jersey j-yellow">8</div>
-                            <span class="player-name">Gerrard</span>
-                        </div><!-- end .jersey-player -->
-                        <div class="jersey-player p5">
-                            <div class="jersey j-blue">2</div>
-                            <span class="player-name">Cafu</span>
-                        </div><!-- end .jersey-player -->
-                        <div class="jersey-player p4">
-                            <div class="jersey j-blue">5</div>
-                            <span class="player-name">Ashley</span>
-                        </div><!-- end .jersey-player -->
-                        <div class="jersey-player p3">
-                            <div class="jersey j-blue">6</div>
-                            <span class="player-name">Smalling</span>
-                        </div><!-- end .jersey-player -->
-                        <div class="jersey-player p2">
-                            <div class="jersey j-blue">3</div>
-                            <span class="player-name">P.Maldini</span>
-                        </div><!-- end .jersey-player -->
-                        <div class="jersey-player p1">
-                            <div class="jersey j-grey">1</div>
-                            <span class="player-name">DIDA</span>
-                        </div><!-- end .jersey-player -->
+                        
                     </div><!-- end .my-formation -->
                 </div><!-- end .field-formation -->
             </div><!-- end .field-container -->
@@ -166,9 +123,61 @@
 $(document).ready(function(){
   function getLineUp(){
         api_call('<?=$this->Html->url("/game/lineup")?>',function(data){
-            console.log(data);
+            $("#formation-select option").filter(function() {
+                return $(this).text() == data.formation; 
+            }).prop('selected', true);
+
+            if(data.lineup.length==0){
+                render_view(defaultformation,'#the-formation',{});
+            }
         });
     }
     getLineUp();  
 });
+</script>
+<script type="text/template" id="defaultformation">
+<div class="jersey-player p11">
+<div class="jersey j-red"></div>
+<span class="player-name">11</span>
+</div><!-- end .jersey-player -->
+<div class="jersey-player p10">
+<div class="jersey j-red"></div>
+<span class="player-name">10</span>
+</div><!-- end .jersey-player -->
+<div class="jersey-player p9">
+<div class="jersey j-yellow"></div>
+<span class="player-name">9</span>
+</div><!-- end .jersey-player -->
+<div class="jersey-player p8">
+<div class="jersey j-yellow"></div>
+<span class="player-name">8</span>
+</div><!-- end .jersey-player -->
+<div class="jersey-player p7">
+<div class="jersey j-yellow"></div>
+<span class="player-name">7</span>
+</div><!-- end .jersey-player -->
+<div class="jersey-player p6">
+<div class="jersey j-yellow"></div>
+<span class="player-name">6</span>
+</div><!-- end .jersey-player -->
+<div class="jersey-player p5">
+<div class="jersey j-blue"></div>
+<span class="player-name">5</span>
+</div><!-- end .jersey-player -->
+<div class="jersey-player p4">
+<div class="jersey j-blue"></div>
+<span class="player-name">4</span>
+</div><!-- end .jersey-player -->
+<div class="jersey-player p3">
+<div class="jersey j-blue"></div>
+<span class="player-name">3</span>
+</div><!-- end .jersey-player -->
+<div class="jersey-player p2">
+<div class="jersey j-blue"></div>
+<span class="player-name">2</span>
+</div><!-- end .jersey-player -->
+<div class="jersey-player p1">
+<div class="jersey j-grey"></div>
+<span class="player-name">1</span>
+</div><!-- end .jersey-player -->
 </script>
