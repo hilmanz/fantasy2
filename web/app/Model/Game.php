@@ -50,4 +50,24 @@ class Game extends AppModel {
 			}
 		}
 	}
+	public function getAvailableOfficials($team_id){
+		$response = $this->api_call('/official/list/'.$team_id);
+		if($response['status']==1){
+			return $response['officials'];
+		}
+	}
+	public function hire_staff($team_id,$official_id){
+		$response = $this->api_post('/official/hire',array(
+			'team_id'=>$team_id,
+			'official_id'=>$official_id
+		));
+		return $response;
+	}
+	public function dismiss_staff($team_id,$official_id){
+		$response = $this->api_post('/official/fire',array(
+			'team_id'=>$team_id,
+			'official_id'=>$official_id
+		));
+		return $response;
+	}
 }

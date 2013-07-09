@@ -369,15 +369,29 @@
                 </div><!-- end .player-list -->
               </div><!-- end #tabs-Squad -->
               <div id="tabs-Staff">
-                    <div class="col2 staff-list">
-                        <div class="thumbStaff">
-                            <div class="avatar-big">
-                                <img src="content/thumb/default_avatar.png" />
-                            </div><!-- end .avatar-big -->
-                            <h3>Marketing Staff</h3>
-                        </div><!-- end .thumbStaff -->
-                    </div><!-- end .staff-list -->              
+                    <div class="staff-list">
+                      <?php
+                                foreach($staffs as $official):
+                          ?>
+                            <div class="thumbStaff">
+                                <div class="avatar-big">
+                                    <img src="<?=$this->Html->url('/content/thumb/default_avatar.png')?>" />
+                                </div><!-- end .avatar-big -->
+                                <p><?=h($official['name'])?></p>
+                                <div>
+                                    $<?=number_format($official['salary'])?> / Week
+                                </div>
+                            </div><!-- end .thumbStaff -->
+                            <?php
+                                endforeach;
+                            ?>
+                    </div><!-- end .staff-list -->
               </div><!-- end #tabs-Staff -->
+              <div class="row">
+
+                    <a href="<?=$this->Html->url('/manage/hiring_staff')?>" class="button">Manage Staffs</a>
+                    
+              </div>
             </div><!-- end #clubtabs -->
         </div><!-- end .content -->
     </div><!-- end #thecontent -->

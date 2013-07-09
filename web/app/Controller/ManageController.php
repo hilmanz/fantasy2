@@ -61,6 +61,51 @@ class ManageController extends AppController {
 		//list of players
 		$players = $this->Game->get_team_players($userData['fb_id']);
 		$this->set('players',$players);
+
+		//list of staffs
+		//get officials
+		$officials = $this->Game->getAvailableOfficials($userData['team']['id']);
+		$staffs = array();
+		foreach($officials as $official){
+			if(isset($official['hired'])){
+				$staffs[] = $official;
+			}
+		}
+		$this->set('staffs',$staffs);
+	}
+	public function hiring_staff(){
+		$this->loadModel('Team');
+		$this->loadModel('User');
+		$userData = $this->getUserData();
+
+		if(isset($this->request->query['hire'])){
+			$official_id = intval($this->request->query['id']);
+			if($official_id>0){
+				$this->Game->hire_staff($userData['team']['id'],$official_id);
+			}
+		}
+		if(isset($this->request->query['dismiss'])){
+			$official_id = intval($this->request->query['id']);
+			if($official_id>0){
+				$this->Game->dismiss_staff($userData['team']['id'],$official_id);
+			}
+		}
+		//budget
+		$budget = $this->Game->getBudget($userData['team']['id']);
+		$this->set('team_bugdet',$budget);
+
+		//get officials
+		$officials = $this->Game->getAvailableOfficials($userData['team']['id']);
+
+		//estimated costs
+		$total_weekly_salary = 0;
+		foreach($officials as $official){
+			if(isset($official['hired'])){
+				$total_weekly_salary+=$official['salary'];
+			}
+		}
+		$this->set('officials',$officials);
+		$this->set('weekly_salaries',$total_weekly_salary);
 	}
 	public function error(){
 		$this->render('error');

@@ -726,9 +726,10 @@ input[type=text]{
 	margin:0 auto 10px auto;
 }
 .thumbStaff{
-	width:130px;
-	text-align:center;
+	width: 130px;
+	text-align: center;
 	float:left;
+	min-height: 200px;
 }
 .thumbStaff h3{
     font-family: 'ColaborateMediumRegular';
