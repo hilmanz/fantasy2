@@ -47,10 +47,26 @@ class GameController extends AppController {
  */
 	public $uses = array();
 	public $layout = null;
+	
+	/**
+	* master data daftar pemain
+	*/
 	public function players($team_id){
 		$team_id = Sanitize::paranoid($team_id);
 		header('Content-type: application/json');
 		print json_encode($this->Game->getMasterTeam($team_id));
+		die();
+	}
+	/**
+	*	daftar lineup saat ini.
+	*/
+	public function lineup(){
+		$this->loadModel('Team');
+		$this->loadModel('User');
+		$userData = $this->getUserData();
+		$lineup = $this->Game->getLineup($userData['team']['id']);
+		header('Content-type: application/json');
+		print json_encode($lineup);
 		die();
 	}
 	

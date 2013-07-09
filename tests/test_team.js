@@ -8,7 +8,7 @@ var team = require(path.resolve('./libs/api/team'));
 var mysql = require('mysql');
 var config = require(path.resolve('./config')).config;
 
-var team_id = 0;
+var team_id = 123;
 describe('team',function(){
 	
 		it('getTeams',function(done){
@@ -35,7 +35,7 @@ describe('team',function(){
 		});
 
 		it('create team',function(done){
-			team.create({fb_id:'123123123',team_id:'t8',players:[
+			team.create({fb_id:'111222111',team_id:'t8',players:[
 					"p59936",
 					"p14422",
 					"p37096",
@@ -93,9 +93,9 @@ describe('team',function(){
 		});
 
 		it('should return the user\'s team',function(done){
-			team.getUserTeam('123123123',function(err,team){
+			team.getUserTeam('111222111',function(err,team){
 				should.equal(team.team_id,'t8');
-				should.equal(team.user_id,50);
+				should.equal(team.user_id,57);
 				done();
 			});
 		});

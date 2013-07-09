@@ -162,3 +162,13 @@
         </div><!-- end .box4 -->
     </div><!-- end #thecontent -->
 </div><!-- end #fillDetailsPage -->
+<script>
+$(document).ready(function(){
+  function getLineUp(){
+        api_call('<?=$this->Html->url("/game/lineup")?>',function(data){
+            console.log(data);
+        });
+    }
+    getLineUp();  
+});
+</script>

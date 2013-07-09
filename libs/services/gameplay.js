@@ -8,7 +8,8 @@ exports.getLineup = function(req,res){
 			if(rs!=null){
 				res.send(200,rs);
 			}else{
-				res.send(200,[]);
+				//send the default configurations
+				res.send(200,{lineup:[],formation:'4-4-2'});
 			}
 	});
 }

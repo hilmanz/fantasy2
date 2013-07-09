@@ -27,19 +27,40 @@ function prepareDb(){
 //get current lineup setup
 function getLineup(game_team_id,callback){
 	conn = prepareDb();
-	conn.query("SELECT a.player_id,a.position_no,b.name,b.position \
+	async.waterfall(
+		[
+			function(callback){
+				conn.query("SELECT a.player_id,a.position_no,b.name,b.position \
 				FROM ffgame.game_team_lineups a\
 				INNER JOIN ffgame.master_player b\
 				ON a.player_id = b.uid\
 				WHERE a.game_team_id=? LIMIT 11",
 				[game_team_id],
 				function(err,rs){
-					
-					conn.end(function(e){
-
 						callback(err,rs);	
-					});
 				});
+			},
+			function(result,callback){
+				conn.query("SELECT formation FROM ffgame.game_team_formation\
+							WHERE game_team_id = ? LIMIT 1",
+				[game_team_id],
+				function(err,rs){
+						var formation = '4-4-2'; //default formation
+						if(rs.length>0){
+							formation = rs[0].formation;	
+						}
+						callback(err,{
+								lineup:result,
+								formation:formation
+							});
+				});
+			}
+		],
+	function(err,result){
+		conn.end(function(e){
+			callback(err,result);
+		});
+	});
 }
 function setLineup(game_team_id,setup,formation,done){
 	conn = prepareDb();
@@ -103,8 +124,20 @@ function setLineup(game_team_id,setup,formation,done){
 								
 								callback(err,rs);
 				});
+			},
+			function(result,callback){
+				//save formation
+				conn.query("INSERT INTO ffgame.game_team_formation\
+							(game_team_id,formation,last_update)\
+							VALUES(?,?,NOW())\
+							ON DUPLICATE KEY UPDATE\
+							formation = VALUES(formation),\
+							last_update = VALUES(last_update)",
+							[game_team_id,formation],
+							function(err,rs){
+								callback(err,result);
+							});
 			}
-			
 		],
 		function(err,result){
 			conn.end(function(e){

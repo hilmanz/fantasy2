@@ -10,7 +10,7 @@ var config = require(path.resolve('./config')).config;
 
 var dummy = {
 	name: 'foo',
-	fb_id: '111111',
+	fb_id: '111222111',
 	email:'foo@bar.com',
 	phone:'123123123'
 }

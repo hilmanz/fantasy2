@@ -70,4 +70,12 @@ class Game extends AppModel {
 		));
 		return $response;
 	}
+	/*
+	* get current lineup settings
+	* @team_id game_team_id 
+	*/
+	public function getLineup($team_id){
+		$response = $this->api_call('/team/lineup/'.$team_id);
+		return $response;
+	}
 }

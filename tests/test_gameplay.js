@@ -19,7 +19,8 @@ describe('gameplay',function(){
 			gameplay.getLineup(1,function(err,rs){
 				should.not.exist(err);
 				should.exist(rs);
-				rs.should.have.length(11);
+				rs.lineup.should.have.length(11);
+				rs.formation.should.equal('4-4-2');
 				done();
 			});
 		});

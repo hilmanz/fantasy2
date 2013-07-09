@@ -245,3 +245,4 @@
         </div><!-- end .box4 -->
     </div><!-- end #thecontent -->
 </div><!-- end #fillDetailsPage -->
+
