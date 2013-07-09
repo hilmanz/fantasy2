@@ -49,6 +49,6 @@ s. view financial statements -> DONE
 i. view transfer window
 l. buy a player
 m. sell a player 
-
+o. harus buat mekanisme dimana pemain yg kena kartu merah atau cedera, gak bisa di pasang di formasi.
 
 ALTER TABLE `ffgame`.`master_player`     ADD COLUMN `salary` INT(11) DEFAULT '200000' NULL AFTER `team_id`;

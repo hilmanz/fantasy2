@@ -306,7 +306,7 @@ a:hover{
 	margin:0;
 }
 .squad-team{
-	height:480px;
+	min-height:480px;
 	position:relative;
 }
 .squad-team .jersey-player{

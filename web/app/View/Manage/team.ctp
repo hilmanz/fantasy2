@@ -72,47 +72,47 @@
                 <div class="field-formation">
                     <div id="the-formation">
                         <div class="jersey-player p11">
-                            <div class="jersey j-green">10</div>
+                            <div class="jersey j-red">10</div>
                             <span class="player-name">Shevchenko</span>
                         </div><!-- end .jersey-player -->
                         <div class="jersey-player p10">
-                            <div class="jersey j-green">7</div>
+                            <div class="jersey j-red">7</div>
                             <span class="player-name">Boas S</span>
                         </div><!-- end .jersey-player -->
                         <div class="jersey-player p9">
-                            <div class="jersey j-blue">11</div>
+                            <div class="jersey j-yellow">11</div>
                             <span class="player-name">C. Ronaldo</span>
                         </div><!-- end .jersey-player -->
                         <div class="jersey-player p8">
-                            <div class="jersey j-blue">23</div>
+                            <div class="jersey j-yellow">23</div>
                             <span class="player-name">Messi</span>
                         </div><!-- end .jersey-player -->
                         <div class="jersey-player p7">
-                            <div class="jersey j-blue">14</div>
+                            <div class="jersey j-yellow">14</div>
                             <span class="player-name">Xavi</span>
                         </div><!-- end .jersey-player -->
                         <div class="jersey-player p6">
-                            <div class="jersey j-blue">8</div>
+                            <div class="jersey j-yellow">8</div>
                             <span class="player-name">Gerrard</span>
                         </div><!-- end .jersey-player -->
                         <div class="jersey-player p5">
-                            <div class="jersey j-red">2</div>
+                            <div class="jersey j-blue">2</div>
                             <span class="player-name">Cafu</span>
                         </div><!-- end .jersey-player -->
                         <div class="jersey-player p4">
-                            <div class="jersey j-red">5</div>
+                            <div class="jersey j-blue">5</div>
                             <span class="player-name">Ashley</span>
                         </div><!-- end .jersey-player -->
                         <div class="jersey-player p3">
-                            <div class="jersey j-red">6</div>
+                            <div class="jersey j-blue">6</div>
                             <span class="player-name">Smalling</span>
                         </div><!-- end .jersey-player -->
                         <div class="jersey-player p2">
-                            <div class="jersey j-red">3</div>
+                            <div class="jersey j-blue">3</div>
                             <span class="player-name">P.Maldini</span>
                         </div><!-- end .jersey-player -->
                         <div class="jersey-player p1">
-                            <div class="jersey j-yellow">1</div>
+                            <div class="jersey j-grey">1</div>
                             <span class="player-name">DIDA</span>
                         </div><!-- end .jersey-player -->
                     </div><!-- end .my-formation -->
@@ -125,118 +125,35 @@
                 <h3><a href="#" class="yellow">Team</a> | <a href="#" class="red">SUBS</a></h3>
             </div><!-- end .widget -->
             <div class="widget tr squad-team">
+                <?php
+                foreach($players as $player):
+                    switch($player['position']){
+                      case 'Goalkeeper':
+                        $player_pos = "G";
+                        $color = "grey";
+                      break;
+                      case 'Midfielder':
+                        $player_pos = "M";
+                        $color = "yellow";
+                      break;
+                      case 'Forward':
+                        $player_pos = "F";
+                        $color  = "red";
+                      break;
+                      default:
+                        $player_pos = "D";
+                        $color = "blue";
+                      break;
+                    }
+                ?>
                 <div class="jersey-player">
-                    <div class="jersey j-grey">1</div>
+                    <div class="jersey j-<?=$color?>"><?=$player_pos?></div>
                     <div class="player-info">
-                        <span class="player-name">Akbar</span>
-                        <span class="player-position">Posision</span>
-                        <span class="player-status">Status</span>       
+                        <span class="player-name"><?=h($player['name'])?></span>
+                        <span class="player-status">Playable</span>       
                     </div><!-- end .player-info -->
                 </div><!-- end .jersey-player -->
-                <div class="jersey-player">
-                    <div class="jersey j-grey">11</div>
-                    <div class="player-info">
-                        <span class="player-name">Akbar</span>
-                        <span class="player-position">Posision</span>
-                        <span class="player-status">Status</span>       
-                    </div><!-- end .player-info -->
-                </div><!-- end .jersey-player -->
-                <div class="jersey-player">
-                    <div class="jersey j-grey">1</div>
-                    <div class="player-info">
-                        <span class="player-name">Akbar</span>
-                        <span class="player-position">Posision</span>
-                        <span class="player-status">Status</span>       
-                    </div><!-- end .player-info -->
-                </div><!-- end .jersey-player -->
-                <div class="jersey-player">
-                    <div class="jersey j-grey">11</div>
-                    <div class="player-info">
-                        <span class="player-name">Akbar</span>
-                        <span class="player-position">Posision</span>
-                        <span class="player-status">Status</span>       
-                    </div><!-- end .player-info -->
-                </div><!-- end .jersey-player -->
-                <div class="jersey-player">
-                    <div class="jersey j-grey">1</div>
-                    <div class="player-info">
-                        <span class="player-name">Akbar</span>
-                        <span class="player-position">Posision</span>
-                        <span class="player-status">Status</span>       
-                    </div><!-- end .player-info -->
-                </div><!-- end .jersey-player -->
-                <div class="jersey-player">
-                    <div class="jersey j-grey">11</div>
-                    <div class="player-info">
-                        <span class="player-name">Akbar</span>
-                        <span class="player-position">Posision</span>
-                        <span class="player-status">Status</span>       
-                    </div><!-- end .player-info -->
-                </div><!-- end .jersey-player -->
-                <div class="jersey-player">
-                    <div class="jersey j-grey">1</div>
-                    <div class="player-info">
-                        <span class="player-name">Akbar</span>
-                        <span class="player-position">Posision</span>
-                        <span class="player-status">Status</span>       
-                    </div><!-- end .player-info -->
-                </div><!-- end .jersey-player -->
-                <div class="jersey-player">
-                    <div class="jersey j-yellow">11</div>
-                    <div class="player-info">
-                        <span class="player-name">Akbar</span>
-                        <span class="player-position">Posision</span>
-                        <span class="player-status">Status</span>       
-                    </div><!-- end .player-info -->
-                </div><!-- end .jersey-player -->
-                <div class="jersey-player">
-                    <div class="jersey j-red">1</div>
-                    <div class="player-info">
-                        <span class="player-name">Akbar</span>
-                        <span class="player-position">Posision</span>
-                        <span class="player-status">Status</span>       
-                    </div><!-- end .player-info -->
-                </div><!-- end .jersey-player -->
-                <div class="jersey-player">
-                    <div class="jersey j-red">11</div>
-                    <div class="player-info">
-                        <span class="player-name">Akbar</span>
-                        <span class="player-position">Posision</span>
-                        <span class="player-status">Status</span>       
-                    </div><!-- end .player-info -->
-                </div><!-- end .jersey-player -->
-                <div class="jersey-player">
-                    <div class="jersey j-grey">1</div>
-                    <div class="player-info">
-                        <span class="player-name">Akbar</span>
-                        <span class="player-position">Posision</span>
-                        <span class="player-status">Status</span>       
-                    </div><!-- end .player-info -->
-                </div><!-- end .jersey-player -->
-                <div class="jersey-player">
-                    <div class="jersey j-yellow">11</div>
-                    <div class="player-info">
-                        <span class="player-name">Akbar</span>
-                        <span class="player-position">Posision</span>
-                        <span class="player-status">Status</span>       
-                    </div><!-- end .player-info -->
-                </div><!-- end .jersey-player -->
-                <div class="jersey-player">
-                    <div class="jersey j-grey">1</div>
-                    <div class="player-info">
-                        <span class="player-name">Akbar</span>
-                        <span class="player-position">Posision</span>
-                        <span class="player-status">Status</span>       
-                    </div><!-- end .player-info -->
-                </div><!-- end .jersey-player -->
-                <div class="jersey-player">
-                    <div class="jersey j-yellow">11</div>
-                    <div class="player-info">
-                        <span class="player-name">Akbar</span>
-                        <span class="player-position">Posision</span>
-                        <span class="player-status">Status</span>       
-                    </div><!-- end .player-info -->
-                </div><!-- end .jersey-player -->
+                <?php endforeach;?>
             </div><!-- end .widget -->
             <div class="widget tr action-button">
                 <a class="prev" href="#">PREV</a>

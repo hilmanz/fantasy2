@@ -108,6 +108,14 @@ class ManageController extends AppController {
 		$this->set('weekly_salaries',$total_weekly_salary);
 	}
 	public function team(){
+		$this->loadModel('Team');
+		$this->loadModel('User');
+		$userData = $this->getUserData();
+
+		//list of players
+		$players = $this->Game->get_team_players($userData['fb_id']);
+		$this->set('players',$players);
+
 		
 	}
 	public function error(){
