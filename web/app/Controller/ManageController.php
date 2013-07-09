@@ -59,7 +59,8 @@ class ManageController extends AppController {
 		$this->set('club',$club['Team']);
 
 		//list of players
-		
+		$players = $this->Game->get_team_players($userData['fb_id']);
+		$this->set('players',$players);
 	}
 	public function error(){
 		$this->render('error');

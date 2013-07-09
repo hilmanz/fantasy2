@@ -340,22 +340,32 @@
               </div><!-- end #tabs-Keuagan -->
               <div id="tabs-Players">
                 <div class="player-list">
+                  <?php foreach($players as $player):?>
+                  <?php
+                    switch($player['position']){
+                      case 'Goalkeeper':
+                        $player_pos = "G";
+                        $color = "grey";
+                      break;
+                      case 'Midfielder':
+                        $player_pos = "M";
+                        $color = "yellow";
+                      break;
+                      case 'Forward':
+                        $player_pos = "F";
+                        $color  = "red";
+                      break;
+                      default:
+                        $player_pos = "D";
+                        $color = "blue";
+                      break;
+                    }
+                  ?>
                     <div class="jersey-player ">
-                        <div class="jersey j-red">5</div>
-                        <span class="player-name">Ashley</span>
+                        <div class="jersey j-<?=$color?>"><?=$player_pos?></div>
+                        <span class="player-name"><?=h($player['name'])?></span>
                     </div><!-- end .jersey-player -->
-                    <div class="jersey-player ">
-                        <div class="jersey j-red">6</div>
-                        <span class="player-name">Smalling</span>
-                    </div><!-- end .jersey-player -->
-                    <div class="jersey-player ">
-                        <div class="jersey j-red">3</div>
-                        <span class="player-name">P.Maldini</span>
-                    </div><!-- end .jersey- -->
-                    <div class="jersey-player">
-                        <div class="jersey j-red">1</div>
-                        <span class="player-name">DIDA</span>
-                    </div><!-- end .jersey-player -->
+                  <?php endforeach;?>
                 </div><!-- end .player-list -->
               </div><!-- end #tabs-Squad -->
               <div id="tabs-Staff">
