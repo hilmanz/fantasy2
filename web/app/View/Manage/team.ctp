@@ -69,8 +69,8 @@
                     <option>3-5-2</option>
                 </select>
                 </div>
-                <div class="field-formation">
-                    <div id="the-formation">
+                <div id="droppable" class="drop field-formation">
+                    <div id="the-formation" class="drop">
                         
                     </div><!-- end .my-formation -->
                 </div><!-- end .field-formation -->
@@ -78,7 +78,7 @@
         </div><!-- end .box3 -->
         <div class="box4 fr">
             <div class="widget tr squad-team-name">
-                <h2>TEAMjason FC</h2>
+                <h2><?=h($club['team_name'])?></h2>
                 <h3><a href="#" class="yellow">Team</a> | <a href="#" class="red">SUBS</a></h3>
             </div><!-- end .widget -->
             <div class="widget tr squad-team">
@@ -103,7 +103,7 @@
                       break;
                     }
                 ?>
-                <div class="jersey-player">
+                <div class="bench jersey-player">
                     <div class="jersey j-<?=$color?>"><?=$player_pos?></div>
                     <div class="player-info">
                         <span class="player-name"><?=h($player['name'])?></span>
@@ -119,8 +119,39 @@
         </div><!-- end .box4 -->
     </div><!-- end #thecontent -->
 </div><!-- end #fillDetailsPage -->
+<div id="draggable" class="jersey-player" style="display:none;position:absolute;border:1px solid #333">
+</div>
 <script>
 $(document).ready(function(){
+        $("#draggable").draggable({
+            drag:function( event, ui ) {
+                $(this).css('border','');
+            },
+            stop: function( event, ui ) {
+                 $(this).css('border','1px solid #333');
+            }
+        });
+
+        $(".bench").mouseover(function(e){
+            $("#draggable").html($(this).html());
+            $("#draggable").css('top',$(this).offset().top - $("#universal").position().top);
+            $("#draggable").css('left',$(this).offset().left - $("#universal").position().left - 13);
+            $("#draggable").find('.player-name').hide();
+            $("#draggable").find('.player-status').remove();
+            $("#draggable").show();
+        });
+        $(".drop").droppable({
+            greedy: true,
+            drop: function( event, ui ){
+                var dropX = event.pageX-$("#universal").position().left-30;
+                var dropY = event.pageY - $("#universal").position().top-30;
+                replaceLineup(dropX,dropY);
+                $("#draggable").hide();
+              }
+        });
+       
+    
+   
   function getLineUp(){
         api_call('<?=$this->Html->url("/game/lineup")?>',function(data){
             $("#formation-select option").filter(function() {
@@ -134,52 +165,96 @@ $(document).ready(function(){
             }
         });
     }
+    function replaceLineup(x,y){
+        var  curr_item = {
+                        item:null,
+                        left:0,
+                        top:0,
+                        distance:{x:9999,
+                                  y:9999}
+                    };
+        var dx = 0;
+        var dy = 0;
+
+        $.each($("#the-formation").children(),function(k,item){
+           
+            dx = Math.abs(($(item).offset().left-$("#universal").position().left-30)-x);
+            dy = Math.abs(($(item).offset().top-$("#universal").position().top-30)-y);
+          
+            if(curr_item!=null){
+                      
+                    }
+            if((curr_item.distance.x > dx && dy < 50)){
+                  
+                    curr_item = {
+                        item:item,
+                        left:$(item).offset().left,
+                        top:$(item).offset().top,
+                        distance:{x:dx,
+                                  y:dy}
+                    };
+                      
+            }
+            if(k>=10){
+               $(curr_item.item).html($("#draggable").html());
+               $(curr_item.item).find('.player-name').show();
+               curr_item = null;
+            }
+        });
+    }
     getLineUp();  
 });
 </script>
+<script type="text/template" id="tpllineup">
+    <div id="droppable" class="jersey-player p11">
+        <div class="jersey j-red"></div>
+        <span class="player-name">11</span>
+    </div><!-- end .jersey-player -->
+</script>
+
 <script type="text/template" id="defaultformation">
-<div class="jersey-player p11">
-<div class="jersey j-red"></div>
-<span class="player-name">11</span>
-</div><!-- end .jersey-player -->
-<div class="jersey-player p10">
-<div class="jersey j-red"></div>
-<span class="player-name">10</span>
-</div><!-- end .jersey-player -->
-<div class="jersey-player p9">
-<div class="jersey j-yellow"></div>
-<span class="player-name">9</span>
-</div><!-- end .jersey-player -->
-<div class="jersey-player p8">
-<div class="jersey j-yellow"></div>
-<span class="player-name">8</span>
-</div><!-- end .jersey-player -->
-<div class="jersey-player p7">
-<div class="jersey j-yellow"></div>
-<span class="player-name">7</span>
-</div><!-- end .jersey-player -->
-<div class="jersey-player p6">
-<div class="jersey j-yellow"></div>
-<span class="player-name">6</span>
-</div><!-- end .jersey-player -->
-<div class="jersey-player p5">
-<div class="jersey j-blue"></div>
-<span class="player-name">5</span>
-</div><!-- end .jersey-player -->
-<div class="jersey-player p4">
-<div class="jersey j-blue"></div>
-<span class="player-name">4</span>
-</div><!-- end .jersey-player -->
-<div class="jersey-player p3">
-<div class="jersey j-blue"></div>
-<span class="player-name">3</span>
-</div><!-- end .jersey-player -->
-<div class="jersey-player p2">
-<div class="jersey j-blue"></div>
-<span class="player-name">2</span>
-</div><!-- end .jersey-player -->
-<div class="jersey-player p1">
-<div class="jersey j-grey"></div>
-<span class="player-name">1</span>
-</div><!-- end .jersey-player -->
+    <div id="droppable" class="jersey-player p11">
+        <div class="jersey j-red"></div>
+        <span class="player-name">11</span>
+    </div><!-- end .jersey-player -->
+    <div id="droppable" class="jersey-player p10">
+        <div class="jersey j-red"></div>
+        <span class="player-name">10</span>
+    </div><!-- end .jersey-player -->
+    <div id="droppable" class="jersey-player p9">
+        <div class="jersey j-yellow"></div>
+        <span class="player-name">9</span>
+    </div><!-- end .jersey-player -->
+    <div id="droppable" class="jersey-player p8">
+        <div class="jersey j-yellow"></div>
+        <span class="player-name">8</span>
+    </div><!-- end .jersey-player -->
+    <div id="droppable" class="jersey-player p7">
+        <div class="jersey j-yellow"></div>
+        <span class="player-name">7</span>
+    </div><!-- end .jersey-player -->
+    <div id="droppable" class="jersey-player p6">
+        <div class="jersey j-yellow"></div>
+        <span class="player-name">6</span>
+    </div><!-- end .jersey-player -->
+    <div id="droppable" class="jersey-player p5">
+        <div class="jersey j-blue"></div>
+        <span class="player-name">5</span>
+    </div><!-- end .jersey-player -->
+    <div id="droppable" class="jersey-player p4">
+        <div class="jersey j-blue"></div>
+        <span class="player-name">4</span>
+    </div><!-- end .jersey-player -->
+    <div id="droppable" class="jersey-player p3">
+        <div class="jersey j-blue"></div>
+        <span class="player-name">3</span>
+    </div><!-- end .jersey-player -->
+    <div id="droppable" class="jersey-player p2">
+        <div class="jersey j-blue"></div>
+        <span class="player-name">2</span>
+    </div><!-- end .jersey-player -->
+    <div id="droppable" class="jersey-player p1">
+        <div class="jersey j-grey"></div>
+        <span class="player-name">1</span>
+    </div><!-- end .jersey-player -->
 </script>

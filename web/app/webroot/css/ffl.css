@@ -19,7 +19,8 @@ ol,ul {list-style:none;}
 caption,th {text-align:left;}
 q:before,q:after{content:'';}
 body{
-	background: url(../images/bg.jpg) no-repeat center center fixed; 
+	/*background: url(../images/bg.jpg) no-repeat center center fixed; */
+	background-color:#000;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -226,6 +227,7 @@ a:hover{
 	width:460px;
 	min-height:135px;
 	border-radius:5px;
+	margin: 0 0 0 30px;
 }
 .col3{
 	width:33%;
@@ -367,11 +369,7 @@ a:hover{
 	position:absolute;
 	width:70px; height:70px;
 	text-align:center;
-	-webkit-transition: all 0.3s ease-in-out;
-	-moz-transition: all 0.3s ease-in-out;
-	-o-transition: all 0.3s ease-in-out;
-	-ms-transition: all 0.3s ease-in-out;
-	transition: all 0.3s ease-in-out;
+	
     font-family: 'ColaborateBoldRegular';
     font-size: 10px;
 }

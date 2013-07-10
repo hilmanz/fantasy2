@@ -13,7 +13,7 @@
 	?>
 	<?php echo $this->Html->script(
 	  array('jquery-1.9.1',
-			'jquery-ui.min',
+			'jquery-ui-1.10.3.custom.min',
 	  ));
 ?>
 	<!--[if IE 6]>
