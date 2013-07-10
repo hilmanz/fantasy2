@@ -950,3 +950,12 @@ td,th{
 #footNav ul li.current a{
 	color:#999;
 }
+
+
+/*=============Formation Lineup Starter============*/
+.playerSelected{
+	border:1px solid #333;
+}
+.playerUnselected{
+	border:none;
+}

@@ -107,6 +107,7 @@ class ManageController extends AppController {
 
 		//list of players
 		$players = $this->Game->get_team_players($userData['fb_id']);
+		
 		$this->set('players',$players);
 
 		//user data

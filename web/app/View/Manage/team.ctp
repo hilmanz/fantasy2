@@ -104,11 +104,13 @@
                     }
                 ?>
                 <div class="bench jersey-player">
-                    <div class="jersey j-<?=$color?>"><?=$player_pos?></div>
-                    <div class="player-info">
-                        <span class="player-name"><?=h($player['name'])?></span>
-                        <span class="player-status">Playable</span>       
-                    </div><!-- end .player-info -->
+                    <a href="javascript:void(0);" no="<?=h($player['uid'])?>">
+                        <div class="jersey j-<?=$color?>"><?=$player_pos?></div>
+                        <div class="player-info">
+                            <span class="player-name"><?=h($player['name'])?></span>
+                            <span class="player-status">Playable</span>       
+                        </div><!-- end .player-info -->
+                    </a>
                 </div><!-- end .jersey-player -->
                 <?php endforeach;?>
             </div><!-- end .widget -->
@@ -122,6 +124,7 @@
 <div id="draggable" class="jersey-player" style="display:none;position:absolute;border:1px solid #333">
 </div>
 <script>
+var selected = null;
 $(document).ready(function(){
         $("#draggable").draggable({
             drag:function( event, ui ) {
@@ -133,12 +136,19 @@ $(document).ready(function(){
         });
 
         $(".bench").mouseover(function(e){
-            $("#draggable").html($(this).html());
-            $("#draggable").css('top',$(this).offset().top - $("#universal").position().top);
-            $("#draggable").css('left',$(this).offset().left - $("#universal").position().left - 13);
-            $("#draggable").find('.player-name').hide();
-            $("#draggable").find('.player-status').remove();
-            $("#draggable").show();
+            var target = $(this);
+            player_in_lineup($(this).find('a').attr('no'),function(is_exist){
+                if(!is_exist){
+                    $("#draggable").html(target.html());
+                    $("#draggable").css('top',target.offset().top - $("#universal").position().top);
+                    $("#draggable").css('left',target.offset().left - $("#universal").position().left - 13);
+                    $("#draggable").find('.player-name').hide();
+                    $("#draggable").find('.player-status').remove();
+                    $("#draggable").show();
+                }else{
+                    $("#draggable").hide();
+                }
+            });
         });
         $(".drop").droppable({
             greedy: true,
@@ -149,9 +159,20 @@ $(document).ready(function(){
                 $("#draggable").hide();
               }
         });
+
        
     
-   
+  function player_in_lineup(id,callback){
+        var is_exist = false;
+        $.each($("#the-formation").children(),function(k,item){
+           if($(item).find('a').attr('no')==id){
+            is_exist = true;
+           }
+           if(k>=10){
+            callback(is_exist);
+           }
+        });
+  }
   function getLineUp(){
         api_call('<?=$this->Html->url("/game/lineup")?>',function(data){
             $("#formation-select option").filter(function() {
@@ -162,6 +183,21 @@ $(document).ready(function(){
                                         value:data.formation};
             if(data.lineup.length==0){
                 render_view(defaultformation,'#the-formation',{});
+                initLineupEvents();
+            }
+        });
+    }
+    function initLineupEvents(){
+         $(".starter").click(function(){
+            if(selected==null){
+                selected = $(this);
+                selected.addClass('playerSelected');
+            }else{
+                selected.removeClass('playerSelected');
+                var h = selected.html();
+                selected.html($(this).html());
+                $(this).html(h);
+                selected = null;
             }
         });
     }
@@ -206,54 +242,54 @@ $(document).ready(function(){
 });
 </script>
 <script type="text/template" id="tpllineup">
-    <div id="droppable" class="jersey-player p11">
+    <div class="starter jersey-player p11">
         <div class="jersey j-red"></div>
         <span class="player-name">11</span>
     </div><!-- end .jersey-player -->
 </script>
 
 <script type="text/template" id="defaultformation">
-    <div id="droppable" class="jersey-player p11">
+    <div class="starter jersey-player p11">
         <div class="jersey j-red"></div>
         <span class="player-name">11</span>
     </div><!-- end .jersey-player -->
-    <div id="droppable" class="jersey-player p10">
+    <div class="starter jersey-player p10">
         <div class="jersey j-red"></div>
         <span class="player-name">10</span>
     </div><!-- end .jersey-player -->
-    <div id="droppable" class="jersey-player p9">
+    <div class="starter jersey-player p9">
         <div class="jersey j-yellow"></div>
         <span class="player-name">9</span>
     </div><!-- end .jersey-player -->
-    <div id="droppable" class="jersey-player p8">
+    <div class="starter jersey-player p8">
         <div class="jersey j-yellow"></div>
         <span class="player-name">8</span>
     </div><!-- end .jersey-player -->
-    <div id="droppable" class="jersey-player p7">
+    <div class="starter jersey-player p7">
         <div class="jersey j-yellow"></div>
         <span class="player-name">7</span>
     </div><!-- end .jersey-player -->
-    <div id="droppable" class="jersey-player p6">
+    <div class="starter jersey-player p6">
         <div class="jersey j-yellow"></div>
         <span class="player-name">6</span>
     </div><!-- end .jersey-player -->
-    <div id="droppable" class="jersey-player p5">
+    <div class="starter jersey-player p5">
         <div class="jersey j-blue"></div>
         <span class="player-name">5</span>
     </div><!-- end .jersey-player -->
-    <div id="droppable" class="jersey-player p4">
+    <div class="starter jersey-player p4">
         <div class="jersey j-blue"></div>
         <span class="player-name">4</span>
     </div><!-- end .jersey-player -->
-    <div id="droppable" class="jersey-player p3">
+    <div class="starter jersey-player p3">
         <div class="jersey j-blue"></div>
         <span class="player-name">3</span>
     </div><!-- end .jersey-player -->
-    <div id="droppable" class="jersey-player p2">
+    <div class="starter jersey-player p2">
         <div class="jersey j-blue"></div>
         <span class="player-name">2</span>
     </div><!-- end .jersey-player -->
-    <div id="droppable" class="jersey-player p1">
+    <div class="starter jersey-player p1">
         <div class="jersey j-grey"></div>
         <span class="player-name">1</span>
     </div><!-- end .jersey-player -->
