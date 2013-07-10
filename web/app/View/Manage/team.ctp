@@ -53,9 +53,7 @@
                 <h3><span class="span1">Club Value</span>:<span class="span2">5.032.000</span></h3>
                 <a class="view-more" href="#">View Leaderboard</a>
             </div><!-- end .widget -->
-            <div class="widget tr action-button">
-                <a class="button" href="#">Save Formations</a>
-            </div><!-- end .widget -->
+           
         </div><!-- end .box4 -->
         <div class="box3 tr fl">
             <div class="field-container">
@@ -68,6 +66,7 @@
                     <option>4-2-3-1</option>
                     <option>3-5-2</option>
                 </select>
+                <a class="button" href="#/save_formation">Save Formations</a>
                 </div>
                 <div id="droppable" class="drop field-formation">
                     <div id="the-formation" class="drop">
@@ -83,7 +82,7 @@
             </div><!-- end .widget -->
             <div class="widget tr squad-team">
                 <?php
-                foreach($players as $player):
+                foreach($players as $n=>$player):
                     switch($player['position']){
                       case 'Goalkeeper':
                         $player_pos = "G";
@@ -102,8 +101,11 @@
                         $color = "blue";
                       break;
                     }
+                    $last_page = floor($n/16);
+                    $page = 'page-'.$last_page;
+
                 ?>
-                <div class="bench jersey-player">
+                <div class="bench jersey-player <?=$page?>">
                     <a href="javascript:void(0);" no="<?=h($player['uid'])?>">
                         <div class="jersey j-<?=$color?>"><?=$player_pos?></div>
                         <div class="player-info">
@@ -115,8 +117,8 @@
                 <?php endforeach;?>
             </div><!-- end .widget -->
             <div class="widget tr action-button">
-                <a class="prev" href="#">PREV</a>
-                <a class="next" href="#">NEXT</a>
+                <a class="prev" href="javascript:;">PREV</a>
+                <a class="next" href="javascript:;">NEXT</a>
             </div><!-- end .widget -->
         </div><!-- end .box4 -->
     </div><!-- end #thecontent -->
@@ -125,7 +127,16 @@
 </div>
 <script>
 var selected = null;
+var page = 0;
+var last_page = <?=intval($last_page)?>;
 $(document).ready(function(){
+        $('.prev').hide();
+        if(last_page==0){
+            $('.next').hide();
+        }
+        $('.prev').click(function(){prev();});
+        $('.next').click(function(){next();});
+        createPaging();
         $("#draggable").draggable({
             drag:function( event, ui ) {
                 $(this).css('border','');
@@ -134,6 +145,8 @@ $(document).ready(function(){
                  $(this).css('border','1px solid #333');
             }
         });
+
+
 
         $(".bench").mouseover(function(e){
             var target = $(this);
@@ -161,135 +174,164 @@ $(document).ready(function(){
         });
 
        
-    
-  function player_in_lineup(id,callback){
-        var is_exist = false;
-        $.each($("#the-formation").children(),function(k,item){
-           if($(item).find('a').attr('no')==id){
-            is_exist = true;
-           }
-           if(k>=10){
-            callback(is_exist);
-           }
-        });
-  }
-  function getLineUp(){
-        api_call('<?=$this->Html->url("/game/lineup")?>',function(data){
-            $("#formation-select option").filter(function() {
-                return $(this).text() == data.formation; 
-            }).prop('selected', true);
-            $("#the-formation").removeClass().addClass('formation-'+data.formation);
-            selectedVal['formations'] = {label:data.formation,
-                                        value:data.formation};
-            if(data.lineup.length==0){
-                render_view(defaultformation,'#the-formation',{});
-                initLineupEvents();
+        function createPaging(){
+            for(var i=1;i<=last_page;i++){
+                $(".page-"+i).hide();
             }
-        });
-    }
-    function initLineupEvents(){
-         $(".starter").click(function(){
-            if(selected==null){
-                selected = $(this);
-                selected.addClass('playerSelected');
-            }else{
-                selected.removeClass('playerSelected');
-                var h = selected.html();
-                selected.html($(this).html());
-                $(this).html(h);
-                selected = null;
+        }
+        function prev(){
+            if(page>0){
+                page-=1;
             }
-        });
-    }
-    function replaceLineup(x,y){
-        var  curr_item = {
-                        item:null,
-                        left:0,
-                        top:0,
-                        distance:{x:9999,
-                                  y:9999}
-                    };
-        var dx = 0;
-        var dy = 0;
+            for(var i=0;i<=last_page;i++){
+                $(".page-"+i).hide();
+            }
+            $(".page-"+page).fadeIn();
+            if(page==0&&last_page>0){
+                 $(".next").show();
+            }
+            $("#draggable").hide();
+        }
+        function next(){
+            page+=1;
+            if(page==last_page){
+                $(".next").hide();
+            }
+            $(".prev").show();
+            for(var i=0;i<=last_page;i++){
+                $(".page-"+i).hide();
+            }
+            $(".page-"+page).fadeIn();
+            $("#draggable").hide();
+        }
+        function player_in_lineup(id,callback){
+            var is_exist = false;
+            $.each($("#the-formation").children(),function(k,item){
+               if($(item).find('a').attr('no')==id){
+                is_exist = true;
+               }
+               if(k>=10){
+                callback(is_exist);
+               }
+            });
+        }
+        function getLineUp(){
+            api_call('<?=$this->Html->url("/game/lineup")?>',function(data){
+                $("#formation-select option").filter(function() {
+                    return $(this).text() == data.formation; 
+                }).prop('selected', true);
+                $("#the-formation").removeClass().addClass('formation-'+data.formation);
+                selectedVal['formations'] = {label:data.formation,
+                                            value:data.formation};
+                if(data.lineup.length==0){
+                    render_view(defaultformation,'#the-formation',{});
+                    initLineupEvents();
+                }
+            });
+        }
+        function initLineupEvents(){
+             $(".starter").click(function(){
+                if(selected==null){
+                    selected = $(this);
+                    selected.addClass('playerSelected');
+                }else{
+                    selected.removeClass('playerSelected');
+                    var h = selected.html();
+                    selected.html($(this).html());
+                    $(this).html(h);
+                    selected = null;
+                }
+            });
+        }
+        function replaceLineup(x,y){
+            var  curr_item = {
+                            item:null,
+                            left:0,
+                            top:0,
+                            distance:{x:9999,
+                                      y:9999}
+                        };
+            var dx = 0;
+            var dy = 0;
 
-        $.each($("#the-formation").children(),function(k,item){
-           
-            dx = Math.abs(($(item).offset().left-$("#universal").position().left-30)-x);
-            dy = Math.abs(($(item).offset().top-$("#universal").position().top-30)-y);
-          
-            if(curr_item!=null){
+            $.each($("#the-formation").children(),function(k,item){
+               
+                dx = Math.abs(($(item).offset().left-$("#universal").position().left-30)-x);
+                dy = Math.abs(($(item).offset().top-$("#universal").position().top-30)-y);
+              
+                if(curr_item!=null){
+                          
+                        }
+                if((curr_item.distance.x > dx && dy < 50)){
                       
-                    }
-            if((curr_item.distance.x > dx && dy < 50)){
-                  
-                    curr_item = {
-                        item:item,
-                        left:$(item).offset().left,
-                        top:$(item).offset().top,
-                        distance:{x:dx,
-                                  y:dy}
-                    };
-                      
-            }
-            if(k>=10){
-               $(curr_item.item).html($("#draggable").html());
-               $(curr_item.item).find('.player-name').show();
-               curr_item = null;
-            }
-        });
-    }
+                        curr_item = {
+                            item:item,
+                            left:$(item).offset().left,
+                            top:$(item).offset().top,
+                            distance:{x:dx,
+                                      y:dy}
+                        };
+                          
+                }
+                if(k>=10){
+                   $(curr_item.item).html($("#draggable").html());
+                   $(curr_item.item).find('.player-name').show();
+                   curr_item = null;
+                }
+            });
+        }
     getLineUp();  
 });
 </script>
 <script type="text/template" id="tpllineup">
-    <div class="starter jersey-player p11">
+    <div id="p11" class="starter jersey-player p11">
         <div class="jersey j-red"></div>
         <span class="player-name">11</span>
     </div><!-- end .jersey-player -->
 </script>
 
 <script type="text/template" id="defaultformation">
-    <div class="starter jersey-player p11">
+    <div id="p11" class="starter jersey-player p11">
         <div class="jersey j-red"></div>
         <span class="player-name">11</span>
     </div><!-- end .jersey-player -->
-    <div class="starter jersey-player p10">
+    <div id="p10" class="starter jersey-player p10">
         <div class="jersey j-red"></div>
         <span class="player-name">10</span>
     </div><!-- end .jersey-player -->
-    <div class="starter jersey-player p9">
+    <div id="p9" class="starter jersey-player p9">
         <div class="jersey j-yellow"></div>
         <span class="player-name">9</span>
     </div><!-- end .jersey-player -->
-    <div class="starter jersey-player p8">
+    <div id="p8" class="starter jersey-player p8">
         <div class="jersey j-yellow"></div>
         <span class="player-name">8</span>
     </div><!-- end .jersey-player -->
-    <div class="starter jersey-player p7">
+    <div id="p7" class="starter jersey-player p7">
         <div class="jersey j-yellow"></div>
         <span class="player-name">7</span>
     </div><!-- end .jersey-player -->
-    <div class="starter jersey-player p6">
+    <div id="p6" class="starter jersey-player p6">
         <div class="jersey j-yellow"></div>
         <span class="player-name">6</span>
     </div><!-- end .jersey-player -->
-    <div class="starter jersey-player p5">
+    <div id="p5" class="starter jersey-player p5">
         <div class="jersey j-blue"></div>
         <span class="player-name">5</span>
     </div><!-- end .jersey-player -->
-    <div class="starter jersey-player p4">
+    <div id="p4" class="starter jersey-player p4">
         <div class="jersey j-blue"></div>
         <span class="player-name">4</span>
     </div><!-- end .jersey-player -->
-    <div class="starter jersey-player p3">
+    <div id="p3" class="starter jersey-player p3">
         <div class="jersey j-blue"></div>
         <span class="player-name">3</span>
     </div><!-- end .jersey-player -->
-    <div class="starter jersey-player p2">
+    <div id="p2" class="starter jersey-player p2">
         <div class="jersey j-blue"></div>
         <span class="player-name">2</span>
     </div><!-- end .jersey-player -->
-    <div class="starter jersey-player p1">
+    <div id="p1" class="starter jersey-player p1">
         <div class="jersey j-grey"></div>
         <span class="player-name">1</span>
     </div><!-- end .jersey-player -->

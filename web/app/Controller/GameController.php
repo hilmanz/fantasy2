@@ -69,5 +69,25 @@ class GameController extends AppController {
 		print json_encode($lineup);
 		die();
 	}
+	/**
+	* @todo
+	* harus pastikan cuman bisa save lineup sebelum pertandingan dimulai.
+	*/
+	public function save_lineup(){
+		$this->loadModel('Team');
+		$this->loadModel('User');
+		$userData = $this->getUserData();
+		$formation = $this->request->data['formation'];
+		$players = array();
+		foreach($this->request->data as $n=>$v){
+			if(eregi('player-',$n)&&$v!=0){
+				$players[] = array('player_id'=>str_replace('player-','',$n),'no'=>intval($v));
+			}
+		}
+		$lineup = $this->Game->setLineup($userData['team']['id'],$formation,$players);
+		header('Content-type: application/json');
+		print json_encode($lineup);
+		die();
+	}
 
 }

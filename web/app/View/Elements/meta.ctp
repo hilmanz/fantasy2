@@ -5,7 +5,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
 	<meta name="author" content="">
-
+	<script>
+	var api_url = "<?=$this->Html->url('/')?>";
+	</script>
 	<!-- Le styles -->
 	<?php echo $this->Html->css(
 			  array('ffl','fancybox/jquery.fancybox-1.3.4'),

@@ -959,3 +959,6 @@ td,th{
 .playerUnselected{
 	border:none;
 }
+.playerChoosed{
+	color:#ccc;
+}

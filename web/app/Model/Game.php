@@ -78,4 +78,14 @@ class Game extends AppModel {
 		$response = $this->api_call('/team/lineup/'.$team_id);
 		return $response;
 	}
+	public function setLineup($team_id,$formation,$players){
+		$s_players = json_encode($players);
+		$response = $this->api_post('/team/lineup/save',array(
+						'team_id'=>$team_id,
+						'players'=>$s_players,
+						'formation'=>$formation
+					));
+		$response['lineup'] = $players;
+		return $response;
+	}
 }
