@@ -154,7 +154,7 @@ function render_view(tpl_source,target,data){
 	    var view = new View({el:$(target)});
 	    
    }catch(error){
-   	
+   		console.log(error.message);
    }
 }
 function prepend_view(tpl_source,target,data){

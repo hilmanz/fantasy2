@@ -208,10 +208,10 @@ $(document).ready(function(){
             var is_exist = false;
             $.each($("#the-formation").children(),function(k,item){
                if($(item).find('a').attr('no')==id){
-                is_exist = true;
+                    is_exist = true;
                }
                if(k>=10){
-                callback(is_exist);
+                    callback(is_exist);
                }
             });
         }
@@ -226,6 +226,13 @@ $(document).ready(function(){
                 if(data.lineup.length==0){
                     render_view(defaultformation,'#the-formation',{});
                     initLineupEvents();
+                }else{
+                    $("#the-formation").html('');
+                    for(var i in data.lineup){
+                        append_view(tpllineup,'#the-formation',data.lineup[i]);    
+                    }
+                    initLineupEvents();
+                    
                 }
             });
         }
@@ -284,9 +291,37 @@ $(document).ready(function(){
 });
 </script>
 <script type="text/template" id="tpllineup">
-    <div id="p11" class="starter jersey-player p11">
-        <div class="jersey j-red"></div>
-        <span class="player-name">11</span>
+    <%
+        var jersey_color = 'j-red';
+        var pos_code = 'F';
+        switch(position){
+            case 'Goalkeeper':
+                pos_code = 'G';
+                jersey_color = 'j-grey';
+            break;
+            case 'Defender':
+                pos_code = 'D';
+                jersey_color = 'j-blue';
+            break;
+            case 'Midfielder':
+                pos_code = 'M';
+                jersey_color = 'j-yellow';
+            break;
+            case 'Forward':
+                pos_code = 'F';
+                jersey_color = 'j-red';
+            break;
+            default:
+                pos_code = 'F';
+                jersey_color = 'j-red';
+            break;
+        }
+    %>
+    <div id="p<%=position_no%>" class="starter jersey-player p<%=position_no%>">
+    <a href="javascript:void(0);" no="<%=player_id%>">
+        <div class="jersey <%=jersey_color%>"><%=pos_code%></div>
+        <span class="player-name"><%=name%></span>
+    </a>
     </div><!-- end .jersey-player -->
 </script>
 

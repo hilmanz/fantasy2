@@ -59,7 +59,7 @@
                         <li><a href="<?=$this->Html->url('/pages/tos')?>">Terms &amp; Conditions</a></li>
                         <li><a href="<?=$this->Html->url('/pages/contact')?>">Contact</a></li>
                     </ul>
-                        -->
+                    -->
                 </div>
             </div>
         </div><!-- end #universal -->
