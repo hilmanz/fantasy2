@@ -109,4 +109,16 @@ class Game extends AppModel {
 		$response = $this->api_call('/match/results/'.$game_id);
 		return $response;
 	}
+
+
+	/**
+	* financial statements
+	*/
+	function financial_statements($fb_id){
+		$team = $this->api_call('/team/get/'.$fb_id);
+		if(isset($team['id'])){
+			$response = $this->api_call('/finance/'.$team['id']);
+		}			
+		return $response;
+	}
 }

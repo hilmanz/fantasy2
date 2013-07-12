@@ -65,6 +65,28 @@ class ManageController extends AppController {
 			}
 		}
 		$this->set('staffs',$staffs);
+
+		//financial statements
+		$finance = $this->getFinancialStatements($userData['fb_id']);
+		pr($finance);
+		$this->set('finance',$finance);
+	}
+	private function getFinancialStatements($fb_id){
+		$finance = $this->Game->financial_statements($fb_id);
+		if($finance['status']==1){
+
+			$report = array('total_matches' => $finance['data']['total_matches'],
+							'budget' => $finance['data']['budget']);
+			foreach($finance['data']['report'] as $n=>$v){
+				$report[$v['item_name']] = $v['total'];
+			}
+			$report['total_earnings'] = $report['tickets_sold']+
+										$report['commercial_director_bonus']+
+										$report['marketing_manager_bonus']+
+										$report['public_relation_officer_bonus']+
+										intval($report['win_bonus']);
+			return $report;
+		}
 	}
 	public function hiring_staff(){
 		$this->loadModel('Team');

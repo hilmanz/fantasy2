@@ -59,3 +59,4 @@ o. harus buat mekanisme dimana pemain yg kena kartu merah atau cedera, gak bisa 
 #ALTER TABLE `ffgame`.`master_player`     ADD COLUMN `salary` INT(11) DEFAULT '200000' NULL AFTER `team_id`
 ;
 
+p. win bonus di frontend kemungkinan belum tercatat.

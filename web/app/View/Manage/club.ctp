@@ -55,22 +55,22 @@
                     <table cellspacing="0" cellpadding="0" width="100%">
                       <tr class="head">
                         <td colspan="5">BALANCE</td>
-                        <td align="right">$25,000,000</td>
+                        <td align="right">EUR 100,000,000</td>
                       </tr>
                       <tr>
-                        <td>Earnings</td>
-                        <td>Ticket Price</td>
-                        <td>Attendance</td>
+                        <td>Tickets</td>
+                        <td></td>
+                        <td></td>
                         <td>Matches</td>
                         <td>Total Earnings</td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
-                        <td>&nbsp;</td>
-                        <td align="right">$50</td>
-                        <td align="right">25000</td>
-                        <td align="right">19</td>
-                        <td align="right">$23,750,000</td>
+                        <td>Tickets Sold</td>
+                        <td align="right"></td>
+                        <td align="right"></td>
+                        <td align="right"><?=$finance['total_matches']?></td>
+                        <td align="right">EUR <?=number_format($finance['tickets_sold'])?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
@@ -85,24 +85,24 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td>MD</td>
-                        <td align="right">$3,562,500</td>
+                        <td>Commercial Director Bonus</td>
+                        <td align="right">EUR <?=number_format(abs($finance['commercial_director_bonus']))?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td>MM</td>
-                        <td align="right">$2,375,000</td>
+                        <td>Marketing Manager Bonus</td>
+                        <td align="right">EUR <?=number_format(abs($finance['marketing_manager_bonus']))?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td>PR</td>
-                        <td align="right">$1,187,500</td>
+                        <td>Public Relations Bonus</td>
+                        <td align="right">EUR <?=number_format(abs($finance['public_relation_officer_bonus']))?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
@@ -110,7 +110,7 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td align="right">$5,000,000</td>
+                        <td align="right">EUR <?=number_format(abs($finance['sponsorship']))?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
@@ -118,15 +118,7 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>Wins</td>
-                        <td align="right">$950,000</td>
-                        <td>&nbsp;</td>
-                      </tr>
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>User Points</td>
-                        <td align="right">$950,000</td>
+                        <td align="right">EUR <?=number_format(abs(@$finance['win_bonus']))?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
@@ -139,7 +131,7 @@
                       </tr>
                       <tr class="head">
                         <td colspan="5">Total Earnings</td>
-                        <td align="right">$37,775,000</td>
+                        <td align="right">EUR <?=number_format(abs($finance['total_earnings']))?></td>
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
@@ -154,49 +146,10 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td align="right">$9,500,000</td>
+                        <td align="right">EUR <?=number_format(abs($finance['operating_cost']))?></td>
                         <td>&nbsp;</td>
                       </tr>
-                      <tr>
-                        <td>Less Savings</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                      </tr>
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>FD</td>
-                        <td align="right">$1,900,000</td>
-                        <td>&nbsp;</td>
-                      </tr>
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>TX C</td>
-                        <td align="right">$1,425,000</td>
-                        <td>&nbsp;</td>
-                      </tr>
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>ACC</td>
-                        <td align="right">$475,000</td>
-                        <td>&nbsp;</td>
-                      </tr>
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>NETT Operating Costs</td>
-                        <td>&nbsp;</td>
-                        <td align="right">$5,700,000</td>
-                      </tr>
+                      
                       <tr>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
@@ -208,38 +161,7 @@
                       <tr class="head">
                         <td colspan="6">Salaries</td>
                       </tr>
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td>STARS</td>
-                        <td align="right">3</td>
-                        <td align="right">150000</td>
-                        <td align="right">$17,100,000</td>
-                        <td>&nbsp;</td>
-                      </tr>
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td>TOP</td>
-                        <td align="right">4</td>
-                        <td align="right">100000</td>
-                        <td align="right">$15,200,000</td>
-                        <td>&nbsp;</td>
-                      </tr>
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td>AVERAGE</td>
-                        <td align="right">4</td>
-                        <td align="right">50000</td>
-                        <td align="right">$7,600,000</td>
-                        <td>&nbsp;</td>
-                      </tr>
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td>JUNIORS</td>
-                        <td align="right">8</td>
-                        <td align="right">25000</td>
-                        <td align="right">$7,600,000</td>
-                        <td>&nbsp;</td>
-                      </tr>
+                      
                       <tr>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
@@ -250,83 +172,83 @@
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
-                        <td>CD</td>
+                        <td>Commercial Director</td>
                         <td>&nbsp;</td>
-                        <td align="right">5500</td>
-                        <td align="right">$209,000</td>
-                        <td>&nbsp;</td>
-                      </tr>
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td>MM</td>
-                        <td>&nbsp;</td>
-                        <td align="right">2500</td>
-                        <td align="right">$95,000</td>
+                        <td align="right"></td>
+                        <td align="right">EUR <?=number_format(abs(@$finance['commercial_director']))?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
-                        <td>PR</td>
+                        <td>Marketing Manager</td>
                         <td>&nbsp;</td>
-                        <td align="right">2000</td>
-                        <td align="right">$76,000</td>
+                        <td align="right"></td>
+                        <td align="right">EUR <?=number_format(abs(@$finance['marketing_manager']))?></td>
+                        <td>&nbsp;</td>
+                      </tr>
+                      <tr>
+                        <td>&nbsp;</td>
+                        <td>Public Relations</td>
+                        <td>&nbsp;</td>
+                        <td align="right"></td>
+                        <td align="right">EUR <?=number_format(abs(@$finance['public_relation_officer']))?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
                         <td>Security</td>
                         <td>&nbsp;</td>
-                        <td align="right">2000</td>
-                        <td align="right">$76,000</td>
+                        <td align="right"></td>
+                        <td align="right">EUR <?=number_format(abs(@$finance['head_of_security']))?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
                         <td>Footbal Director</td>
                         <td>&nbsp;</td>
-                        <td align="right">15000</td>
-                        <td align="right">$570,000</td>
+                        <td align="right"></td>
+                        <td align="right">EUR <?=number_format(abs(@$finance['football_director']))?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
                         <td>Chief Scout</td>
                         <td>&nbsp;</td>
-                        <td align="right">7000</td>
-                        <td align="right">$266,000</td>
+                        <td align="right"></td>
+                        <td align="right">EUR <?=number_format(abs(@$finance['chief_scout']))?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
                         <td>general Scout</td>
                         <td>&nbsp;</td>
-                        <td align="right">1500</td>
-                        <td align="right">$57,000</td>
+                        <td align="right"></td>
+                        <td align="right">EUR <?=number_format(abs(@$finance['general_scout']))?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
-                        <td>FD</td>
+                        <td>Finance Director</td>
                         <td>&nbsp;</td>
-                        <td align="right">5000</td>
-                        <td align="right">$190,000</td>
+                        <td align="right"></td>
+                        <td align="right">EUR <?=number_format(abs(@$finance['finance_director']))?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
                         <td>Tax</td>
                         <td>&nbsp;</td>
-                        <td align="right">2000</td>
-                        <td align="right">$76,000</td>
+                        <td align="right"></td>
+                        <td align="right">EUR <?=number_format(abs(@$finance['tax_consultant']))?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
                         <td>Accountant</td>
                         <td>&nbsp;</td>
-                        <td align="right">2000</td>
-                        <td align="right">$76,000</td>
-                        <td align="right">$49,191,000</td>
+                        <td align="right"></td>
+                        <td align="right">EUR <?=number_format(abs(@$finance['accountant']))?></td>
+                        <td align="right"></td>
                       </tr>
                       <tr class="head">
                         <td colspan="5">Transfer Balance</td>
@@ -334,7 +256,7 @@
                       </tr>
                       <tr class="head">
                         <td colspan="5">Running Balance</td>
-                        <td align="right">$7,884,000</td>
+                        <td align="right">EUR <?=number_format($finance['budget'])?></td>
                     </tr>
                    </table>
               </div><!-- end #tabs-Keuagan -->

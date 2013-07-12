@@ -278,8 +278,10 @@ function getFinancialStatement(game_team_id,done){
 		[
 			function(callback){
 				//get the total matches by these team
-				conn.query("SELECT COUNT(DISTINCT game_team_id) AS total_matches \
-							FROM ffgame.game_team_expenditures WHERE game_team_id = ?;",
+				
+				conn.query("SELECT COUNT(*) AS total_matches FROM (SELECT game_id\
+							FROM ffgame.game_team_expenditures WHERE game_team_id = ?\
+							GROUP BY game_id) a;",
 					[game_team_id],
 					function(err,result){
 					if(typeof result !== 'undefined'){
