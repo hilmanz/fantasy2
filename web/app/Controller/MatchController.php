@@ -36,8 +36,12 @@ class MatchController extends AppController {
 	public function index(){
 		$rs = $this->Game->getMatches();
 		
-		//die();
 		$this->set('matches',$rs['matches']);
+	}
+	public function details($game_id){
+		$game_id = Sanitize::paranoid($game_id);
+		$rs = $this->Game->getMatchDetails($game_id);
+		$this->set('o',$rs);
 	}
 	public function error(){
 		$this->render('error');

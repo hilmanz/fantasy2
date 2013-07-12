@@ -47,7 +47,7 @@
                                 ?>
                             </td>
                             <td><?=$match['away_name']?></td><td><?=$match['period']?></td>
-                            <td>View</td>
+                            <td><a href="<?=$this->Html->url('/match/details/'.$match['game_id'])?>">View</a></td>
                         </tr>
                         <?php endforeach;?>
                     </table>

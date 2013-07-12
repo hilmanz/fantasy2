@@ -98,4 +98,9 @@ class Game extends AppModel {
 		$response = $this->api_call('/match/list');
 		return $response;
 	}
+
+	public function getMatchDetails($game_id){
+		$response = $this->api_call('/match/results/'.$game_id);
+		return $response;
+	}
 }
