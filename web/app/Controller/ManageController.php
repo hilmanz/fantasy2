@@ -144,7 +144,7 @@ class ManageController extends AppController {
 		if($rs['status']==1){
 			$this->set('data',$rs['data']);
 		}
-		pr($rs['data']);
+		
 	}
 	public function error(){
 		$this->render('error');
