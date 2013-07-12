@@ -11,7 +11,7 @@
  	<div id="body">
         <div id="universal">
            <div id="header">
-                <a id="logo" href="index.php" title="SUPER SOCCER - FANTASY FOOTBALL LEAGUE">&nbsp;</a>
+                <a id="logo" href="<?=$this->Html->url('/')?>" title="SUPER SOCCER - FANTASY FOOTBALL LEAGUE">&nbsp;</a>
             	<?php if($USER_IS_LOGIN):?>
                 <div id="user-info">
         			<a href="#" class="thumb40 fl"><img src="http://graph.facebook.com/<?=$USER_DATA['fb_id']?>/picture" /></a>

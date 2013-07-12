@@ -1,19 +1,19 @@
 <?php
 /**
- * Match Controller
+ * Market Controller
 
  */
 App::uses('AppController', 'Controller');
 App::uses('Sanitize', 'Utility');
 
-class MatchController extends AppController {
+class MarketController extends AppController {
 
 /**
  * Controller name
  *
  * @var string
  */
-	public $name = 'Match';
+	public $name = 'Market';
 
 /**
  * This controller does not use a model
@@ -34,15 +34,9 @@ class MatchController extends AppController {
 	}
 
 	public function index(){
-		$rs = $this->Game->getMatches();
 		
-		$this->set('matches',$rs['matches']);
 	}
-	public function details($game_id){
-		$game_id = Sanitize::paranoid($game_id);
-		$rs = $this->Game->getMatchDetails($game_id);
-		$this->set('o',$rs);
-	}
+
 	public function error(){
 		$this->render('error');
 	}
