@@ -106,5 +106,9 @@ class LoginController extends AppController {
 	public function service_unavailable(){
 		
 	}
+	public function expired(){
+		
+	}
+
 
 }

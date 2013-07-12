@@ -21,13 +21,19 @@ class ManageController extends AppController {
  * @var array
  */
 	public $uses = array();
+	private $userData;
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$userData = $this->getUserData();
+		$this->loadModel('Team');
+		$this->loadModel('User');
 		
+		$this->userData = $this->getUserData();
+		if(!$this->hasTeam()){
+			$this->redirect('/login/expired');
+		}
 	}
 	public function hasTeam(){
-		$userData = $this->getUserData();
+		$userData = $this->userData;
 		if(is_array($userData['team'])){
 			return true;
 		}
@@ -36,9 +42,8 @@ class ManageController extends AppController {
 		$this->redirect('/manage/club');
 	}
 	public function club(){
-		$this->loadModel('Team');
-		$this->loadModel('User');
-		$userData = $this->getUserData();
+		
+		$userData = $this->userData;
 		//user data
 		$user = $this->User->findByFb_id($userData['fb_id']);
 		$this->set('user',$user['User']);
@@ -68,7 +73,7 @@ class ManageController extends AppController {
 
 		//financial statements
 		$finance = $this->getFinancialStatements($userData['fb_id']);
-		pr($finance);
+		
 		$this->set('finance',$finance);
 	}
 	private function getFinancialStatements($fb_id){
@@ -84,14 +89,13 @@ class ManageController extends AppController {
 										$report['commercial_director_bonus']+
 										$report['marketing_manager_bonus']+
 										$report['public_relation_officer_bonus']+
-										intval($report['win_bonus']);
+										intval(@$report['win_bonus']);
 			return $report;
 		}
 	}
 	public function hiring_staff(){
-		$this->loadModel('Team');
-		$this->loadModel('User');
-		$userData = $this->getUserData();
+		
+		$userData = $this->userData;
 
 		if(isset($this->request->query['hire'])){
 			$official_id = intval($this->request->query['id']);
@@ -123,10 +127,8 @@ class ManageController extends AppController {
 		$this->set('weekly_salaries',$total_weekly_salary);
 	}
 	public function team(){
-		$this->loadModel('Team');
-		$this->loadModel('User');
-		$userData = $this->getUserData();
-
+		
+		$userData = $this->userData;
 		//list of players
 		$players = $this->Game->get_team_players($userData['fb_id']);
 		
@@ -146,9 +148,8 @@ class ManageController extends AppController {
 		
 	}
 	public function player($player_id){
-		$this->loadModel('Team');
-		$this->loadModel('User');
-		$userData = $this->getUserData();
+		
+		$userData = $this->userData;
 		//user data
 		$user = $this->User->findByFb_id($userData['fb_id']);
 		$this->set('user',$user['User']);

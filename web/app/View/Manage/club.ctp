@@ -196,7 +196,7 @@
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
-                        <td>Security</td>
+                        <td>Head of Security</td>
                         <td>&nbsp;</td>
                         <td align="right"></td>
                         <td align="right">EUR <?=number_format(abs(@$finance['head_of_security']))?></td>
