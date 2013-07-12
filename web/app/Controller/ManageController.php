@@ -123,6 +123,29 @@ class ManageController extends AppController {
 		$this->set('club',$club['Team']);
 		
 	}
+	public function player($player_id){
+		$this->loadModel('Team');
+		$this->loadModel('User');
+		$userData = $this->getUserData();
+		//user data
+		$user = $this->User->findByFb_id($userData['fb_id']);
+		$this->set('user',$user['User']);
+
+		//budget
+		$budget = $this->Game->getBudget($userData['team']['id']);
+		$this->set('team_bugdet',$budget);
+
+		//club
+		$club = $this->Team->findByUser_id($user['User']['id']);
+		$this->set('club',$club['Team']);
+
+		//player detail : 
+		$rs = $this->Game->get_team_player_info($userData['fb_id'],$player_id);
+		if($rs['status']==1){
+			$this->set('data',$rs['data']);
+		}
+		pr($rs['data']);
+	}
 	public function error(){
 		$this->render('error');
 	}

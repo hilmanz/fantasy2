@@ -42,7 +42,7 @@
                 <p class="stadion">Old Trafford</p>
                 <p class="attendance">+- 34,000 Attendance</p>
                 <p class="gbpoint">1,642,758 GPB +-</p>
-                <a class="view-more" href="<?=$this->Html->url('/match')?>">See All Match</a>
+                <a class="view-more" href="<?=$this->Html->url('/match')?>">See All Matches</a>
             </div><!-- end .widget -->
             <div class="widget tr perform-team">
                 <h2>your perfomance</h2>

@@ -89,7 +89,13 @@ class Game extends AppModel {
 		return $response;
 	}
 
-
+	public function get_team_player_info($fb_id,$player_id){
+		$team = $this->api_call('/team/get/'.$fb_id);
+		if(isset($team['id'])){
+			$response = $this->api_call('/team/player/'.$team['id'].'/'.$player_id);
+		}
+		return $response;
+	}
 	/**
 	* get match list
 	*

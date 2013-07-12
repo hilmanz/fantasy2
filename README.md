@@ -31,6 +31,9 @@ s. view financial statements -> DONE
 4. fix issue where the JSON Output unable to convert utf8 character correctly.
 
 5. harus ada table reference untuk mendata tanggal untuk tiap2 matchday.
+
+6. masukan perhitungan gaji weekly pemain didalam financial statements.
+
 example : 
 
 matchday | matchdate
@@ -51,4 +54,8 @@ l. buy a player
 m. sell a player 
 o. harus buat mekanisme dimana pemain yg kena kartu merah atau cedera, gak bisa di pasang di formasi.
 
-ALTER TABLE `ffgame`.`master_player`     ADD COLUMN `salary` INT(11) DEFAULT '200000' NULL AFTER `team_id`;
+
+
+#ALTER TABLE `ffgame`.`master_player`     ADD COLUMN `salary` INT(11) DEFAULT '200000' NULL AFTER `team_id`
+;
+

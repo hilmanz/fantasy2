@@ -362,8 +362,10 @@
                     }
                   ?>
                     <div class="jersey-player ">
+                      <a href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>">
                         <div class="jersey j-<?=$color?>"><?=$player_pos?></div>
                         <span class="player-name"><?=h($player['name'])?></span>
+                      </a>
                     </div><!-- end .jersey-player -->
                   <?php endforeach;?>
                 </div><!-- end .player-list -->
@@ -386,12 +388,11 @@
                                 endforeach;
                             ?>
                     </div><!-- end .staff-list -->
+                     <div class="row">
+                        <a href="<?=$this->Html->url('/manage/hiring_staff')?>" class="button">
+                          Manage Staffs</a>
+                    </div>
               </div><!-- end #tabs-Staff -->
-              <div class="row">
-
-                    <a href="<?=$this->Html->url('/manage/hiring_staff')?>" class="button">Manage Staffs</a>
-                    
-              </div>
             </div><!-- end #clubtabs -->
         </div><!-- end .content -->
     </div><!-- end #thecontent -->
