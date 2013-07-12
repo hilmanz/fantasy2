@@ -255,7 +255,7 @@ class ProfileController extends AppController {
 					//register user into gameAPI.
 				
 					$response = $this->ProfileModel->setProfile($data);
-					
+					pr($response);
 					if($response['status']==1){
 						$this->redirect("/profile/register_team");
 					}else{

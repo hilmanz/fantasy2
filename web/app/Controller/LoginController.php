@@ -67,7 +67,7 @@ class LoginController extends AppController {
 				$this->redirect("/login/error");
 			}
 		}catch(Exception $e){
-			pr($e->getMessage());
+			
 			$this->redirect("/login/error?e=1");	
 		}
 		die();
