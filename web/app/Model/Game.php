@@ -88,4 +88,14 @@ class Game extends AppModel {
 		$response['lineup'] = $players;
 		return $response;
 	}
+
+
+	/**
+	* get match list
+	*
+	*/
+	public function getMatches(){
+		$response = $this->api_call('/match/list');
+		return $response;
+	}
 }

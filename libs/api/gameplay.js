@@ -312,6 +312,7 @@ function getFinancialStatement(game_team_id,done){
 		}
 	);
 }
+
 exports.getFinancialStatement = getFinancialStatement;
 exports.getPlayerDetail = getPlayerDetail;
 exports.getPlayerTeamStats = getPlayerTeamStats;

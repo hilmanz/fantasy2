@@ -7,5 +7,9 @@ exports.config = {
 		password:'root',
 		database:'ffgame'
 	},
-	port: 3002
+	port: 3002,
+	redis:{
+		host:'localhost',
+		port:6379
+	}
 };

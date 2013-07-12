@@ -42,7 +42,7 @@
                 <p class="stadion">Old Trafford</p>
                 <p class="attendance">+- 34,000 Attendance</p>
                 <p class="gbpoint">1,642,758 GPB +-</p>
-                <a class="view-more" href="#">See All Match</a>
+                <a class="view-more" href="<?=$this->Html->url('/match')?>">See All Match</a>
             </div><!-- end .widget -->
             <div class="widget tr perform-team">
                 <h2>your perfomance</h2>
@@ -51,7 +51,7 @@
                 <h3><span class="span1">Best PLayer</span>:<span class="span2">5</span></h3>
                 <h3><span class="span1">Best Match</span>:<span class="span2">34</span></h3>
                 <h3><span class="span1">Club Value</span>:<span class="span2">5.032.000</span></h3>
-                <a class="view-more" href="#">View Leaderboard</a>
+                <a class="view-more" href="<?=$this->Html->url('/leaderboard')?>">View Leaderboard</a>
             </div><!-- end .widget -->
            
         </div><!-- end .box4 -->
@@ -65,6 +65,15 @@
                     <option>4-3-3</option>
                     <option>4-2-3-1</option>
                     <option>3-5-2</option>
+                    <option>4-4-1-1</option>
+                    <option>4-3-2-1</option>
+                    <option>4-3-1-2</option>
+                    <option>5-3-2</option>
+                    <option>5-3-1-1</option>
+                    <option>5-2-2-1</option>
+                    <option>4-2-4</option>
+                    <option>3-4-3</option>
+                    <option>3-4-2-1</option>
                 </select>
                 <a class="button" href="#/save_formation">Save Formations</a>
                 </div>

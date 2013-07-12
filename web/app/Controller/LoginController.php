@@ -90,7 +90,7 @@ class LoginController extends AppController {
 			if($user_session['team']==null){
 				$this->redirect('/profile/register_team');
 			}else{
-				$this->redirect('/profile');
+				$this->redirect('/manage/team');
 			}
 		}else{
 			$this->redirect('/profile/register');

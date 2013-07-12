@@ -31,9 +31,9 @@ app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser('i die, you die, everybody die'));
-app.use(express.session({ store: new RedisStore }));
+app.use(express.session({ store: new RedisStore(config.redis) }));
 
-var client = redis.createClient();
+var client = redis.createClient(config.redis.port,config.redis.host);
 client.on("error", function (err) {
     console.log("Error " + err);
 });
