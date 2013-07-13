@@ -398,21 +398,28 @@ function calculatePlayerPoints(conn,points,game_id,player,done){
 		},
 		function(game_id,team_id,player_id,stats,callback){
 			var game_points = 0;
+			var player_stats = {};
 			for(var i in stats){
 				if(typeof stat_maps[stats[i].stats_name] !== 'undefined'){
 					var point_name = stat_maps[stats[i].stats_name];
+					if(typeof player_stats[point_name] === 'undefined'){
+						player_stats[point_name] = stats[i].stats_value;
+					}else{
+						player_stats[point_name] += stats[i].stats_value;
+					}
 					console.log(player_id,
+								point_name,
 								points[point_name],
-								stats[i].stats_value,
+								'['+stats[i].stats_value+']',
 								getPositionAlias(player.position),
 								points[point_name][getPositionAlias(player.position)],
 								points[point_name][getPositionAlias(player.position)] * stats[i].stats_value
 								);
 					game_points += (points[point_name][getPositionAlias(player.position)] * stats[i].stats_value);
-
+					
 				}
 			}
-			console.log('game points :',game_points);
+			
 			conn.query("INSERT INTO ffgame_stats.master_match_player_points\
 						 (game_id,team_id,player_id,points,last_update)\
 						 VALUES(?,?,?,?,NOW())\
@@ -422,9 +429,43 @@ function calculatePlayerPoints(conn,points,game_id,player,done){
 						 [game_id,team_id,player_id,game_points],
 						 function(err,rs){
 						 	if(err) console.log(err);
-							callback(null,'ok');			 	
+							callback(err,game_id,team_id,player_id,game_points,player_stats);			 	
 						 });
 		},
+		function(game_id,team_id,player_id,game_points,player_stats,callback){
+			console.log('saving player performance stats #',player_id,'for game #',game_id);
+			var sql = "INSERT INTO ffgame_stats.master_player_stats\
+						(game_id,team_id,player_id,stats_name,stats_value,last_update)\
+						VALUES";
+			var data  = [];
+			var n = 0;
+			for(var i in player_stats){
+				if(n>0){
+					sql+=",";
+				}
+				sql += "(?,?,?,?,?,NOW())";
+				data.push(game_id);
+				data.push(team_id);
+				data.push(player_id);
+				data.push(i);
+				data.push(player_stats[i]);
+				n++;
+			}
+						
+			sql+= " ON DUPLICATE KEY UPDATE\
+						stats_value = VALUES(stats_value),\
+						last_update = VALUES(last_update);";
+
+			conn.query(sql,data,function(err,rs){
+				console.log('inserting player stats -> ',this.sql);
+				if(err){
+					console.log(err.message);
+				}
+				callback(err,null);
+			});
+			
+
+		}
 	]
 	,function(err,result){
 		done(null);
