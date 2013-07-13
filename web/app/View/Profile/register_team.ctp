@@ -34,6 +34,7 @@
                             <?php foreach($team_list as $team):?>
                             <a class="teamBox" href="#/selectTeam/<?=$team['uid']?>" title="<?=$team['name']?>">
                                 <img src="<?=$this->Html->url('/images/team/logo'.rand(1,2).'.png')?>" />
+                                <div class="team-name"><?=$team['name']?></div>
                             </a><!-- end .teamBox -->
                             <?php endforeach;?>
                         </div><!-- end .row -->
@@ -55,10 +56,10 @@
 	    <div class="widget">
 	        <div class="nav-side">
 	            <ul>
-	               <li><a href="#">Fill in Your Detail</a></li>
-	               <li class="current"><a href="#">Fill in Your Team</a></li>
-	               <li><a href="#">Fill in Your Players</a></li>
-	               <li><a href="#">Fill in Your Staff</a></li>
+	               <li><span>Fill in Your Detail</span></li>
+	               <li class="current"><span>Fill in Your Team</span></li>
+	               <li><span>Fill in Your Players</span></li>
+	               <li><span>Fill in Your Staff</span></li>
 	              
 	            </ul>
 	        </div><!-- end .nav-side -->
@@ -68,7 +69,7 @@
 	            <h3 class="red">Cash Left</h3>
 	            <h1>EUR <?=number_format($INITIAL_BUDGET)?></h1>
 	            <h3 class="red">Est. Monthly Expenses</h3>
-	            <h1>EUR 0</h1> 
+	            <h1 class="expenses">EUR 0</h1> 
 	        </div>
 	    </div><!-- end .widget -->
 	</div><!-- end #sidebar -->

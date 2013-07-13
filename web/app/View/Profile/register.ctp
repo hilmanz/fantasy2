@@ -83,10 +83,10 @@
 	    <div class="widget">
 	        <div class="nav-side">
 	            <ul>
-	               <li class="current"><a href="#/detail">Fill in Your Detail</a></li>
-	               <li><a href="#/team">Fill in Your Team</a></li>
-	               <li><a href="#/player">Fill in Your Players</a></li>
-	               <li><a href="#/staff">Fill in Your Staff</a></li>
+	               <li class="current"><span>Fill in Your Detail</span></li>
+	               <li><span>Fill in Your Team</span></li>
+	               <li><span>Fill in Your Players</span></li>
+	               <li><span>Fill in Your Staff</span></li>
 	            </ul>
 	        </div><!-- end .nav-side -->
 	    </div><!-- end .widget -->

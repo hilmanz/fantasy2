@@ -73,7 +73,7 @@ function authenticateCode(req,res,api_key,request_code){
 										//1 hour
 										var client = req.redisClient;
 								    	client.set(access_token,'1');
-								    	client.expire(access_token,60*60);
+								    	client.expire(access_token,60*60*3);
 								    	res.send(200,{access_token:access_token});
 									   
 									}else{

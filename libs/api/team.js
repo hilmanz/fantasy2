@@ -34,7 +34,7 @@ function getTeams(callback){
 /** get master player data **/
 function getPlayers(team_uid,callback){
 	conn = prepareDb();
-	conn.query("SELECT uid,name,birth_date,position,country \
+	conn.query("SELECT uid,name,birth_date,position,country,salary,transfer_value \
 				FROM ffgame.master_player \
 				WHERE team_id=? ORDER BY name ASC LIMIT 100",
 				[team_uid],
@@ -179,7 +179,7 @@ function getUserTeam(fb_id,done){
 				
 			},
 			function(user,callback){
-				if(typeof user.id !=='undefined'){
+				if(typeof user !=='undefined'){
 					conn.query("SELECT * FROM ffgame.game_teams WHERE user_id = ? LIMIT 1",[
 						user.id
 					],

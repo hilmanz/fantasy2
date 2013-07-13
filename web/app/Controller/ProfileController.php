@@ -177,6 +177,7 @@ class ProfileController extends AppController {
 
 
 		$result = $this->Game->create_team($data);
+		
 		if(isset($result['error'])){
 			$this->Session->setFlash('Sorry, cannot create another team. Your team probably already created !');
 			$this->redirect('/profile/team_error');
