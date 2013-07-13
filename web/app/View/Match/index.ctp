@@ -34,7 +34,11 @@
                         <?php
                             foreach($matches as $match):
                         ?>
+                        <?php if($match['my_match']):?>
+                        <tr class="mymatch">
+                        <?php else:?>
                         <tr>
+                        <?php endif;?>
                             <td><?=$match['matchday']?></td>
                             <td><?=$match['home_name']?></td>
                             <td align="center">

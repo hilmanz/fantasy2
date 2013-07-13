@@ -44,6 +44,16 @@ function fixtures(done){
 					});
 				});
 }
+function next_match(team_id,done){
+	var conn = prepareDb();
+	conn.query("",
+				[],
+				function(err,match){
+					conn.end(function(e){
+						done(err,match);						
+					});
+				});
+}
 function results(game_id,done){
 	var conn = prepareDb();
 	async.waterfall([

@@ -60,3 +60,5 @@ o. harus buat mekanisme dimana pemain yg kena kartu merah atau cedera, gak bisa 
 ;
 
 p. win bonus di frontend kemungkinan belum tercatat.
+
+q. Bot for updating game_fixtures from OPTA file.

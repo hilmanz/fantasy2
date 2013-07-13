@@ -314,7 +314,58 @@ function getFinancialStatement(game_team_id,done){
 		}
 	);
 }
-
+function next_match(team_id,done){
+	var async = require('async');
+	conn = prepareDb();
+	async.waterfall(
+		[
+			function(callback){
+				conn.query("SELECT a.id,\
+						a.game_id,a.home_id,b.name AS home_name,a.away_id,\
+						c.name AS away_name,a.home_score,a.away_score,\
+						a.matchday,a.period,a.session_id,a.attendance,match_date\
+						FROM ffgame.game_fixtures a\
+						INNER JOIN ffgame.master_team b\
+						ON a.home_id = b.uid\
+						INNER JOIN ffgame.master_team c\
+						ON a.away_id = c.uid\
+						WHERE (home_id = ? OR away_id=?) AND period <> 'FullTime'\
+						ORDER BY a.matchday\
+						LIMIT 1;\
+						",[team_id,team_id],function(err,rs){
+							callback(err,rs);
+						});
+			}
+		],
+		function(err,result){
+			conn.end(function(e){
+				done(err,result);
+			});
+		}
+	);
+}
+function getVenue(team_id,done){
+	var async = require('async');
+	conn = prepareDb();
+	async.waterfall(
+		[
+			function(callback){
+				conn.query("SELECT stadium_name AS name,stadium_capacity AS capacity \
+								FROM ffgame.master_team WHERE uid=? LIMIT 1;",
+								[team_id],function(err,rs){
+							callback(err,rs[0]);
+						});
+			}
+		],
+		function(err,result){
+			conn.end(function(e){
+				done(err,result);
+			});
+		}
+	);
+}
+exports.getVenue = getVenue;
+exports.next_match = next_match;
 exports.getFinancialStatement = getFinancialStatement;
 exports.getPlayerDetail = getPlayerDetail;
 exports.getPlayerTeamStats = getPlayerTeamStats;

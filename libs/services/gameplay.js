@@ -263,6 +263,24 @@ exports.financial_statements = function(req,res){
 	});
 	
 }
+exports.next_match = function(req,res){
+	gameplay.next_match(req.params.team_id,function(err,match){
+		if(!err){
+			res.json(200,{status:1,match:match[0]});
+		}else{
+			res.send(200,{status:0});
+		}
+	});
+}
+exports.get_venue = function(req,res){
+	gameplay.getVenue(req.params.team_id,function(err,venue){
+		if(!err){
+			res.json(200,{status:1,venue:venue});
+		}else{
+			res.send(200,{status:0});
+		}
+	});
+}
 function handleError(res){
 	res.send(501,{error:'no data available'});
 }

@@ -26,7 +26,7 @@ class ManageController extends AppController {
 		parent::beforeFilter();
 		$this->loadModel('Team');
 		$this->loadModel('User');
-		
+
 		$this->userData = $this->getUserData();
 		if(!$this->hasTeam()){
 			$this->redirect('/login/expired');
@@ -146,6 +146,21 @@ class ManageController extends AppController {
 		$club = $this->Team->findByUser_id($user['User']['id']);
 		$this->set('club',$club['Team']);
 		
+
+		
+		$next_match = $this->Game->getNextMatch($userData['team']['team_id']);
+		if($next_match['match']['home_id']==$userData['team']['team_id']){
+			$next_match['match']['home_name'] = $club['Team']['team_name'];
+		}else{
+			$next_match['match']['away_name'] = $club['Team']['team_name'];
+		}
+		
+		$this->set('next_match',$next_match['match']);
+
+		//match venue
+		$match_venue = $this->Game->getVenue($next_match['match']['home_id']);
+		$this->set('venue',$match_venue);
+
 	}
 	public function player($player_id){
 		

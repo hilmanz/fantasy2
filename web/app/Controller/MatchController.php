@@ -21,13 +21,19 @@ class MatchController extends AppController {
  * @var array
  */
 	public $uses = array();
+	private $userData;
+	private $club;
+	private $user;
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$userData = $this->getUserData();
-		
+		$this->loadModel('User');
+		$this->loadModel('Team');
+		$this->userData = $this->getUserData();
+		$this->user = $this->User->findByFb_id($this->userData['fb_id']);
+		$this->club = $this->Team->findByUser_id($this->user['User']['id']);
 	}
 	public function hasTeam(){
-		$userData = $this->getUserData();
+		$userData = $this->userData;
 		if(is_array($userData['team'])){
 			return true;
 		}
@@ -35,7 +41,20 @@ class MatchController extends AppController {
 
 	public function index(){
 		$rs = $this->Game->getMatches();
-		
+		if(sizeof($rs['matches'])>0){
+			
+			foreach($rs['matches'] as $n=>$v){
+				if($v['home_id']==$this->userData['team']['team_id']){
+					$rs['matches'][$n]['my_match'] = true;
+					$rs['matches'][$n]['home_name'] = $this->club['Team']['team_name'];
+				}else if($v['away_id']==$this->userData['team']['team_id']){
+					$rs['matches'][$n]['my_match'] = true;
+					$rs['matches'][$n]['away_name'] = $this->club['Team']['team_name'];
+				}else{
+					$rs['matches'][$n]['my_match'] = false;
+				}
+			}
+		}
 		$this->set('matches',$rs['matches']);
 	}
 	public function details($game_id){

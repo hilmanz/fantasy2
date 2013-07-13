@@ -23,34 +23,34 @@
         <div class="box4 fl">
             <div class="widget tr match-date">
                 <h2>next match</h2>
-                <span class="date yellow">Tuesday 20 June 2013</span>
+                <span class="date yellow"><?=date("d/m/Y",strtotime($next_match['match_date']))?></span>
             </div><!-- end .widget -->
             <div class="widget tr match-team">
                 <div class="col3 home-team">
                     <a href="#" class="team-logo"><img src="<?=$this->Html->url('/images/team/logo1.png')?>" /></a>
-                    <h3>Teamjason FC</h3>
+                    <h3><?=h($next_match['home_name'])?></h3>
                 </div><!-- end .col3 -->
                 <div class="col3 vs">
                     <h2>Vs</h2>
                 </div><!-- end .col3 -->
                 <div class="col3 away-team">
                     <a href="#" class="team-logo"><img src="<?=$this->Html->url('/images/team/logo2.png')?>" /></a>
-                    <h3>K United</h3>
+                    <h3><?=h($next_match['away_name'])?></h3>
                 </div><!-- end .col3 -->
             </div><!-- end .widget -->
             <div class="widget tr match-place">
-                <p class="stadion">Old Trafford</p>
-                <p class="attendance">+- 34,000 Attendance</p>
-                <p class="gbpoint">1,642,758 GPB +-</p>
+                <p class="stadion"><?=h($venue['name'])?></p>
+                <p class="attendance">Capacity : <?=number_format($venue['capacity'])?></p>
+              
                 <a class="view-more" href="<?=$this->Html->url('/match')?>">See All Matches</a>
             </div><!-- end .widget -->
             <div class="widget tr perform-team">
                 <h2>your perfomance</h2>
-                <h3><span class="span1">League Rank</span>:<span class="span2">44</span></h3>
-                <h3><span class="span1">Last Earning</span>:<span class="span2">12</span></h3>
-                <h3><span class="span1">Best PLayer</span>:<span class="span2">5</span></h3>
-                <h3><span class="span1">Best Match</span>:<span class="span2">34</span></h3>
-                <h3><span class="span1">Club Value</span>:<span class="span2">5.032.000</span></h3>
+                <h3><span class="span1">League Rank</span>:<span class="span2">0</span></h3>
+                <h3><span class="span1">Last Earning</span>:<span class="span2">0</span></h3>
+                <h3><span class="span1">Best PLayer</span>:<span class="span2">0</span></h3>
+                <h3><span class="span1">Best Match</span>:<span class="span2">0</span></h3>
+                <h3><span class="span1">Club Value</span>:<span class="span2">0</span></h3>
                 <a class="view-more" href="<?=$this->Html->url('/leaderboard')?>">View Leaderboard</a>
             </div><!-- end .widget -->
            

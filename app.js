@@ -62,6 +62,7 @@ app.get('/teams', [auth.canAccess],team.getTeams);
 app.get('/team/get/:fb_id',[auth.canAccess],team.getUserTeam);
 app.get('/teams/:id',[auth.canAccess],team.getTeamById);
 app.get('/match/results/:game_id',[auth.canAccess],gameplay.match_results);
+app.get('/next_match/:team_id',[auth.canAccess],gameplay.next_match);
 app.get('/player/:id',[auth.canAccess],gameplay.player_data);
 app.post('/user/register',[auth.canAccess],users.register);
 app.post('/create_team',[auth.canAccess],team.create);
@@ -95,6 +96,7 @@ app.post('/official/fire',[auth.canAccess],gameplay.fire_staff);
 app.get('/sponsorship/list/:team_id',[auth.canAccess],gameplay.getSponsors);
 app.post('/sponsorship/apply',[auth.canAccess],gameplay.applySponsorship);
 app.get('/finance/:game_team_id',[auth.canAccess],gameplay.financial_statements);
+app.get('/venue/:team_id',[auth.canAccess],gameplay.get_venue);
 
 app.post('/auth',auth.authenticate);
 

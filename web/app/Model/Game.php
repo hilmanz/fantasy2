@@ -17,6 +17,11 @@ class Game extends AppModel {
 		}
 		return null;
 	}
+
+	public function getVenue($team_id){
+		$response = $this->api_call('/venue/'.$team_id);
+		return $response['venue'];
+	}
 	public function getBudget($team_id){
 		$response = $this->api_call('/team/budget/'.$team_id,array());
 		return $response['budget'];
@@ -109,7 +114,10 @@ class Game extends AppModel {
 		$response = $this->api_call('/match/results/'.$game_id);
 		return $response;
 	}
-
+	public function getNextMatch($team_id){
+		$response = $this->api_call('/next_match/'.$team_id);
+		return $response;
+	}
 
 	/**
 	* financial statements

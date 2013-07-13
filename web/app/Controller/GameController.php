@@ -90,4 +90,23 @@ class GameController extends AppController {
 		die();
 	}
 
+	public function next_match(){
+		$this->loadModel('Team');
+		$this->loadModel('User');
+		$userData = $this->getUserData();
+		$result = $this->Game->getNextMatch($userData['team']['team_id']);
+		if($result['status']==1){
+			$result['match']['match_date_ts'] = strtotime($result['match']['match_date']);
+			$result['match']['match_date'] = date("Y-m-d",$result['match']['match_date_ts']);
+			$result['match']['match_time'] = date("H:i",$result['match']['match_date_ts']);
+		}
+		print json_encode($result);
+		die();
+	}
+
+	public function venue($team_id){
+		$result = $this->Game->getVenue($team_id);
+		print json_encode($result);
+		die();
+	}
 }

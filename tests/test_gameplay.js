@@ -58,6 +58,7 @@ describe('gameplay',function(){
 			gameplay.getBudget(1,function(err,budget){
 				should.not.exist(err);
 				should.exist(budget);
+
 				done();
 			});
 		});
@@ -95,6 +96,27 @@ describe('gameplay',function(){
 			gameplay.getFinancialStatement(286,function(err,rs){
 				should.not.exist(err);
 				should.exist(rs);
+				console.log(rs);
+				done();
+			});
+		});
+
+		it('can retrieve the next match',function(done){
+			gameplay.next_match('t1',function(err,rs){
+				should.not.exist(err);
+				should.exist(rs);
+				should.exist(rs[0].home_id);
+				should.exist(rs[0].away_id);
+				console.log(rs);
+				done();
+			});
+		});
+		it('can retrieve venue data',function(done){
+			gameplay.getVenue('t1',function(err,rs){
+				should.not.exist(err);
+				should.exist(rs);
+				should.exist(rs.capacity);
+				should.exist(rs.name);
 				console.log(rs);
 				done();
 			});
