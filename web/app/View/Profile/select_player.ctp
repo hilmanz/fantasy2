@@ -52,22 +52,24 @@
                             -->
                         </div>
                     </div><!-- end .row-2 -->
-                    <div class="row-2 titles">
-                        <div class="col2">
-                            <h2>Select Your Player</h2>
-                        </div><!-- end .col2 -->
-                        <div class="col2">
-                            <h2>Selected</h2>
-                        </div>
-                    </div><!-- end .row-2 -->
                     <div class="row-2">
-                        <!-- available players -->
-                        <div class="col2 player-list" id="available">
-                            &nbsp;
-                        </div><!-- end .col2 -->
-                        <!-- selected players -->
-                        <div class="col2 player-list" id="selected">
-                            &nbsp;
+						<div class="playerlistbox">
+							<div class="titles">
+								<h2>Select Your Player</h2>
+							</div><!-- end .titles -->
+                       		 <!-- available players -->
+							<div class="player-list" id="available">
+								&nbsp;
+							</div><!-- end .player-list -->
+                        </div>
+						<div class="playerlistbox last">
+							<div class="titles">
+								<h2>Selected</h2>
+							</div><!-- end .titles -->
+							<!-- selected players -->
+							<div class="player-list" id="selected">
+								&nbsp;
+							</div>
                         </div>
                     </div><!-- end .row-2 -->
                     <!--

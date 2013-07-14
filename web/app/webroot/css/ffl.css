@@ -342,10 +342,13 @@ a:hover{
 .squad-team .player-status{
 	color:#fdcb02;
 }
+.player-list{
+	overflow:hidden;
+}
 .player-list .jersey-player{
 	position:relative;
 	float:left;
-	width:80px;
+	width:70px;
     font-family: 'ColaborateRegular';
 }
 .match-point{
@@ -551,6 +554,11 @@ a:hover{
 }
 .titles h2{
 	margin:0;
+}
+.titles{
+	border-bottom: solid 1px #742d2d;
+	padding: 0 0 10px 0;
+	margin: 0 0 10px 0;
 }
 .imgContent{
 	position:absolute;
@@ -977,4 +985,12 @@ td,th{
 
 .mymatch{
 	background-color:#00ff00;
+}
+.playerlistbox{
+	background:url(../images/tr.png) repeat;
+	padding:20px;
+	width:300px;
+	float:left;
+	margin:0 20px 0 0;
+	border-radius:5px;
 }
