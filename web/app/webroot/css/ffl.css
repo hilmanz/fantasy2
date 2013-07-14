@@ -994,3 +994,155 @@ td,th{
 	margin:0 20px 0 0;
 	border-radius:5px;
 }
+/* POPUP  */
+.fancybox-skin{
+	background:#222 !important;
+}
+.popup{
+	display:none;
+}
+.popupContainer{
+	width:610px;
+	overflow:hidden;
+	position:relative;
+	min-height:200px;
+	color:#fff;
+	background:#333;
+}
+.popup-large{
+	width:960px;
+}
+.popup-small{
+	width:450px;
+	text-align:center;
+}
+.entry-popup{
+	background:url(../images/darkdots.png) repeat-x bottom;
+	margin:0 0 30px 0;
+	clear:both;
+	padding:10px 10px 30px 10px;
+}
+.popupContent{
+	position:relative;
+}
+.popupContent .entry-title{
+	padding:10px;
+	overflow:hidden;
+	clear:both;
+}
+.popupHead,.formTitle{
+	background:url(../images/darkdots.png) repeat-x bottom;
+	height:50px;
+	margin:0 0 15px 0;
+}
+.formTitle{
+	height:auto;
+	padding:0 0 20px;
+	margin:10px 0;
+}
+.formTitle h2{
+	padding:15px 0 0;
+	background:url(../images/darkdots.png) repeat-x top;
+}
+.popupContent .judul_galery{
+	line-height:15px;
+	width:auto;
+}
+.popupContent .select{
+	width:55%;
+	padding:1%;
+}
+.popupContent .row select.styled{
+	width:57%;
+}
+.popupContent .row{
+	clear:both;
+	padding:10px 0;
+}
+.popupContent .row h2{
+	font-family:'BebasNeueRegular',serif;
+	font-size:24px;
+	font-weight:normal;
+	color:#E40404;
+	margin:0;
+}
+.entry-music-detail .thumb250{
+	float:left;
+	width:100%;
+	height:auto;
+}
+.popupContent input[type=text],.popupContent textarea{
+	width:98% !important;
+	padding:8px 5px;
+	background:#fff;
+	border:solid 1px #cdcdcd;
+	font-family:'BebasNeueRegular',serif;
+	color:#999;
+	margin:0;
+	font-size:18px;
+}
+.popupContent textarea{
+	height:100px;
+	resize:none;
+}
+.popupContent table{
+	border:none;
+	width:100%;
+	margin:0;
+}
+.entry-music-detail .entry-detail{
+	float:left;
+	width:50%;
+}
+.popupContent table tr td,.popupContent table th{
+	padding:7px 15px;
+	vertical-align:top;
+	text-align:center;
+}
+.popupContent table tr td table tr td{
+	padding:0;
+}
+.player-chart{
+	width:900px;
+	margin:0 auto;
+}
+.player-information{
+	padding:20px;
+	overflow: hidden;
+	width: 860px;
+	margin: 20px auto;
+	background: #292929;
+	border-radius:5px;
+}
+.player-thumb{
+	width:120px; height:120px;
+	overflow:hidden;
+	float:left;
+	margin:5px 20px 0 0;
+}
+.player-thumb img{
+	width:120px; height:120px;
+}
+.player-statistik{
+	float:left;
+	width:720px;
+}
+.playerInfo h3{
+	margin:0 0 0 0;
+}
+.playerInfo span{
+	display:block;
+}
+.playerInfo{
+	overflow:hidden;
+	padding:0 0 10px 0;
+}
+.tl{
+	text-align:right;
+}
+.salary{
+	color:#fdcb02;
+}
+.fancybox-error{
+	color:#fff !important;
+}

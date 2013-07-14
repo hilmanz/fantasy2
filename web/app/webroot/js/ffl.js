@@ -1,12 +1,15 @@
 // JAVASCRIPT FFL
 // ACIT JAZZ v.1.2
 	
-jQuery(document).ready(function($) {
-	/*------------ADD CLASS DETECT BROWSER------------*/ 
+$(document).ready(function() {
 	$("body").addClass(BrowserDetect.browser); 
 	$("table tbody tr:nth-child(odd)").addClass("odd");
-$	 ("table tbody tr:nth-child(even)").addClass("even");
-}); 
+	$("table tbody tr:nth-child(even)").addClass("even");
+	// Popup
+	
+	$('.showPopup').fancybox();
+	
+});
 // SLIDER
 $(window).load(function(){
   $('.bannerslider').flexslider({

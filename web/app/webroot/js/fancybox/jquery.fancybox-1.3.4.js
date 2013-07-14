@@ -218,7 +218,7 @@
 				case 'swf':
 					selectedOpts.scrolling = 'no';
 
-					str = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="' + selectedOpts.width + '" height="' + selectedOpts.height + '"><param name="movie" value="../../fancybox/' + href + '"></param>';
+					str = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="' + selectedOpts.width + '" height="' + selectedOpts.height + '"><param name="movie" value="' + href + '"></param>';
 					emb = '';
 
 					$.each(selectedOpts.swf, function(name, val) {
