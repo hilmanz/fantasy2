@@ -171,7 +171,8 @@ function position_valid(players,setup,formation){
 //get user's players
 function getPlayers(game_team_id,callback){
 	conn = prepareDb();
-	conn.query("SELECT b.uid,b.name,b.position \
+	conn.query("SELECT b.uid,b.name,b.position, \
+				b.salary,b.transfer_value\
 				FROM ffgame.game_team_players a\
 				INNER JOIN ffgame.master_player b \
 				ON a.player_id = b.uid\

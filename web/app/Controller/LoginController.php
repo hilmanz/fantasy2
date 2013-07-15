@@ -82,13 +82,15 @@ class LoginController extends AppController {
 			$user_session['fb_id'] = $rs['User']['fb_id'];
 			$user_session['username'] = $rs['User']['name'];
 			$user_session['name'] = $rs['User']['name'];
-			
+			$user_session['register_completed'] = $rs['User']['register_completed'];
 			//get team 
 			$user_session['team'] = $this->Game->getTeam($user_session['fb_id']);
 			$this->Session->write('Userlogin.info',$user_session);
 			
 			if($user_session['team']==null){
 				$this->redirect('/profile/register_team');
+			}else if($user_session['team']!=null&&$user_session['register_completed']==0){
+				$this->redirect('/profile/register_staff');
 			}else{
 				$this->redirect('/manage/team');
 			}

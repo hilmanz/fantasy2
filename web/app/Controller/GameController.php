@@ -90,6 +90,28 @@ class GameController extends AppController {
 		die();
 	}
 
+	public function hire_staff(){
+		$this->loadModel('Team');
+		$this->loadModel('User');
+		$userData = $this->getUserData();
+		$staff_id = intval($this->request->data['id']);
+		
+		$rs = $this->Game->hire_staff($userData['team']['id'],$staff_id);
+		header('Content-type: application/json');
+		print json_encode($rs);
+		die();
+	}
+	public function dismiss_staff(){
+		$this->loadModel('Team');
+		$this->loadModel('User');
+		$userData = $this->getUserData();
+		$staff_id = intval($this->request->data['id']);
+		
+		$rs = $this->Game->dismiss_staff($userData['team']['id'],$staff_id);
+		header('Content-type: application/json');
+		print json_encode($rs);
+		die();
+	}
 	public function next_match(){
 		$this->loadModel('Team');
 		$this->loadModel('User');

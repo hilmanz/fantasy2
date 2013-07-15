@@ -1,22 +1,66 @@
 //ROUTER
 var tmp = {};
-var est_expenses = 0; //estimated expenses upon registration / hiring staff
 var App = Backbone.Router.extend({
   routes:{
     "selectTeam/:team_id":"selectTeam",    
     "select_player/:player_id":"select_player",
     "unselect_player/:player_id":"unselect_player",
     "save_formation":"save_formation",
+    "hire/:staff_id":"hire",
+    "dismiss/:staff_id":"dismiss",
   },
+  hire:hire,
+  dismiss:dismiss,
   selectTeam:selectTeam,
   select_player:select_player,
   unselect_player:unselect_player,
   save_formation:save_formation
 });
+function getStaffSalary(id){
+	for(var i in staffs){
+		if(staffs[i].id==id){
+			return staffs[i].salary;
+		}
+	}
+}
+function hire(staff_id){
+	$("#staff-"+staff_id).html('<img class="hire-loading" src="'+base_url+'css/fancybox/fancybox_loading.gif"/>');
+	api_post(api_url+'game/hire_staff',{id:staff_id},function(response){
+			if(typeof response.status!=='undefined' && response.status == 1){
+				$("#staff-"+staff_id).html('Hired');
+				$("#staff-"+staff_id).attr('href','#/dismiss/'+staff_id);
+				est_expenses += getStaffSalary(staff_id);
+				console.log(getStaffSalary(staff_id));
+				$("h1.expenses").html('EUR '+number_format(parseInt(est_expenses)*4));
+			}else{
+				$("#staff-"+staff_id).html('Select');
+			}
+			document.location = "#/";
+	});
+}
+function dismiss(staff_id){
+	
+	$("#staff-"+staff_id).html('<img class="hire-loading" src="'+base_url+'css/fancybox/fancybox_loading.gif"/>');
+	
+	api_post(api_url+'game/dismiss_staff',{id:staff_id},function(response){
+			if(typeof response.status!=='undefined' && response.status == 1){
+				$("#staff-"+staff_id).html('Select');
+				$("#staff-"+staff_id).attr('href','#/hire/'+staff_id);
+				if(est_expenses>0){
+					est_expenses -= getStaffSalary(staff_id);
+					if(est_expenses<0){est_expenses = 0;}
+					$("h1.expenses").html('EUR '+number_format(parseInt(est_expenses)*4));
+				}
+			}else{
+				$("#staff-"+staff_id).html('Hired');
+			}
+			document.location = "#/";
+	});
+}
 function save_formation(){
 	if(typeof selectedVal['formations'] !== 'undefined'){
 		var formation = selectedVal['formations'].value;
-		console.log(formation);
+		
 		//make sure that all the lineup is consist of 11 players.
 		getLineups(function(total,lineup){
 			if(total==11){
@@ -42,8 +86,7 @@ function getLineups(callback){
 	var players = [];
 	$.each($("#the-formation").children(),function(k,player){
 	    //console.log(player);
-	    console.log($(player).attr('id'));
-	    console.log($(player).find('a').attr('no'));
+	   
 	    if($(player).find('a').attr('no')!=undefined){
 	    	players.push({
 	    		name:'player-'+$(player).find('a').attr('no'),

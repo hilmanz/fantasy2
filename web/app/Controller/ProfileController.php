@@ -59,7 +59,6 @@ class ProfileController extends AppController {
 	public function index(){
 		if($this->hasTeam()){
 			$userData = $this->getUserData();
-			
 			$this->loadModel('User');
 			//data user
 			$user = $this->User->findByFb_id($userData['fb_id']);
@@ -161,6 +160,7 @@ class ProfileController extends AppController {
 			$this->set('INITIAL_BUDGET',Configure::read('INITIAL_BUDGET'));
 		}
 	}
+
 	public function create_team(){
 		$userData = $this->getUserData();
 		$team = $this->Session->read('TeamRegister');
@@ -212,6 +212,52 @@ class ProfileController extends AppController {
 			$this->set('selected_team',$this->Session->read('TeamRegister'));
 		}else{
 			$this->redirect('/profile/register_team');
+		}
+	}
+	public function register_staff(){
+		$userData = $this->getUserData();
+		if($this->request->is('post')){
+			$this->loadModel('User');
+			if($this->request->data['complete_registration']==1){
+				$user = $this->User->findByFb_id($userData['fb_id']);
+			
+				$this->User->id = $user['User']['id'];
+				$this->User->set('register_completed',1);
+				$rs = $this->User->save();
+				if($rs){
+					$this->redirect('/manage/club');
+				}else{
+					$this->redirect('/profile/error');
+				}
+			}
+		}else{
+			
+			//budget
+			$budget = $this->Game->getBudget($userData['team']['id']);
+			$this->set('team_bugdet',$budget);
+
+			//get officials
+			$officials = $this->Game->getAvailableOfficials($userData['team']['id']);
+
+
+			//estimated costs
+			$total_weekly_salary = 0;
+
+			//current staff's salary (if exists)
+			foreach($officials as $official){
+				if(isset($official['hired'])){
+					$total_weekly_salary += intval($official['salary']);
+				}
+			}
+
+			//player's salary
+			$players = $this->Game->get_team_players($userData['fb_id']);
+			foreach($players as $player){
+				$total_weekly_salary += intval($player['salary']);
+			}
+
+			$this->set('officials',$officials);
+			$this->set('weekly_salaries',$total_weekly_salary);
 		}
 	}
 	public function formations(){

@@ -62,3 +62,39 @@ o. harus buat mekanisme dimana pemain yg kena kartu merah atau cedera, gak bisa 
 p. win bonus di frontend kemungkinan belum tercatat.
 
 q. Bot for updating game_fixtures from OPTA file.
+
+
+
+<option value="2">BALI</option>
+	<option value="3">BANGKA-BELITUNG</option>
+	<option value="4">BANTEN</option>
+	<option value="5">BENGKULU</option>
+	<option value="33">DI YOGYAKARTA</option>
+	<option value="6">GORONTALO</option>
+	<option value="7">IRIAN JAYA BARAT</option>
+	<option value="8">JAKARTA RAYA</option>
+	<option value="9">JAMBI</option>
+	<option value="10">JAWA BARAT</option>
+	<option value="11">JAWA TENGAH</option>
+	<option value="12">JAWA TIMUR</option>
+	<option value="13">KALIMANTAN BARAT</option>
+	<option value="14">KALIMANTAN SELATAN</option>
+	<option value="15">KALIMANTAN TENGAH</option>
+	<option value="16">KALIMANTAN TIMUR</option>
+	<option value="17">KEPULAUAN RIAU</option>
+	<option value="18">LAMPUNG</option>
+	<option value="19">MALUKU</option>
+	<option value="20">MALUKU UTARA</option>
+	<option value="1">NANGGROE ACEH DARUSSALAM</option>
+	<option value="21">NUSA TENGGARA BARAT</option>
+	<option value="22">NUSA TENGGARA TIMUR</option>
+	<option value="23">PAPUA</option>
+	<option value="24">RIAU</option>
+	<option value="25">SULAWESI BARAT</option>
+	<option value="26">SULAWESI SELATAN</option>
+	<option value="27">SULAWESI TENGAH</option>
+	<option value="28">SULAWESI TENGGARA</option>
+	<option value="29">SULAWESI UTARA</option>
+	<option value="30">SUMATERA BARAT</option>
+	<option value="31">SUMATERA SELATAN</option>
+	<option value="32">SUMATERA UTARA</option>

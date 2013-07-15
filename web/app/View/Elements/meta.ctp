@@ -7,6 +7,9 @@
 	<meta name="author" content="">
 	<script>
 	var api_url = "<?=$this->Html->url('/')?>";
+	var base_url = "<?=$this->Html->url('/')?>";
+	var est_expenses = 0; 
+	var staffs = [];
 	</script>
 	<!-- Le styles -->
 	<?php echo $this->Html->css(
