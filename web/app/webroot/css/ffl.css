@@ -19,7 +19,7 @@ ol,ul {list-style:none;}
 caption,th {text-align:left;}
 q:before,q:after{content:'';}
 body{
-	/**background: url(../images/bg.jpg) no-repeat center center fixed;**/
+	background: url(../images/bg.jpg) no-repeat center center fixed;
 	background-color:#000;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
@@ -264,7 +264,7 @@ a:hover{
 	padding:10px 0;
 }
 .field-formation{
-	/*background:url(../images/field.jpg) no-repeat;*/
+	background:url(../images/field.jpg) no-repeat;
 	background-color:#ccc;
 	width:440px;
 	height:700px;
@@ -983,11 +983,20 @@ td,th{
 .playerChoosed{
 	color:#ccc;
 }
-.playerBoxSelected{
-	background-color:#333;
+.Chrome .ui-draggable{
+	margin:0 0 0 -82px;
 }
-.playerBoxChoosed{
-	background-color:#333;
+.playerBoxSelected .jersey,.ui-draggable .jersey{
+	background-color:rgba(0,0,0,0.02);
+	border-radius:100px;
+	box-shadow:0 0 20px #FDCB02;
+	text-decoration:none !important; 
+}
+.playerBoxChoosed .jersey{
+	background-color:rgba(0,0,0,0.02);
+	border-radius:100px;
+	box-shadow:0 0 20px #FDCB02;
+	text-decoration:none !important; 
 }
 .mymatch{
 	background-color:#00ff00;
