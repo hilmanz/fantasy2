@@ -172,6 +172,7 @@ $(document).ready(function(){
                         $("#draggable").show();
                         $("div.bench").removeClass('playerBoxSelected');
                         target.addClass('playerBoxSelected');
+
                     }else{
                         $("#draggable").hide();
                         $("div.bench").removeClass('playerBoxSelected');
@@ -189,6 +190,7 @@ $(document).ready(function(){
                 var dropX = event.pageX-$("#universal").position().left-30;
                 var dropY = event.pageY - $("#universal").position().top-30;
                 replaceLineup(dropX,dropY);
+                flag_players();
                 $("#draggable").hide();
                 $("div.bench").removeClass('playerBoxSelected');
               },
@@ -237,6 +239,29 @@ $(document).ready(function(){
                }
             });
         }
+        function flag_players(){
+            var current_lineup = [];
+            var n=1;
+            $('div.bench').removeClass('playerBoxChoosed');
+            $.each($("#the-formation").children(),function(t,l){
+                    current_lineup.push({player_id:$(l).find('a').attr('no')});
+                    if(n==$("#the-formation").children().length){
+                        onDone();
+                    }
+                    n++;
+                });
+            function onDone(){
+                $.each($('div.bench'),function(k,player){
+                    var player_id = $(player).find('a').attr('no');
+                     for(var i in current_lineup){
+                            if(player_id == current_lineup[i].player_id){
+                                $(player).addClass('playerBoxChoosed');
+                                break;
+                            }
+                        }
+                });
+            }
+        }
         function getLineUp(){
             api_call('<?=$this->Html->url("/game/lineup")?>',function(data){
                 $("#formation-select option").filter(function() {
@@ -253,9 +278,10 @@ $(document).ready(function(){
                     for(var i in data.lineup){
                         append_view(tpllineup,'#the-formation',data.lineup[i]);    
                     }
+                   
                     initLineupEvents();
-                    
                 }
+                flag_players();
             });
         }
         function initLineupEvents(){
@@ -289,23 +315,22 @@ $(document).ready(function(){
                 dy = Math.abs(($(item).offset().top-$("#universal").position().top-30)-y);
               
                 if(curr_item!=null){
+                    if((curr_item.distance.x > dx && dy < 50)){
                           
-                        }
-                if((curr_item.distance.x > dx && dy < 50)){
-                      
-                        curr_item = {
-                            item:item,
-                            left:$(item).offset().left,
-                            top:$(item).offset().top,
-                            distance:{x:dx,
-                                      y:dy}
-                        };
-                          
-                }
-                if(k>=10){
-                   $(curr_item.item).html($("#draggable").html());
-                   $(curr_item.item).find('.player-name').show();
-                   curr_item = null;
+                            curr_item = {
+                                item:item,
+                                left:$(item).offset().left,
+                                top:$(item).offset().top,
+                                distance:{x:dx,
+                                          y:dy}
+                            };
+                              
+                    }
+                    if(k>=10){
+                       $(curr_item.item).html($("#draggable").html());
+                       $(curr_item.item).find('.player-name').show();
+                       curr_item = null;
+                    }
                 }
             });
         }
