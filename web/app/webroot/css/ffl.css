@@ -19,7 +19,7 @@ ol,ul {list-style:none;}
 caption,th {text-align:left;}
 q:before,q:after{content:'';}
 body{
-	/**background: url(../images/bg.jpg) no-repeat center center fixed;**/
+	background: url(../images/bg.jpg) no-repeat center center fixed;
 	background-color:#000;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
@@ -264,8 +264,7 @@ a:hover{
 	padding:10px 0;
 }
 .field-formation{
-	/*background:url(../images/field.jpg) no-repeat;*/
-	background-color:#ccc;
+	background:url(../images/field.jpg) no-repeat;
 	width:440px;
 	height:700px;
 	position:relative;
