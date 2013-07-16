@@ -11,7 +11,7 @@
  	<div id="body">
         <div id="universal">
            <div id="header">
-                <a id="logo" href="<?=$this->Html->url('/')?>" title="SUPER SOCCER - FANTASY FOOTBALL LEAGUE">&nbsp;</a>
+                <!--<a id="logo" href="<?=$this->Html->url('/')?>" title="SUPER SOCCER - FANTASY FOOTBALL LEAGUE">&nbsp;</a>-->
             	<?php if($USER_IS_LOGIN):?>
                 <div id="user-info">
         			<a href="#" class="thumb40 fl"><img src="http://graph.facebook.com/<?=$USER_DATA['fb_id']?>/picture" /></a>
@@ -53,13 +53,13 @@
             </div><!-- end #container -->
             <div id="footer">
                 <div id="footNav">
-                   
+                   <!--
                     <ul>
                         <li><a href="<?=$this->Html->url('/pages/about')?>">ABOUT FANTASY FOOTBALL LEAGUE</a></li>
                         <li><a href="<?=$this->Html->url('/pages/tos')?>">Terms &amp; Conditions</a></li>
                         <li><a href="<?=$this->Html->url('/pages/contact')?>">Contact</a></li>
                     </ul>
-                   
+                   -->
                 </div>
             </div>
         </div><!-- end #universal -->

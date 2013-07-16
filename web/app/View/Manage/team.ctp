@@ -132,12 +132,13 @@
         </div><!-- end .box4 -->
     </div><!-- end #thecontent -->
 </div><!-- end #fillDetailsPage -->
-<div id="draggable" class="jersey-player" style="display:none;position:absolute;border:1px solid #333">
+<div id="draggable" class="jersey-player" style="display:none;position:absolute;">
 </div>
 <script>
 var selected = null;
 var page = 0;
 var last_page = <?=intval($last_page)?>;
+var drag_busy = false;
 $(document).ready(function(){
         $('.prev').hide();
         if(last_page==0){
@@ -148,30 +149,39 @@ $(document).ready(function(){
         createPaging();
         $("#draggable").draggable({
             drag:function( event, ui ) {
-                $(this).css('border','');
+               // $(this).css('border','');
+                drag_busy = true;
             },
             stop: function( event, ui ) {
-                 $(this).css('border','1px solid #333');
-            }
+                 drag_busy = false;
+                 $("div.bench").removeClass('playerBoxSelected');
+                // $(this).css('border','1px solid #333');
+            },
         });
-
-
 
         $(".bench").mouseover(function(e){
-            var target = $(this);
-            player_in_lineup($(this).find('a').attr('no'),function(is_exist){
-                if(!is_exist){
-                    $("#draggable").html(target.html());
-                    $("#draggable").css('top',target.offset().top - $("#universal").position().top);
-                    $("#draggable").css('left',target.offset().left - $("#universal").position().left - 13);
-                    $("#draggable").find('.player-name').hide();
-                    $("#draggable").find('.player-status').remove();
-                    $("#draggable").show();
-                }else{
-                    $("#draggable").hide();
-                }
-            });
+            if(!drag_busy){
+                var target = $(this);
+                player_in_lineup($(this).find('a').attr('no'),function(is_exist){
+                    if(!is_exist){
+                        $("#draggable").html(target.html());
+                        $("#draggable").css('top',target.offset().top - $("#universal").position().top);
+                        $("#draggable").css('left',target.offset().left - $("#universal").position().left - 13);
+                        $("#draggable").find('.player-name').hide();
+                        $("#draggable").find('.player-status').remove();
+                        $("#draggable").show();
+                        target.addClass('playerBoxSelected');
+                    }else{
+                        $("#draggable").hide();
+                        $("div.bench").removeClass('playerBoxSelected');
+                    }
+                });
+            }
         });
+        /*$(".bench").mouseout(function(e){
+            var target = $(this);
+            target.removeClass('playerBoxSelected');
+        });*/
         $(".drop").droppable({
             greedy: true,
             drop: function( event, ui ){
@@ -179,7 +189,9 @@ $(document).ready(function(){
                 var dropY = event.pageY - $("#universal").position().top-30;
                 replaceLineup(dropX,dropY);
                 $("#draggable").hide();
-              }
+                $("div.bench").removeClass('playerBoxSelected');
+              },
+            
         });
 
        

@@ -19,8 +19,8 @@ ol,ul {list-style:none;}
 caption,th {text-align:left;}
 q:before,q:after{content:'';}
 body{
-	background: url(../images/bg.jpg) no-repeat center center fixed;
-	/*background-color:#000;*/
+	/**background: url(../images/bg.jpg) no-repeat center center fixed;**/
+	background-color:#000;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -264,7 +264,8 @@ a:hover{
 	padding:10px 0;
 }
 .field-formation{
-	background:url(../images/field.jpg) no-repeat;
+	/*background:url(../images/field.jpg) no-repeat;*/
+	background-color:#ccc;
 	width:440px;
 	height:700px;
 	position:relative;
@@ -982,7 +983,12 @@ td,th{
 .playerChoosed{
 	color:#ccc;
 }
-
+.playerBoxSelected{
+	background-color:#333;
+}
+.playerBoxChoosed{
+	background-color:#333;
+}
 .mymatch{
 	background-color:#00ff00;
 }
