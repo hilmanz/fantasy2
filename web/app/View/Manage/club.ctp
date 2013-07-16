@@ -69,8 +69,8 @@
                         <td>Tickets Sold</td>
                         <td align="right"></td>
                         <td align="right"></td>
-                        <td align="right"><?=$finance['total_matches']?></td>
-                        <td align="right">EUR <?=number_format($finance['tickets_sold'])?></td>
+                        <td align="right"><?=@$finance['total_matches']?></td>
+                        <td align="right">EUR <?=number_format(@$finance['tickets_sold'])?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
@@ -86,7 +86,7 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>Commercial Director Bonus</td>
-                        <td align="right">EUR <?=number_format(abs($finance['commercial_director_bonus']))?></td>
+                        <td align="right">EUR <?=number_format(abs(@$finance['commercial_director_bonus']))?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
@@ -94,7 +94,7 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>Marketing Manager Bonus</td>
-                        <td align="right">EUR <?=number_format(abs($finance['marketing_manager_bonus']))?></td>
+                        <td align="right">EUR <?=number_format(abs(@$finance['marketing_manager_bonus']))?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
@@ -102,7 +102,7 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>Public Relations Bonus</td>
-                        <td align="right">EUR <?=number_format(abs($finance['public_relation_officer_bonus']))?></td>
+                        <td align="right">EUR <?=number_format(abs(@$finance['public_relation_officer_bonus']))?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
@@ -110,7 +110,7 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td align="right">EUR <?=number_format(abs($finance['sponsorship']))?></td>
+                        <td align="right">EUR <?=number_format(abs(@$finance['sponsorship']))?></td>
                         <td>&nbsp;</td>
                       </tr>
                       <tr>
@@ -131,7 +131,7 @@
                       </tr>
                       <tr class="head">
                         <td colspan="5">Total Earnings</td>
-                        <td align="right">EUR <?=number_format(abs($finance['total_earnings']))?></td>
+                        <td align="right">EUR <?=number_format(abs(@$finance['total_earnings']))?></td>
                       </tr>
                       <tr>
                         <td>&nbsp;</td>
@@ -146,7 +146,7 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td align="right">EUR <?=number_format(abs($finance['operating_cost']))?></td>
+                        <td align="right">EUR <?=number_format(abs(@$finance['operating_cost']))?></td>
                         <td>&nbsp;</td>
                       </tr>
                       
@@ -256,7 +256,7 @@
                       </tr>
                       <tr class="head">
                         <td colspan="5">Running Balance</td>
-                        <td align="right">EUR <?=number_format($finance['budget'])?></td>
+                        <td align="right">EUR <?=number_format(@$finance['budget'])?></td>
                     </tr>
                    </table>
               </div><!-- end #tabs-Keuagan -->

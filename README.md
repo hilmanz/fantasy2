@@ -58,7 +58,7 @@ o. harus buat mekanisme dimana pemain yg kena kartu merah atau cedera, gak bisa 
 
 #ALTER TABLE `ffgame`.`master_player`     ADD COLUMN `salary` INT(11) DEFAULT '200000' NULL AFTER `team_id`
 ;
-
+ALTER TABLE `ffgame`.`master_player`     ADD COLUMN `transfer_value` INT(11) DEFAULT '10000000' NULL AFTER `salary`;
 p. win bonus di frontend kemungkinan belum tercatat.
 
 q. Bot for updating game_fixtures from OPTA file.

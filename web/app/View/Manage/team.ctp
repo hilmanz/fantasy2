@@ -170,6 +170,7 @@ $(document).ready(function(){
                         $("#draggable").find('.player-name').hide();
                         $("#draggable").find('.player-status').remove();
                         $("#draggable").show();
+                        $("div.bench").removeClass('playerBoxSelected');
                         target.addClass('playerBoxSelected');
                     }else{
                         $("#draggable").hide();

@@ -85,10 +85,10 @@ class ManageController extends AppController {
 			foreach($finance['data']['report'] as $n=>$v){
 				$report[$v['item_name']] = $v['total'];
 			}
-			$report['total_earnings'] = $report['tickets_sold']+
-										$report['commercial_director_bonus']+
-										$report['marketing_manager_bonus']+
-										$report['public_relation_officer_bonus']+
+			$report['total_earnings'] = intval(@$report['tickets_sold'])+
+										intval(@$report['commercial_director_bonus'])+
+										intval(@$report['marketing_manager_bonus'])+
+										intval(@$report['public_relation_officer_bonus'])+
 										intval(@$report['win_bonus']);
 			return $report;
 		}
