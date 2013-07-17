@@ -39,6 +39,7 @@ class AppController extends Controller {
 		$this->set('FB_APP_ID',Configure::read('FB.APP_ID'));
 		$this->set('FB_SECRET',Configure::read('FB.SECRET'));
 		$this->set('FB_AFTER_LOGIN_URL',Configure::read('FB.AFTER_LOGIN_REDIRECT_URL'));
+		$this->set('debug',Configure::read('debug'));
 		$this->set('DOMAIN',Configure::read('DOMAIN'));
 		$this->FB_APP_ID = Configure::read('FB.APP_ID');
 		$this->FB_SECRET = Configure::read('FB.SECRET');

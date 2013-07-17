@@ -195,7 +195,7 @@ class ProfileController extends AppController {
 			$this->Session->write('Userlogin.info',$userData);
 			$this->Session->write('TeamRegister',null);
 			$this->Session->setFlash('Congratulations, Your team is ready !');
-			$this->redirect('/profile/success');
+			$this->redirect('/profile/register_staff');
 		}
 	}
 	/**
@@ -225,7 +225,7 @@ class ProfileController extends AppController {
 				$this->User->set('register_completed',1);
 				$rs = $this->User->save();
 				if($rs){
-					$this->redirect('/manage/club');
+					$this->redirect('/profile/success');
 				}else{
 					$this->redirect('/profile/error');
 				}

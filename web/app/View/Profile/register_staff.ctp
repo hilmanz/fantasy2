@@ -65,11 +65,22 @@
         </div><!-- end #content -->
     <div id="sidebar" class="tr">
         <div class="widget">
+            <div class="nav-side">
+                <ul>
+                   <li><span>Fill in Your Detail</span></li>
+                   <li><span>Fill in Your Team</span></li>
+                   <li><span>Fill in Your Players</span></li>
+                   <li class="current"><span>Fill in Your Staff</span></li>
+                  
+                </ul>
+            </div><!-- end .nav-side -->
+        </div><!-- end .widget -->
+        <div class="widget">
             <div class="cash-left">
                 <h3 class="red">Cash Left</h3>
                 <h1>EUR <?=number_format($team_bugdet)?></h1>
-                <h3 class="red">Est. Monthly Expenses</h3>
-                <h1 class="expenses">EUR <?=number_format($weekly_salaries*4)?></h1> 
+                <h3 class="red">Est. Weekly Expenses</h3>
+                <h1 class="expenses">EUR <?=number_format($weekly_salaries)?></h1> 
             </div>
         </div><!-- end .widget -->
     </div><!-- end #sidebar -->

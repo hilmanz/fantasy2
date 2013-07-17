@@ -52,7 +52,8 @@ s. view financial statements -> DONE
 i. view transfer window
 l. buy a player
 m. sell a player 
-o. harus buat mekanisme dimana pemain yg kena kartu merah atau cedera, gak bisa di pasang di formasi.
+o. harus buat mekanisme dimana pemain yg kena kartu merah atau cedera, gak bisa di pasang di formasi
+p. bug di initial budget pas baru create.. malah jadi 200jt.. padahal harusnya 100jt.
 
 
 

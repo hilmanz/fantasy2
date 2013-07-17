@@ -174,6 +174,7 @@ function fb_login(){
 	     console.log('Welcome!  Fetching your information.... ');
 	     FB.api('/me', function(response) {
 	       console.log('Good to see you, ' + response.name + '.');
+           window.location = window.location;
 	       document.location = "<?=$FB_AFTER_LOGIN_URL?>";
 	     });
 	   } else {

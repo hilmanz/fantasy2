@@ -116,7 +116,7 @@ function select_player(player_id){
 			 	if(v.uid == player_id){
 			 		append_view(player_selected,'#selected',v);
 			 		est_expenses += v.salary;
-			 		$("span.expense").html(number_format(parseInt(est_expenses)*4));
+			 		$("span.expense").html(number_format(parseInt(est_expenses)));
 			 	}
 			 });
 		}

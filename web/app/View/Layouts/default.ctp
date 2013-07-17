@@ -58,14 +58,23 @@
                         <li><a href="<?=$this->Html->url('/pages/about')?>">ABOUT FANTASY FOOTBALL LEAGUE</a></li>
                         <li><a href="<?=$this->Html->url('/pages/tos')?>">Terms &amp; Conditions</a></li>
                         <li><a href="<?=$this->Html->url('/pages/contact')?>">Contact</a></li>
+
                     </ul>
                   
                 </div>
+                 <?php
+                            if($debug>0):
+                        ?>
+                        
+                            <a href="<?=$this->Html->url('/manage/reset')?>">Reset</a>
+                        <?php
+                        endif;?>
             </div>
         </div><!-- end #universal -->
+
     </div><!-- end #body -->
 	<?php echo $this->element('js'); ?>
-
+    
 	<?php echo $this->element('sql_dump'); ?>
 </body>
 </html>

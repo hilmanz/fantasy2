@@ -194,4 +194,34 @@ class ManageController extends AppController {
 	public function success(){
 		$this->render('success');
 	}
+	/**
+	*	fungsi ini harus dimatiin di production
+	*/
+	public function reset(){
+
+		if(@$this->request->query['confirm']==1){
+			//perform deletion here
+			// remove di database game
+			$user_id = $this->userData['team']['user_id'];
+			$team_id = $this->userData['team']['id'];
+			$this->User->query("DELETE FROM ffgame.game_users WHERE id ={$user_id};");
+			$this->User->query("DELETE FROM ffgame.game_teams WHERE id = {$team_id};");
+			$this->User->query("DELETE FROM ffgame.game_team_players WHERE game_team_id = {$team_id};");
+			//remove di database frontend.
+
+			$user = $this->User->findByFb_id($this->userData['fb_id']);
+			
+			$id = $user['User']['id'];
+			$club = $this->Team->findByUser_id($user['User']['id']);
+			$this->Team->delete($club['Team']['id']);
+			$this->User->delete($id);
+			//hapus session
+			$this->Session->destroy();
+			$this->set('confirm',1);
+		}else if(@$this->request->query['confirm']==2){
+			$this->redirect('/manage/team');
+		}else{
+			$this->set('confirm',0);	
+		}
+	}
 }

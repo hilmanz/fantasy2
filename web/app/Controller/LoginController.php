@@ -49,11 +49,15 @@ class LoginController extends AppController {
 		App::import("Vendor", "facebook/facebook");
 		$fb = new Facebook(array(
 				  'appId'  => $this->FB_APP_ID,
-				  'secret' => $this->FB_SECRET)
+				  'secret' => $this->FB_SECRET,
+				  'cookie' => true)
+
 				  );
 
 		try{
+
 			$fb_id = $fb->getUser();
+			
 			if(intval($fb_id) > 0){
 				$this->Session->write('UserFBDetail',$fb->api('/me'));
 				$this->Session->write('Userlogin.is_login', true);
@@ -64,7 +68,8 @@ class LoginController extends AppController {
 											'access_token'=>$this->getAccessToken()));
 				$this->afterLogin();
 			}else{
-				$this->redirect("/login/error");
+
+				$this->redirect($fb->getLoginUrl());
 			}
 		}catch(Exception $e){
 			
