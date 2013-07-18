@@ -116,7 +116,7 @@
                 ?>
                 <div class="bench jersey-player <?=$page?>">
                     <a href="javascript:void(0);" no="<?=h($player['uid'])?>">
-                        <div class="jersey j-<?=$color?>"><?=$player_pos?></div>
+                        <div class="jersey num j-<?=$color?>"><?=$player_pos?></div>
                         <div class="player-info">
                             <span class="player-name"><?=h($player['name'])?></span>
                             <span class="player-status">Playable</span>       
@@ -139,6 +139,11 @@ var selected = null;
 var page = 0;
 var last_page = <?=intval($last_page)?>;
 var drag_busy = false;
+var formation = {
+    '4-4-2' : ['','G','D','D','D','D','M','M','M','M','F','F'],
+    '4-4-2-A' : ['','G','D','D','D','D','M','M','M','M','F','F'],
+    '4-4-1-1' : ['','G','D','D','D','D','M','M','M','M','F','F']
+};
 $(document).ready(function(){
         $('.prev').hide();
         if(last_page==0){
@@ -151,11 +156,14 @@ $(document).ready(function(){
             drag:function( event, ui ) {
                // $(this).css('border','');
                 drag_busy = true;
+                var pos = $(this).find('div.num').html();
+                show_slots(pos);
             },
             stop: function( event, ui ) {
                  drag_busy = false;
                  $("div.bench").removeClass('playerBoxSelected');
                 // $(this).css('border','1px solid #333');
+                hide_slots();
             },
         });
 
@@ -193,11 +201,22 @@ $(document).ready(function(){
                 flag_players();
                 $("#draggable").hide();
                 $("div.bench").removeClass('playerBoxSelected');
+                hide_slots();
               },
             
         });
 
-       
+        function show_slots(pos){
+            var positioning = formation[selectedVal['formations'].value];
+            for(var i in positioning){
+                if(positioning[i]==pos){
+                    $("#p"+i+".slot").show();
+                }
+            }
+        }
+        function hide_slots(){
+            $(".slot").hide();
+        }
         function createPaging(){
             for(var i=1;i<=last_page;i++){
                 $(".page-"+i).hide();
@@ -270,11 +289,13 @@ $(document).ready(function(){
                 $("#the-formation").removeClass().addClass('formation-'+data.formation);
                 selectedVal['formations'] = {label:data.formation,
                                             value:data.formation};
+
+                render_view(defaultformation,'#the-formation',{});
+
                 if(data.lineup.length==0){
-                    render_view(defaultformation,'#the-formation',{});
                     initLineupEvents();
                 }else{
-                    $("#the-formation").html('');
+                    //$("#the-formation").html('');
                     for(var i in data.lineup){
                         append_view(tpllineup,'#the-formation',data.lineup[i]);    
                     }
@@ -282,7 +303,9 @@ $(document).ready(function(){
                     initLineupEvents();
                 }
                 flag_players();
+                hide_slots();
             });
+
         }
         function initLineupEvents(){
              $(".starter").click(function(){
@@ -297,6 +320,25 @@ $(document).ready(function(){
                     selected = null;
                 }
             });
+        }
+        function getRealPosition(p){
+            switch(p){
+                case 'G': 
+                    return 'Goalkeeper';
+                break;
+                case 'D': 
+                    return 'Defender';
+                break;
+                case 'M': 
+                    return 'Midfielder';
+                break;
+                case 'F': 
+                    return 'Forward';
+                break;
+                default:
+                    return '';
+                break;
+            }
         }
         function replaceLineup(x,y){
             var  curr_item = {
@@ -316,7 +358,6 @@ $(document).ready(function(){
               
                 if(curr_item!=null){
                     if((curr_item.distance.x > dx && dy < 50)){
-                          
                             curr_item = {
                                 item:item,
                                 left:$(item).offset().left,
@@ -326,14 +367,30 @@ $(document).ready(function(){
                             };
                               
                     }
+
                     if(k>=10){
+                       var player_data = {
+                            player_id: $("#draggable").find('a').attr('no'),
+                            name: $("#draggable").find('.player-name').html(),
+                            position: getRealPosition($("#draggable").find('div.num').html()),
+                            position_no : parseInt($(curr_item.item).attr('id').replace('p',''))
+                       };
+                       
+                       //replace the existing slot if necessary
+                       $("#p"+player_data.position_no+".starter").remove();
+                       
+                       //then add the new one
+                       append_view(tpllineup,'#the-formation',player_data);
+
                        $(curr_item.item).html($("#draggable").html());
                        $(curr_item.item).find('.player-name').show();
                        curr_item = null;
                     }
                 }
+                
             });
         }
+
     getLineUp();  
 });
 </script>
@@ -366,55 +423,55 @@ $(document).ready(function(){
     %>
     <div id="p<%=position_no%>" class="starter jersey-player p<%=position_no%>">
     <a href="javascript:void(0);" no="<%=player_id%>">
-        <div class="jersey <%=jersey_color%>"><%=pos_code%></div>
+        <div class="jersey num <%=jersey_color%>"><%=pos_code%></div>
         <span class="player-name"><%=name%></span>
     </a>
     </div><!-- end .jersey-player -->
 </script>
 
 <script type="text/template" id="defaultformation">
-    <div id="p11" class="starter jersey-player p11">
-        <div class="jersey j-red"></div>
+    <div id="p11" class="jersey-player p11 slot">
+        
         <span class="player-name">11</span>
     </div><!-- end .jersey-player -->
-    <div id="p10" class="starter jersey-player p10">
-        <div class="jersey j-red"></div>
+    <div id="p10" class="jersey-player p10 slot">
+        
         <span class="player-name">10</span>
     </div><!-- end .jersey-player -->
-    <div id="p9" class="starter jersey-player p9">
-        <div class="jersey j-yellow"></div>
+    <div id="p9" class="jersey-player p9 slot">
+        
         <span class="player-name">9</span>
     </div><!-- end .jersey-player -->
-    <div id="p8" class="starter jersey-player p8">
-        <div class="jersey j-yellow"></div>
+    <div id="p8" class="jersey-player p8 slot">
+        
         <span class="player-name">8</span>
     </div><!-- end .jersey-player -->
-    <div id="p7" class="starter jersey-player p7">
-        <div class="jersey j-yellow"></div>
+    <div id="p7" class="jersey-player p7 slot">
+        
         <span class="player-name">7</span>
     </div><!-- end .jersey-player -->
-    <div id="p6" class="starter jersey-player p6">
-        <div class="jersey j-yellow"></div>
+    <div id="p6" class="jersey-player p6 slot">
+        
         <span class="player-name">6</span>
     </div><!-- end .jersey-player -->
-    <div id="p5" class="starter jersey-player p5">
-        <div class="jersey j-blue"></div>
+    <div id="p5" class="jersey-player p5 slot">
+        
         <span class="player-name">5</span>
     </div><!-- end .jersey-player -->
-    <div id="p4" class="starter jersey-player p4">
-        <div class="jersey j-blue"></div>
+    <div id="p4" class="jersey-player p4 slot">
+       
         <span class="player-name">4</span>
     </div><!-- end .jersey-player -->
-    <div id="p3" class="starter jersey-player p3">
-        <div class="jersey j-blue"></div>
+    <div id="p3" class="jersey-player p3 slot">
+       
         <span class="player-name">3</span>
     </div><!-- end .jersey-player -->
-    <div id="p2" class="starter jersey-player p2">
-        <div class="jersey j-blue"></div>
+    <div id="p2" class="jersey-player p2 slot">
+        
         <span class="player-name">2</span>
     </div><!-- end .jersey-player -->
-    <div id="p1" class="starter jersey-player p1">
-        <div class="jersey j-grey"></div>
+    <div id="p1" class="jersey-player p1 slot">
+        
         <span class="player-name">1</span>
     </div><!-- end .jersey-player -->
 </script>

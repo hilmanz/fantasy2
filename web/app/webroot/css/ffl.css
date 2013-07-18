@@ -1167,3 +1167,6 @@ td,th{
     padding-top: 3px;
     width: 18px;
 }
+.slot{
+	border:2px solid white;
+}
