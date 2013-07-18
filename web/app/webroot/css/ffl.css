@@ -1167,3 +1167,23 @@ td,th{
     padding-top: 3px;
     width: 18px;
 }
+.fbexpired{
+	margin:0 auto;
+	width:460px;
+}
+.fbexpired .box{
+	margin:0 auto !important;
+	width:460px;
+	min-height:75px;
+}
+.fbexpired .box h3{
+	color:#eee;
+	width:300px;
+	float:right;
+	font-size:22px;
+	line-height:35px;
+}
+.fbexpired .box .entry{
+	float:left;
+	width:140px;
+}

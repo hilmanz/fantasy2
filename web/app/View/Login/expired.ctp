@@ -1,13 +1,13 @@
-
-<div class="box tr last">
-    <h3>Sorry, your session is already expired, please re-login using your Facebook.</h3>
-    <div class="entry">
-    	<p>
-    	<a href="javascript:fb_login();" class="boxButton loginFacebook">&nbsp;</a>
-        </p>
-    </div><!-- end .entry -->
-</div><!-- end .box -->
-
+<div class="fbexpired">
+	<div class="box tr last">
+		<div class="entry">
+			<p>
+			<a href="javascript:fb_login();" class="boxButton loginFacebook">&nbsp;</a>
+			</p>
+		</div><!-- end .entry -->
+		<h3>Sorry, your session is already expired, please re-login using your Facebook.</h3>
+	</div><!-- end .box -->
+</div>
 <!-- -->
 <script>
   window.fbAsyncInit = function() {
