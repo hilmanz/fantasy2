@@ -87,7 +87,7 @@
         <div class="box4 fr">
             <div class="widget tr squad-team-name">
                 <h2><?=h($club['team_name'])?></h2>
-                <h3><a href="#" class="yellow">Team</a> | <a href="#" class="red">SUBS</a></h3>
+                
             </div><!-- end .widget -->
             <div class="widget tr squad-team">
                 <?php
