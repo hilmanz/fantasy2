@@ -369,18 +369,20 @@ $(document).ready(function(){
                     }
 
                     if(k>=10){
-                       var player_data = {
-                            player_id: $("#draggable").find('a').attr('no'),
-                            name: $("#draggable").find('.player-name').html(),
-                            position: getRealPosition($("#draggable").find('div.num').html()),
-                            position_no : parseInt($(curr_item.item).attr('id').replace('p',''))
-                       };
-                       
-                       //replace the existing slot if necessary
-                       $("#p"+player_data.position_no+".starter").remove();
-                       
-                       //then add the new one
-                       append_view(tpllineup,'#the-formation',player_data);
+                        if(typeof $(curr_item.item).attr('id') !== 'undefined'){
+                           var player_data = {
+                                player_id: $("#draggable").find('a').attr('no'),
+                                name: $("#draggable").find('.player-name').html(),
+                                position: getRealPosition($("#draggable").find('div.num').html()),
+                                position_no : parseInt($(curr_item.item).attr('id').replace('p',''))
+                           };
+                           
+                           //replace the existing slot if necessary
+                           $("#p"+player_data.position_no+".starter").remove();
+                           
+                           //then add the new one
+                           append_view(tpllineup,'#the-formation',player_data);
+                        }
                        curr_item = null;
                     }
                 }
