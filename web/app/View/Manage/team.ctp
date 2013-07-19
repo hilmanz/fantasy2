@@ -381,9 +381,6 @@ $(document).ready(function(){
                        
                        //then add the new one
                        append_view(tpllineup,'#the-formation',player_data);
-
-                       $(curr_item.item).html($("#draggable").html());
-                       $(curr_item.item).find('.player-name').show();
                        curr_item = null;
                     }
                 }
