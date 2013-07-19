@@ -75,7 +75,7 @@
                     <option>3-4-3</option>
                     <option>3-4-2-1</option>
                 </select>
-                <a class="button" href="#/save_formation">Save Formations</a>
+                <a id="btn_save" class="showPopup button" href="#popup-messages">Save Formations</a>
                 </div>
                 <div id="droppable" class="drop field-formation">
                     <div id="the-formation" class="drop">
@@ -134,6 +134,18 @@
 </div><!-- end #fillDetailsPage -->
 <div id="draggable" class="jersey-player" style="display:none;position:absolute;">
 </div>
+<!--popups-->
+<div class="popup">
+    <div class="popupContainer popup-small" id="popup-messages">
+        <div class="popupHeader">
+        </div><!-- END .popupHeader -->
+        <div class="popupContent">
+            <div class="entry-popup">
+                
+            </div><!--END .entry-popup-->
+        </div><!-- END .popupContent -->
+    </div><!-- END .popupContainer -->
+</div><!-- END .popup --> 
 <script>
 var selected = null;
 var page = 0;
@@ -145,6 +157,13 @@ var formation = {
     '4-4-1-1' : ['','G','D','D','D','D','M','M','M','M','F','F']
 };
 $(document).ready(function(){
+        $("#btn_save").fancybox({
+            beforeLoad : function(){
+                render_view(tplsave,"#popup-messages .popupContent .entry-popup",[]);
+            },
+           
+        });
+
         $('.prev').hide();
         if(last_page==0){
             $('.next').hide();
@@ -393,6 +412,24 @@ $(document).ready(function(){
     getLineUp();  
 });
 </script>
+<script type="text/template" id="tplsave">
+    <div class="confirm">
+        <h1>Confirmation</h1>
+        <h3>are you sure want to save the new lineups ?</h3>
+        <p><a href="#/save_formation" class="button">Yes</a>
+            <a href="#" class="button" onclick="$.fancybox.close();return false;">Cancel</a></p>
+    </div>
+    <div class="saving" style="display:none;">
+        <h1>Saving your lineup</h1>
+        <h3>Please wait..</h3>
+        <p><img src="<?=$this->Html->url('/css/fancybox/fancybox_loading@2x.gif')?>"/></p>
+    </div>
+</script>
+<script type="text/template" id="tplmsg">
+    <h1><%=title%></h1>
+    <p><%=result%></p>
+</script>
+
 <script type="text/template" id="tpllineup">
     <%
         var jersey_color = 'j-red';

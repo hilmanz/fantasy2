@@ -6,9 +6,7 @@ $(document).ready(function() {
 	$("table tbody tr:nth-child(odd)").addClass("odd");
 	$("table tbody tr:nth-child(even)").addClass("even");
 	// Popup
-	
-	$('.showPopup').fancybox();
-	
+	//$('.showPopup').fancybox();
 });
 // SLIDER
 $(window).load(function(){

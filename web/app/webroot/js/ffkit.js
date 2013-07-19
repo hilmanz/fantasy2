@@ -70,10 +70,13 @@ function save_formation(){
 				for(var i in lineup){
 					data[lineup[i].name] = parseInt(lineup[i].value);
 				}
-				console.log(data);
+				
 				if(typeof api_url !== 'undefined'){
+					$('.saving').show();
+					$('.confirm').hide();
 					api_post(api_url+'game/save_lineup',data,function(response){
 						console.log(response);
+						$.fancybox.close();
 					});
 				}
 			}
