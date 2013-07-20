@@ -131,4 +131,18 @@ class GameController extends AppController {
 		print json_encode($result);
 		die();
 	}
+
+
+	public function check_team_name(){
+		$team_name = Sanitize::clean($this->request->query['name']);
+		$this->loadModel('Team');
+		
+		$club = $this->Team->findByTeam_name($team_name);
+		if(isset($club['Team'])){
+			print json_encode(array("status"=>1));
+		}else{
+			print json_encode(array("status"=>0));
+		}
+		die();
+	}
 }

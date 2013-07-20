@@ -366,6 +366,7 @@ function getVenue(team_id,done){
 		}
 	);
 }
+
 exports.getVenue = getVenue;
 exports.next_match = next_match;
 exports.getFinancialStatement = getFinancialStatement;

@@ -143,6 +143,7 @@ class ProfileController extends AppController {
 	}
 	public function register_team(){
 		$userData = $this->getUserData();
+		
 		if($this->request->is('post')){
 			if(strlen($this->request->data['team_name']) > 0
 				&& strlen($this->request->data['team_id']) > 0

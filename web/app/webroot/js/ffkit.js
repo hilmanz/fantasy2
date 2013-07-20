@@ -114,7 +114,6 @@ function selectTeam(team_id,teams){
 	});
 	$.each(team_list,function(k,v){
 		if(v.uid==team_id){
-			$("input[name='team_name']").val(v.name);
 			return true;
 		}
 	});
@@ -176,7 +175,16 @@ $(document).ready(function(){
   Backbone.history.start();
 });
 
-
+function check_team_name(team_name,callback){
+	api_call(api_url+'game/check_team_name?name='+team_name,function(response){
+		if(response.status==1){
+			tmp.team_name_taken = true;
+		}else{
+			tmp.team_name_taken = false;
+		}
+		callback(tmp.team_name_taken);
+	});
+}
 
 //other functions
 function api_call(u,c){

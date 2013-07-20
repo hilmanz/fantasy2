@@ -30,7 +30,8 @@
                     <form class="theForm" action="<?=$this->Html->url('/profile/register_team')?>" method="post" enctype="multipart/form-data">
                         <div class="row">
                             <label>Personalize Your Team Name</label>
-                            <input type="text" name="team_name"/>
+                            <input type="text" name="team_name" value="<?=$USER_DATA['name']?> FC"/>
+                            <span class="check"></span>
                         </div><!-- end .row -->
                         <h3>Choose your team:</h3>
                         <div class="row">
@@ -46,7 +47,7 @@
                             <input type="hidden" name="fb_id" value="<?=$USER_DATA['fb_id']?>"/>
                             <input type="hidden" name="team_id" value=""/>
                             <input type="hidden" name="create_team" value="1"/>
-                            <input type="submit" value="Save &amp; Continue" class="button" />
+                            <input type="button" value="Save &amp; Continue" class="button" id="btnsave"/>
                         </div><!-- end .row -->
                     </form>
                 </div><!-- end .select-team -->
@@ -75,9 +76,63 @@
 	</div><!-- end #sidebar -->
     </div><!-- end #thecontent -->
 </div><!-- end #fillDetailsPage -->
+
+<!--popups-->
+<div class="popup">
+    <div class="popupContainer popup-small" id="popup-messages">
+        <div class="popupHeader">
+        </div><!-- END .popupHeader -->
+        <div class="popupContent">
+            <div class="entry-popup">
+                <h1>Name Taken</h1>
+		        <p>Your team name has been taken by somebody else, please input another name.</p>
+            </div><!--END .entry-popup-->
+        </div><!-- END .popupContent -->
+    </div><!-- END .popupContainer -->
+</div><!-- END .popup --> 
+<a class="fancy" href="#popup-messages"></a>
 <?php 
     if(!is_array($team_list)) $team_list = array();
 ?>
 <script>
-    var team_list = <?=json_encode($team_list)?>;
+var team_list = <?=json_encode($team_list)?>;
+var ktimer;
+function check_name(){
+	check_team_name($("input[name='team_name']").val(),function(exists){
+		$("span.check").removeClass('available');
+		$("span.check").removeClass('unavailable');
+		if(!exists){
+			$("span.check").html('Available');
+			$("span.check").addClass('available');
+		}else{
+			$("span.check").addClass('unavailable');
+			$("span.check").html('Not Available');
+		}
+	});
+}
+$(document).ready(function(){
+
+	check_name();
+    $("input[name='team_name']").keyup(function(){
+    	if(typeof ktimer !== 'undefined'){
+    		clearTimeout(ktimer);
+    	}
+    	ktimer = setTimeout(function(){
+    		//console.log();
+    		check_name();
+    	},1000);
+    	
+	});
+    $(".fancy").fancybox();
+	$("#btnsave").click(function(){
+		if(typeof tmp.team_name_taken !== 'undefined'){
+			if(tmp.team_name_taken == false){
+				$('.theForm').submit();
+			}else{
+				
+				$(".fancy").trigger('click');
+			}
+		}
+	});
+}); 
 </script>
