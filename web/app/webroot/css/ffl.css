@@ -1196,3 +1196,17 @@ td,th{
 	float:left;
 	width:140px;
 }
+.icon_available,.icon_unvailable{
+	display: inline-block;
+	font-size: 14px;
+	padding: 0 0 0 10px;
+	line-height: 30px;
+	position: relative;
+	top: 2px;
+}
+.icon_available{
+	color:#0C0;
+}
+.icon_unvailable{
+	color:#F00;
+}

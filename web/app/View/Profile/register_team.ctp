@@ -31,7 +31,7 @@
                         <div class="row">
                             <label>Personalize Your Team Name</label>
                             <input type="text" name="team_name" value="<?=$USER_DATA['name']?> FC"/>
-                            <span class="check"></span>
+                            <span class="icon_available check"></span>
                         </div><!-- end .row -->
                         <h3>Choose your team:</h3>
                         <div class="row">
