@@ -143,7 +143,11 @@ class ProfileController extends AppController {
 	}
 	public function register_team(){
 		$userData = $this->getUserData();
-		
+		$team = $this->Session->read('TeamRegister');
+		$this->set('previous_team',$team);
+		if($userData==null){
+			$this->redirect('/login/expired');
+		}
 		if($this->request->is('post')){
 			if(strlen($this->request->data['team_name']) > 0
 				&& strlen($this->request->data['team_id']) > 0
@@ -204,13 +208,14 @@ class ProfileController extends AppController {
 	*/
 	public function select_player(){
 		$userData = $this->getUserData();
-
+		$selected_team = $this->Session->read('TeamRegister');
+		
 		if(is_array($this->Session->read('TeamRegister'))){
 			$userData = $this->getUserData();
 			$this->set('INITIAL_BUDGET',Configure::read('INITIAL_BUDGET'));
 			$teams = $this->Game->getTeams();
 			$this->set('team_list',$teams);
-			$this->set('selected_team',$this->Session->read('TeamRegister'));
+			$this->set('selected_team',$selected_team);
 		}else{
 			$this->redirect('/profile/register_team');
 		}

@@ -772,7 +772,7 @@ input[type=text]{
 .selected{
 	text-decoration:none;
 	background:url(../images/tr2.png) repeat;
-	
+
 }
 #clubtabs{
 	padding:20px 0;
@@ -1009,7 +1009,7 @@ td,th{
 .playerlistbox{
 	background:url(../images/tr.png) repeat;
 	padding:20px;
-	width:300px;
+	width:660px;
 	float:left;
 	margin:0 20px 0 0;
 	border-radius:5px;

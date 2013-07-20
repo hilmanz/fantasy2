@@ -30,13 +30,25 @@
                     <form class="theForm" action="<?=$this->Html->url('/profile/register_team')?>" method="post" enctype="multipart/form-data">
                         <div class="row">
                             <label>Personalize Your Team Name</label>
-                            <input type="text" name="team_name" value="<?=$USER_DATA['name']?> FC"/>
+                            <?php
+                            $init_team_name = (isset($previous_team)) ? $previous_team['team_name'] : $USER_DATA['name'].' FC';
+                            ?>
+                            <input type="text" name="team_name" value="<?=htmlspecialchars($init_team_name)?>"/>
                             <span class="check"></span>
                         </div><!-- end .row -->
                         <h3>Choose your team:</h3>
                         <div class="row">
+                        	<?php $previous_team_id = "";?>
                             <?php foreach($team_list as $team):?>
-                            <a class="teamBox" no="<?=$team['uid']?>" href="#/selectTeam/<?=$team['uid']?>" title="<?=$team['name']?>">
+                            <?php
+                            	$selected = "";
+                            	if(isset($previous_team) &&
+                            			$team['uid']==$previous_team['team_id']){
+                            		$previous_team_id = $team['uid'];
+                            		$selected = "selected";
+                            	}
+                            ?>
+                            <a class="teamBox <?=$selected?>" no="<?=$team['uid']?>" href="#/selectTeam/<?=$team['uid']?>" title="<?=$team['name']?>">
                                 <img src="<?=$this->Html->url('/images/team/'.strtolower(str_replace(' ','_',$team['name'])).'.png')?>" />
                                 <div class="team-name"><?=$team['name']?></div>
                             </a><!-- end .teamBox -->
@@ -45,7 +57,7 @@
                        
                         <div class="row">
                             <input type="hidden" name="fb_id" value="<?=$USER_DATA['fb_id']?>"/>
-                            <input type="hidden" name="team_id" value=""/>
+                            <input type="hidden" name="team_id" value="<?=$previous_team_id?>"/>
                             <input type="hidden" name="create_team" value="1"/>
                             <input type="button" value="Save &amp; Continue" class="button" id="btnsave"/>
                         </div><!-- end .row -->
@@ -99,13 +111,13 @@ var team_list = <?=json_encode($team_list)?>;
 var ktimer;
 function check_name(){
 	check_team_name($("input[name='team_name']").val(),function(exists){
-		$("span.check").removeClass('available');
-		$("span.check").removeClass('unavailable');
+		$("span.check").removeClass('icon_available');
+		$("span.check").removeClass('icon_unvailable');
 		if(!exists){
 			$("span.check").html('Available');
-			$("span.check").addClass('available');
+			$("span.check").addClass('icon_available');
 		}else{
-			$("span.check").addClass('unavailable');
+			$("span.check").addClass('icon_unvailable');
 			$("span.check").html('Not Available');
 		}
 	});
