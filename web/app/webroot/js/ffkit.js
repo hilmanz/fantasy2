@@ -79,6 +79,11 @@ function save_formation(){
 						$.fancybox.close();
 					});
 				}
+			}else{
+				$("#popup-messages .popupContent .entry-popup").html('');
+				console.log('total',total);
+				render_view(tplmsg,'#popup-messages .popupContent .entry-popup',
+							{title:'Oops !',result:'Your lineup should consist 11 players !'});
 			}
 		});
 	}
@@ -97,7 +102,7 @@ function getLineups(callback){
 	    	});
 	        n_player++;
 	    }
-	    if(k>=10){
+	    if(n_player == 11){
 	        callback(n_player,players);
 	    }
 	});
