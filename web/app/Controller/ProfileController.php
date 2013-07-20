@@ -176,7 +176,7 @@ class ProfileController extends AppController {
 		);
 		
 		foreach($players as $n=>$p){
-				$players[$n] = Sanitize::paranoid(trim($p));
+				$players[$n] = Sanitize::clean(trim($p));
 		}
 		$data['players'] = json_encode($players);
 
@@ -195,7 +195,7 @@ class ProfileController extends AppController {
 			$InsertTeam = $this->Team->save(array(
 				'user_id'=>$user['User']['id'],
 				'team_id'=>Sanitize::paranoid($team['team_id']),
-				'team_name'=>Sanitize::paranoid($team['team_name'])
+				'team_name'=>Sanitize::clean($team['team_name'])
 			));
 			$this->Session->write('Userlogin.info',$userData);
 			$this->Session->write('TeamRegister',null);
