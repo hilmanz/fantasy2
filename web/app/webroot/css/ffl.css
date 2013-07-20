@@ -1210,3 +1210,15 @@ td,th{
 .icon_unvailable{
 	color:#F00;
 }
+.teamname{
+	float:right;
+	margin:0 10px 0 0;
+	line-height:50px;
+}
+.teamlogo{
+	float:right;
+}
+.lh50{
+	line-height:50px !important;
+	margin:0 !important;
+}

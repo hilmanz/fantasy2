@@ -24,12 +24,11 @@
         	<div class="content">
             	<div class="row-2">
                     <div class="col2">
-                        <h1 class="red">Starting Lineup and Substitutions</h1>
+                        <h1 class="red lh50">Starting Lineup and Substitutions</h1>
                     </div>
                     <div class="col2">
-                          <h3>
-                                <?=htmlspecialchars(stripslashes($selected_team['team_name']))?>
-                            </h3>
+						  <img class="teamlogo" src="http://fantasy-football.code18.us/web/images/team/manchester_united.png"/>
+                          <h3 class="teamname"> <?=htmlspecialchars(stripslashes($selected_team['team_name']))?></h3>
                     </div>
     			</div><!-- end .row-2 -->
                 <form class="theForm" method="post" action="<?=$this->Html->url('/profile/create_team')?>" enctype="multipart/form-data">
