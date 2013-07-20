@@ -30,8 +30,8 @@ function hire(staff_id){
 				$("#staff-"+staff_id).html('Hired');
 				$("#staff-"+staff_id).attr('href','#/dismiss/'+staff_id);
 				est_expenses += getStaffSalary(staff_id);
-				console.log(getStaffSalary(staff_id));
-				$("h1.expenses").html('EUR '+number_format(parseInt(est_expenses)*4));
+				
+				$("h1.expenses").html('EUR '+number_format(parseInt(est_expenses)));
 			}else{
 				$("#staff-"+staff_id).html('Select');
 			}
@@ -49,7 +49,7 @@ function dismiss(staff_id){
 				if(est_expenses>0){
 					est_expenses -= getStaffSalary(staff_id);
 					if(est_expenses<0){est_expenses = 0;}
-					$("h1.expenses").html('EUR '+number_format(parseInt(est_expenses)*4));
+					$("h1.expenses").html('EUR '+number_format(parseInt(est_expenses)));
 				}
 			}else{
 				$("#staff-"+staff_id).html('Hired');
@@ -134,8 +134,8 @@ function select_player(player_id){
 }
 function populate_selected(callback){
 	var s = "";
-	var n = $("#selected").children().length;
-	$.each($("#selected").children(),function(k,v){
+	var n = $("#available").children().length;
+	$.each($("#available").children(),function(k,v){
 			if(k>0){
 				s += ",";
 			}

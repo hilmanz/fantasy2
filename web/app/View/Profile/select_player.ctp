@@ -24,8 +24,7 @@
         	<div class="content">
             	<div class="row-2">
                     <div class="col2">
-                        <h1 class="red">Choose Your Players</h1>
-                        <p>Please choose 11 initial players for your team !</p>
+                        <h1 class="red">Starting Lineup and Substitutions</h1>
                     </div>
                     <div class="col2">
                           <h3>
@@ -96,8 +95,15 @@ function getPlayers(team_id){
         $("#available").html('&nbsp;');
         if(response.length>0){
             tmp['available_teams'] = response;
+            var n = response.length;
             $.each(response,function(k,v){
-                append_view(player,'#available',v);
+                if(v!=null){
+                    est_expenses += v.salary;
+                    append_view(player,'#available',v);    
+                }
+                if(k==(n-1)){
+                    $('.expense').html(number_format(est_expenses));
+                }
             });
         }
     });
