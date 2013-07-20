@@ -30,7 +30,8 @@ function getLineup(game_team_id,callback){
 	async.waterfall(
 		[
 			function(callback){
-				conn.query("SELECT a.player_id,a.position_no,b.name,b.position \
+				conn.query("SELECT a.player_id,a.position_no,\
+				b.name,b.position,b.known_name \
 				FROM ffgame.game_team_lineups a\
 				INNER JOIN ffgame.master_player b\
 				ON a.player_id = b.uid\
@@ -172,7 +173,7 @@ function position_valid(players,setup,formation){
 function getPlayers(game_team_id,callback){
 	conn = prepareDb();
 	conn.query("SELECT b.uid,b.name,b.position, \
-				b.salary,b.transfer_value\
+				b.salary,b.transfer_value,b.known_name\
 				FROM ffgame.game_team_players a\
 				INNER JOIN ffgame.master_player b \
 				ON a.player_id = b.uid\

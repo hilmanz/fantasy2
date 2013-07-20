@@ -112,7 +112,9 @@
                     }
                     $last_page = floor($n/16);
                     $page = 'page-'.$last_page;
-
+                    if($player['known_name']!=null){
+                        $player['name'] = $player['known_name'];
+                    }
                 ?>
                 <div class="bench jersey-player <?=$page?>">
                     <a href="javascript:void(0);" no="<?=h($player['uid'])?>">
@@ -455,6 +457,16 @@ $(document).ready(function(){
                 pos_code = 'F';
                 jersey_color = 'j-red';
             break;
+        }
+        if(typeof known_name === 'string'){
+            name = known_name;
+        }
+        //use last name only
+        var arr = name.split(' ');
+        if(arr.length > 1){
+            name = arr[arr.length-1];
+        }else{
+            name = arr[0];
         }
     %>
     <div id="p<%=position_no%>" class="starter jersey-player p<%=position_no%>">
