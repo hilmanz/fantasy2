@@ -59,11 +59,12 @@ class LoginController extends AppController {
 			$fb_id = $fb->getUser();
 			
 			if(intval($fb_id) > 0){
-				$this->Session->write('UserFBDetail',$fb->api('/me'));
+				$me = $fb->api('/me');
+				$this->Session->write('UserFBDetail',$me);
 				$this->Session->write('Userlogin.is_login', true);
 				$this->Session->write('Userlogin.info',array('fb_id'=>$fb_id,
 											'username'=>'',
-											'name'=>'',
+											'name'=>$me['name'],
 											'role'=>1,
 											'access_token'=>$this->getAccessToken()));
 				$this->afterLogin();
@@ -91,7 +92,7 @@ class LoginController extends AppController {
 			//get team 
 			$user_session['team'] = $this->Game->getTeam($user_session['fb_id']);
 			$this->Session->write('Userlogin.info',$user_session);
-			
+
 			if($user_session['team']==null){
 				$this->redirect('/profile/register_team');
 			}else if($user_session['team']!=null&&$user_session['register_completed']==0){
