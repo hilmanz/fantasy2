@@ -28,7 +28,10 @@
                 </div><!-- end .row-2 -->
                 <div class="select-team">
                     <form class="theForm" action="<?=$this->Html->url('/profile/register_team')?>" method="post" enctype="multipart/form-data">
-                        
+                        <div class="row">
+                            <label>Personalize Your Team Name</label>
+                            <input type="text" name="team_name"/>
+                        </div><!-- end .row -->
                         <h3>Choose your team:</h3>
                         <div class="row">
                             <?php foreach($team_list as $team):?>
@@ -38,10 +41,7 @@
                             </a><!-- end .teamBox -->
                             <?php endforeach;?>
                         </div><!-- end .row -->
-                        <div class="row">
-                            <label>Personalize Your Team Name</label>
-                            <input type="text" name="team_name"/>
-                        </div><!-- end .row -->
+                       
                         <div class="row">
                             <input type="hidden" name="fb_id" value="<?=$USER_DATA['fb_id']?>"/>
                             <input type="hidden" name="team_id" value=""/>
