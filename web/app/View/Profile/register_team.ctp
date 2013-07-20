@@ -32,7 +32,7 @@
                         <h3>Choose your team:</h3>
                         <div class="row">
                             <?php foreach($team_list as $team):?>
-                            <a class="teamBox" href="#/selectTeam/<?=$team['uid']?>" title="<?=$team['name']?>">
+                            <a class="teamBox" no="<?=$team['uid']?>" href="#/selectTeam/<?=$team['uid']?>" title="<?=$team['name']?>">
                                 <img src="<?=$this->Html->url('/images/team/'.strtolower(str_replace(' ','_',$team['name'])).'.png')?>" />
                                 <div class="team-name"><?=$team['name']?></div>
                             </a><!-- end .teamBox -->

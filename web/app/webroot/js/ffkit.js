@@ -105,6 +105,13 @@ function getLineups(callback){
 function selectTeam(team_id,teams){
 	$("input[name='team_id']").val(team_id);
 	var team_name = "";
+	$('.teamBox').removeClass('selected');
+	//highlight selected
+	$.each($('.teamBox'),function(k,v){
+	    if($(v).attr('no')==team_id){
+	        $(v).addClass('selected');
+	    }
+	});
 	$.each(team_list,function(k,v){
 		if(v.uid==team_id){
 			$("input[name='team_name']").val(v.name);
