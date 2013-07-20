@@ -33,7 +33,7 @@
                         <div class="row">
                             <?php foreach($team_list as $team):?>
                             <a class="teamBox" href="#/selectTeam/<?=$team['uid']?>" title="<?=$team['name']?>">
-                                <img src="<?=$this->Html->url('/images/team/logo'.rand(1,2).'.png')?>" />
+                                <img src="<?=$this->Html->url('/images/team/'.strtolower(str_replace(' ','_',$team['name'])).'.png')?>" />
                                 <div class="team-name"><?=$team['name']?></div>
                             </a><!-- end .teamBox -->
                             <?php endforeach;?>
