@@ -194,8 +194,28 @@ $(document).ready(function(){
                 player_in_lineup($(this).find('a').attr('no'),function(is_exist){
                     if(!is_exist){
                         $("#draggable").html(target.html());
-                        $("#draggable").css('top',target.offset().top - $("#universal").position().top);
-                        $("#draggable").css('left',target.offset().left - $("#universal").position().left - 13);
+                        console.log($(target).html());
+                        console.log($(target).offset().left+","+$(target).offset().top);
+                        console.log($('#universal').offset().left+","+$('#universal').offset().top);
+                        console.log($("#fillDetailsPage").offset().left+","+$("#fillDetailsPage").offset().top);
+                        var nx = 0;
+                        console.log(navigator.userAgent);
+                        if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
+                            //only for firefox
+                            nx = target.offset().left - ($("#universal").offset().left + 13);
+                        }else if(navigator.userAgent.toLowerCase().indexOf('msie') > -1){
+                            //for msie
+                            nx = target.offset().left - ($("#universal").offset().left + 13);
+                        }else{
+                            //for chrome
+                            nx = target.offset().left - ($("#universal").offset().left - $('#draggable').width());
+                        }
+                        
+                        var ny = target.offset().top - $("#universal").offset().top;
+
+                        console.log('->'+nx+","+ny);
+                        $("#draggable").css('top',ny);
+                        $("#draggable").css('left',nx);
                         $("#draggable").find('.player-name').hide();
                         $("#draggable").find('.player-status').remove();
                         $("#draggable").show();
