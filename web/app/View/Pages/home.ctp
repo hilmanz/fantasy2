@@ -5,22 +5,17 @@
 	          <ul class="slides">
 	            <li class="theSlide">
 	                <div class="imgSlide">
-	                    <a href="#"><img src="content/slider/slide1.jpg" /></a>
+	                    <a href="#"><img src="content/slider/1.jpg" /></a>
 	                </div>
 	            </li>
 	            <li class="theSlide">
 	                <div class="imgSlide">
-	                    <a href="#"><img src="content/slider/slide2.jpg" /></a>
+	                    <a href="#"><img src="content/slider/2.jpg" /></a>
 	                </div>
 	            </li>
 	            <li class="theSlide">
 	                <div class="imgSlide">
-	                    <a href="#"><img src="content/slider/slide3.jpg" /></a>
-	                </div>
-	            </li>
-	            <li class="theSlide">
-	                <div class="imgSlide">
-	                    <a href="#"><img src="content/slider/slide4.jpg" /></a>
+	                    <a href="#"><img src="content/slider/3.jpg" /></a>
 	                </div>
 	            </li>
 	          </ul>

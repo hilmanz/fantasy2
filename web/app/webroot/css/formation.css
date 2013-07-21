@@ -4,7 +4,7 @@ Version: 1.0
 Author: ACIT JAZZ 
 */
 .p1{
-	bottom:70px;left:185px;
+	bottom:40px;left:185px;
 }
 .p2{
 	bottom:150px; left:40px;
@@ -37,29 +37,26 @@ Author: ACIT JAZZ
 	bottom:500px; left:140px;
 }
 .c1{
-	bottom:0;
+	bottom:-75px;
 	left:40px;
 }
 .c2{
-	bottom:0;
+	bottom:-75px;
 	left:114px;
 }
 .c3{
-	bottom:0;
+	bottom:-75px;
 	left:184px;
 }
 .c4{
-	bottom:0;
+	bottom:-75px;
 	right:114px;
 }
 .c5{
-	bottom:0;
+	bottom:-75px;
 	right:40px;
 }
 /*==== formation-4-4-2 ====*/
-.formation-4-4-2 .p1{
-	bottom:70px;left:185px;
-}
 .formation-4-4-2 .p2{
 	bottom:150px; left:40px;
 }
@@ -91,9 +88,6 @@ Author: ACIT JAZZ
 	bottom:500px; left:140px;
 }
 /*==== formation-4-4-2-A ====*/
-.formation-4-4-2-A .p1{
-	bottom:70px;left:185px;
-}
 .formation-4-4-2-A .p2{
 	bottom:150px; left:40px;
 }
@@ -125,9 +119,6 @@ Author: ACIT JAZZ
 	bottom:540px; left:140px;
 }
 /*==== formation-4-3-3 ====*/
-.formation-4-3-3 .p1{
-	bottom:70px;left:185px;
-}
 .formation-4-3-3 .p2{
 	bottom:150px; left:40px;
 }
@@ -159,9 +150,6 @@ Author: ACIT JAZZ
 	bottom:500px; left:40px;
 }
 /*==== formation-4-2-3-1 ====*/
-.formation-4-2-3-1 .p1{
-	bottom:70px;left:185px;
-}
 .formation-4-2-3-1 .p2{
 	bottom:150px; left:40px;
 }
@@ -193,9 +181,6 @@ Author: ACIT JAZZ
 	bottom:450px; left:40px;
 }
 /*==== formation-3-5-2 ====*/
-.formation-3-5-2 .p1{
-	bottom:70px;left:185px;
-}
 .formation-3-5-2 .p2{
 	bottom:150px; left:70px;
 }
@@ -227,9 +212,6 @@ Author: ACIT JAZZ
 	bottom:540px; left:140px;
 }
 /*==== formation-4-4-1-1 ====*/
-.formation-4-4-1-1 .p1{
-	bottom:70px;left:185px;
-}
 .formation-4-4-1-1 .p2{
 	bottom:180px; left:40px;
 }
@@ -261,9 +243,6 @@ Author: ACIT JAZZ
 	bottom:550px; left:180px;
 }
 /*==== formation-4-3-2-1 ====*/
-.formation-4-3-2-1 .p1{
-	bottom:70px;left:185px;
-}
 .formation-4-3-2-1 .p2{
 	bottom:150px; left:40px;
 }
@@ -295,9 +274,6 @@ Author: ACIT JAZZ
 	bottom:570px; left:180px;
 }
 /*==== formation-4-3-1-2 ====*/
-.formation-4-3-1-2 .p1{
-	bottom:70px;left:185px;
-}
 .formation-4-3-1-2 .p2{
 	bottom:150px; left:40px;
 }
@@ -329,9 +305,6 @@ Author: ACIT JAZZ
 	bottom:570px; left:100px;
 }
 /*==== formation-5-3-2 ====*/
-.formation-5-3-2 .p1{
-	bottom:70px;left:185px;
-}
 .formation-5-3-2 .p2{
 	bottom:210px; left:30px;
 }
@@ -363,9 +336,6 @@ Author: ACIT JAZZ
 	bottom:570px; left:100px;
 }
 /*==== formation-5-3-1-1 ====*/
-.formation-5-3-1-1 .p1{
-	bottom:70px;left:185px;
-}
 .formation-5-3-1-1 .p2{
 	bottom:210px; left:30px;
 }
@@ -397,9 +367,6 @@ Author: ACIT JAZZ
 	bottom:570px; right:180px; left:auto;
 }
 /*==== formation-5-2-2-1 ====*/
-.formation-5-2-2-1 .p1{
-	bottom:70px;left:185px;
-}
 .formation-5-2-2-1 .p2{
 	bottom:210px; left:30px;
 }
@@ -431,9 +398,6 @@ Author: ACIT JAZZ
 	bottom:570px; right:180px; left:auto;
 }
 /*==== formation-4-2-4 ====*/
-.formation-4-2-4 .p1{
-	bottom:70px;left:185px;
-}
 .formation-4-2-4 .p2{
 	bottom:150px; left:40px;
 }
@@ -465,9 +429,6 @@ Author: ACIT JAZZ
 	bottom:500px; left:40px; right:auto;
 }
 /*==== formation-3-4-3 ====*/
-.formation-3-4-3 .p1{
-	bottom:70px;left:185px;
-}
 .formation-3-4-3 .p2{
 	bottom:150px; left:70px;
 }
