@@ -97,15 +97,17 @@ app.get('/sponsorship/list/:team_id',[auth.canAccess],gameplay.getSponsors);
 app.post('/sponsorship/apply',[auth.canAccess],gameplay.applySponsorship);
 app.get('/finance/:game_team_id',[auth.canAccess],gameplay.financial_statements);
 app.get('/venue/:team_id',[auth.canAccess],gameplay.get_venue);
-
 app.post('/auth',auth.authenticate);
-
 app.get('/ping',function(req,res){
 	res.send(200,{status:1,message:'Server Alive'});
 });
+
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+
+
 
 function accessDenied(req,res){
 	res.send(401,'Access Denied');
