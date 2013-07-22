@@ -261,7 +261,7 @@ a:hover{
 }
 /*============= FORMATION ===============*/
 .field-container{
-	padding:10px 0 80px 0;
+	padding:10px 0 120px 0;
 }
 .field-formation{
 	background:url(../images/field.jpg) no-repeat;
@@ -376,6 +376,18 @@ a:hover{
 .bgyellow{
 	background:#fdcb02;
 	color:#333;
+}
+.subtitution{
+	position: absolute;
+	bottom: -110px;
+	width: 435px;
+	border:solid 2px #fdcb02;
+	height: 100px;
+}
+.subtitution h3{
+	position:absolute;
+	left:182px;
+	margin:0;
 }
 /*============= ICON ===============*/
 .jersey-player{
