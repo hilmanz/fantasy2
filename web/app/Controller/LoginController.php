@@ -89,6 +89,7 @@ class LoginController extends AppController {
 			$user_session['username'] = $rs['User']['name'];
 			$user_session['name'] = $rs['User']['name'];
 			$user_session['register_completed'] = $rs['User']['register_completed'];
+
 			//get team 
 			$user_session['team'] = $this->Game->getTeam($user_session['fb_id']);
 			$this->Session->write('Userlogin.info',$user_session);
@@ -116,6 +117,7 @@ class LoginController extends AppController {
 	}
 	public function expired(){
 		
+		$this->set('USER_IS_LOGIN',false);
 	}
 
 
