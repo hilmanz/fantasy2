@@ -1185,7 +1185,8 @@ td,th{
     width: 18px;
 }
 .slot{
-	border:2px solid white;
+	border:2px solid #FDCB02;
+	box-shadow:0 0 5px #FDCB02;
 
 }
 .fbexpired{
