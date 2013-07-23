@@ -56,6 +56,10 @@ class ManageController extends AppController {
 		$club = $this->Team->findByUser_id($user['User']['id']);
 		$this->set('club',$club['Team']);
 
+		//get original club
+		$original_club = $this->Game->getClub($club['Team']['team_id']);
+		$this->set('original',$original_club);
+		
 		//list of players
 		$players = $this->Game->get_team_players($userData['fb_id']);
 		$this->set('players',$players);
@@ -144,10 +148,10 @@ class ManageController extends AppController {
 		//club
 		$club = $this->Team->findByUser_id($user['User']['id']);
 		$this->set('club',$club['Team']);
-		
-
-		
+	
 		$next_match = $this->Game->getNextMatch($userData['team']['team_id']);
+		$next_match['match']['home_original_name'] = $next_match['match']['home_name'];
+		$next_match['match']['away_original_name'] = $next_match['match']['away_name'];
 		if($next_match['match']['home_id']==$userData['team']['team_id']){
 			$next_match['match']['home_name'] = $club['Team']['team_name'];
 		}else{
@@ -194,33 +198,71 @@ class ManageController extends AppController {
 		$this->render('success');
 	}
 	/**
-	*	fungsi ini harus dimatiin di production
+	*	fungsi2 dibawah ini harus dimatiin di production
 	*/
 	public function reset(){
+		if(Configure::read('debug')>0){
+			if(@$this->request->query['confirm']==1){
+				//perform deletion here
+				// remove di database game
+				$user_id = $this->userData['team']['user_id'];
+				$team_id = $this->userData['team']['id'];
+				$this->User->query("DELETE FROM ffgame.game_users WHERE id ={$user_id};");
+				$this->User->query("DELETE FROM ffgame.game_teams WHERE id = {$team_id};");
+				$this->User->query("DELETE FROM ffgame.game_team_players WHERE game_team_id = {$team_id};");
+				//remove di database frontend.
 
-		if(@$this->request->query['confirm']==1){
-			//perform deletion here
-			// remove di database game
-			$user_id = $this->userData['team']['user_id'];
-			$team_id = $this->userData['team']['id'];
-			$this->User->query("DELETE FROM ffgame.game_users WHERE id ={$user_id};");
-			$this->User->query("DELETE FROM ffgame.game_teams WHERE id = {$team_id};");
-			$this->User->query("DELETE FROM ffgame.game_team_players WHERE game_team_id = {$team_id};");
-			//remove di database frontend.
-
-			$user = $this->User->findByFb_id($this->userData['fb_id']);
-			
-			$id = $user['User']['id'];
-			$club = $this->Team->findByUser_id($user['User']['id']);
-			$this->Team->delete($club['Team']['id']);
-			$this->User->delete($id);
-			//hapus session
-			$this->Session->destroy();
-			$this->set('confirm',1);
-		}else if(@$this->request->query['confirm']==2){
-			$this->redirect('/manage/team');
+				$user = $this->User->findByFb_id($this->userData['fb_id']);
+				
+				$id = $user['User']['id'];
+				$club = $this->Team->findByUser_id($user['User']['id']);
+				$this->Team->delete($club['Team']['id']);
+				$this->User->delete($id);
+				//hapus session
+				$this->Session->destroy();
+				$this->set('confirm',1);
+			}else if(@$this->request->query['confirm']==2){
+				$this->redirect('/manage/team');
+			}else{
+				$this->set('confirm',0);	
+			}
 		}else{
-			$this->set('confirm',0);	
+			$this->redirect('/manage/team');
+		}
+	}
+	public function play_match(){
+		if(Configure::read('debug')>0){
+			$userData = $this->userData;
+			$user = $this->User->findByFb_id($userData['fb_id']);
+			$club = $this->Team->findByUser_id($user['User']['id']);
+			$next_match = $this->Game->getNextMatch($userData['team']['team_id']);
+			$this->loadModel('Team');
+			$rs = $this->Team->query("UPDATE ffgame.game_fixtures SET is_processed = 0 
+								WHERE id={$next_match['match']['id']}");
+		}else{
+			$this->redirect('/manage/team');
+		}
+	}
+	public function reset_matches(){
+		if(Configure::read('debug')>0){
+			$this->loadModel('Team');
+			$rs = $this->Team->query("UPDATE ffgame.game_fixtures 
+										SET period='PreMatch',is_processed = 1");
+		}else{
+			$this->redirect('/manage/team');
+		}
+	}
+	public function reset_finance(){
+		if(Configure::read('debug')>0){
+			$userData = $this->userData;
+			$user = $this->User->findByFb_id($userData['fb_id']);
+			$club = $this->Game->getTeam($userData['fb_id']);
+			
+			$this->loadModel('Team');
+			$rs = $this->Team->query("DELETE FROM ffgame.game_team_expenditures
+								WHERE game_team_id={$club['id']}");
+		}else{
+			$this->redirect('/manage/team');
 		}
 	}
 }

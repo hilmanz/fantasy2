@@ -132,19 +132,65 @@ var pool = mysql.createPool({
 var argv = require('optimist').argv;
 var is_finished = (typeof argv.is_finished !== 'undefined') ? argv.is_finished : 0;
 var matchday = 0;
-async.waterfall(
+
+var has_queue = true;
+
+async.waterfall([
+		function(callback){
+			pool.getConnection(function(err,conn){
+				conn.query("SELECT a.id\
+					FROM ffgame.game_fixtures a\
+					WHERE a.is_dummy = 1 AND a.is_processed=0\
+					AND a.period = 'PreMatch'\
+					ORDER BY a.id ASC LIMIT 500;",
+					[],
+					function(err,fixtures){
+						conn.end(function(err){
+							console.log('total_matches : ',fixtures.length);
+							callback(err,fixtures);
+						});
+					}
+				);
+			});
+		},
+		function(fixtures,callback){
+			async.eachSeries(fixtures,
+				function(game,callback){
+					run(game,function(){
+						callback();
+					});
+				},
+				function(err){
+					callback(err,null);
+				});
+		}
+	],
+	function(err,result){
+		pool.end(function(err){
+			console.log('ALL DONE NIH !');
+		});
+	});
+
+function run(game,done){
+	console.log('processing game #'+game.id);
+	async.waterfall(
 	[
 		getUnProcessedSchedule,
 		getTeams,
 		setupMatch,
 		flagDone
 	],
-	function(err,result){
-		pool.end(function(e){
-			console.log('result : ',result);
-		});
-	}
-);
+		function(err,result){
+			//console.log(result);
+			if(err){
+				console.log(err.message);
+				has_queue = false;
+			}
+			done();
+		}
+	);
+}
+
 function flagDone(game_id,done){
 	if(is_finished==1){
 		pool.getConnection(function(err,conn){
@@ -173,8 +219,16 @@ function getUnProcessedSchedule(done){
 					ORDER BY a.id ASC LIMIT 1;",
 					[],
 					function(err,fixtures){
-			conn.end(function(err){
-				done(err,fixtures[0]);
+						conn.end(function(err){
+							if(!err){
+								if(fixtures[0].matchday==null){
+									done(new Error('no more data'),null);
+								}
+								done(err,fixtures[0]);	
+							}else{
+								done(err,null);
+							}
+				
 			});	
 		});
 		
@@ -199,7 +253,7 @@ function getTeams(fixture,done){
 					conn.query("SELECT * FROM ffgame.master_player \
 								WHERE team_id=? LIMIT 100;",[fixture.home_id],
 					function(err,players){
-						console.log(this.sql);
+						//console.log(this.sql);
 						home_team.players = players;
 						callback(err);
 					});
@@ -236,7 +290,7 @@ function getTeams(fixture,done){
 }
 function setupMatch(game_id,capacity,home_team,away_team,done){
 
-	console.log(home_team);
+	//console.log(home_team);
 	var game_settings = {
 		home:{
 			team_id:home_team.uid,
@@ -265,7 +319,7 @@ function setupMatch(game_id,capacity,home_team,away_team,done){
     	game_settings.away.goals = 0;
     }
 
-    console.log(game_settings);
+    //console.log(game_settings);
 
 
 	game_settings = generateStats(game_settings);
@@ -302,15 +356,15 @@ function setupMatch(game_id,capacity,home_team,away_team,done){
 	fs.writeFile(filepath, strOut, function(err) {
 	    if(err) {
 	        console.log(err);
-	    } else {
+	    }else {
 	        console.log("The file was saved!");
-
-	        console.log()
 	    }
+	    try{
 	    done(err,game_id);
-	}); 
-	
-	done(null,game_id);
+		}catch(e){
+			console.log(e.message);
+		}
+	}); 	
 }
 
 /**
@@ -318,7 +372,7 @@ simulate goals, using 24-dice
 **/
 function getGoals(){
 	var n_roll = roll(24);
-	console.log('roll for goals -> '+n_roll);
+	//console.log('roll for goals -> '+n_roll);
 	if(n_roll>10 && n_roll<16){
 		return 1;
 	}else if(n_roll>16 && n_roll<20){

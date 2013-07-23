@@ -23,18 +23,21 @@
         <div class="box4 fl">
             <div class="widget tr match-date">
                 <h2>next match</h2>
-                <span class="date yellow"><?=date("d/m/Y",strtotime($next_match['match_date']))?></span>
+                <span class="date yellow">
+                    <?=date("d/m/Y",strtotime($next_match['match_date']))?><br/>
+                    Matchday : <?=$next_match['matchday']?>
+                </span>
             </div><!-- end .widget -->
             <div class="widget tr match-team">
                 <div class="col3 home-team">
-                    <a href="#" class="team-logo"><img src="<?=$this->Html->url('/images/team/logo1.png')?>" /></a>
+                    <a href="#" class="team-logo"><img src="<?=$this->Html->url('/images/team/'.str_replace(" ","_",strtolower($next_match['home_original_name'])).'.png')?>" /></a>
                     <h3><?=h($next_match['home_name'])?></h3>
                 </div><!-- end .col3 -->
                 <div class="col3 vs">
                     <h2>Vs</h2>
                 </div><!-- end .col3 -->
                 <div class="col3 away-team">
-                    <a href="#" class="team-logo"><img src="<?=$this->Html->url('/images/team/logo2.png')?>" /></a>
+                    <a href="#" class="team-logo"><img src="<?=$this->Html->url('/images/team/'.str_replace(" ","_",strtolower($next_match['away_original_name'])).'.png')?>" /></a>
                     <h3><?=h($next_match['away_name'])?></h3>
                 </div><!-- end .col3 -->
             </div><!-- end .widget -->
@@ -153,10 +156,22 @@ var selected = null;
 var page = 0;
 var last_page = <?=intval($last_page)?>;
 var drag_busy = false;
+
 var formation = {
     '4-4-2' : ['','G','D','D','D','D','M','M','M','M','F','F'],
     '4-4-2-A' : ['','G','D','D','D','D','M','M','M','M','F','F'],
-    '4-4-1-1' : ['','G','D','D','D','D','M','M','M','M','F','F']
+    '4-3-3' : ['','G','D','D','D','D','M','M','M','F','F','F'],
+    '4-2-3-1' : ['','G','D','D','D','D','M','M/F','M','M/F','F','M/F'],
+    '3-5-2' : ['','G','D','D','M','D','M','M','M','M','F','F'],
+    '4-4-1-1' : ['','G','D','D','D','D','M','M','M','M','F','F'],
+    '4-3-2-1' : ['','G','D','D','D','D','M','M','M','M/F','M/F','F'],
+    '4-3-1-2' : ['','G','D','D','D','D','M','M','M','M/F','F','F'],
+    '5-3-2' : ['','G','D','D','D','D','D','M','M','M','F','F'],
+    '5-3-1-1' : ['','G','D','D','D','D','D','M','M','M','F','F'],
+    '5-2-2-1' : ['','G','D','D','D','D','D','M','M','M/F','M/F','F'],
+    '4-2-4' : ['','G','D','D','D','D','M','M','F','F','F','F'],
+    '3-4-3' : ['','G','D','D','D','M','M','M','M','F','F','F'],
+    '3-4-2-1' : ['','G','D','D','D','M','M','M','M','M/F','M/F','F']
 };
 $(document).ready(function(){
         $("#btn_save").fancybox({
@@ -250,8 +265,16 @@ $(document).ready(function(){
         function show_slots(pos){
             var positioning = formation[selectedVal['formations'].value];
             for(var i in positioning){
-                if(positioning[i]==pos){
-                    $("#p"+i+".slot").show();
+                var n_pos = positioning[i];
+               
+                if(n_pos=="M/F"){
+                    if(pos == 'M' || pos == 'F'){
+                        $("#p"+i+".slot").show();
+                    }
+                }else{
+                    if(n_pos == pos){
+                        $("#p"+i+".slot").show();
+                    }   
                 }
             }
         }

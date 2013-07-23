@@ -60,15 +60,20 @@
                         <li><a href="<?=$this->Html->url('/pages/contact')?>">Contact</a></li>
 
                     </ul>
-                  
-                </div>
-                 <?php
+                     <?php
                             if($debug>0):
                         ?>
-                        
-                            <a href="<?=$this->Html->url('/manage/reset')?>">Reset</a>
+                            <strong>Cheats</strong>
+                            <a class="button" href="<?=$this->Html->url('/manage/reset')?>">Reset</a>
+                            <a class="button" href="<?=$this->Html->url('/manage/play_match')?>">Play Match</a>
+                            <a class="button" href="<?=$this->Html->url('/manage/reset_matches')?>">Reset All Matches</a>
+                            <a class="button" href="<?=$this->Html->url('/manage/reset_stats')?>">Reset All Stats </a>
+                            <a class="button" href="<?=$this->Html->url('/manage/reset_finance')?>">Reset Finance</a>
+
                         <?php
                         endif;?>
+                </div>
+                
             </div>
         </div><!-- end #universal -->
 

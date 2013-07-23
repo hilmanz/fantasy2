@@ -17,7 +17,13 @@ class Game extends AppModel {
 		}
 		return null;
 	}
-
+	public function getClub($team_id){
+		$response = $this->api_call('/teams/'.$team_id,array());
+		if(!isset($response['error'])){
+			return $response;	
+		}
+		return null;
+	}
 	public function getVenue($team_id){
 		$response = $this->api_call('/venue/'.$team_id);
 		return $response['venue'];
