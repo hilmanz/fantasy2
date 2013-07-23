@@ -23,7 +23,10 @@
         <div class="box4 fl">
             <div class="widget tr match-date">
                 <h2>next match</h2>
-                <span class="date yellow"><?=date("d/m/Y",strtotime($next_match['match_date']))?></span>
+                <span class="date yellow">
+                    <?=date("d/m/Y",strtotime($next_match['match_date']))?><br/>
+                    Matchday : <?=$next_match['matchday']?>
+                </span>
             </div><!-- end .widget -->
             <div class="widget tr match-team">
                 <div class="col3 home-team">
