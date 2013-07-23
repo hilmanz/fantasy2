@@ -78,7 +78,7 @@
                     <option>3-4-3</option>
                     <option>3-4-2-1</option>
                 </select>
-                <a id="btn_save" class="showPopup button" href="#popup-messages">Save Formations</a>
+                <a id="btn_save" class="showPopup button" href="#popup-messages">Save Formation</a>
                 </div>
                 <div id="droppable" class="drop field-formation">
                     <div id="the-formation" class="drop">
