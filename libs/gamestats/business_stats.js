@@ -189,6 +189,21 @@ function calculate_home_revenue_stats(team,game_id,game,rank,away_rank,done){
 					});
 				},
 				function(officials,callback){
+					conn.query("SELECT SUM(salary) AS salaries \
+								FROM ffgame.game_team_players a\
+								INNER JOIN ffgame.master_player b\
+								ON a.player_id = b.uid\
+								WHERE a.game_team_id = ?;",
+								[team.id],
+								function(err,rs){
+									if(!err){
+										callback(err,rs[0].salaries,officials);
+									}else{
+										callback(err,null,null);
+									}
+					});
+				},
+				function(player_salaries,officials,callback){
 					console.log(officials);
 					//get 100% ticket guarantee from head of security.
 					var official = getOfficial('Head of Security',officials);
@@ -261,7 +276,8 @@ function calculate_home_revenue_stats(team,game_id,game,rank,away_rank,done){
 					costs.push({name:'operating_cost',value:op_cost});
 
 					//7. Player Salaries (to be added soon)
-
+					console.log('player salaries : ',player_salaries);
+					costs.push({name:'player_salaries',value:player_salaries});
 					//8. Official Salaries
 					for(var i in officials){
 						console.log(officials[i].salary);
@@ -409,10 +425,26 @@ function calculate_away_revenue_stats(team,game_id,game,rank,away_rank,done){
 					});
 				},
 				function(officials,callback){
+					conn.query("SELECT SUM(salary) AS salaries \
+								FROM ffgame.game_team_players a\
+								INNER JOIN ffgame.master_player b\
+								ON a.player_id = b.uid\
+								WHERE a.game_team_id = ?;",
+								[team.id],
+								function(err,rs){
+									if(!err){
+										callback(err,rs[0].salaries,officials);
+									}else{
+										callback(err,null,null);
+									}
+					});
+				},
+				function(player_salaries,officials,callback){
 					console.log(officials);
 
 					//7. Player Salaries (to be added soon)
-
+					console.log('player salaries : ',player_salaries);
+					costs.push({name:'player_salaries',value:player_salaries});
 					//8. Official Salaries
 					for(var i in officials){
 						console.log(officials[i].salary);
