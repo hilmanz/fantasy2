@@ -92,7 +92,7 @@
                 <h2><?=h($club['team_name'])?></h2>
                 
             </div><!-- end .widget -->
-            <div class="widget tr squad-team">
+            <div id="rooster" class="widget tr squad-team" style="overflow:auto;width:242px;height:480px;">
                 <?php
                 foreach($players as $n=>$player):
                     switch($player['position']){
@@ -114,7 +114,8 @@
                       break;
                     }
                     $last_page = floor($n/16);
-                    $page = 'page-'.$last_page;
+                   // $page = 'page-'.$last_page;
+                    $page = 'page-0';
                     if($player['known_name']!=null){
                         $player['name'] = $player['known_name'];
                     }
@@ -130,10 +131,12 @@
                 </div><!-- end .jersey-player -->
                 <?php endforeach;?>
             </div><!-- end .widget -->
+            <!--
             <div class="widget tr action-button">
                 <a class="prev" href="javascript:;">PREV</a>
                 <a class="next" href="javascript:;">NEXT</a>
-            </div><!-- end .widget -->
+            </div>-->
+            <!-- end .widget -->
         </div><!-- end .box4 -->
     </div><!-- end #thecontent -->
 </div><!-- end #fillDetailsPage -->
@@ -187,6 +190,11 @@ $(document).ready(function(){
         }
         $('.prev').click(function(){prev();});
         $('.next').click(function(){next();});
+
+        $("#rooster").scroll(function(e){
+            $("#draggable").hide();
+        });
+
         createPaging();
         $("#draggable").draggable({
             drag:function( event, ui ) {
