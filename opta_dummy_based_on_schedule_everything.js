@@ -356,11 +356,14 @@ function setupMatch(game_id,capacity,home_team,away_team,done){
 	fs.writeFile(filepath, strOut, function(err) {
 	    if(err) {
 	        console.log(err);
-	    } else {
+	    }else {
 	        console.log("The file was saved!");
-
 	    }
+	    try{
 	    done(err,game_id);
+		}catch(e){
+			console.log(e.message);
+		}
 	}); 	
 }
 

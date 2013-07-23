@@ -30,14 +30,14 @@
             </div><!-- end .widget -->
             <div class="widget tr match-team">
                 <div class="col3 home-team">
-                    <a href="#" class="team-logo"><img src="<?=$this->Html->url('/images/team/logo1.png')?>" /></a>
+                    <a href="#" class="team-logo"><img src="<?=$this->Html->url('/images/team/'.str_replace(" ","_",strtolower($next_match['home_original_name'])).'.png')?>" /></a>
                     <h3><?=h($next_match['home_name'])?></h3>
                 </div><!-- end .col3 -->
                 <div class="col3 vs">
                     <h2>Vs</h2>
                 </div><!-- end .col3 -->
                 <div class="col3 away-team">
-                    <a href="#" class="team-logo"><img src="<?=$this->Html->url('/images/team/logo2.png')?>" /></a>
+                    <a href="#" class="team-logo"><img src="<?=$this->Html->url('/images/team/'.str_replace(" ","_",strtolower($next_match['away_original_name'])).'.png')?>" /></a>
                     <h3><?=h($next_match['away_name'])?></h3>
                 </div><!-- end .col3 -->
             </div><!-- end .widget -->
