@@ -21,7 +21,7 @@
     </div><!-- end #info-bar -->
     <div class="headbar tr">
         <div class="club-info fl">
-            <a class="thumb-club fl"><img src="<?=$this->Html->url('/images/team/logo1.png')?>" /></a>
+            <a class="thumb-club fl"><img src="<?=$this->Html->url('/images/team/'.str_replace(" ","_",strtolower($original['name'])).'.png')?>" /></a>
             <div class="fl club-info-entry">
                 <h3 class="clubname"><?=h($club['team_name'])?></h3>
                 <h3 class="datemember"><?=h(date("d-m-Y",strtotime($user['register_date'])))?></h3>
