@@ -35,7 +35,7 @@ function getLineup(game_team_id,callback){
 				FROM ffgame.game_team_lineups a\
 				INNER JOIN ffgame.master_player b\
 				ON a.player_id = b.uid\
-				WHERE a.game_team_id=? LIMIT 11",
+				WHERE a.game_team_id=? LIMIT 17",
 				[game_team_id],
 				function(err,rs){
 						callback(err,rs);	
@@ -160,8 +160,10 @@ function position_valid(players,setup,formation){
 		for(var j in players){
 			if(players[j].player_id == setup[i].player_id){
 				console.log(setup[i].no,' ',players[j].position,' vs ',my_formation[setup[i].no]);
-				if(players[j].position != my_formation[setup[i].no]){
-					return false;
+				if(setup[i].no<=11){
+					if(players[j].position != my_formation[setup[i].no]){
+						return false;
+					}
 				}
 				break;
 			}

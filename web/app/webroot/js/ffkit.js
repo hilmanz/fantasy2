@@ -61,9 +61,9 @@ function save_formation(){
 	if(typeof selectedVal['formations'] !== 'undefined'){
 		var formation = selectedVal['formations'].value;
 		
-		//make sure that all the lineup is consist of 11 players.
+		//make sure that all the lineup is consist of 11 players. + 5 subs
 		getLineups(function(total,lineup){
-			if(total==11){
+			if(total==16){
 				//save the lineup
 				var data = {};
 				data.formation = formation;
@@ -102,7 +102,7 @@ function getLineups(callback){
 	    	});
 	        n_player++;
 	    }
-	    if(n_player == 11){
+	    if(n_player == 16){
 	        callback(n_player,players);
 	    }
 	});

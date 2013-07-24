@@ -59,7 +59,7 @@
            
         </div><!-- end .box4 -->
         <div class="box3 tr fl">
-            <div class="field-container">
+            <div class="field-container drop">
                 <div class="selectFormation">
                 <select name="formations" id="formation-select" class="styled">
                     <option>Select Formation</option>
@@ -84,6 +84,10 @@
                     <div id="the-formation" class="drop">
                         
                     </div><!-- end .my-formation -->
+                    <div class="subtitution" class="drop">
+                        <h3>Substitutions</h3>
+                        
+                    </div>
                 </div><!-- end .field-formation -->
             </div><!-- end .field-container -->
         </div><!-- end .box3 -->
@@ -217,12 +221,12 @@ $(document).ready(function(){
                 player_in_lineup($(this).find('a').attr('no'),function(is_exist){
                     if(!is_exist){
                         $("#draggable").html(target.html());
-                        console.log($(target).html());
-                        console.log($(target).offset().left+","+$(target).offset().top);
-                        console.log($('#universal').offset().left+","+$('#universal').offset().top);
-                        console.log($("#fillDetailsPage").offset().left+","+$("#fillDetailsPage").offset().top);
+                        //console.log($(target).html());
+                       // console.log($(target).offset().left+","+$(target).offset().top);
+                       // console.log($('#universal').offset().left+","+$('#universal').offset().top);
+                       // console.log($("#fillDetailsPage").offset().left+","+$("#fillDetailsPage").offset().top);
                         var nx = 0;
-                        console.log(navigator.userAgent);
+                        //console.log(navigator.userAgent);
                         if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
                             //only for firefox
                             nx = target.offset().left - ($("#universal").offset().left + 13);
@@ -236,7 +240,7 @@ $(document).ready(function(){
                         
                         var ny = target.offset().top - $("#universal").offset().top;
 
-                        console.log('->'+nx+","+ny);
+                        //console.log('->'+nx+","+ny);
                         $("#draggable").css('top',ny);
                         $("#draggable").css('left',nx);
                         $("#draggable").find('.player-name').hide();
@@ -274,7 +278,7 @@ $(document).ready(function(){
             var positioning = formation[selectedVal['formations'].value];
             for(var i in positioning){
                 var n_pos = positioning[i];
-               
+
                 if(n_pos=="M/F"){
                     if(pos == 'M' || pos == 'F'){
                         $("#p"+i+".slot").show();
@@ -284,6 +288,10 @@ $(document).ready(function(){
                         $("#p"+i+".slot").show();
                     }   
                 }
+            }
+            //show slots for subs
+            for(var i=12;i<17;i++){
+                $("#p"+i+".slot").show();
             }
         }
         function hide_slots(){
@@ -363,6 +371,7 @@ $(document).ready(function(){
                                             value:data.formation};
 
                 render_view(defaultformation,'#the-formation',{});
+                append_view(defaultsubs,'#the-formation',{});
 
                 if(data.lineup.length==0){
                     initLineupEvents();
@@ -422,12 +431,12 @@ $(document).ready(function(){
                         };
             var dx = 0;
             var dy = 0;
-
-            $.each($("#the-formation").children(),function(k,item){
-               
-                dx = Math.abs(($(item).offset().left-$("#universal").position().left-30)-x);
-                dy = Math.abs(($(item).offset().top-$("#universal").position().top-30)-y);
-              
+            
+            $.each($("#the-formation").find('.slot'),function(k,item){
+                
+                dx = Math.abs(($(item).offset().left-$("#universal").offset().left)-x);
+                dy = Math.abs(($(item).offset().top-$("#universal").offset().top)-y);
+                console.log($(item).attr('id'),dx,dy);
                 if(curr_item!=null){
                     if((curr_item.distance.x > dx && dy < 50)){
                             curr_item = {
@@ -440,7 +449,7 @@ $(document).ready(function(){
                               
                     }
 
-                    if(k>=10){
+                    if(k>=15){
                         if(typeof $(curr_item.item).attr('id') !== 'undefined'){
                            var player_data = {
                                 player_id: $("#draggable").find('a').attr('no'),
@@ -572,5 +581,28 @@ $(document).ready(function(){
     <div id="p1" class="jersey-player p1 slot">
         
         <span class="player-name">1</span>
+    </div><!-- end .jersey-player -->
+</script>
+
+<script type="text/template" id="defaultsubs">
+    <div id="p12" class="jersey-player p12 slot">
+        
+        <span class="player-name"></span>
+    </div><!-- end .jersey-player -->
+    <div id="p13" class="jersey-player p13 slot">
+        
+        <span class="player-name"></span>
+    </div><!-- end .jersey-player -->
+    <div id="p14" class="jersey-player p14 slot">
+        
+        <span class="player-name"></span>
+    </div><!-- end .jersey-player -->
+    <div id="p15" class="jersey-player p15 slot">
+      
+        <span class="player-name"></span>
+    </div><!-- end .jersey-player -->
+    <div id="p16" class="jersey-player p16 slot">
+        
+        <span class="player-name"></span>
     </div><!-- end .jersey-player -->
 </script>
