@@ -87,7 +87,7 @@
 	margin: 0 -3px 0 0;
 }
 .jp-container {
-	width:230px;
+	width:250px;
 	height:615px;
 	position:relative;
 }
@@ -101,4 +101,10 @@
 }
 #latestActivity .jp-container .row{
 	padding:18px 20px 18px 0;
+}
+#rooster .jspPane{
+	padding:10px !important;
+}
+#rooster #jp-container{
+	left:-10px;
 }
