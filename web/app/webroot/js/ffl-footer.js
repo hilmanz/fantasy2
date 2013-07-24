@@ -46,10 +46,10 @@ $(function() {
 				
 				// functions to show / hide the scrollbar
 				$.fn.jspmouseenter 	= $.fn.show;
-				$.fn.jspmouseleave 	= $.fn.fadeOut;
+				$.fn.jspmouseleave 	= $.fn.show;
 				
 				// hide the jScrollPane vertical bar
-				//var $vBar			= this.getContentPane().siblings('.jspVerticalBar').hide();
+				var $vBar			= this.getContentPane().siblings('.jspVerticalBar');
 				
 				/*
 				 * mouseenter / mouseleave events on the main element
@@ -57,6 +57,7 @@ $(function() {
 				 */
 				$el.bind('mouseenter.jsp',function() {
 					
+
 					// show the scrollbar
 					$vBar.stop( true, true ).jspmouseenter();
 					
@@ -121,6 +122,8 @@ $(function() {
 					height		: $vBar.height()
 				}).bind('mouseenter.jsp',function() {
 					
+					$("#draggable").hide();
+
 					clearTimeout( instance.hovertimeout );
 					clearTimeout( instance.elementtimeout );
 					
