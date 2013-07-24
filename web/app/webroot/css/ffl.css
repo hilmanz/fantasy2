@@ -1005,7 +1005,7 @@ td,th{
 	color:#ccc;
 }
 .Chrome .ui-draggable{
-	margin:0 0 0 -82px;
+	margin:0 0 0 0px;
 }
 .playerBoxSelected .jersey,.ui-draggable .jersey{
 	background-color:rgba(0,0,0,0.02);
@@ -1238,4 +1238,7 @@ td,th{
 .lh50{
 	line-height:50px !important;
 	margin:0 !important;
+}
+.drophighlight{
+	border: solid 1px #ccc;
 }

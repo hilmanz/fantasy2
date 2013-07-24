@@ -39,8 +39,8 @@
             </div><!-- end .widget -->
            
         </div><!-- end .box4 -->
-        <div class="box3 tr fl">
-            <div class="field-container drop">
+        <div class="box3 tr fl drop">
+            <div class="field-container">
                 <div class="selectFormation">
                 <select name="formations" id="formation-select" class="styled">
                     <option>Select Formation</option>
@@ -61,13 +61,12 @@
                 </select>
                 <a id="btn_save" class="showPopup button" href="#popup-messages">Save Formation</a>
                 </div>
-                <div id="droppable" class="drop field-formation">
-                    <div id="the-formation" class="drop">
+                <div id="droppable" class="field-formation">
+                    <div id="the-formation">
                         
                     </div><!-- end .my-formation -->
-                    <div class="subtitution" class="drop">
+                    <div class="subtitution">
                         <h3>Substitutions</h3>
-                        
                     </div>
                 </div><!-- end .field-formation -->
             </div><!-- end .field-container -->
@@ -218,7 +217,7 @@ $(document).ready(function(){
                             nx = target.offset().left - ($("#universal").offset().left + 13);
                         }else{
                             //for chrome
-                            nx = target.offset().left - ($("#universal").offset().left - $('#draggable').width());
+                            nx = target.offset().left - ($("#universal").offset().left+11);
                         }
                         
                         var ny = target.offset().top - $("#universal").offset().top;
@@ -245,6 +244,7 @@ $(document).ready(function(){
         });*/
         $(".drop").droppable({
             greedy: true,
+            hoverClass: "drophighlight",
             drop: function( event, ui ){
                 var dropX = event.pageX-$("#universal").position().left-30;
                 var dropY = event.pageY - $("#universal").position().top-30;
@@ -416,11 +416,12 @@ $(document).ready(function(){
             var dy = 0;
             var ux = 0;
             var uy = $("#universal").offset().top;
-            /*
+            
             if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
                 //only for firefox
                 ux = ($("#universal").offset().left + 13);
-            }else if(navigator.userAgent.toLowerCase().indexOf('msie') > -1){
+            }
+            /*else if(navigator.userAgent.toLowerCase().indexOf('msie') > -1){
                 //for msie
                 ux = ($("#universal").offset().left + 13);
             }else{
