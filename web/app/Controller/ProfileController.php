@@ -121,26 +121,7 @@ class ProfileController extends AppController {
 			}
 		}
 	}
-	public function teams(){
-		$this->getBudget($team_id);
-
-		/*facebook detail*/
-		$userData = $this->getUserData();
-
-		$this->set('team_list',$this->ProfileModel->getTeams());
-
-		/*sample data for creating team*/
-		$this->set('team',array('uid'=>1));
-
-		$this->set('fb_id',$userData['fb_id']);
-		if($_POST['create_team']=1){
-			
-			if($response){
-				$this->redirect("/profile/players");
-			}
-		}
-
-	}
+	
 	public function register_team(){
 		$userData = $this->getUserData();
 		$team = $this->Session->read('TeamRegister');
@@ -268,13 +249,7 @@ class ProfileController extends AppController {
 			$this->set('weekly_salaries',$total_weekly_salary);
 		}
 	}
-	public function formations(){
-
-	}
-	public function invite_friends(){
-
-	}
-
+	
 	public function register(){
 		$this->loadModel('User');
 	
@@ -310,7 +285,7 @@ class ProfileController extends AppController {
 					//register user into gameAPI.
 				
 					$response = $this->ProfileModel->setProfile($data);
-					pr($response);
+					
 					if($response['status']==1){
 						$this->redirect("/profile/register_team");
 					}else{
