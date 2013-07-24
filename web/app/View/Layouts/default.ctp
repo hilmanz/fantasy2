@@ -16,9 +16,11 @@
                 <div id="user-info">
         			<a href="#" class="thumb40 fl"><img src="http://graph.facebook.com/<?=$USER_DATA['fb_id']?>/picture" /></a>
                     <div class="entry fl">
-                        <h3 class="username"><a href="<?=$this->Html->url('/profile')?>"><?=$USER_DATA['name']?></a></h3>
+                        <h3 class="username"><a href="<?=$this->Html->url('/profile')?>"><?=$USER_DATA['name']?></a> |
+                         <a class="logout" href="#">Logout</a></h3>
                         <span class="points red">0 Pts</span>
                         <span class="user-exp">Rookie</span>
+                        
                     </div><!-- end .entry -->
                 </div>
           		<?php endif;?>

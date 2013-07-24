@@ -117,13 +117,16 @@ a:hover{
 }
 #user-info{
 	float:right;
-	right:40px;
+	right:25px;
 	top:50px;
 	position:relative;
 	line-height:18px;
 }
 #user-info a{
 	color:#fff;
+}
+#user-info a.logout{
+	color:#c20101;
 }
 #user-info span{
 	display:block;
@@ -261,7 +264,7 @@ a:hover{
 }
 /*============= FORMATION ===============*/
 .field-container{
-	padding:10px 0 120px 0;
+	padding:10px 0 140px 0;
 }
 .field-formation{
 	background:url(../images/field.jpg) no-repeat;
@@ -379,14 +382,15 @@ a:hover{
 }
 .subtitution{
 	position: absolute;
-	bottom: -110px;
+	bottom: -125px;
 	width: 435px;
 	border:solid 2px #fdcb02;
-	height: 100px;
+	height: 120px;
 }
 .subtitution h3{
 	position:absolute;
 	left:182px;
+	top:3px;
 	margin:0;
 }
 /*============= ICON ===============*/

@@ -77,7 +77,8 @@
                 <h2><?=h($club['team_name'])?></h2>
                 
             </div><!-- end .widget -->
-            <div id="rooster" class="widget tr squad-team" style="overflow:auto;width:242px;height:480px;">
+            <div id="rooster" class="widget tr squad-team">
+        		<div id="jp-container" class="jp-container">
                 <?php
                 foreach($players as $n=>$player):
                     switch($player['position']){
@@ -115,6 +116,7 @@
                     </a>
                 </div><!-- end .jersey-player -->
                 <?php endforeach;?>
+       		    </div><!-- end #jp-container -->
             </div><!-- end .widget -->
             <!--
             <div class="widget tr action-button">
