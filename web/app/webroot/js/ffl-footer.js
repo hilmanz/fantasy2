@@ -49,7 +49,7 @@ $(function() {
 				$.fn.jspmouseleave 	= $.fn.fadeOut;
 				
 				// hide the jScrollPane vertical bar
-				var $vBar			= this.getContentPane().siblings('.jspVerticalBar').hide();
+				//var $vBar			= this.getContentPane().siblings('.jspVerticalBar').hide();
 				
 				/*
 				 * mouseenter / mouseleave events on the main element
@@ -73,14 +73,18 @@ $(function() {
 					
 				}).bind('mouseleave.jsp',function() {
 					
-					// hide the scrollbar
-					if( !instance.extPluginOpts.useTimeout )
-						$vBar.stop( true, true ).jspmouseleave( instance.extPluginOpts.mouseLeaveFadeSpeed || 0 );
-					else {
-					clearTimeout( instance.elementtimeout );
-					if( !instance.isScrolling )
+					// show the scrollbar
+					$vBar.stop( true, true ).jspmouseenter();
+					
+					if( !instance.extPluginOpts.useTimeout ) return false;
+					
+					// hide the scrollbar after hovertimeout_t ms
+					clearTimeout( instance.hovertimeout );
+					instance.hovertimeout 	= setTimeout(function() {
+						// if scrolling at the moment don't hide it
+						if( !instance.isScrolling )
 							$vBar.stop( true, true ).jspmouseleave( instance.extPluginOpts.mouseLeaveFadeSpeed || 0 );
-					}
+					}, instance.extPluginOpts.hovertimeout_t );
 					
 				});
 				
