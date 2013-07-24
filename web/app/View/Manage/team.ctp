@@ -412,11 +412,44 @@ $(document).ready(function(){
                         };
             var dx = 0;
             var dy = 0;
-            
+            var ux = 0;
+            var uy = $("#universal").offset().top;
+            /*
+            if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
+                //only for firefox
+                ux = ($("#universal").offset().left + 13);
+            }else if(navigator.userAgent.toLowerCase().indexOf('msie') > -1){
+                //for msie
+                ux = ($("#universal").offset().left + 13);
+            }else{
+                //for chrome
+                ux = ($("#universal").offset().left);
+            }
+            */
             $.each($("#the-formation").find('.slot'),function(k,item){
+
                 
-                dx = Math.abs(($(item).offset().left-$("#universal").offset().left)-x);
-                dy = Math.abs(($(item).offset().top-$("#universal").offset().top)-y);
+                console.log("#universal.offset",$("#universal").offset());
+                console.log("#universal.position",$("#universal").position());
+                console.log("ux","uy",ux,uy);
+                console.log($(item).attr('id')," - item.offset",$(item).offset());
+                console.log('droppoint',x,y);
+
+                if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
+                //only for firefox
+                    dx = Math.abs(($(item).offset().left - ux)-x);
+                    dy = Math.abs(($(item).offset().top - uy)-y);
+                }else if(navigator.userAgent.toLowerCase().indexOf('msie') > -1){
+                    //for msie
+                    dx = Math.abs(($(item).offset().left - ux)-x);
+                    dy = Math.abs(($(item).offset().top - uy)-y);
+                }else{
+                    //for chrome
+                    dx = Math.abs(($(item).offset().left)-x);
+                    dy = Math.abs(($(item).offset().top)-y);
+                }
+
+               
                 console.log($(item).attr('id'),dx,dy);
                 if(curr_item!=null){
                     if((curr_item.distance.x > dx && dy < 50)){
