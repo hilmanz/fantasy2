@@ -1,5 +1,5 @@
 <div id="leaderboardPage">
-	
+	 <?php echo $this->element('infobar'); ?>
     <div class="headbar tr">
         <div class="leaderboard-head">
         	<h3>Transfer-market</h3>
