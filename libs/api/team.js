@@ -200,8 +200,36 @@ function getUserTeam(fb_id,done){
 		}
 	);
 }
+function getUserTeamPoints(fb_id,done){
+	conn = prepareDb();
+	async.waterfall(
+		[
+			function(callback){
+				conn.query("SELECT a.fb_id,b.user_id,b.id,b.team_id,c.points \
+							FROM ffgame.game_users a\
+							INNER JOIN ffgame.game_teams b\
+							ON a.id = b.user_id\
+							LEFT JOIN ffgame_stats.game_team_points c\
+							ON b.id = c.game_team_id\
+							WHERE a.fb_id = ?;",
+							[fb_id],
+							function(err,rs){
+								callback(null,rs[0]);
+							});
+				
+			},
+			
+		],
+		function(err,result){
+			conn.end(function(e){
+				done(err,result);	
+			});
+		}
+	);
 
+}
 //make it accessable from anywhere
+exports.getUserTeamPoints = getUserTeamPoints;
 exports.getTeams = getTeams;
 exports.getPlayers = getPlayers;
 exports.getTeamById = getTeamById;

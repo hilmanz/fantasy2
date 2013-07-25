@@ -58,6 +58,16 @@ exports.getUserTeam = function(req,res){
 		}
 	});
 }
+exports.getUserTeamPoints = function(req,res){
+	team.getUserTeamPoints(req.params.fb_id,function(err,result){
+		if(err) handleError(res);
+		if(result!=null){
+			res.send(200,result);
+		}else{
+			res.send(200,{error:'points is not available'});
+		}
+	});
+}
 function handleError(res){
 	res.send(501,{error:'no data available'});
 }

@@ -9,6 +9,7 @@ var mysql = require('mysql');
 var config = require(path.resolve('./config')).config;
 
 var team_id = 123;
+var fb_id = '100001023465395';
 describe('team',function(){
 	
 		it('getTeams',function(done){
@@ -109,6 +110,13 @@ describe('team',function(){
 			);
 		});
 
-		
-		
+		it('should returns game points',function(done){
+			team.getUserTeamPoints(
+				fb_id,function(err,rs){
+					should.not.exist(err);
+					should.exist(rs.points);
+					done();		
+				}
+			);
+		});
 });

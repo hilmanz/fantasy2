@@ -136,4 +136,16 @@ class Game extends AppModel {
 		}			
 		return $response;
 	}
+
+	/**
+	* Team Points
+	*/
+	function getTeamPoints($fb_id){
+		$response = $this->api_call('/points/'.$fb_id);
+		if($response['fb_id']==$fb_id){
+			return array("points"=>$response['points']);
+		}else{
+			return array();
+		}
+	}
 }

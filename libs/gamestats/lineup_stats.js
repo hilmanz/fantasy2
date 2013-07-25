@@ -59,6 +59,11 @@ exports.update = function(game_id,start,done){
 				update_team_stats(game_id,team,player_stats,team_summary,function(err){
 					callback(err,'ok');
 				});
+			},
+			function(result,callback){
+				update_team_points(function(err){
+					callback(err,'ok');
+				})
 			}
 		],
 		function(err,result){		
@@ -75,6 +80,7 @@ exports.done = function(){
 		console.log('lineup_stats','pool closed');
 	});
 }
+
 function get_master_team_stats(game_id,done){
 	pool.getConnection(function(err,conn){
 		conn.query("SELECT * FROM ffgame_stats.master_match_player_points\
@@ -267,5 +273,25 @@ function updateLineupStats(game_id,lineups,summary,player_stats,in_game,done){
 								done(null,[]);	
 							});
 						});
+	});
+}
+
+/**
+* updating the team's overall points
+*/
+function update_team_points(done){
+	pool.getConnection(function(err,conn){
+		conn.query("INSERT INTO ffgame_stats.game_team_points\
+					(game_team_id,points)\
+					SELECT game_team_id,SUM(points) AS total_points \
+					FROM ffgame_stats.game_match_player_points\
+					GROUP BY game_team_id\
+					ON DUPLICATE KEY UPDATE\
+					points = VALUES(points);",[],function(err,rs){
+						conn.end(function(err){
+							done(err);	
+						});
+						
+					});
 	});
 }

@@ -60,6 +60,7 @@ app.get('/match/list',[auth.canAccess],gameplay.fixtures);
 app.get('/players/:team_id',[auth.canAccess],team.getPlayers);
 app.get('/teams', [auth.canAccess],team.getTeams);
 app.get('/team/get/:fb_id',[auth.canAccess],team.getUserTeam);
+app.get('/points/:fb_id',[auth.canAccess],team.getUserTeamPoints);
 app.get('/teams/:id',[auth.canAccess],team.getTeamById);
 app.get('/match/results/:game_id',[auth.canAccess],gameplay.match_results);
 app.get('/next_match/:team_id',[auth.canAccess],gameplay.next_match);
