@@ -34,7 +34,21 @@ class LeaderboardController extends AppController {
 	}
 
 	public function index(){
-		
+		$this->paginate = array(
+	        'limit' => 100,
+	        'order' => array(
+	            'Point.points' => 'desc'
+	        )
+	    );
+	    $this->loadModel("Point");
+	    $this->loadModel('User');
+	    $rs = $this->paginate('Point');
+	    foreach($rs as $n=>$r){
+	    	//get manager's name
+	    	$manager = $this->User->findById($r['Team']['user_id']);
+	    	$rs[$n]['Manager'] = $manager['User'];
+	    }
+	    $this->set('team',$rs);
 	}
 
 	public function error(){

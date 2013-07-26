@@ -23,71 +23,31 @@
                     </tr>
                 </thead>
                 <tbody>
+                  <?php
+                    foreach($team as $n=>$t):
+                      $params = $this->Paginator->params('Point');
+                  ?>
                   <tr class="odd">
-                    <td class="l-rank">1</td>
-                    <td class="l-club">Manchester United</td>
-                    <td class="l-manager">Erricson</td>
-                    <td class="l-points">22.405.300</td>
+                    <td class="l-rank"><?=(($params['page']-1)*$params['limit'])+($n+1)?></td>
+                    <td class="l-club"><?=h($t['Team']['team_name'])?></td>
+                    <td class="l-manager"><?=h($t['Manager']['name'])?></td>
+                    <td class="l-points"><?=number_format($t['Point']['points'])?></td>
                   </tr>
-                  <tr>
-                    <td class="l-rank">2</td>
-                    <td class="l-club">Manchester United</td>
-                    <td class="l-manager">Erricson</td>
-                    <td class="l-points">22.405.300</td>
-                  </tr>
-                  <tr>
-                    <td class="l-rank">3</td>
-                    <td class="l-club">Manchester United</td>
-                    <td class="l-manager">Erricson</td>
-                    <td class="l-points">22.405.300</td>
-                  </tr>
-                  <tr>
-                    <td class="l-rank">4</td>
-                    <td class="l-club">Manchester United</td>
-                    <td class="l-manager">Erricson</td>
-                    <td class="l-points">22.405.300</td>
-                  </tr>
-                  <tr>
-                    <td class="l-rank">5</td>
-                    <td class="l-club">Manchester United</td>
-                    <td class="l-manager">Erricson</td>
-                    <td class="l-points">22.405.300</td>
-                  </tr>
-                  <tr>
-                    <td class="l-rank">6</td>
-                    <td class="l-club">Manchester United</td>
-                    <td class="l-manager">Erricson</td>
-                    <td class="l-points">22.405.300</td>
-                  </tr>
-                  <tr>
-                    <td class="l-rank">7</td>
-                    <td class="l-club">Manchester United</td>
-                    <td class="l-manager">Erricson</td>
-                    <td class="l-points">22.405.300</td>
-                  </tr>
-                  <tr>
-                    <td class="l-rank">8</td>
-                    <td class="l-club">Manchester United</td>
-                    <td class="l-manager">Erricson</td>
-                    <td class="l-points">22.405.300</td>
-                  </tr>
-                  <tr>
-                    <td class="l-rank">9</td>
-                    <td class="l-club">Manchester United</td>
-                    <td class="l-manager">Erricson</td>
-                    <td class="l-points">22.405.300</td>
-                  </tr>
-                  <tr>
-                    <td class="l-rank">10</td>
-                    <td class="l-club">Manchester United</td>
-                    <td class="l-manager">Erricson</td>
-                    <td class="l-points">22.405.300</td>
-                  </tr>
+                  <?php
+                  endforeach;
+                  ?>
                 </tbody>
             </table>
             <div class="widget action-button tr">
-                <a class="prev" href="#">PREV</a>
-                <a class="next" href="#">NEXT</a>
+              <?php
+              echo $this->Paginator->prev(__('PREV'), array(), null, 
+                                          array('class' => 'prev'));
+              ?>
+              <?php
+              echo $this->Paginator->next(__('NEXT'), array(), null, 
+                                      array('class' => 'next'));
+              ?>
+             
             </div><!-- end .widget -->
         </div><!-- end .content -->
     </div><!-- end #thecontent -->
