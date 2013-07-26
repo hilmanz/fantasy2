@@ -9,7 +9,7 @@
             </div>
         </div>
         <div class="club-money fr">
-            <h3 class="clubrank">Rank: 343</h3>
+            <h3 class="clubrank">Rank: <?=number_format($USER_RANK)?></h3>
             <h3 class="clubmoney">EUR <?=number_format($team_bugdet)?></h3>
         </div>
     </div><!-- end .headbar -->
