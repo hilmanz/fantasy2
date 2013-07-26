@@ -2,12 +2,20 @@
 	
     <div class="headbar tr">
         <div class="leaderboard-head fl">
-        	<h3>Leaderboard - Week XX</h3>
+          <?php
+
+            if($matchday==1){
+              $week = 1;
+            }else{
+              $week = ($matchday - 1);
+            }
+          ?>
+        	<h3>Leaderboard - Week <?=$week?></h3>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <br />Nulla quam velit, vulputate eu pharetra nec, mattis ac neque.</p>
         </div>
         <div class="leaderboard-rank fr">
             <span>Your Rank:</span>
-            <h3>345</h3>
+            <h3><?=number_format($rank)?></h3>
             <span>Tier 2</span>
         </div>
     </div><!-- end .headbar -->
@@ -28,7 +36,7 @@
                       $params = $this->Paginator->params('Point');
                   ?>
                   <tr class="odd">
-                    <td class="l-rank"><?=(($params['page']-1)*$params['limit'])+($n+1)?></td>
+                    <td class="l-rank"><?=h($t['Point']['rank'])?></td>
                     <td class="l-club"><?=h($t['Team']['team_name'])?></td>
                     <td class="l-manager"><?=h($t['Manager']['name'])?></td>
                     <td class="l-points"><?=number_format($t['Point']['points'])?></td>
