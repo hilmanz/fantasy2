@@ -21,13 +21,13 @@ class ManageController extends AppController {
  * @var array
  */
 	public $uses = array();
-	private $userData;
+	
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->loadModel('Team');
 		$this->loadModel('User');
 
-		$this->userData = $this->getUserData();
+		
 		if(!$this->hasTeam()){
 			$this->redirect('/login/expired');
 		}
@@ -45,7 +45,7 @@ class ManageController extends AppController {
 		
 		$userData = $this->userData;
 		//user data
-		$user = $this->User->findByFb_id($userData['fb_id']);
+		$user = $this->userDetail;
 		$this->set('user',$user['User']);
 
 		//budget
@@ -138,7 +138,7 @@ class ManageController extends AppController {
 		$this->set('players',$players);
 
 		//user data
-		$user = $this->User->findByFb_id($userData['fb_id']);
+		$user = $this->userDetail;
 		$this->set('user',$user['User']);
 
 		//budget

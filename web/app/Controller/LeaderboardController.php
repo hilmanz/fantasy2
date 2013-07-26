@@ -24,7 +24,7 @@ class LeaderboardController extends AppController {
 	protected $userData;
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->userData = $this->getUserData();
+		
 		if(!$this->hasTeam()){
 			$this->redirect('/login/expired');
 		}
@@ -56,13 +56,7 @@ class LeaderboardController extends AppController {
 	    //define week.
 	    $next_match = $this->Game->getNextMatch($this->userData['team']['team_id']);
 	    $this->set('matchday',$next_match['match']['matchday']);
-
-	  
-	    $user = $this->User->findByFb_id($this->userData['fb_id']);
-	    $team_id = $user['Team']['id'];
-	    $point = $this->Point->findByTeam_id($team_id);
-	  
-	    $this->set('rank',$point['Point']['rank']);
+	    $this->set('rank',$this->userRank);
 	    
 	}
 

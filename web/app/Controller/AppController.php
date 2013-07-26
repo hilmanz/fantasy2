@@ -35,6 +35,10 @@ class AppController extends Controller {
 
 	protected $FB_APP_ID;
 	protected $FB_SECRET;
+	protected $userData;
+	protected $userDetail;
+	protected $userPoints;
+	protected $userRank;
 	public function beforeFilter(){
 		$this->set('FB_APP_ID',Configure::read('FB.APP_ID'));
 		$this->set('FB_SECRET',Configure::read('FB.SECRET'));
@@ -45,8 +49,18 @@ class AppController extends Controller {
 		$this->FB_SECRET = Configure::read('FB.SECRET');
 		$this->initAccessToken();
 		if($this->isUserLogin()){
+			$this->userData = $this->getUserData();
 			$this->set('USER_IS_LOGIN',true);
-			$this->set('USER_DATA',$this->getUserData());
+			$this->set('USER_DATA',$this->userData);
+			$this->loadModel('User');
+			$this->loadModel('Point');
+			$this->userDetail = $this->User->findByFb_id($this->userData['fb_id']);
+			$point = $this->Point->findByTeam_id($this->userDetail['Team']['id']);
+			$this->userPoints = $point['Point']['points'];
+			$this->userRank = $point['Point']['rank'];
+
+			$this->set('USER_RANK',$this->userRank);
+			$this->set('USER_POINTS',$this->userPoints);
 		}else{
 			$this->set('USER_IS_LOGIN',false);
 		}
