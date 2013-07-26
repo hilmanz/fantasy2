@@ -4,8 +4,11 @@ class UpdaterShell extends AppShell{
 	 public function main() {
 	 	$limit = 10;
 	 	$start = 0;
+        $this->out('getting points');
+       
        	$this->beforeFilter();
-       	do{
+       	
+        do{
 	       	$user = $this->User->find('all',array(
 	       		'offset'=>$start,
 	       		'limit'=>$limit
@@ -13,7 +16,10 @@ class UpdaterShell extends AppShell{
 	       	$this->get_points($user);
 	       	$start += $limit;
        	}while(sizeof($user)>0);
-       	
+       
+       $this->out('recalculate ranks');
+       $this->recalculate_ranks();
+       
        $this->out('done');
     }
     private function get_points($users){
@@ -30,5 +36,9 @@ class UpdaterShell extends AppShell{
     		");
     		$this->out("Updating #".$user['Team']['id']." -> ".$response['points']);
     	}
+    }
+    private function recalculate_ranks(){
+        $sql = "CALL recalculate_rank;";
+        $this->Team->query($sql);
     }
 }
