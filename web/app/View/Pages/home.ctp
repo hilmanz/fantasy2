@@ -48,6 +48,7 @@
         <div id="jp-container" class="jp-container">
             <?php
             foreach($info as $activity):
+              if(isset($activity['Player1'])):
             ?>
             <div class="row">
                 <a href="#" class="thumb40 fl"><img src="http://graph.facebook.com/<?=$activity['Player1']['fb_id']?>/picture" /></a>
@@ -57,6 +58,7 @@
                 </div><!-- end .entry -->
             </div><!-- end .row -->
             <?php
+            endif;
             endforeach;
             ?>
         </div><!-- end #jp-container -->

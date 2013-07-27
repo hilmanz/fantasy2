@@ -62,15 +62,16 @@ class AppController extends Controller {
 			$this->set('USER_DATA',$this->userData);
 			$this->loadModel('User');
 			$this->loadModel('Point');
+			$this->loadModel('Info');
 			$this->userDetail = $this->User->findByFb_id($this->userData['fb_id']);
-			$point = $this->Point->findByTeam_id($this->userDetail['Team']['id']);
-			$this->userPoints = $point['Point']['points'];
-			$this->userRank = $point['Point']['rank'];
+			$point = $this->Point->findByTeam_id(@$this->userDetail['Team']['id']);
+			$this->userPoints = @$point['Point']['points'];
+			$this->userRank = @$point['Point']['rank'];
 			$this->set('USER_RANK',$this->userRank);
 			$this->set('USER_POINTS',$this->userPoints);
 
-			$this->nextMatch = $this->Game->getNextMatch($this->userData['team']['team_id']);
-			$this->nextMatch['match']['match_date_ts'] = strtotime($this->nextMatch['match']['match_date']);
+			$this->nextMatch = $this->Game->getNextMatch(@$this->userData['team']['team_id']);
+			$this->nextMatch['match']['match_date_ts'] = strtotime(@$this->nextMatch['match']['match_date']);
 			$this->set('match_date_ts',$this->nextMatch['match']['match_date_ts']);
 		}else{
 			$this->set('USER_IS_LOGIN',false);

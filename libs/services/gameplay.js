@@ -74,11 +74,15 @@ exports.hire_staff = function(req,res){
 	gameplay.officials.hire_official(req.body.team_id,
 									 req.body.official_id,
 		function(err,rs){
-			console.log('hello !');
+			console.log(rs);
 			if(err){
 				handleError(res);
 			}else{
-				res.json(200,{status:1,officials:rs.insertId});
+				if(typeof rs !== 'undefined'){
+					res.json(200,{status:1,officials:rs});
+				}else{
+					res.json(200,{status:0,officials:rs});
+				}
 			}
 	});
 }

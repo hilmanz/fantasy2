@@ -209,7 +209,7 @@ class ProfileController extends AppController {
 			$this->loadModel('User');
 			if($this->request->data['complete_registration']==1){
 				$user = $this->User->findByFb_id($userData['fb_id']);
-			
+				
 				$this->User->id = $user['User']['id'];
 				$this->User->set('register_completed',1);
 				$rs = $this->User->save();
@@ -227,7 +227,7 @@ class ProfileController extends AppController {
 
 			//get officials
 			$officials = $this->Game->getAvailableOfficials($userData['team']['id']);
-
+			
 
 			//estimated costs
 			$total_weekly_salary = 0;
@@ -283,10 +283,13 @@ class ProfileController extends AppController {
 				if(isset($rs['User'])){
 
 					//register user into gameAPI.
-				
 					$response = $this->ProfileModel->setProfile($data);
 					
 					if($response['status']==1){
+						//send info
+						$msg = "@p1_".$rs['User']['id']." has joined the league.";
+						$this->Info->write('new player',$msg);
+						
 						$this->redirect("/profile/register_team");
 					}else{
 						$this->User->delete($this->User->id);

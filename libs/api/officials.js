@@ -45,14 +45,33 @@ function official_list(game_team_id,done){
 
 function hire_official(game_team_id,official_id,callback){
 	var conn = prepareDb();
-	conn.query("INSERT IGNORE INTO ffgame.game_team_officials\
+	async.waterfall(
+		[
+			function(callback){
+				conn.query("INSERT IGNORE INTO ffgame.game_team_officials\
 				(game_team_id,official_id,recruit_date)\
 				VALUES\
 				(?,?,NOW());",[game_team_id,official_id],function (err,rs){
-					conn.end(function(e){
-						callback(err,rs);
-					});
-				});
+					callback(err,rs.insertId);
+				});		
+			},
+			function(staff_id,callback){
+				conn.query("SELECT b.id,b.name FROM ffgame.game_team_officials a\
+							INNER JOIN ffgame.game_officials b\
+							ON a.official_id = b.id\
+							WHERE a.id=?;",[staff_id],function(err,rs){
+								console.log(rs);
+								callback(err,rs[0]);
+							});
+			}
+		],
+		function(err,result){
+			conn.end(function(e){
+				callback(err,result);
+			});
+		}
+	);
+	
 }
 function remove_official(game_team_id,official_id,callback){
 	var conn = prepareDb();

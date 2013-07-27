@@ -5,6 +5,15 @@ App::uses('AppModel', 'Model');
  *
  */
 class Info extends AppModel {
+	public function write($title,$content){
+		$this->create();
+		return $this->save(array(
+			'title'=>$title,
+			'content'=>$content,
+			'dtpublished'=>date("Y-m-d H:i:s"),
+			'n_status'=>1
+		));
+	}
 	public function getLatest($userModel,$limit = 20){
 		$info = $this->find('all',array(
 					'limit'=>$limit,

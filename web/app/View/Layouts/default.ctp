@@ -71,7 +71,7 @@
                             <a class="button" href="<?=$this->Html->url('/manage/reset_matches')?>">Reset All Matches</a>
                             <a class="button" href="<?=$this->Html->url('/manage/reset_stats')?>">Reset All Stats </a>
                             <a class="button" href="<?=$this->Html->url('/manage/reset_finance')?>">Reset Finance</a>
-
+                            <a class="button" href="<?=$this->Html->url('/manage/new_user_event')?>">New User Event</a>
                         <?php
                         endif;?>
                 </div>
