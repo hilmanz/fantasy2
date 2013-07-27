@@ -124,86 +124,104 @@ class ProfileController extends AppController {
 	
 	public function register_team(){
 		$userData = $this->getUserData();
-		$team = $this->Session->read('TeamRegister');
-		$this->set('previous_team',$team);
-		if($userData==null){
-			$this->redirect('/login/expired');
-		}
-		if($this->request->is('post')){
-			if(strlen($this->request->data['team_name']) > 0
-				&& strlen($this->request->data['team_id']) > 0
-				&& strlen($this->request->data['fb_id']) > 0){
-				$this->Session->write('TeamRegister',$this->request->data);
-				$this->redirect('/profile/select_player');
-			}else{
-				$this->Session->setFlash('Kamu harus memilih salah satu team terlebih dahulu !');
-				$this->redirect('/profile/team_error');
+		if($userData['register_completed']!=1){
+			$team = $this->Session->read('TeamRegister');
+			$this->set('previous_team',$team);
+			if($userData==null){
+				$this->redirect('/login/expired');
 			}
-			
+			if($this->request->is('post')){
+				if(strlen($this->request->data['team_name']) > 0
+					&& strlen($this->request->data['team_id']) > 0
+					&& strlen($this->request->data['fb_id']) > 0){
+					$this->Session->write('TeamRegister',$this->request->data);
+					$this->redirect('/profile/select_player');
+				}else{
+					$this->Session->setFlash('Kamu harus memilih salah satu team terlebih dahulu !');
+					$this->redirect('/profile/team_error');
+				}
+				
+			}else{
+				$teams = $this->Game->getTeams();
+				$this->set('team_list',$teams);
+				$this->set('INITIAL_BUDGET',Configure::read('INITIAL_BUDGET'));
+			}
 		}else{
-			$teams = $this->Game->getTeams();
-			$this->set('team_list',$teams);
-			$this->set('INITIAL_BUDGET',Configure::read('INITIAL_BUDGET'));
+			$this->redirect("/");
 		}
 	}
 
 	public function create_team(){
-		$userData = $this->getUserData();
-		$team = $this->Session->read('TeamRegister');
-		$players = explode(',',$this->request->data['players']);
-		$data = array(
-			'team_id'=>Sanitize::paranoid($team['team_id']),
-			'fb_id'=>Sanitize::paranoid($userData['fb_id'])
-		);
-		
-		foreach($players as $n=>$p){
-				$players[$n] = Sanitize::clean(trim($p));
-		}
-		$data['players'] = json_encode($players);
-
-
-		$result = $this->Game->create_team($data);
-		
-		if(isset($result['error'])){
-			$this->Session->setFlash('Sorry, cannot create another team. Your team probably already created !');
-			$this->redirect('/profile/team_error');
-		}else{
-			$this->loadModel('User');			
-			$user = $this->User->findByFb_id($userData['fb_id']);
-			$userData['team'] = $this->Game->getTeam(Sanitize::paranoid($userData['fb_id']));
-			$this->loadModel('Team');
-			$this->Team->create();
-			$InsertTeam = $this->Team->save(array(
-				'user_id'=>$user['User']['id'],
+		if($userData['register_completed']!=1){
+			$userData = $this->getUserData();
+			$team = $this->Session->read('TeamRegister');
+			$players = explode(',',$this->request->data['players']);
+			$data = array(
 				'team_id'=>Sanitize::paranoid($team['team_id']),
-				'team_name'=>Sanitize::clean($team['team_name'])
-			));
-			$this->Session->write('Userlogin.info',$userData);
-			$this->Session->write('TeamRegister',null);
-			$this->Session->setFlash('Congratulations, Your team is ready !');
-			$this->redirect('/profile/register_staff');
+				'fb_id'=>Sanitize::paranoid($userData['fb_id'])
+			);
+			
+			foreach($players as $n=>$p){
+					$players[$n] = Sanitize::clean(trim($p));
+			}
+			$data['players'] = json_encode($players);
+
+
+			$result = $this->Game->create_team($data);
+			
+			if(isset($result['error'])){
+				$this->Session->setFlash('Sorry, cannot create another team. Your team probably already created !');
+				$this->redirect('/profile/team_error');
+			}else{
+				$this->loadModel('User');			
+				$user = $this->User->findByFb_id($userData['fb_id']);
+				$userData['team'] = $this->Game->getTeam(Sanitize::paranoid($userData['fb_id']));
+				$this->loadModel('Team');
+				$this->Team->create();
+				$InsertTeam = $this->Team->save(array(
+					'user_id'=>$user['User']['id'],
+					'team_id'=>Sanitize::paranoid($team['team_id']),
+					'team_name'=>Sanitize::clean($team['team_name'])
+				));
+				$this->Session->write('Userlogin.info',$userData);
+				$this->Session->write('TeamRegister',null);
+				$this->Session->setFlash('Congratulations, Your team is ready !');
+				$this->redirect('/profile/register_staff');
+			}
 		}
 	}
 	/**
-	/*@todo harus pastiin bahwa halaman ini hanya bisa diakses kalo user uda ada register
+	* @todo harus pastiin bahwa halaman ini hanya bisa 
+	* diakses kalo user uda ada register
 	*/
 	public function select_player(){
-		$userData = $this->getUserData();
-		$selected_team = $this->Session->read('TeamRegister');
-		
-		if(is_array($this->Session->read('TeamRegister'))){
+		if($userData['register_completed']!=1){
+
 			$userData = $this->getUserData();
-			$this->set('INITIAL_BUDGET',Configure::read('INITIAL_BUDGET'));
-			$teams = $this->Game->getTeams();
-			$this->set('team_list',$teams);
-			$this->set('selected_team',$selected_team);
-			$original = $this->Game->getClub($selected_team['team_id']);
-			$this->set('original',$original);
+			$selected_team = $this->Session->read('TeamRegister');
+			
+			if(is_array($this->Session->read('TeamRegister'))){
+				
+				$userData = $this->getUserData();
+				$this->set('INITIAL_BUDGET',Configure::read('INITIAL_BUDGET'));
+				$teams = $this->Game->getTeams();
+				$this->set('team_list',$teams);
+				$this->set('selected_team',$selected_team);
+				$original = $this->Game->getClub($selected_team['team_id']);
+				$this->set('original',$original);
+
+			}else{
+				$this->redirect('/profile/register_team');
+			}
+
 		}else{
-			$this->redirect('/profile/register_team');
+			$this->redirect('/');
 		}
 	}
 	public function register_staff(){
+		if($this->userData['register_completed']==1){
+			$this->redirect('/');
+		}	
 		$userData = $this->getUserData();
 		if($this->request->is('post')){
 			$this->loadModel('User');
