@@ -70,6 +70,14 @@ class PagesController extends AppController {
 			$title_for_layout = Inflector::humanize($path[$count - 1]);
 		}
 		$this->set(compact('page', 'subpage', 'title_for_layout'));
+
+		//what's happening
+		$this->loadModel('Info');
+		$this->loadModel('User');
+		$info = $this->Info->getLatest($this->User,20);
+		$this->set('info',$info);
+		//-->
+
 		$this->render(implode('/', $path));
 	}
 }

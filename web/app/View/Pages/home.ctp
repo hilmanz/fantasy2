@@ -46,90 +46,19 @@
     <div id="latestActivity">
     	<h1>what's happening</h1>
         <div id="jp-container" class="jp-container">
+            <?php
+            foreach($info as $activity):
+            ?>
             <div class="row">
-                <a href="#" class="thumb40 fl"><img src="content/thumb/1_40.jpg" /></a>
+                <a href="#" class="thumb40 fl"><img src="http://graph.facebook.com/<?=$activity['Player1']['fb_id']?>/picture" /></a>
                 <div class="entry fl">
-                    <h3 class="username"><a href="#">Jason</a></h3>
-                    <p>ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <h3 class="username"><a href="#"><?=h($activity['Player1']['name'])?></a></h3>
+                    <p><?=h($activity['Info']['content'])?></p>
                 </div><!-- end .entry -->
             </div><!-- end .row -->
-            <div class="row">
-                <a href="#" class="thumb40 fl"><img src="content/thumb/1_401.jpg" /></a>
-                <div class="entry fl">
-                    <h3 class="username"><a href="#">Shevchenko</a></h3>
-                    <p>ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div><!-- end .entry -->
-            </div><!-- end .row -->
-            <div class="row">
-                <a href="#" class="thumb40 fl"><img src="content/thumb/1_402.jpg" /></a>
-                <div class="entry fl">
-                    <h3 class="username"><a href="#">Resty</a></h3>
-                    <p>ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div><!-- end .entry -->
-            </div><!-- end .row -->
-            <div class="row">
-                <a href="#" class="thumb40 fl"><img src="content/thumb/1_403.jpg" /></a>
-                <div class="entry fl">
-                    <h3 class="username"><a href="#">Liverpool Manager</a></h3>
-                    <p>ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div><!-- end .entry -->
-            </div><!-- end .row -->
-            <div class="row">
-                <a href="#" class="thumb40 fl"><img src="content/thumb/1_404.jpg" /></a>
-                <div class="entry fl">
-                    <h3 class="username"><a href="#">Ancelotti</a></h3>
-                    <p>ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div><!-- end .entry -->
-            </div><!-- end .row -->
-            <div class="row">
-                <a href="#" class="thumb40 fl"><img src="content/thumb/1_405.jpg" /></a>
-                <div class="entry fl">
-                    <h3 class="username"><a href="#">Acit Jazz</a></h3>
-                    <p>ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div><!-- end .entry -->
-            </div><!-- end .row -->
-            <div class="row">
-                <a href="#" class="thumb40 fl"><img src="content/thumb/1_40.jpg" /></a>
-                <div class="entry fl">
-                    <h3 class="username"><a href="#">Jason</a></h3>
-                    <p>ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div><!-- end .entry -->
-            </div><!-- end .row -->
-            <div class="row">
-                <a href="#" class="thumb40 fl"><img src="content/thumb/1_401.jpg" /></a>
-                <div class="entry fl">
-                    <h3 class="username"><a href="#">Shevchenko</a></h3>
-                    <p>ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div><!-- end .entry -->
-            </div><!-- end .row -->
-            <div class="row">
-                <a href="#" class="thumb40 fl"><img src="content/thumb/1_402.jpg" /></a>
-                <div class="entry fl">
-                    <h3 class="username"><a href="#">Resty</a></h3>
-                    <p>ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div><!-- end .entry -->
-            </div><!-- end .row -->
-            <div class="row">
-                <a href="#" class="thumb40 fl"><img src="content/thumb/1_403.jpg" /></a>
-                <div class="entry fl">
-                    <h3 class="username"><a href="#">Liverpool Manager</a></h3>
-                    <p>ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div><!-- end .entry -->
-            </div><!-- end .row -->
-            <div class="row">
-                <a href="#" class="thumb40 fl"><img src="content/thumb/1_404.jpg" /></a>
-                <div class="entry fl">
-                    <h3 class="username"><a href="#">Ancelotti</a></h3>
-                    <p>ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div><!-- end .entry -->
-            </div><!-- end .row -->
-            <div class="row">
-                <a href="#" class="thumb40 fl"><img src="content/thumb/1_405.jpg" /></a>
-                <div class="entry fl">
-                    <h3 class="username"><a href="#">Acit Jazz</a></h3>
-                    <p>ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div><!-- end .entry -->
-            </div><!-- end .row -->
+            <?php
+            endforeach;
+            ?>
         </div><!-- end #jp-container -->
     </div><!-- end #latestActivity -->
 </div><!-- end #sidebar -->

@@ -16,7 +16,7 @@
             </li><!-- end .newsticker-entry -->
           </ul><!-- end #newsticker -->
     </div>
-    <h4 class="fr"><span class="yellow ctday">6</span> DAYS <span class="yellow cthour">0</span> HOUR <span class="yellow ctminute">0</span> MINUTE to close</h4>
+    <h4 class="fr countdown"><span class="yellow ctday">6</span> DAYS <span class="yellow cthour">0</span> HOUR <span class="yellow ctminute">0</span> MINUTE to close</h4>
 </div><!-- end #info-bar -->
 <script>
 var match_date_ts = <?=$match_date_ts?>;
@@ -32,18 +32,23 @@ function countdown(){
 	var d1 = d0-days;
 	var h0 = d1*24;
 	var hour = Math.floor(h0);
-	console.log(hour);
+	
 
 	//get minutes
 	var h1 = h0 - hour;
-	console.log('h0',h0,'h1',h1,'hour',hour);
+	
 	var m0 = h1 * 60;
 	var minute = Math.round(m0);
-	console.log('minute',minute);
+	
 
-	$('.ctday').html(days);
-	$('.cthour').html(hour);
-	$('.ctminute').html(minute);
+	if(days >= 0){
+		$('.ctday').html(days);
+		$('.cthour').html(hour);
+		$('.ctminute').html(minute);
+		$('.countdown').show();
+	}else{
+		$('.countdown').hide();
+	}
 	setTimeout(function(){
 		countdown();
 	}, 30000);
