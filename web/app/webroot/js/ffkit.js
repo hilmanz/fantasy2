@@ -58,11 +58,12 @@ function dismiss(staff_id){
 	});
 }
 function save_formation(){
-	if(typeof selectedVal['formations'] !== 'undefined'){
+	
 		var formation = selectedVal['formations'].value;
-		
+		console.log(formation);
 		//make sure that all the lineup is consist of 11 players. + 5 subs
 		getLineups(function(total,lineup){
+			console.log(total,lineup);
 			if(total==16){
 				//save the lineup
 				var data = {};
@@ -83,29 +84,38 @@ function save_formation(){
 				$("#popup-messages .popupContent .entry-popup").html('');
 				console.log('total',total);
 				render_view(tplmsg,'#popup-messages .popupContent .entry-popup',
-							{title:'Oops !',result:'Your lineup should consist 11 players !'});
+							{title:'Oops !',result:'Your lineup should consist 11 players and 5 substitutions !'});
 			}
 		});
-	}
+	
 	document.location="#";
 }
 function getLineups(callback){
 	var n_player = 0;
 	var players = [];
-	$.each($("#the-formation").children(),function(k,player){
-	    //console.log(player);
-	   
-	    if($(player).find('a').attr('no')!=undefined){
-	    	players.push({
-	    		name:'player-'+$(player).find('a').attr('no'),
-	    		value: $(player).attr('id').replace('p','')
-	    	});
-	        n_player++;
-	    }
-	    if(n_player == 16){
-	        callback(n_player,players);
-	    }
-	});
+	if($("#the-formation").children().length>=16){
+		$.each($("#the-formation").children(),function(k,player){
+		    //console.log(player);
+		   
+		    if($(player).find('a').attr('no')!=undefined){
+		    	players.push({
+		    		name:'player-'+$(player).find('a').attr('no'),
+		    		value: $(player).attr('id').replace('p','')
+		    	});
+		        n_player++;
+		    }
+		    if(n_player == 16){
+		        callback(n_player,players);
+		        return true;
+		    }
+		    if((k+1)==$("#the-formation").children().length){
+		    	callback(n_player,players);	
+		    	return true;
+		    }
+		});
+	}else{
+		callback(0,[]);
+	}
 }
 function selectTeam(team_id,teams){
 	$("input[name='team_id']").val(team_id);

@@ -104,7 +104,11 @@ class ManageController extends AppController {
 		if(isset($this->request->query['hire'])){
 			$official_id = intval($this->request->query['id']);
 			if($official_id>0){
-				$this->Game->hire_staff($userData['team']['id'],$official_id);
+				$rs = $this->Game->hire_staff($userData['team']['id'],$official_id);
+				if($rs['status']==1){
+					$msg = "@p1_".$this->userDetail['User']['id']." has hired a new {$rs['officials']['name']}.";
+					$this->Info->write('set formation',$msg);
+				}
 			}
 		}
 		if(isset($this->request->query['dismiss'])){
