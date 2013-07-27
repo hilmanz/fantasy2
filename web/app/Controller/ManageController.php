@@ -149,7 +149,7 @@ class ManageController extends AppController {
 		$club = $this->Team->findByUser_id($user['User']['id']);
 		$this->set('club',$club['Team']);
 	
-		$next_match = $this->Game->getNextMatch($userData['team']['team_id']);
+		$next_match = $this->nextMatch;
 		$next_match['match']['home_original_name'] = $next_match['match']['home_name'];
 		$next_match['match']['away_original_name'] = $next_match['match']['away_name'];
 		if($next_match['match']['home_id']==$userData['team']['team_id']){

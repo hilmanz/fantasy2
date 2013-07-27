@@ -39,7 +39,11 @@ class AppController extends Controller {
 	protected $userDetail;
 	protected $userPoints;
 	protected $userRank;
+	protected $nextMatch;
 	public function beforeFilter(){
+		$this->loadModel('Game');
+		
+
 		$this->set('FB_APP_ID',Configure::read('FB.APP_ID'));
 		$this->set('FB_SECRET',Configure::read('FB.SECRET'));
 		$this->set('FB_AFTER_LOGIN_URL',Configure::read('FB.AFTER_LOGIN_REDIRECT_URL'));
@@ -47,7 +51,11 @@ class AppController extends Controller {
 		$this->set('DOMAIN',Configure::read('DOMAIN'));
 		$this->FB_APP_ID = Configure::read('FB.APP_ID');
 		$this->FB_SECRET = Configure::read('FB.SECRET');
+
+		//set acces token
 		$this->initAccessToken();
+		$this->Game->setAccessToken($this->getAccessToken());
+		
 		if($this->isUserLogin()){
 			$this->userData = $this->getUserData();
 			$this->set('USER_IS_LOGIN',true);
@@ -58,14 +66,17 @@ class AppController extends Controller {
 			$point = $this->Point->findByTeam_id($this->userDetail['Team']['id']);
 			$this->userPoints = $point['Point']['points'];
 			$this->userRank = $point['Point']['rank'];
-
 			$this->set('USER_RANK',$this->userRank);
 			$this->set('USER_POINTS',$this->userPoints);
+
+			$this->nextMatch = $this->Game->getNextMatch($this->userData['team']['team_id']);
+			$this->nextMatch['match']['match_date_ts'] = strtotime($this->nextMatch['match']['match_date']);
+			$this->set('match_date_ts',$this->nextMatch['match']['match_date_ts']);
 		}else{
 			$this->set('USER_IS_LOGIN',false);
 		}
-		$this->loadModel('Game');
-		$this->Game->setAccessToken($this->getAccessToken());
+		
+		
 	}
 	public function isUserLogin(){
 		if($this->Session->read('Userlogin.is_login')==true){
