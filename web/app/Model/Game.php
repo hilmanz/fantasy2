@@ -130,6 +130,13 @@ class Game extends AppModel {
 		return $response;	
 	}
 	/**
+	*	get team's current best player
+	*/
+	public function getBestPlayer($game_team_id){
+		$response = $this->api_call('/best_player/'.$game_team_id);
+		return $response;	
+	}
+	/**
 	* financial statements
 	*/
 	function financial_statements($fb_id){

@@ -191,6 +191,13 @@ class ManageController extends AppController {
 		}else{
 			$this->set('last_earning',0);
 		}
+
+		//best player
+		$rs = $this->Game->getBestPlayer($userData['team']['id']);
+		
+		if($rs['status']==1){
+			$this->set('best_player',$rs['data']);
+		}
 	}
 	public function player($player_id){
 		

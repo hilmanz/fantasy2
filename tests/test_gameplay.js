@@ -141,5 +141,15 @@ describe('gameplay',function(){
 			});
 
 		});
+
+		it('can retrieve the team best player',function(done){
+			gameplay.best_player(dummy.game_team_id,function(err,rs){
+				should.not.exist(err);
+				should.exist(rs);
+				console.log(rs);
+				done();
+			});
+
+		});
 	
 });

@@ -285,6 +285,15 @@ exports.best_match = function(req,res){
 		}
 	});
 }
+exports.best_player = function(req,res){
+	gameplay.best_player(req.params.game_team_id,function(err,result){
+		if(!err){
+			res.json(200,{status:1,data:result});
+		}else{
+			res.send(200,{status:0});
+		}
+	});
+}
 exports.last_earning = function(req,res){
 	gameplay.last_earning(req.params.game_team_id,function(err,result){
 		if(!err){
