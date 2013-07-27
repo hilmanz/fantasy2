@@ -298,6 +298,9 @@ a:hover{
 .home-team,.stadion,.perform-team h3{
 	color:#fdcb02;
 }
+.perform-team h3{
+	font-size:18px;
+}
 .match-place p,.perform-team h3{
 	margin:0;
 }
@@ -306,7 +309,7 @@ a:hover{
 	display:inline-block;
 }
 .perform-team .span1{
-	width:100px;
+	width:85px;
 }
 .perform-team .span2{
 	padding:0 10px;
