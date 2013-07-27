@@ -125,7 +125,10 @@ class Game extends AppModel {
 		$response = $this->api_call('/next_match/'.$team_id);
 		return $response;
 	}
-
+	public function getBestMatch($game_team_id){
+		$response = $this->api_call('/best_match/'.$game_team_id);
+		return $response;	
+	}
 	/**
 	* financial statements
 	*/

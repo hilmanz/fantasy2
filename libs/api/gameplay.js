@@ -368,7 +368,54 @@ function getVenue(team_id,done){
 		}
 	);
 }
-
+function best_match(game_team_id,done){
+	var async = require('async');
+	conn = prepareDb();
+	async.waterfall(
+		[
+			function(callback){
+				conn.query("SELECT game_team_id,game_id,SUM(points) AS total_points \
+							FROM ffgame_stats.game_match_player_points \
+							WHERE game_team_id = ?\
+							GROUP BY game_id ORDER BY total_points DESC LIMIT 1;\
+						",[game_team_id],function(err,rs){
+							if(err){
+								callback(new Error('no data'),{});
+							}else{
+								if(typeof rs[0] !== 'undefined'){
+									console.log(rs[0]);
+									callback(err,rs[0]);	
+								}else{
+									callback(new Error('no data'),{});
+								}
+							}
+						});
+			},
+			function(best_match,callback){
+				conn.query("SELECT a.home_id,a.away_id,b.name AS home_name,c.name AS away_name \
+							FROM ffgame.game_fixtures a\
+							INNER JOIN ffgame.master_team b\
+							ON a.home_id = b.uid\
+							INNER JOIN ffgame.master_team c\
+							ON a.away_id = c.uid\
+							WHERE \
+							a.game_id=?\
+							LIMIT 1",
+							[best_match.game_id],
+							function(err,rs){
+								console.log(rs[0]);
+								callback(err,{match:rs[0],points:best_match.total_points});
+							});
+			}
+		],
+		function(err,result){
+			conn.end(function(e){
+				done(err,result);
+			});
+		}
+	);
+}
+exports.best_match = best_match;
 exports.getVenue = getVenue;
 exports.next_match = next_match;
 exports.getFinancialStatement = getFinancialStatement;

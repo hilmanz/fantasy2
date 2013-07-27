@@ -12,7 +12,8 @@ var dummy = {
 	name: 'foo',
 	fb_id: '111111',
 	email:'foo@bar.com',
-	phone:'123123123'
+	phone:'123123123',
+	game_team_id:277,
 }
 describe('gameplay',function(){
 		it('get the current lineup',function(done){
@@ -120,6 +121,15 @@ describe('gameplay',function(){
 				console.log(rs);
 				done();
 			});
+		});
+		it('can retrieve the best match',function(done){
+			gameplay.best_match(dummy.game_team_id,function(err,rs){
+				should.not.exist(err);
+				should.exist(rs);
+				console.log(rs);
+				done();
+			});
+
 		});
 	
 });

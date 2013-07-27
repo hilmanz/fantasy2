@@ -168,6 +168,23 @@ class ManageController extends AppController {
 		$match_venue = $this->Game->getVenue($next_match['match']['home_id']);
 		$this->set('venue',$match_venue);
 
+		//best match
+		$best_match = $this->Game->getBestMatch($userData['team']['id']);
+		$team_id = $userData['team']['team_id'];
+
+		if($best_match['status']==0){
+			$this->set('best_match','N/A');
+		}else{
+			$best_match['data']['points'] = number_format($best_match['data']['points']);
+			if($best_match['data']['match']['home_id']==$team_id){
+				$against = $best_match['data']['match']['away_name'];
+			}else if($best_match['data']['match']['away_id']==$team_id){
+				$against = $best_match['data']['match']['home_name'];
+			}
+			$this->set('best_match',"VS. {$against} (+{$best_match['data']['points']})");
+		}
+
+		//best player
 	}
 	public function player($player_id){
 		

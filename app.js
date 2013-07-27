@@ -64,6 +64,7 @@ app.get('/points/:fb_id',[auth.canAccess],team.getUserTeamPoints);
 app.get('/teams/:id',[auth.canAccess],team.getTeamById);
 app.get('/match/results/:game_id',[auth.canAccess],gameplay.match_results);
 app.get('/next_match/:team_id',[auth.canAccess],gameplay.next_match);
+app.get('/best_match/:game_team_id',[auth.canAccess],gameplay.best_match);
 app.get('/player/:id',[auth.canAccess],gameplay.player_data);
 app.post('/user/register',[auth.canAccess],users.register);
 app.post('/create_team',[auth.canAccess],team.create);

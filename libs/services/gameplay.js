@@ -276,6 +276,15 @@ exports.next_match = function(req,res){
 		}
 	});
 }
+exports.best_match = function(req,res){
+	gameplay.best_match(req.params.game_team_id,function(err,result){
+		if(!err){
+			res.json(200,{status:1,data:result});
+		}else{
+			res.send(200,{status:0});
+		}
+	});
+}
 exports.get_venue = function(req,res){
 	gameplay.getVenue(req.params.team_id,function(err,venue){
 		if(!err){
