@@ -31,7 +31,7 @@
             <div class="widget tr perform-team">
                 <h2>your perfomance</h2>
                 <h3><span class="span1">League Rank</span>:<span class="span2"><?=number_format($USER_RANK)?></span></h3>
-                <h3><span class="span1">Last Earning</span>:<span class="span2">0</span></h3>
+                <h3><span class="span1">Last Earning</span>:<span class="span2"><?=number_format($last_earning)?></span></h3>
                 <h3><span class="span1">Best PLayer</span>:<span class="span2">0</span></h3>
                 <h3><span class="span1">Best Match</span>:<span class="span2"><?=$best_match?></span></h3>
                 <h3><span class="span1">Club Value</span>:<span class="span2"><?=number_format($team_bugdet+$USER_POINTS)?></span></h3>

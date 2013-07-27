@@ -98,6 +98,7 @@ app.post('/official/fire',[auth.canAccess],gameplay.fire_staff);
 app.get('/sponsorship/list/:team_id',[auth.canAccess],gameplay.getSponsors);
 app.post('/sponsorship/apply',[auth.canAccess],gameplay.applySponsorship);
 app.get('/finance/:game_team_id',[auth.canAccess],gameplay.financial_statements);
+app.get('/last_earning/:game_team_id',[auth.canAccess],gameplay.last_earning);
 app.get('/venue/:team_id',[auth.canAccess],gameplay.get_venue);
 app.post('/auth',auth.authenticate);
 app.get('/ping',function(req,res){

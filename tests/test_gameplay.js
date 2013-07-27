@@ -131,5 +131,15 @@ describe('gameplay',function(){
 			});
 
 		});
+
+		it('can retrieve the team last revenue',function(done){
+			gameplay.last_earning(dummy.game_team_id,function(err,rs){
+				should.not.exist(err);
+				should.exist(rs);
+				console.log(rs);
+				done();
+			});
+
+		});
 	
 });

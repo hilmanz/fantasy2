@@ -141,6 +141,13 @@ class Game extends AppModel {
 	}
 
 	/**
+	*	get team's last earning from previous match.
+	*/
+	function getLastEarnings($game_team_id){
+		$response = $this->api_call('/last_earning/'.$game_team_id);
+		return $response;	
+	}
+	/**
 	* Team Points
 	*/
 	function getTeamPoints($fb_id){
