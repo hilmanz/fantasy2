@@ -329,4 +329,9 @@ class ProfileController extends AppController {
 	public function success(){
 		$this->render('success');
 	}
+
+	public function logout(){
+		$this->Session->destroy();
+		$this->redirect('/');
+	}
 }
