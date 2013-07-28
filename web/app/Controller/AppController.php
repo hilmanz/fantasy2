@@ -63,6 +63,9 @@ class AppController extends Controller {
 			$this->loadModel('User');
 			$this->loadModel('Point');
 			$this->loadModel('Info');
+			$this->loadModel('Ticker');
+
+
 			$this->userDetail = $this->User->findByFb_id($this->userData['fb_id']);
 			$point = $this->Point->findByTeam_id(@$this->userDetail['Team']['id']);
 			$this->userPoints = @$point['Point']['points'];
@@ -73,6 +76,10 @@ class AppController extends Controller {
 			$this->nextMatch = $this->Game->getNextMatch(@$this->userData['team']['team_id']);
 			$this->nextMatch['match']['match_date_ts'] = strtotime(@$this->nextMatch['match']['match_date']);
 			$this->set('match_date_ts',$this->nextMatch['match']['match_date_ts']);
+
+			//news ticker
+			$this->set('tickers',$this->Ticker->find('all',array('limit'=>5)));
+			
 		}else{
 			$this->set('USER_IS_LOGIN',false);
 		}

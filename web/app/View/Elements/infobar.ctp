@@ -2,18 +2,15 @@
     <h4 class="date-now fl"><?=date("d/m/Y")?></h4>
     <div id="newsticker">
           <ul class="slides">
+          	<?php 
+          	if(isset($tickers)):
+          		foreach($tickers as $ticker):
+          	?>
             <li class="newsticker-entry">
-                <h3><a href="#n1">Lorem ipsum FC VS Dolor</a></h3>
+                <h3><a href="#n1"><?=__($ticker['Ticker']['content'])?></a></h3>
             </li><!-- end .newsticker-entry -->
-            <li class="newsticker-entry">
-                <h3><a href="#n1">2 Goals Sit amet, consectetuer</a></h3>
-            </li><!-- end .newsticker-entry -->
-            <li class="newsticker-entry">
-                <h3><a href="#n1">Sdipiscing elit VS Rincidunt Team 3-0,</a></h3>
-            </li><!-- end .newsticker-entry -->
-            <li class="newsticker-entry">
-                <h3><a href="#n1">Sed diam nonummy nibh euismod tincidunt ut</a></h3>
-            </li><!-- end .newsticker-entry -->
+            
+            <?php endforeach;endif;?>
           </ul><!-- end #newsticker -->
     </div>
     <h4 class="fr countdown"><span class="yellow ctday">6</span> DAYS <span class="yellow cthour">0</span> HOUR <span class="yellow ctminute">0</span> MINUTE to close</h4>
