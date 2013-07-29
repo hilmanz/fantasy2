@@ -37,7 +37,7 @@ class Game extends AppModel {
 		$response = $this->api_post('/user/register',$data);
 		return $response;
 	}
-
+	
 	public function getTeams(){ /*load team list*/
 		$response = $this->api_call('/teams');
 		return $response;

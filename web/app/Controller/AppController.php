@@ -40,51 +40,93 @@ class AppController extends Controller {
 	protected $userPoints;
 	protected $userRank;
 	protected $nextMatch;
+	protected $redisClient;
 	public function beforeFilter(){
+
 		$this->loadModel('Game');
-		
-
-		$this->set('FB_APP_ID',Configure::read('FB.APP_ID'));
-		$this->set('FB_SECRET',Configure::read('FB.SECRET'));
-		$this->set('FB_AFTER_LOGIN_URL',Configure::read('FB.AFTER_LOGIN_REDIRECT_URL'));
-		$this->set('debug',Configure::read('debug'));
-		$this->set('DOMAIN',Configure::read('DOMAIN'));
-		$this->FB_APP_ID = Configure::read('FB.APP_ID');
-		$this->FB_SECRET = Configure::read('FB.SECRET');
-
 		//set acces token
 		$this->initAccessToken();
 		$this->Game->setAccessToken($this->getAccessToken());
-		
-		if($this->isUserLogin()){
-			$this->userData = $this->getUserData();
-			$this->set('USER_IS_LOGIN',true);
-			$this->set('USER_DATA',$this->userData);
-			$this->loadModel('User');
-			$this->loadModel('Point');
-			$this->loadModel('Info');
-			$this->loadModel('Ticker');
 
-
-			$this->userDetail = $this->User->findByFb_id($this->userData['fb_id']);
-			$point = $this->Point->findByTeam_id(@$this->userDetail['Team']['id']);
-			$this->userPoints = @$point['Point']['points'];
-			$this->userRank = @$point['Point']['rank'];
-			$this->set('USER_RANK',$this->userRank);
-			$this->set('USER_POINTS',$this->userPoints);
-
-			$this->nextMatch = $this->Game->getNextMatch(@$this->userData['team']['team_id']);
-			$this->nextMatch['match']['match_date_ts'] = strtotime(@$this->nextMatch['match']['match_date']);
-			$this->set('match_date_ts',$this->nextMatch['match']['match_date_ts']);
-
-			//news ticker
-			$this->set('tickers',$this->Ticker->find('all',array('limit'=>5)));
+		if($this->params['controller']=='api'){
+			$this->ApiInit();
 			
 		}else{
-			$this->set('USER_IS_LOGIN',false);
+			
+			
+
+			$this->set('FB_APP_ID',Configure::read('FB.APP_ID'));
+			$this->set('FB_SECRET',Configure::read('FB.SECRET'));
+			$this->set('FB_AFTER_LOGIN_URL',Configure::read('FB.AFTER_LOGIN_REDIRECT_URL'));
+			$this->set('debug',Configure::read('debug'));
+			$this->set('DOMAIN',Configure::read('DOMAIN'));
+			$this->FB_APP_ID = Configure::read('FB.APP_ID');
+			$this->FB_SECRET = Configure::read('FB.SECRET');
+
+			
+		
+
+		
+			if($this->isUserLogin()){
+				$this->userData = $this->getUserData();
+				$this->set('USER_IS_LOGIN',true);
+				$this->set('USER_DATA',$this->userData);
+				$this->loadModel('User');
+				$this->loadModel('Point');
+				$this->loadModel('Info');
+				$this->loadModel('Ticker');
+
+
+				$this->userDetail = $this->User->findByFb_id($this->userData['fb_id']);
+				$point = $this->Point->findByTeam_id(@$this->userDetail['Team']['id']);
+				$this->userPoints = @$point['Point']['points'];
+				$this->userRank = @$point['Point']['rank'];
+				$this->set('USER_RANK',$this->userRank);
+				$this->set('USER_POINTS',$this->userPoints);
+
+				$this->nextMatch = $this->Game->getNextMatch(@$this->userData['team']['team_id']);
+				$this->nextMatch['match']['match_date_ts'] = strtotime(@$this->nextMatch['match']['match_date']);
+				$this->set('match_date_ts',$this->nextMatch['match']['match_date_ts']);
+
+				//news ticker
+				$this->set('tickers',$this->Ticker->find('all',array('limit'=>5)));
+				
+			}else{
+				$this->set('USER_IS_LOGIN',false);
+			}
 		}
 		
-		
+	}
+	private function ApiInit(){
+		require_once APP . 'Vendor' . DS. 'lib/Predis/Autoloader.php';
+		$this->loadModel('Apikey');
+		$this->loadModel('User');
+		$this->loadModel('Team');
+		Predis\Autoloader::register();
+		$this->redisClient = new Predis\Client(array(
+											    'host'     => Configure::read('REDIS.Host'),
+											    'port'     => Configure::read('REDIS.Port'),
+											    'database' => Configure::read('REDIS.Database')
+											));
+		$this->layout = 'ajax';
+		if($this->request->params['action']!='auth'){
+			$access_token = $_REQUEST['access_token'];
+			if(!$this->validateAPIAccessToken($access_token)){
+				print json_encode(array('status'=>401,'error'=>'invalid access token !'));
+				die();
+			}
+		}
+	}
+	private function validateAPIAccessToken($access_token){
+		//$this->redisClient->get($access_token);
+		if($this->redisClient->ttl($access_token)>0){
+			$sessionContent = unserialize($this->redisClient->get($access_token));
+
+			$rs = $this->Apikey->findByApi_key($sessionContent['api_key']);
+			if(isset($rs['Apikey']) && $rs['Apikey']['api_key']==$sessionContent['api_key']){
+				return true;
+			}
+		}
 	}
 	public function isUserLogin(){
 		if($this->Session->read('Userlogin.is_login')==true){
@@ -119,8 +161,11 @@ class AppController extends Controller {
 		}else{
 			
 			if($this->request->params['controller']!='login'
-				&& $this->request->params['action']!='service_unavailable'){
+				&& $this->request->params['action']!='service_unavailable' 
+				&& $this->request->params['controller']!='api'){
 				$this->redirect('/login/service_unavailable');
+			}else{
+				die(json_encode(array('error'=>'service unavailable')));
 			}
 		}
 		return 0;

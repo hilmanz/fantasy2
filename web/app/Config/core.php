@@ -359,3 +359,7 @@ Configure::write('API_URL','http://localhost:3002');
 Configure::write('API_KEY','1234567890');
 Configure::write('API_SALT',md5("hello world"));
 Configure::write('INITIAL_BUDGET','100000000');
+
+Configure::write('REDIS.Host','127.0.0.1');
+Configure::write('REDIS.Port',6379);
+Configure::write('REDIS.Database','15');
