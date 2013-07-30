@@ -100,6 +100,9 @@ class AppController extends Controller {
 	}
 	private function ApiInit(){
 		require_once APP . 'Vendor' . DS. 'lib/Predis/Autoloader.php';
+		//tell the browser that we're outputing JSON data.
+		header('Content-type: application/json');
+
 		$this->loadModel('Apikey');
 		$this->loadModel('User');
 		$this->loadModel('Team');

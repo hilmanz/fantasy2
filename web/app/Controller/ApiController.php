@@ -57,12 +57,7 @@ class ApiController extends AppController {
 		$this->set('response',array('status'=>1));
 		$this->render('default');
 	}
-	public function available_teams(){
-
-	}
-	public function player(){
-
-	}
+	
 	public function team(){
 		$api_session = $this->readAccessToken();
 		$fb_id = $api_session['fb_id'];
@@ -153,7 +148,37 @@ class ApiController extends AppController {
 		$this->render('default');
 	}
 	public function save_formation(){
+		$this->loadModel('Team');
+		$this->loadModel('User');
+		if($this->request->is('post')){
+			$api_session = $this->readAccessToken();
+			$fb_id = $api_session['fb_id'];
+			$user = $this->User->findByFb_id($fb_id);
+			$game_team = $this->Game->getTeam($fb_id);
 
+			$formation = $this->request->data['formation'];
+
+			$players = array();
+			foreach($this->request->data as $n=>$v){
+				if(eregi('player-',$n)&&$v!=0){
+					$players[] = array('player_id'=>str_replace('player-','',$n),'no'=>intval($v));
+				}
+			}
+			$lineup = $this->Game->setLineup($game_team['id'],$formation,$players);
+			
+			if($lineup['status']==1){
+				$msg = "@p1_".$user['User']['id']." has set his/her formation.";
+				$this->Info->write('set formation',$msg);
+				$this->set('response',array('status'=>1,'message'=>'Formation is been saved successfully !'));
+			}else{
+				$this->set('response',array('status'=>0,'error'=>'There is an error in formation setup !'));
+			}
+			
+		}else{
+			$this->set('response',array('status'=>404,'error'=>'method not found'));
+		}
+
+		$this->render('default');
 	}
 	public function club(){
 		$this->loadModel('Point');
@@ -212,6 +237,7 @@ class ApiController extends AppController {
 		$this->set('response',array('status'=>1,'data'=>$response));
 		$this->render('default');
 	}
+
 	private function getFinancialStatements($fb_id){
 		$finance = $this->Game->financial_statements($fb_id);
 		if($finance['status']==1){
@@ -229,11 +255,31 @@ class ApiController extends AppController {
 			return $report;
 		}
 	}
-	public function finance(){
+	public function profile($act=null){
+		$this->loadModel('User');
+		$api_session = $this->readAccessToken();
+		$fb_id = $api_session['fb_id'];
+		$user = $this->User->findByFb_id($fb_id);
 
+		if($act=='save'){
+			if($this->request->is('post')){
+				$data = array(
+					'name'=>$this->request->data['name'],
+					'email'=>$this->request->data['email'],
+					'city'=>$this->request->data['city']
+				);
+				$this->User->id = $user['User']['id'];
+				$rs = $this->User->save($data);
+				$this->set('response',array('status'=>1,'data'=>$rs));
+			}else{
+				$this->set('response',array('status'=>0,'error'=>'Cannot save profile'));
+			}
+		}else{
+			$this->set('response',array('status'=>1,'data'=>$user));
+		}
+		$this->render('default');
 	}
 	public function register(){
-
 		$this->set('response',array('status'=>1));
 		$this->render('default');
 	}
