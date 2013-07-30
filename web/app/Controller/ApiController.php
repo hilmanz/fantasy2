@@ -32,17 +32,23 @@ class ApiController extends AppController {
 	public $uses = array();
 	
 	public function auth(){
-		
-		$rs = $this->Apikey->findByApi_key($this->request->query['api_key']);
-		if(isset($rs['Apikey']) && $rs['Apikey']['api_key']!=null){
-			$access_token = encrypt_param(serialize(array('api_key'=>$rs['Apikey']['api_key'],
-													  'valid_until'=>time()+24*60*60)));
+		$fb_id = $this->request->query('fb_id');
+		$user = $this->User->findByFb_id($fb_id);
+		if(isset($user['User'])){
+			$rs = $this->Apikey->findByApi_key($this->request->query['api_key']);
+			if(isset($rs['Apikey']) && $rs['Apikey']['api_key']!=null){
+				$access_token = encrypt_param(serialize(array('api_key'=>$rs['Apikey']['api_key'],
+														  'valid_until'=>time()+24*60*60)));
 
-			$this->redisClient->set($access_token,serialize(array('api_key'=>$rs['Apikey']['api_key'])));
-			$this->redisClient->expire($access_token,24*60*60);//expires in 1 day
-			$this->set('response',array('status'=>1,'access_token'=>$access_token));
+				$this->redisClient->set($access_token,serialize(array('api_key'=>$rs['Apikey']['api_key'],
+																	  'fb_id'=>$fb_id)));
+				$this->redisClient->expire($access_token,24*60*60);//expires in 1 day
+				$this->set('response',array('status'=>1,'access_token'=>$access_token));
+			}else{
+				$this->set('response',array('status'=>403,'error'=>'invalid api_key'));
+			}
 		}else{
-			$this->set('response',array('status'=>403,'error'=>'invalid api_key'));
+			$this->set('response',array('status'=>400,'error'=>'user not found'));
 		}
 		
 		$this->render('default');
@@ -58,7 +64,9 @@ class ApiController extends AppController {
 
 	}
 	public function team(){
-		$fb_id = $this->request->query['fb_id'];
+		$api_session = $this->readAccessToken();
+		$fb_id = $api_session['fb_id'];
+
 		$user = $this->User->findByFb_id($fb_id);
 		$game_team = $this->Game->getTeam($fb_id);
 		$this->loadModel('Point');
@@ -149,7 +157,10 @@ class ApiController extends AppController {
 	}
 	public function club(){
 		$this->loadModel('Point');
-		$fb_id = $this->request->query['fb_id'];
+
+		$api_session = $this->readAccessToken();
+		$fb_id = $api_session['fb_id'];
+		
 		$user = $this->User->findByFb_id($fb_id);
 		$game_team = $this->Game->getTeam($fb_id);
 		

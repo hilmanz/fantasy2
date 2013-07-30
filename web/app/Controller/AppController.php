@@ -41,6 +41,7 @@ class AppController extends Controller {
 	protected $userRank;
 	protected $nextMatch;
 	protected $redisClient;
+	protected $gameApiAccessToken;
 	public function beforeFilter(){
 
 		$this->loadModel('Game');
@@ -117,13 +118,17 @@ class AppController extends Controller {
 			}
 		}
 	}
+	protected function readAccessToken(){
+		$sessionContent = unserialize($this->redisClient->get($this->gameApiAccessToken));
+		return $sessionContent;
+	}
 	private function validateAPIAccessToken($access_token){
 		//$this->redisClient->get($access_token);
 		if($this->redisClient->ttl($access_token)>0){
 			$sessionContent = unserialize($this->redisClient->get($access_token));
-
 			$rs = $this->Apikey->findByApi_key($sessionContent['api_key']);
 			if(isset($rs['Apikey']) && $rs['Apikey']['api_key']==$sessionContent['api_key']){
+				$this->gameApiAccessToken = $access_token;
 				return true;
 			}
 		}
