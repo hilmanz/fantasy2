@@ -283,18 +283,18 @@ class ApiController extends AppController {
 		if($act=='save'){
 			if($this->request->is('post')){
 				$data = array(
-					'name'=>$this->request->data['name'],
-					'email'=>$this->request->data['email'],
-					'city'=>$this->request->data['city']
+					'name'=>@$this->request->data['name'],
+					'email'=>@$this->request->data['email'],
+					'city'=>@$this->request->data['city']
 				);
 				$this->User->id = $user['User']['id'];
 				$rs = $this->User->save($data);
-				$this->set('response',array('status'=>1,'data'=>$rs));
+				$this->set('response',array('status'=>1,'data'=>$rs['User']));
 			}else{
 				$this->set('response',array('status'=>0,'error'=>'Cannot save profile'));
 			}
 		}else{
-			$this->set('response',array('status'=>1,'data'=>$user));
+			$this->set('response',array('status'=>1,'data'=>$user['User']));
 		}
 		$this->render('default');
 	}
