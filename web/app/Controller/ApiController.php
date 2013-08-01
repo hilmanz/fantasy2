@@ -298,8 +298,5 @@ class ApiController extends AppController {
 		}
 		$this->render('default');
 	}
-	public function register(){
-		$this->set('response',array('status'=>1));
-		$this->render('default');
-	}
+
 }
