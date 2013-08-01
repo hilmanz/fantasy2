@@ -68,10 +68,14 @@ class ApiController extends AppController {
 
 		$point = $this->Point->findByTeam_id($user['Team']['id']);
 
-		$response['user'] = $user;
+		$response['user'] = array('id'=>$user['User']['id'],
+									'fb_id'=>$user['User']['fb_id'],
+									'name'=>$user['User']['name'],
+									'avatar_img'=>$user['User']['avatar_img']);
 
 		$response['stats']['points'] = intval($point['Point']['points']);
 		$response['stats']['rank'] = intval($point['Point']['rank']);
+
 
 		//list of players
 		$players = $this->Game->get_team_players($fb_id);
@@ -88,7 +92,10 @@ class ApiController extends AppController {
 		//club
 		$club = $this->Team->findByUser_id($user['User']['id']);
 		
-		$response['club'] = $club;
+		$response['club'] = array('id'=>$club['Team']['id'],
+									'team_name'=>$club['Team']['team_name'],
+									'team_id'=>$club['Team']['team_id'],
+								  );
 
 		//get original club
 		$original_club = $this->Game->getClub($game_team['team_id']);
@@ -104,7 +111,13 @@ class ApiController extends AppController {
 			$next_match['match']['away_name'] = $club['Team']['team_name'];
 		}
 
-		$response['next_match'] = $next_match['match'];
+		$response['next_match'] = array('game_id'=>$next_match['match']['game_id'],
+										'home_name'=>$next_match['match']['home_name'],
+										'away_name'=>$next_match['match']['away_name'],
+										'home_original_name'=>$next_match['match']['home_original_name'],
+										'away_original_name'=>$next_match['match']['away_original_name'],
+										'match_date'=>date("Y-m-d H:i:s",strtotime($next_match['match']['match_date']))
+										);
 
 		//match venue
 		$match_venue = $this->Game->getVenue($next_match['match']['home_id']);
@@ -193,7 +206,10 @@ class ApiController extends AppController {
 
 		$point = $this->Point->findByTeam_id($user['Team']['id']);
 
-		$response['user'] = $user;
+		$response['user'] = array('id'=>$user['User']['id'],
+									'fb_id'=>$user['User']['fb_id'],
+									'name'=>$user['User']['name'],
+									'avatar_img'=>$user['User']['avatar_img']);
 		$response['stats']['points'] = $point['Point']['points'];
 		$response['stats']['rank'] = $point['Point']['rank'];
 
@@ -203,7 +219,10 @@ class ApiController extends AppController {
 
 		//club
 		$club = $this->Team->findByUser_id($user['User']['id']);
-		$response['club'] = $club;
+		$response['club'] = array('id'=>$club['Team']['id'],
+									'team_name'=>$club['Team']['team_name'],
+									'team_id'=>$club['Team']['team_id'],
+								  );
 
 		//get original club
 		$original_club = $this->Game->getClub($club['Team']['team_id']);
