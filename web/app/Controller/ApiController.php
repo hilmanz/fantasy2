@@ -163,6 +163,7 @@ class ApiController extends AppController {
 	public function save_formation(){
 		$this->loadModel('Team');
 		$this->loadModel('User');
+		$this->loadModel('Info');
 		if($this->request->is('post')){
 			$api_session = $this->readAccessToken();
 			$fb_id = $api_session['fb_id'];
