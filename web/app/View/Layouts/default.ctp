@@ -46,7 +46,7 @@
                         	<a href="<?=$this->Html->url('/leaderboard')?>">LEADERBOARD</a>
                         </li>
                     	<li>
-                        	<a href="<?=$this->Html->url('/market')?>">TRANSFER MARKET</a>
+                        	<a href="#">TRANSFER MARKET</a>
                         </li>
                     	<li><a href="<?=$this->Html->url('/pages/faq')?>">HELP &amp; FAQ</a></li>
                     </ul>
