@@ -48,7 +48,7 @@ function fb_login(){
 	     console.log('User cancelled login or did not fully authorize.');
 	       document.location = "<?=$FB_AFTER_LOGIN_URL?>";
 	   }
-	 });
+	 },{scope: 'email,user_location,user_birthday'});
 	
 }
 </script>

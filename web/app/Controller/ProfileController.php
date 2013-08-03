@@ -128,7 +128,7 @@ class ProfileController extends AppController {
 	
 	public function register_team(){
 		$userData = $this->getUserData();
-		if($userData['register_completed']!=1){
+		if(@$userData['register_completed']!=1){
 			$team = $this->Session->read('TeamRegister');
 			$this->set('previous_team',$team);
 			if($userData==null){
@@ -199,7 +199,7 @@ class ProfileController extends AppController {
 	* diakses kalo user uda ada register
 	*/
 	public function select_player(){
-		if($userData['register_completed']!=1){
+		if(@$userData['register_completed']!=1){
 
 			$userData = $this->getUserData();
 			$selected_team = $this->Session->read('TeamRegister');
@@ -223,7 +223,7 @@ class ProfileController extends AppController {
 		}
 	}
 	public function register_staff(){
-		if($this->userData['register_completed']==1){
+		if(@$this->userData['register_completed']==1){
 			$this->redirect('/');
 		}	
 		$userData = $this->getUserData();

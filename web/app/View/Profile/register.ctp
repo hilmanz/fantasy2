@@ -15,15 +15,11 @@
                     </div><!-- end .row -->
                     <div class="row">
                         <label>Email</label>
-                        <input type="text" name="email" value="<?=h(@$user['username'])?>@facebook.com"/>
+                        <input type="text" name="email" value="<?=h(@$user['email'])?>"/>
                     </div><!-- end .row -->
                     <div class="row">
                         <label>Location</label>
-                        <select class="styled" name="city">
-                            <option>City</option>
-                            <option value="Jakarta" selected="selected">Jakarta</option>
-                            <option value="Bandung">Bandung</option>
-                        </select>
+                        <input type="text" name="city" value="<?=h(@$user['location']['name'])?>"/>
                     </div><!-- end .row -->
                     <div class="row">
                         <label>Mobile</label>

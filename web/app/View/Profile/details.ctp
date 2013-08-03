@@ -30,11 +30,7 @@
                     </div><!-- end .row -->
                     <div class="row">
                         <label>Location</label>
-                        <select class="styled" name="city">
-                            <option>City</option>
-                            <option>Jakarta</option>
-                            <option>Bandung</option>
-                        </select>
+                        <?=@$user['location']?>
                     </div><!-- end .row -->
                    
                     <div class="row">
