@@ -66,6 +66,7 @@ class ProfileController extends AppController {
 			$this->loadModel('User');
 			//data user
 			$user = $this->User->findByFb_id($userData['fb_id']);
+			
 			$this->set('user',$user['User']);
 			//budget
 			$budget = $this->Game->getBudget($userData['team']['id']);

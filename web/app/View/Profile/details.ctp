@@ -1,3 +1,4 @@
+
 <div id="fillDetailsPage">
 	<?php echo $this->element('infobar'); ?>
     <div id="thecontent">
@@ -11,7 +12,8 @@
                   enctype="multipart/form-data" method="post">
                     <div class="tr avatarBox">
                         <div class="avatar-big">
-                            <?php if($user['avatar_img']==null):?>
+                           
+                            <?php if(strlen($user['avatar_img'])==0 || $user['avatar_img']=='0'):?>
                             <img src="http://graph.facebook.com/<?=$USER_DATA['fb_id']?>/picture" />
                             <?php else:?>
                             <img src="<?=$this->Html->url('/files/120x120_'.$user['avatar_img'])?>" />
@@ -108,7 +110,7 @@ $("#uploadForm").file_uploader('<?=$this->Html->url("/profile/upload_image")?>',
             $.fancybox.close();
             $("#popup-message").find('.entry-popup').html('Upload Completed !');
             $("#popupmsg").trigger('click');
-            $(".avatar-big").find('img').attr('src',avatar_dir+o.files);
+            $(".avatar-big").find('img').attr('src',avatar_dir+'120x120_'+o.files);
         }else{
             $("#popup-message").find('.entry-popup').html('Cannot upload your image, please try again later !');
             $("#popupmsg").trigger('click');

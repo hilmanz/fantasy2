@@ -51,7 +51,12 @@
               if(isset($activity['Player1'])):
             ?>
             <div class="row">
-                <a href="#" class="thumb40 fl"><img src="http://graph.facebook.com/<?=$activity['Player1']['fb_id']?>/picture" /></a>
+                <a href="#" class="thumb40 fl">
+                  <?php if($activity['Player1']['avatar_img']==null||$activity['Player1']['avatar_img']=='0'):?>
+                  <img src="http://graph.facebook.com/<?=$activity['Player1']['fb_id']?>/picture" /></a>
+                <?php else:?>
+                  <img src="<?=$this->Html->url('/files/120x120_'.$activity['Player1']['avatar_img'])?>"/></a>
+                <?php endif;?>
                 <div class="entry fl">
                     <h3 class="username"><a href="#"><?=h($activity['Player1']['name'])?></a></h3>
                     <p><?=h($activity['Info']['content'])?></p>
