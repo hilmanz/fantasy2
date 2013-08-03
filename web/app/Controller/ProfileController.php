@@ -21,6 +21,9 @@
  */
 App::uses('AppController', 'Controller');
 App::uses('Sanitize', 'Utility');
+App::uses('File', 'Utility');
+require_once APP . 'Vendor' . DS. 'Thumbnail.php';
+
 /**
  * Static content controller
  *
@@ -58,6 +61,7 @@ class ProfileController extends AppController {
 	}
 	public function index(){
 		if($this->hasTeam()){
+			$this->set('avatar_dir',Configure::read('avatar_web_dir'));
 			$userData = $this->getUserData();
 			$this->loadModel('User');
 			//data user
@@ -106,7 +110,7 @@ class ProfileController extends AppController {
 
 		/*facebook detail*/
 		$userData = $this->getUserData();
-
+		$this->set('avatar_dir',Configure::read('avatar_img_dir'));
 		if($_POST['save']==1){
 			$data = array(
 				'fb_id'=>$userData['fb_id'],
@@ -333,5 +337,34 @@ class ProfileController extends AppController {
 	public function logout(){
 		$this->Session->destroy();
 		$this->redirect('/');
+	}
+
+	public function upload_image(){
+		$this->layout = 'ajax';
+		$_FILES['file']['name'] = str_replace(array(' ','\''),"_",$_FILES['file']['name']);
+		if(move_uploaded_file($_FILES['file']['tmp_name'],
+				Configure::read('avatar_img_dir').$_FILES['file']['name'])){
+			//resize to 120x120 pixels
+			$thumb = new Thumbnail();
+			$thumb->resizeImage('crop', $_FILES['file']['name'], 
+							Configure::read('avatar_img_dir'), 
+							'120x120_'.$_FILES['file']['name'], 
+							120, 
+							120, 
+							100);
+			//save to db
+			$data = array(
+				'avatar_img'=>$_FILES['file']['name']
+			);
+			$userData = $this->getUserData();
+			$this->loadModel('User');
+			$user = $this->User->findByFb_id($userData['fb_id']);
+			$this->User->id = $user['User']['id'];
+			$rs = $this->User->save($data);
+			print json_encode(array('status'=>1,'files'=>$_FILES['file']['name']));
+		}else{
+			print json_encode(array('status'=>0));
+		}
+		die();
 	}
 }
