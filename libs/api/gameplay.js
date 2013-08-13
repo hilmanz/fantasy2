@@ -174,7 +174,9 @@ function position_valid(players,setup,formation){
 //get user's players
 function getPlayers(game_team_id,callback){
 	conn = prepareDb();
-	conn.query("SELECT b.uid,b.name,b.position, \
+	async.waterfall([
+			function(callback){
+				conn.query("SELECT b.uid,b.name,b.position, \
 				b.salary,b.transfer_value,b.known_name\
 				FROM ffgame.game_team_players a\
 				INNER JOIN ffgame.master_player b \
@@ -183,10 +185,40 @@ function getPlayers(game_team_id,callback){
 				LIMIT 200;",
 				[game_team_id],
 				function(err,rs){
-					conn.end(function(e){
-						callback(err,rs);	
-					});
+					callback(err,rs);
 				});
+			},
+			function(players,callback){
+				var results = [];
+				async.eachSeries(players,function(player,done){
+					conn.query("SELECT SUM(points) AS total_points \
+								FROM ffgame_stats.game_match_player_points \
+								WHERE game_team_id = ? AND player_id = ?;",
+					[game_team_id,player.uid],
+					function(err,rs){
+						player.points = 0;
+						if(!err){
+							if(rs!=null){
+								if(rs[0].total_points!=null){
+									player.points = parseInt(rs[0].total_points);	
+								}
+								
+							}
+						}
+						results.push(player);
+						done();
+					});
+				},function(err){
+					callback(err,results);
+				});
+			}
+		],
+		function(err,result){
+			conn.end(function(e){
+				callback(err,result);	
+			});
+		});
+	
 }
 
 //get user's budget

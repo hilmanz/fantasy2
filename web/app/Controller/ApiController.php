@@ -301,10 +301,13 @@ class ApiController extends AppController {
 		$api_session = $this->readAccessToken();
 		$fb_id = $api_session['fb_id'];
 		$user = $this->User->findByFb_id($fb_id);
+		if(@eregi('.jpg',$user['User']['avatar_img'])){
+			$user['User']['avatar_img'] = Configure::read('avatar_web_url').$user['User']['avatar_img'];
+		}
 		$game_team = $this->Game->getTeam($fb_id);
 		//club
 		$club = $this->Team->findByUser_id($user['User']['id']);
-		
+
 		$next_match = $this->Game->getNextMatch($game_team['team_id']);
 		$next_match['match']['home_original_name'] = $next_match['match']['home_name'];
 		$next_match['match']['away_original_name'] = $next_match['match']['away_name'];
