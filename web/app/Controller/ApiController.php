@@ -73,8 +73,9 @@ class ApiController extends AppController {
 									'name'=>$user['User']['name'],
 									'avatar_img'=>$user['User']['avatar_img']);
 
-		$response['stats']['points'] = intval($point['Point']['points']);
-		$response['stats']['rank'] = intval($point['Point']['rank']);
+		$response['stats']['points'] = intval(@$point['Point']['points']);
+		$response['stats']['rank'] = intval(@$point['Point']['rank']);
+
 
 
 		//list of players
@@ -89,6 +90,7 @@ class ApiController extends AppController {
 		$budget = $this->Game->getBudget($game_team['id']);
 		
 		$response['budget'] = $budget;
+		$response['stats']['club_value'] = intval($budget) + $response['stats']['points'];
 		//club
 		$club = $this->Team->findByUser_id($user['User']['id']);
 		
@@ -116,7 +118,8 @@ class ApiController extends AppController {
 										'away_name'=>$next_match['match']['away_name'],
 										'home_original_name'=>$next_match['match']['home_original_name'],
 										'away_original_name'=>$next_match['match']['away_original_name'],
-										'match_date'=>date("Y-m-d H:i:s",strtotime($next_match['match']['match_date']))
+										'match_date'=>date("Y-m-d H:i:s",strtotime($next_match['match']['match_date'])),
+										'match_date_ts'=>strtotime($next_match['match']['match_date'])
 										);
 
 		//match venue
@@ -211,13 +214,13 @@ class ApiController extends AppController {
 									'fb_id'=>$user['User']['fb_id'],
 									'name'=>$user['User']['name'],
 									'avatar_img'=>$user['User']['avatar_img']);
-		$response['stats']['points'] = $point['Point']['points'];
-		$response['stats']['rank'] = $point['Point']['rank'];
+		$response['stats']['points'] = intval(@$point['Point']['points']);
+		$response['stats']['rank'] = intval(@$point['Point']['rank']);
 
 		//budget
 		$budget = $this->Game->getBudget($game_team['id']);
 		$response['budget'] = $budget;
-
+		$response['stats']['club_value'] = intval($budget) + $response['stats']['points'];
 		//club
 		$club = $this->Team->findByUser_id($user['User']['id']);
 		$response['club'] = array('id'=>$club['Team']['id'],
@@ -254,6 +257,24 @@ class ApiController extends AppController {
 		
 		$response['finance'] = $finance;
 
+		$next_match = $this->Game->getNextMatch($game_team['team_id']);
+		$next_match['match']['home_original_name'] = $next_match['match']['home_name'];
+		$next_match['match']['away_original_name'] = $next_match['match']['away_name'];
+		if($next_match['match']['home_id']==$game_team['team_id']){
+			$next_match['match']['home_name'] = $club['Team']['team_name'];
+		}else{
+			$next_match['match']['away_name'] = $club['Team']['team_name'];
+		}
+
+		$response['next_match'] = array('game_id'=>$next_match['match']['game_id'],
+										'home_name'=>$next_match['match']['home_name'],
+										'away_name'=>$next_match['match']['away_name'],
+										'home_original_name'=>$next_match['match']['home_original_name'],
+										'away_original_name'=>$next_match['match']['away_original_name'],
+										'match_date'=>date("Y-m-d H:i:s",strtotime($next_match['match']['match_date'])),
+										'match_date_ts'=>strtotime($next_match['match']['match_date'])
+										);
+
 		$this->set('response',array('status'=>1,'data'=>$response));
 		$this->render('default');
 	}
@@ -280,7 +301,20 @@ class ApiController extends AppController {
 		$api_session = $this->readAccessToken();
 		$fb_id = $api_session['fb_id'];
 		$user = $this->User->findByFb_id($fb_id);
-
+		$game_team = $this->Game->getTeam($fb_id);
+		//club
+		$club = $this->Team->findByUser_id($user['User']['id']);
+		
+		$next_match = $this->Game->getNextMatch($game_team['team_id']);
+		$next_match['match']['home_original_name'] = $next_match['match']['home_name'];
+		$next_match['match']['away_original_name'] = $next_match['match']['away_name'];
+		if($next_match['match']['home_id']==$game_team['team_id']){
+			$next_match['match']['home_name'] = $club['Team']['team_name'];
+		}else{
+			$next_match['match']['away_name'] = $club['Team']['team_name'];
+		}
+		
+		
 		if($act=='save'){
 			if($this->request->is('post')){
 				$data = array(
@@ -290,11 +324,27 @@ class ApiController extends AppController {
 				);
 				$this->User->id = $user['User']['id'];
 				$rs = $this->User->save($data);
+				$rs['User']['next_match'] = array('game_id'=>$next_match['match']['game_id'],
+										'home_name'=>$next_match['match']['home_name'],
+										'away_name'=>$next_match['match']['away_name'],
+										'home_original_name'=>$next_match['match']['home_original_name'],
+										'away_original_name'=>$next_match['match']['away_original_name'],
+										'match_date'=>date("Y-m-d H:i:s",strtotime($next_match['match']['match_date'])),
+										'match_date_ts'=>strtotime($next_match['match']['match_date'])
+										);
 				$this->set('response',array('status'=>1,'data'=>$rs['User']));
 			}else{
 				$this->set('response',array('status'=>0,'error'=>'Cannot save profile'));
 			}
 		}else{
+			$user['User']['next_match'] = array('game_id'=>$next_match['match']['game_id'],
+										'home_name'=>$next_match['match']['home_name'],
+										'away_name'=>$next_match['match']['away_name'],
+										'home_original_name'=>$next_match['match']['home_original_name'],
+										'away_original_name'=>$next_match['match']['away_original_name'],
+										'match_date'=>date("Y-m-d H:i:s",strtotime($next_match['match']['match_date'])),
+										'match_date_ts'=>strtotime($next_match['match']['match_date'])
+										);
 			$this->set('response',array('status'=>1,'data'=>$user['User']));
 		}
 		$this->render('default');
