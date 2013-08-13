@@ -47,7 +47,7 @@
 	    <div class="widget">
 	        <div class="cash-left">
 	            <h3 class="red">CASH LEFT</h3>
-	            <h1>EUR <?=number_format($team_bugdet)?></h1>
+	            <h1>SS$ <?=number_format($team_bugdet)?></h1>
 	            <h3 class="red">POINTS</h3>
 	            <h1><?=number_format($USER_POINTS)?> pts</h1> 
                 <h3 class="red">CURRENT RANK</h3>

@@ -31,7 +31,7 @@ function hire(staff_id){
 				$("#staff-"+staff_id).attr('href','#/dismiss/'+staff_id);
 				est_expenses += getStaffSalary(staff_id);
 				
-				$("h1.expenses").html('EUR '+number_format(parseInt(est_expenses)));
+				$("h1.expenses").html('SS$ '+number_format(parseInt(est_expenses)));
 			}else{
 				$("#staff-"+staff_id).html('Select');
 			}
@@ -49,7 +49,7 @@ function dismiss(staff_id){
 				if(est_expenses>0){
 					est_expenses -= getStaffSalary(staff_id);
 					if(est_expenses<0){est_expenses = 0;}
-					$("h1.expenses").html('EUR '+number_format(parseInt(est_expenses)));
+					$("h1.expenses").html('$SS '+number_format(parseInt(est_expenses)));
 				}
 			}else{
 				$("#staff-"+staff_id).html('Hired');

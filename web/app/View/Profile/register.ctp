@@ -70,9 +70,9 @@
 	    <div class="widget">
 	        <div class="cash-left">
 	            <h3 class="red">Cash Left</h3>
-	            <h1>EUR <?=@number_format($INITIAL_BUDGET)?></h1>
+	            <h1>SS$ <?=@number_format($INITIAL_BUDGET)?></h1>
 	            <h3 class="red">Est. Weekly Expenses</h3>
-	            <h1>EUR 0</h1> 
+	            <h1>SS$ 0</h1> 
 	        </div>
 	    </div><!-- end .widget -->
 	</div><!-- end #sidebar -->

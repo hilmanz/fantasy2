@@ -59,9 +59,9 @@
         <div class="widget">
             <div class="cash-left">
                 <h3 class="red">Cash Left</h3>
-                <h1>EUR <?=number_format($team_bugdet)?></h1>
+                <h1>SS$ <?=number_format($team_bugdet)?></h1>
                 <h3 class="red">Est. Weekly Expenses</h3>
-                <h1 class="expenses">EUR <?=number_format($weekly_salaries)?></h1> 
+                <h1 class="expenses">SS$ <?=number_format($weekly_salaries)?></h1> 
             </div>
         </div><!-- end .widget -->
     </div><!-- end #sidebar -->

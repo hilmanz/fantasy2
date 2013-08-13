@@ -171,9 +171,9 @@
 	    <div class="widget">
 	        <div class="cash-left">
 	            <h3 class="red">Cash Left</h3>
-	            <h1>EUR 100,000,000</h1>
+	            <h1>SS$ 100,000,000</h1>
 	            <h3 class="red">Est. Monthly Expenses</h3>
-	            <h1>EUR 234,998</h1> 
+	            <h1>SS$ 234,998</h1> 
 	        </div>
 	    </div><!-- end .widget -->
 	</div><!-- end #sidebar -->

@@ -21,9 +21,9 @@ class MatchController extends AppController {
  * @var array
  */
 	public $uses = array();
-	private $userData;
-	private $club;
-	private $user;
+	protected $userData;
+	protected $club;
+	protected $user;
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->loadModel('User');

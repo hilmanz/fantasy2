@@ -82,6 +82,7 @@ class ManageController extends AppController {
 	}
 	private function getFinancialStatements($fb_id){
 		$finance = $this->Game->financial_statements($fb_id);
+		
 		if($finance['status']==1){
 
 			$report = array('total_matches' => $finance['data']['total_matches'],
