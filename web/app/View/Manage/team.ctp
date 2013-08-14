@@ -1,13 +1,26 @@
+<?php
+if(isset($first_time) && $first_time==true):
+?>
 <div id="bgPopup"></div>
 <div id="popupWelcome">
 	<a href="#" class="closebtn"><span class="icon-close"></span></a>
 	<div class="popup-content">
     	<h3>Selamat datang di<br /><span class="red">SuperSoccer Fantasy League</span></h3>
-    	<img src="http://fantasy-football.code18.us/web/images/team/liverpool.png" />
-        <h4>LIVERPOOL FC</h4>
+        <?php
+        //pr($club);
+        if($next_match['home_id']==$club['team_id']):
+        ?>
+    	<img src="<?=$this->Html->url('/images/team/'.str_replace(" ","_",strtolower($next_match['home_original_name'])).'.png')?>" />
+        <?php else:?>
+        <img src="<?=$this->Html->url('/images/team/'.str_replace(" ","_",strtolower($next_match['away_original_name'])).'.png')?>" />
+        <?php endif;?>
+        <h4><?=h($club['team_name'])?></h4>
         <h5>Pilih formasi, pemain starter dan cadangan untuk memulai dalam kompetisi </h5>
     </div>
 </div>
+<?php
+endif;
+?>
 <div id="fillDetailsPage">
     <?php echo $this->element('infobar'); ?>
     <div id="thecontent">
@@ -16,7 +29,7 @@
                 <h2>next match</h2>
                 <span class="date yellow">
                     <?=date("d/m/Y",strtotime($next_match['match_date']))?><br/>
-                    Matchday : <?=$next_match['matchday']?>
+                    Week : <?=$next_match['matchday']?>
                 </span>
             </div><!-- end .widget -->
             <div class="widget tr match-team">
@@ -57,7 +70,7 @@
                     ?>
                 </span></h3>
                 <h3><span class="span1">Best Match</span>:<span class="span2"><?=$best_match?></span></h3>
-                <h3><span class="span1">Club Value</span>:<span class="span2"><?=number_format($team_bugdet+$USER_POINTS)?></span></h3>
+                <h3><span class="span1">Money</span>:<span class="span2">SS$ <?=number_format($team_bugdet+$USER_POINTS)?></span></h3>
                 <a class="view-more" href="<?=$this->Html->url('/leaderboard')?>">View Leaderboard</a>
             </div><!-- end .widget -->
            

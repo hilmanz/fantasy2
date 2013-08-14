@@ -63,7 +63,7 @@ class ManageController extends AppController {
 		//list of players
 		$players = $this->Game->get_team_players($userData['fb_id']);
 		$this->set('players',$players);
-		
+
 		//list of staffs
 		//get officials
 		$officials = $this->Game->getAvailableOfficials($userData['team']['id']);
@@ -199,6 +199,10 @@ class ManageController extends AppController {
 		if($rs['status']==1){
 			$this->set('best_player',$rs['data']);
 		}
+
+		$this->set('first_time',$this->Session->read('first_time'));
+		$this->Session->write('first_time',false);
+
 	}
 	public function player($player_id){
 		
