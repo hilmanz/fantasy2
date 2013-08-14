@@ -81,6 +81,7 @@ a:hover{
 }
 /*============= LAYOUT ===============*/
 #body{
+	background:url(../images/top-nav-bg.png) top repeat-x;
 	overflow:hidden;
 }
 #effect{
@@ -95,7 +96,7 @@ a:hover{
 	position:relative;
 }
 #header{
-	height:120px;
+	height:60px;
 	position:relative;
 }
 #container{
@@ -109,8 +110,8 @@ a:hover{
 #logo{
 	background:url(../images/logo.png) no-repeat;
 	width:680px; height:80px; display:block;
-	position:relative;
-	top:30px;
+	position:absolute;
+	top:-8px;
 	left:28px;
 	text-decoration:none;
 	float:left;
@@ -118,7 +119,7 @@ a:hover{
 #user-info{
 	float:right;
 	right:25px;
-	top:50px;
+	top:10px;
 	position:relative;
 	line-height:18px;
 }
@@ -130,6 +131,7 @@ a:hover{
 }
 #user-info span{
 	display:block;
+	color:#fdcb02 !important; 
 }
 #user-info .entry{
 	float:left;
@@ -142,7 +144,7 @@ a:hover{
 	-o-box-shadow:0 0 50px rgba(0,0,0,0.25) inset,0 0 10px rgba(0,0,0,0.7) inset;
 	border-radius:7px;
 	padding:5px 0;
-	margin:0 0 5px 0;
+	margin:0 0 20px 0;
 	text-align:center;
 }
 #navigation ul{
@@ -783,6 +785,11 @@ input[type=text]{
 	float:left;
 	margin:0 10px 10px 0;
 	display:block;
+	-webkit-transition: none;
+	-moz-transition: none;
+	-o-transition: none;
+	-ms-transition: none;
+	transition: none;
 }
 .teamBox:hover{
 	text-decoration:none;
@@ -790,8 +797,16 @@ input[type=text]{
 }
 .selected{
 	text-decoration:none;
-	background:url(../images/tr2.png) repeat;
+	background:url(../images/selected.png) #FF0 no-repeat top right;
 
+}
+.selected:hover{
+	background:url(../images/selected.png) #FC0 no-repeat top right;
+}
+.selected:hover{
+}
+.selected .team-name{
+	color:#000 !important; 
 }
 #clubtabs{
 	padding:20px 0;
@@ -1244,4 +1259,24 @@ td,th{
 }
 .drophighlight{
 	border: solid 1px #ccc;
+}
+.videotutorial span{
+	display:block;
+	padding:0 0 10px 0;
+}
+.buttons{
+	background: url(../images/bg_nav.jpg) repeat-x 0 -32px;
+	padding: 0 20px;
+	line-height: 28px;
+	display: inline-block;
+	border-radius: 10px;
+	color: #fff;
+	border: solid 1px #333;
+}
+.buttons:hover{
+	background:#060;
+	text-decoration:none;
+}
+.buttons span{
+	padding:0 0 0 5px;
 }

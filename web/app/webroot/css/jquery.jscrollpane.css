@@ -105,6 +105,22 @@
 #rooster .jspPane{
 	padding:10px !important;
 }
-#rooster #jp-container{
+#rooster #jp-container,#rooster #jp-container2{
 	left:-10px;
+}
+.starter #jp-container{
+	height:350px;
+}
+.substitutions #jp-container2{
+	height:150px;
+}
+.starter h4,.substitutions h4{
+	padding: 5px 10px;
+	background: url(../images/tr2.png) repeat;
+	border-radius: 5px;
+	line-height: 22px;
+	height: 20px;
+}
+.substitutions h4{
+	margin:40px 0 15px 0;
 }

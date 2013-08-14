@@ -345,34 +345,46 @@ function isStaffExist($staff_token,$name){
               </div><!-- end #tabs-Keuagan -->
               <div id="tabs-Players">
                 <div class="player-list">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Value</th>
+                    <th style="text-align:center;">Action</th>
+                  </tr>
+                 </thead>
+                 <tbody  id="myplayerlist">
                   <?php foreach($players as $player):?>
                   <?php
                     switch($player['position']){
                       case 'Goalkeeper':
-                        $player_pos = "G";
+                        $player_pos = "Goalkeeper";
                         $color = "grey";
                       break;
                       case 'Midfielder':
-                        $player_pos = "M";
+                        $player_pos = "Midfielder";
                         $color = "yellow";
                       break;
                       case 'Forward':
-                        $player_pos = "F";
+                        $player_pos = "Forward";
                         $color  = "red";
                       break;
                       default:
-                        $player_pos = "D";
+                        $player_pos = "Defender";
                         $color = "blue";
                       break;
                     }
                   ?>
-                    <div class="jersey-player ">
-                      <a href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>">
-                        <div class="jersey j-<?=$color?>"><?=$player_pos?></div>
-                        <span class="player-name"><?=h($player['name'])?></span>
-                      </a>
-                    </div><!-- end .jersey-player -->
+                  <tr>
+                    <td><a class="yellow" href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"><?=h($player['name'])?></a></td>
+                    <td><?=$player_pos?></td>
+                    <td>$100000</td>
+                    <td width="10"><a class="icon-cart buttons" href="#"><span>Sale</span></a></td>
+                  </tr>
                   <?php endforeach;?>
+                 </tbody>
+                </table>
                 </div><!-- end .player-list -->
               </div><!-- end #tabs-Squad -->
               <div id="tabs-Staff">

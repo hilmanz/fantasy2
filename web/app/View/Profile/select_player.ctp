@@ -20,22 +20,36 @@
 								<h2>Your Players</h2>
 							</div><!-- end .titles -->
                        		 <!-- available players -->
-							<div class="player-list" id="available">
-								&nbsp;
-							</div><!-- end .player-list -->
+							<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<thead>
+							  <tr>
+								<th>Name</th>
+								<th>Position</th>
+							  </tr>
+							 </thead>
+							 <tbody  id="available">
+							 </tbody>
+							</table>
                         </div>
 						
                     </div><!-- end .row-2 -->
                     
                     <div class="row-2">
                         <input type="hidden" name="players" value="">
-                        <a class="button" href="javascript:void();" onclick="create_team();return false;">Save &amp; Continue</a>
-                        <a class="button" href="<?=$this->Html->url('/profile/register_team')?>">Choose another team</a>
+                        <a class="button fl" href="javascript:void();" onclick="create_team();return false;">Save &amp; Continue</a>
+                        <a class="button fr" href="<?=$this->Html->url('/profile/register_team')?>">Choose another team</a>
                     </div><!-- end .row-2 -->
                 </form>
 			</div><!-- end .content -->
         </div><!-- end #content -->
 	<div id="sidebar" class="tr">
+		<div class="widget tr videotutorial">
+			<h2>BINGUNG?</h2>
+			<span class="yellow">Mainkan video dibawah untuk petunjuk mengisi form ini</span>
+			<div id="vidbox">
+				<iframe width="100%" height="200" src="//www.youtube.com/embed/EE_V-mSnH3M" frameborder="0" allowfullscreen></iframe>
+			</div><!-- end #vidbox -->
+		</div><!-- end .videotutorial -->
 	    <div class="widget">
 	        <div class="nav-side">
 	            <ul>
@@ -72,7 +86,7 @@ $("select[name='select_team']").on('custom_select', function(event, data) {
 function getPlayers(team_id){
       $("#available").html('Please wait...');
      api_call("<?=$this->Html->url('/game/players/')?>"+team_id,function(response){
-        $("#available").html('&nbsp;');
+        $("#available").html('');
         if(response.length>0){
             tmp['available_teams'] = response;
             var n = response.length;
@@ -93,38 +107,39 @@ $(document).ready(function(){
 });
 </script>
 <script type="text/template" id="player">
-<div class="jersey-player ">
-<a href="#" id="<%=uid%>">
   <%
         var jersey_color = 'j-red';
         var pos_code = 'F';
         switch(position){
             case 'Goalkeeper':
-                pos_code = 'G';
+                pos_code = 'Goalkeeper';
                 jersey_color = 'j-grey';
             break;
             case 'Defender':
-                pos_code = 'D';
+                pos_code = 'Defender';
                 jersey_color = 'j-blue';
             break;
             case 'Midfielder':
-                pos_code = 'M';
+                pos_code = 'Midfielder';
                 jersey_color = 'j-yellow';
             break;
             case 'Forward':
-                pos_code = 'F';
+                pos_code = 'Forward';
                 jersey_color = 'j-red';
             break;
             default:
-                pos_code = 'F';
+                pos_code = 'Forward';
                 jersey_color = 'j-red';
             break;
         }
+		$("table tbody tr:nth-child(odd)").addClass("odd");
+		$("table tbody tr:nth-child(even)").addClass("even");
     %>
-    <div class="jersey <%=jersey_color%>"><%=pos_code%></div>
-    <span class="player-name"><%=name%></span>
-</a>
-</div>
+	
+  <tr id="<%=uid%>">
+    <td><%=name%></td>
+    <td><%=pos_code%></td>
+  </tr>
 </script>
 <script type="text/template" id="player_selected">
 <div class="jersey-player ">

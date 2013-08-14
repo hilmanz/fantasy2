@@ -14,7 +14,7 @@ $("#formation-select").change(function () {
 $(function() {
 
 	// the element we want to apply the jScrollPane
-	var $el					= $('#jp-container').jScrollPane({
+	var $el					= $('#jp-container,#jp-container2').jScrollPane({
 		verticalGutter 	: -16
 	}),
 			
