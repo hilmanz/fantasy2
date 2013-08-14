@@ -171,7 +171,7 @@ class ProfileController extends AppController {
 			}
 			$data['players'] = json_encode($players);
 
-			
+
 			$result = $this->Game->create_team($data);
 			
 			if(isset($result['error'])){
@@ -237,7 +237,8 @@ class ProfileController extends AppController {
 				$this->User->set('register_completed',1);
 				$rs = $this->User->save();
 				if($rs){
-					$this->redirect('/profile/success');
+					$this->Session->write('first_time',true);
+					$this->redirect('/manage/team');
 				}else{
 					$this->redirect('/profile/error');
 				}
@@ -264,7 +265,7 @@ class ProfileController extends AppController {
 
 			//player's salary
 			$players = $this->Game->get_team_players($userData['fb_id']);
-			
+
 			foreach($players as $player){
 				$total_weekly_salary += intval($player['salary']);
 			}

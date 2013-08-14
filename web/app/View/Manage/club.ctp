@@ -379,7 +379,11 @@ function isStaffExist($staff_token,$name){
                   <tr>
                     <td><a class="yellow" href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"><?=h($player['name'])?></a></td>
                     <td><?=$player_pos?></td>
-                    <td>$100000</td>
+                    <?php
+                      $performance_bonus = round(floatval($player['last_performance']/100) * 
+                                            intval($player['transfer_value']));
+                    ?>
+                    <td>SS$ <?=number_format(intval($player['transfer_value'])+$performance_bonus)?></td>
                     <td width="10"><a class="icon-cart buttons" href="#"><span>Sale</span></a></td>
                   </tr>
                   <?php endforeach;?>

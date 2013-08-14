@@ -181,7 +181,7 @@ function getPlayers(game_team_id,callback){
 				FROM ffgame.game_team_players a\
 				INNER JOIN ffgame.master_player b \
 				ON a.player_id = b.uid\
-				WHERE game_team_id = ? ORDER BY b.name ASC \
+				WHERE game_team_id = ? ORDER BY b.position ASC,b.last_name ASC \
 				LIMIT 200;",
 				[game_team_id],
 				function(err,rs){
@@ -191,16 +191,27 @@ function getPlayers(game_team_id,callback){
 			function(players,callback){
 				var results = [];
 				async.eachSeries(players,function(player,done){
-					conn.query("SELECT SUM(points) AS total_points \
+					conn.query("SELECT SUM(total_points) AS total_points,\
+								SUM(performance) AS performance\
+								FROM (\
+								(SELECT SUM(points) AS total_points ,0 AS performance\
 								FROM ffgame_stats.game_match_player_points \
-								WHERE game_team_id = ? AND player_id = ?;",
-					[game_team_id,player.uid],
+								WHERE game_team_id = ? AND player_id = ?)\
+								UNION ALL\
+								(SELECT 0,performance FROM ffgame_stats.game_match_player_points \
+								WHERE game_team_id = ? AND player_id=? \
+								ORDER BY id DESC LIMIT 1)\
+								)a;\
+								",
+					[game_team_id,player.uid,game_team_id,player.uid],
 					function(err,rs){
 						player.points = 0;
+						player.last_performance = 0;
 						if(!err){
 							if(rs!=null){
 								if(rs[0].total_points!=null){
-									player.points = parseInt(rs[0].total_points);	
+									player.points = parseInt(rs[0].total_points);
+									player.last_performance = parseFloat(rs[0].performance);	
 								}
 								
 							}
