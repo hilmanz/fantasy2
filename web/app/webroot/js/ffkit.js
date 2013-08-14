@@ -154,7 +154,7 @@ function populate_selected(callback){
 			if(k>0){
 				s += ",";
 			}
-			s += $(v).find('a').attr('id');
+			s += $(v).attr('id');
 			if(n-1 == k){
 				callback(s);
 			}

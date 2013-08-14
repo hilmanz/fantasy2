@@ -1280,3 +1280,7 @@ td,th{
 .buttons span{
 	padding:0 0 0 5px;
 }
+.message{
+	border:1px solid #ff0000;
+	padding:10px;
+}

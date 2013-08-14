@@ -171,7 +171,7 @@ class ProfileController extends AppController {
 			}
 			$data['players'] = json_encode($players);
 
-
+			
 			$result = $this->Game->create_team($data);
 			
 			if(isset($result['error'])){
@@ -264,6 +264,7 @@ class ProfileController extends AppController {
 
 			//player's salary
 			$players = $this->Game->get_team_players($userData['fb_id']);
+			
 			foreach($players as $player){
 				$total_weekly_salary += intval($player['salary']);
 			}
@@ -279,12 +280,13 @@ class ProfileController extends AppController {
 		$this->set('INITIAL_BUDGET',Configure::read('INITIAL_BUDGET'));
 		$user_fb = $this->Session->read('UserFBDetail');
 		$this->set('user',$user_fb);
-		
-		if($this->request->is('post')){
+		$this->set('phone_empty',false);
+		if($this->request->is('post') && $this->request->data['phone_number']!=null){
 			$data = array('fb_id'=>$user_fb['id'],
 						  'name'=>$this->request->data['name'],
 						  'email'=>$this->request->data['email'],
 						  'location'=>$this->request->data['city'],
+						  'phone_number'=>$this->request->data['phone_number'],
 						  'register_date'=>date("Y-m-d H:i:s"),
 						  'survey_about'=>$this->request->data['hearffl'],
 						  'survey_daily_email'=>$this->request->data['daylyemail'],
@@ -310,7 +312,7 @@ class ProfileController extends AppController {
 					
 					if($response['status']==1){
 						//send info
-						$msg = "@p1_".$rs['User']['id']." has joined the league.";
+						$msg = "@p1_".$rs['User']['id']." sudah terdaftar dalam fantasy football.";
 						$this->Info->write('new player',$msg);
 						
 						$this->redirect("/profile/register_team");
@@ -322,6 +324,9 @@ class ProfileController extends AppController {
 					}
 				}
 			}
+		}else if($this->request->is('post') && $this->request->data['phone_number']==null){
+			$this->Session->setFlash('Harap mengisi nomor mobile phone terlebih dahulu !');
+			$this->set('phone_empty',true);
 		}
 	}
 	public function error(){

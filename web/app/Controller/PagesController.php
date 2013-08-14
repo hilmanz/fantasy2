@@ -75,6 +75,7 @@ class PagesController extends AppController {
 		$this->loadModel('Info');
 		$this->loadModel('User');
 		$info = $this->Info->getLatest($this->User,20);
+		
 		$this->set('info',$info);
 		//-->
 

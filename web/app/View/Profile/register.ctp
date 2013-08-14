@@ -7,6 +7,7 @@
                     <h1 class="red">Fill in Your Details</h1>
                     <p>Aenean lacinia bibendum nulla sed consectetur. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Etiam porta sem malesuada magna mollis euismod. Nulla vitae elit libero, a pharetra augue. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
     			</div><!-- end .row-2 -->
+                <?php echo $this->Session->flash();?>
                 <form class="theForm" action="<?=$this->Html->url('/profile/register')?>" method="post" enctype="multipart/form-data">
                     
                     <div class="row">
@@ -23,7 +24,10 @@
                     </div><!-- end .row -->
                     <div class="row">
                         <label>Mobile</label>
-                        <input type="text" name="phone_number" />
+                        <input type="text" name="phone_number"/>
+                        <?php if($phone_empty):?>
+                        <span class="error">harap isi dahulu.</span>
+                        <?php endif;?>
                     </div><!-- end .row -->
                     <div class="row inputRadio">
                         <label>Where Did You Hear About FFL?</label>
