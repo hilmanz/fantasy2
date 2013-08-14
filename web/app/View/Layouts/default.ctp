@@ -10,24 +10,25 @@
    	<div id="flag"></div>
  	<div id="body">
         <div id="universal">
-           <div id="header">
                 <?php if($USER_IS_LOGIN):?>
-               <a id="logo" href="<?=$this->Html->url('/manage/team')?>" title="SUPER SOCCER - FANTASY FOOTBALL LEAGUE">&nbsp;</a>
-            	
-                <div id="user-info">
-        			<a href="#" class="thumb40 fl"><img src="http://graph.facebook.com/<?=$USER_DATA['fb_id']?>/picture" /></a>
-                    <div class="entry fl">
-                        <h3 class="username"><a href="<?=$this->Html->url('/profile')?>"><?=h($USER_DATA['name'])?></a> |
-                         <a class="logout" href="<?=$this->Html->url('/profile/logout')?>">Logout</a></h3>
-                        <span class="points red"><?=number_format($USER_POINTS)?> Pts</span>
-                        
-                        
-                    </div><!-- end .entry -->
-                </div>
+          			 <div id="header">
+             		  	<a id="logo" href="<?=$this->Html->url('/manage/team')?>" title="SUPER SOCCER - FANTASY FOOTBALL LEAGUE">&nbsp;</a>
+                        <div id="user-info">
+                            <a href="#" class="thumb40 fl"><img src="http://graph.facebook.com/<?=$USER_DATA['fb_id']?>/picture" /></a>
+                            <div class="entry fl">
+                                <h3 class="username"><a href="<?=$this->Html->url('/profile')?>"><?=h($USER_DATA['name'])?></a> |
+                                 <a class="logout" href="<?=$this->Html->url('/profile/logout')?>">Logout</a></h3>
+                                <span class="points red"><?=number_format($USER_POINTS)?> Pts</span>
+                                
+                                
+                            </div><!-- end .entry -->
+                        </div>
+           			 </div><!-- end #header -->
                 <?php else:?>
-             <a id="logo" href="<?=$this->Html->url('/')?>" title="SUPER SOCCER - FANTASY FOOTBALL LEAGUE">&nbsp;</a>
+          			 <div id="header2">
+            		 <a id="logo" href="<?=$this->Html->url('/')?>" title="SUPER SOCCER - FANTASY FOOTBALL LEAGUE">&nbsp;</a>
+         		     </div><!-- end #header -->
           		<?php endif;?>
-            </div><!-- end #header -->
             <?php
                 if($USER_IS_LOGIN):
             ?>
@@ -51,7 +52,6 @@
                     	<li><a href="<?=$this->Html->url('/pages/faq')?>">HELP &amp; FAQ</a></li>
                     </ul>
                 </div>
-           
             <?php endif;?>
             <div id="container">
 				<?php echo $this->fetch('content'); ?>

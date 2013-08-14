@@ -1,3 +1,13 @@
+<div id="bgPopup"></div>
+<div id="popupWelcome">
+	<a href="#" class="closebtn"><span class="icon-close"></span></a>
+	<div class="popup-content">
+    	<h3>Selamat datang di<br /><span class="red">SuperSoccer Fantasy League</span></h3>
+    	<img src="http://fantasy-football.code18.us/web/images/team/liverpool.png" />
+        <h4>LIVERPOOL FC</h4>
+        <h5>Pilih formasi, pemain starter dan cadangan untuk memulai dalam kompetisi </h5>
+    </div>
+</div>
 <div id="fillDetailsPage">
     <?php echo $this->element('infobar'); ?>
     <div id="thecontent">
@@ -78,9 +88,6 @@
                     <div id="the-formation">
                         
                     </div><!-- end .my-formation -->
-                    <div class="subtitution">
-                        <h3>Substitutions</h3>
-                    </div>
                 </div><!-- end .field-formation -->
             </div><!-- end .field-container -->
         </div><!-- end .box3 -->
@@ -134,46 +141,7 @@
                 </div><!-- end .starter -->
             	<div class="substitutions">
                     <h4>Substitutions</h4>
-                    <div id="jp-container2" class="jp-container">
-                    <?php
-                    foreach($players as $n=>$player):
-                        switch($player['position']){
-                          case 'Goalkeeper':
-                            $player_pos = "G";
-                            $color = "grey";
-                          break;
-                          case 'Midfielder':
-                            $player_pos = "M";
-                            $color = "yellow";
-                          break;
-                          case 'Forward':
-                            $player_pos = "F";
-                            $color  = "red";
-                          break;
-                          default:
-                            $player_pos = "D";
-                            $color = "blue";
-                          break;
-                        }
-                        $last_page = floor($n/16);
-                       // $page = 'page-'.$last_page;
-                        $page = 'page-0';
-                        if($player['known_name']!=null){
-                            $player['name'] = $player['known_name'];
-                        }
-                    ?>
-                    <div class="bench jersey-player <?=$page?>">
-                        <a href="javascript:void(0);" no="<?=h($player['uid'])?>">
-                            <div class="jersey num j-<?=$color?>"><?=$player_pos?></div>
-                            <div class="player-info">
-                                <span class="player-name"><?=h($player['name'])?></span>
-                                <span class="player-status">Playable</span>       
-                            </div><!-- end .player-info -->
-                        </a>
-                    </div><!-- end .jersey-player -->
-                    <?php endforeach;?>
-                    </div><!-- end #jp-container -->
-                </div><!-- end .starter -->
+                </div><!-- end .substitutions -->
             </div><!-- end .widget -->
             <!--
             <div class="widget tr action-button">
@@ -221,6 +189,10 @@ var formation = {
     '3-4-2-1' : ['','G','D','D','D','M','M','M','M','M/F','M/F','F']
 };
 $(document).ready(function(){
+		$("a.closebtn").click(function(){
+			$("#bgPopup").fadeOut();
+			$("#popupWelcome").fadeOut();
+		});
         $("#btn_save").fancybox({
             beforeLoad : function(){
                 render_view(tplsave,"#popup-messages .popupContent .entry-popup",[]);

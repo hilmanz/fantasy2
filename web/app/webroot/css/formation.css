@@ -37,24 +37,28 @@ Author: ACIT JAZZ
 	bottom:500px; left:140px;
 }
 .p12{
-	bottom:-110px;
-	left:12px;
+	bottom: 80px;
+	right: -125px;
 }
 .p13{
-	bottom:-110px;
-	left:98px;
+	bottom: 80px;
+	right:-210px;
 }
 .p14{
-	bottom:-110px;
-	left:184px;
+	bottom: 80px;
+	right:-295px;
 }
 .p15{
-	bottom:-110px;
-	right:98px;
+	bottom: 0px;
+	right: -125px;
 }
 .p16{
-	bottom:-110px;
-	right:12px;
+	bottom:0px;
+	right:-210px;
+}
+.p17{
+	bottom:0px;
+	right:-295px;
 }
 .c1{
 	bottom:0;

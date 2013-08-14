@@ -107,9 +107,10 @@
 }
 #rooster #jp-container,#rooster #jp-container2{
 	left:-10px;
+	top:10px;
 }
 .starter #jp-container{
-	height:350px;
+	height:360px;
 }
 .substitutions #jp-container2{
 	height:150px;
