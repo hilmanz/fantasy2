@@ -110,7 +110,7 @@ endif;
                 
             </div><!-- end .widget -->
             <div id="rooster" class="widget tr squad-team">
-            	<div class="starter">
+            	<div class="starters">
                     <h4>Starters</h4>
                     <div id="jp-container" class="jp-container">
                     <?php
@@ -152,7 +152,7 @@ endif;
                     <?php endforeach;?>
                     </div><!-- end #jp-container -->
                 </div><!-- end .starter -->
-            	<div class="substitutions">
+            	<div class="substitutions drop">
                     <h4>Substitutions</h4>
                 </div><!-- end .substitutions -->
             </div><!-- end .widget -->
@@ -287,7 +287,7 @@ $(document).ready(function(){
         });*/
         $(".drop").droppable({
             greedy: true,
-            hoverClass: "drophighlight",
+            
             drop: function( event, ui ){
                 var dropX = event.pageX-$("#universal").position().left-30;
                 var dropY = event.pageY - $("#universal").position().top-30;

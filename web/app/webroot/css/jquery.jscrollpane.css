@@ -109,13 +109,13 @@
 	left:-10px;
 	top:10px;
 }
-.starter #jp-container{
+.starters #jp-container{
 	height:360px;
 }
 .substitutions #jp-container2{
 	height:150px;
 }
-.starter h4,.substitutions h4{
+.starters h4,.substitutions h4{
 	padding: 5px 10px;
 	background: url(../images/tr2.png) repeat;
 	border-radius: 5px;
