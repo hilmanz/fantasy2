@@ -78,7 +78,7 @@ function setLineup(game_team_id,setup,formation,done){
 							FROM ffgame.game_team_players a \
 							INNER JOIN ffgame.master_player b\
 							ON a.player_id = b.uid\
-							WHERE a.game_team_id = ? AND a.player_id IN (?) LIMIT 11",
+							WHERE a.game_team_id = ? AND a.player_id IN (?) LIMIT 16",
 							[game_team_id,players],
 							function(err,rs){
 								console.log(this.sql);
@@ -88,7 +88,7 @@ function setLineup(game_team_id,setup,formation,done){
 				
 			},
 			function(players,callback){
-				if(players.length==11){
+				if(players.length==16){
 					//make sure that the composition is correct
 					//like position 1 must be placed by goalkeeper.
 					//the rest is optional
@@ -150,7 +150,7 @@ function setLineup(game_team_id,setup,formation,done){
 }
 //check if the player's formation is valid
 //saat ini kita cuman memastikan bahwa nomor 1 itu harus kiper.
-//nomor yg lain mau penyerang semua sih gak masalah.
+//nomor yg lain mau penyerang semua sih gak masalah (untuk sementara waktu)
 function position_valid(players,setup,formation){
 	console.log(players);
 	
@@ -159,10 +159,20 @@ function position_valid(players,setup,formation){
 	for(var i in setup){
 		for(var j in players){
 			if(players[j].player_id == setup[i].player_id){
-				console.log(setup[i].no,' ',players[j].position,' vs ',my_formation[setup[i].no]);
+				console.log('--',setup[i].no,' ',players[j].position,' vs ',my_formation[setup[i].no]);
 				if(setup[i].no<=11){
-					if(players[j].position != my_formation[setup[i].no]){
-						return false;
+					if(my_formation[setup[i].no]=='Forward/Midfielder'){
+						//console.log('check : '+setup[i].no,' ',players[j].position,' vs ',my_formation[setup[i].no]);
+						if(players[j].position != 'Forward' 
+								&& players[j].position != 'Midfielder'){
+							return false;
+						}
+
+					}else{
+						//console.log('foo : '+setup[i].no,' ',players[j].position,' vs ',my_formation[setup[i].no]);
+						if(players[j].position != my_formation[setup[i].no]){
+							return false;
+						}
 					}
 				}
 				break;

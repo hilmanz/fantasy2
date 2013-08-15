@@ -85,8 +85,9 @@ class GameController extends AppController {
 			}
 		}
 		$lineup = $this->Game->setLineup($userData['team']['id'],$formation,$players);
+
 		header('Content-type: application/json');
-		if($lineup['status']==1){
+		if(@$lineup['status']==1){
 			$msg = "@p1_".$this->userDetail['User']['id']." has set his/her formation.";
 			$this->Info->write('set formation',$msg);
 		}

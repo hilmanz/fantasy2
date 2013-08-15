@@ -76,8 +76,16 @@ function save_formation(){
 					$('.saving').show();
 					$('.confirm').hide();
 					api_post(api_url+'game/save_lineup',data,function(response){
-						console.log(response);
-						$.fancybox.close();
+						if(typeof response.status !== 'undefined' &&
+								response.status==1){
+							$.fancybox.close();
+						}else{
+							$("#popup-messages .popupContent .entry-popup").html('');
+				
+							render_view(tplmsg,'#popup-messages .popupContent .entry-popup',
+							{title:'Oops !',result:'Mohon maaf, ada kesalahan dalam memposisikan pemain ! Silahkan perbaiki terlebih dahulu !'});
+
+						}
 					});
 				}
 			}else{
