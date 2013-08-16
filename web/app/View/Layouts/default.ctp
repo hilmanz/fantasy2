@@ -17,10 +17,10 @@
              		  	<a id="logo" href="<?=$this->Html->url('/manage/team')?>" title="SUPER SOCCER - FANTASY FOOTBALL LEAGUE">&nbsp;</a>
                         <div id="user-info">
                             <a href="<?=$this->Html->url('/profile')?>" class="thumb40 fl">
-                         <?php if(strlen($user['avatar_img'])==0 || $user['avatar_img']=='0'):?>
+                         <?php if(strlen(@$user['avatar_img'])==0 || @$user['avatar_img']=='0'):?>
                             <img src="http://graph.facebook.com/<?=$USER_DATA['fb_id']?>/picture" />
                             <?php else:?>
-                            <img src="<?=$this->Html->url('/files/120x120_'.$user['avatar_img'])?>" />
+                            <img src="<?=$this->Html->url('/files/120x120_'.@$user['avatar_img'])?>" />
                             <?php endif;?>
                             </a>
                             <div class="entry fl">
