@@ -5,7 +5,7 @@
 			<a href="javascript:fb_login();" class="boxButton loginFacebook">&nbsp;</a>
 			</p>
 		</div><!-- end .entry -->
-		<h3>Sorry, your session is already expired, please re-login using your Facebook.</h3>
+		<h3>Maaf, sesi login sudah habis, mohon login-ulang menggunakan Facebook.</h3>
 	</div><!-- end .box -->
 </div>
 <!-- -->
