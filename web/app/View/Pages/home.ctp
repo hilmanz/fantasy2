@@ -26,14 +26,14 @@
 
 	<div id="listBox">
         <div class="box tr">
-            <h3>How To Play</h3>
+            <h3>Cara Bermain</h3>
             <div class="entry">
                 <p>Maecenas sed diam eget risus varius blandit sit amet non magna. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.</p>
-                <a class="readmore" href="index.php?menu=faq">See Detail</a>
+                <a class="readmore" href="index.php?menu=faq">Selengkapnya</a>
             </div><!-- end .entry -->
         </div><!-- end .box -->
         <div class="box tr last">
-            <h3>register now!</h3>
+            <h3>Daftar Sekarang!</h3>
             <div class="entry">
             	<p>
             	<a href="javascript:fb_login();" class="boxButton loginFacebook">&nbsp;</a>
@@ -45,7 +45,7 @@
 
 <div id="sidebar" class="tr latestActivity">
     <div id="latestActivity">
-    	<h1>what's happening</h1>
+    	<h1>Aktivitas Terbaru</h1>
         <div id="jp-container" class="jp-container">
             <?php
             foreach($info as $activity):

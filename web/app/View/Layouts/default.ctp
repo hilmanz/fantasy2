@@ -68,9 +68,9 @@
                 <div id="footNav">
                   
                     <ul>
-                        <li><a href="<?=$this->Html->url('/pages/about')?>">ABOUT FANTASY FOOTBALL LEAGUE</a></li>
-                        <li><a href="<?=$this->Html->url('/pages/tos')?>">Terms &amp; Conditions</a></li>
-                        <li><a href="<?=$this->Html->url('/pages/contact')?>">Contact</a></li>
+                        <li><a href="<?=$this->Html->url('/pages/about')?>">Tentang Fantasy Football League</a></li>
+                        <li><a href="<?=$this->Html->url('/pages/tos')?>">Syarat & Ketentuan</a></li>
+                        <li><a href="<?=$this->Html->url('/pages/contact')?>">Kontak</a></li>
 
                     </ul>
                      <?php
