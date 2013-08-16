@@ -305,9 +305,13 @@ class ManageController extends AppController {
 		}
 	}
 	public function new_user_event(){
-		$this->loadModel('Info');
-		$msg = "@p1_".$this->userDetail['User']['id']." has joined the league.";
-		$this->Info->write('new player',$msg);
-		$this->redirect('/');
+		if(Configure::read('debug')>0){
+			$this->loadModel('Info');
+			$msg = "@p1_".$this->userDetail['User']['id']." has joined the league.";
+			$this->Info->write('new player',$msg);
+			$this->redirect('/');
+		}else{
+			$this->redirect('/manage/team');
+		}
 	}
 }
