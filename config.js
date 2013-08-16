@@ -1,5 +1,5 @@
 exports.config = {
-	competition: {id:8,year:2011},
+	competition: {id:8,year:2013},
 	updater_file_prefix: 'srml-',
 	database:{
 		host:'localhost',

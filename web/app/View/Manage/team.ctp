@@ -6,14 +6,8 @@ if(isset($first_time) && $first_time==true):
 	<a href="#" class="closebtn"><span class="icon-close"></span></a>
 	<div class="popup-content">
     	<h3>Selamat datang di<br /><span class="red">SuperSoccer Fantasy League</span></h3>
-        <?php
-        //pr($club);
-        if($next_match['home_id']==$club['team_id']):
-        ?>
-    	<img src="<?=$this->Html->url('/images/team/'.str_replace(" ","_",strtolower($next_match['home_original_name'])).'.png')?>" />
-        <?php else:?>
-        <img src="<?=$this->Html->url('/images/team/'.str_replace(" ","_",strtolower($next_match['away_original_name'])).'.png')?>" />
-        <?php endif;?>
+       
+        <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
         <h4><?=h($club['team_name'])?></h4>
         <h5>Pilih formasi, pemain starter dan cadangan untuk memulai dalam kompetisi </h5>
     </div>
@@ -34,14 +28,18 @@ endif;
             </div><!-- end .widget -->
             <div class="widget tr match-team">
                 <div class="col3 home-team">
-                    <a href="#" class="team-logo"><img src="<?=$this->Html->url('/images/team/'.str_replace(" ","_",strtolower($next_match['home_original_name'])).'.png')?>" /></a>
+                    <a href="#" class="team-logo">
+                        <img style="height:46px;" src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$next_match['home_id'])?>.png"/>
+                    </a>
                     <h3><?=h($next_match['home_name'])?></h3>
                 </div><!-- end .col3 -->
                 <div class="col3 vs">
                     <h2>Vs</h2>
                 </div><!-- end .col3 -->
                 <div class="col3 away-team">
-                    <a href="#" class="team-logo"><img src="<?=$this->Html->url('/images/team/'.str_replace(" ","_",strtolower($next_match['away_original_name'])).'.png')?>" /></a>
+                    <a href="#" class="team-logo">
+                         <img style="height:46px;" src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$next_match['away_id'])?>.png"/>
+                    </a>
                     <h3><?=h($next_match['away_name'])?></h3>
                 </div><!-- end .col3 -->
             </div><!-- end .widget -->

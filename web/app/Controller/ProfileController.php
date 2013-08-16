@@ -213,6 +213,7 @@ class ProfileController extends AppController {
 				$this->set('team_list',$teams);
 				$this->set('selected_team',$selected_team);
 				$original = $this->Game->getClub($selected_team['team_id']);
+				
 				$this->set('original',$original);
 
 			}else{

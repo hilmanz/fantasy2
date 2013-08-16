@@ -8,7 +8,8 @@
                         <h1 class="red lh50">Starting Lineup and Substitutions</h1>
                     </div>
                     <div class="col2">
-						  <img class="teamlogo" src="<?=$this->Html->url('/images/team/'.str_replace(" ","_",strtolower($original['name'])).'.png')?>"/>
+						  <img class="teamlogo" src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$original['uid'])?>.png"/>
+                          
                           <h3 class="teamname"> <?=htmlspecialchars(stripslashes($selected_team['team_name']))?></h3>
                     </div>
     			</div><!-- end .row-2 -->

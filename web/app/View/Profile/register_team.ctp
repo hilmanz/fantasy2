@@ -32,7 +32,8 @@
                             	}
                             ?>
                             <a class="teamBox <?=$selected?>" no="<?=$team['uid']?>" href="#/selectTeam/<?=$team['uid']?>" title="<?=$team['name']?>">
-                                <img src="<?=$this->Html->url('/images/team/'.strtolower(str_replace(' ','_',$team['name'])).'.png')?>" />
+                               
+                                <img style="height:40px" src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace("t","",$team['uid'])?>.png"/>
                                 <div class="team-name"><?=$team['name']?></div>
                             </a><!-- end .teamBox -->
                             <?php endforeach;?>
