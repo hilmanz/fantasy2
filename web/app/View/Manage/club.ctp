@@ -58,7 +58,12 @@ function isStaffExist($staff_token,$name){
               </ul>
               <div id="tabs-Info">
                 <div class="avatar-big fl">
-                    <img src="http://graph.facebook.com/<?=$user['fb_id']?>/picture" />
+                   
+                     <?php if(strlen($user['avatar_img'])==0 || $user['avatar_img']=='0'):?>
+                      <img src="http://graph.facebook.com/<?=$USER_DATA['fb_id']?>/picture" />
+                      <?php else:?>
+                      <img src="<?=$this->Html->url('/files/120x120_'.$user['avatar_img'])?>" />
+                      <?php endif;?>
                 </div>
                 <div class="user-details fl">
                     <h3 class="username"><?=h($user['name'])?></h3>

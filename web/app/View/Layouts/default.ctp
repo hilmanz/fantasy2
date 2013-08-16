@@ -10,11 +10,19 @@
    	<div id="flag"></div>
  	<div id="body">
         <div id="universal">
+
                 <?php if($USER_IS_LOGIN):?>
+
           			 <div id="header">
              		  	<a id="logo" href="<?=$this->Html->url('/manage/team')?>" title="SUPER SOCCER - FANTASY FOOTBALL LEAGUE">&nbsp;</a>
                         <div id="user-info">
-                            <a href="#" class="thumb40 fl"><img src="http://graph.facebook.com/<?=$USER_DATA['fb_id']?>/picture" /></a>
+                            <a href="<?=$this->Html->url('/profile')?>" class="thumb40 fl">
+                         <?php if(strlen($user['avatar_img'])==0 || $user['avatar_img']=='0'):?>
+                            <img src="http://graph.facebook.com/<?=$USER_DATA['fb_id']?>/picture" />
+                            <?php else:?>
+                            <img src="<?=$this->Html->url('/files/120x120_'.$user['avatar_img'])?>" />
+                            <?php endif;?>
+                            </a>
                             <div class="entry fl">
                                 <h3 class="username"><a href="<?=$this->Html->url('/profile')?>"><?=h($USER_DATA['name'])?></a> |
                                  <a class="logout" href="<?=$this->Html->url('/profile/logout')?>">Logout</a></h3>
