@@ -312,7 +312,7 @@ function getPlayerTeamStats(game_team_id,player_id,callback){
 			ffgame.game_fixtures b\
 			ON a.game_id = b.game_id\
 			WHERE a.game_team_id = ?\
-			AND a.player_id = ? LIMIT 300;";
+			AND a.player_id = ? ORDER BY a.game_id LIMIT 300;";
 	conn = prepareDb();
 	conn.query(sql,
 				[game_team_id,player_id],

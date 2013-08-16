@@ -68,7 +68,7 @@ endif;
                     ?>
                 </span></h3>
                 <h3><span class="span1">Best Match</span>:<span class="span2"><?=$best_match?></span></h3>
-                <h3><span class="span1">Money</span>:<span class="span2">SS$ <?=number_format($team_bugdet+$USER_POINTS)?></span></h3>
+                <h3><span class="span1">Money</span>:<span class="span2">SS$ <?=number_format($team_bugdet)?></span></h3>
                 <a class="view-more" href="<?=$this->Html->url('/leaderboard')?>">View Leaderboard</a>
             </div><!-- end .widget -->
            
