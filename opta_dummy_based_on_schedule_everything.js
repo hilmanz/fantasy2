@@ -652,15 +652,16 @@ function generateStats(settings){
 		//settings.home.substitutions[i].player
 		var p = settings.home.lineup.substitutions[i];
 		
-		settings.home.substitute_data.push({player_id:p.player.uid,
-											 event_id: Math.ceil(Math.random()*100),
-											 event_number: Math.ceil(Math.random()*10000),
-											 time: Math.ceil(Math.random()*90),
-											 suboff: settings.home.lineup.starters[Math.ceil(Math.random()*9)+1].player.uid,
-											 reason:'Tactical'
-											}
-		);
-
+		if(typeof p.player !== 'undefined'){
+			settings.home.substitute_data.push({player_id:p.player.uid,
+												 event_id: Math.ceil(Math.random()*100),
+												 event_number: Math.ceil(Math.random()*10000),
+												 time: Math.ceil(Math.random()*90),
+												 suboff: settings.home.lineup.starters[Math.ceil(Math.random()*9)+1].player.uid,
+												 reason:'Tactical'
+												}
+			);
+		}
 		for(var s in non_keeper_stats){
 			p.stats[non_keeper_stats[s]] = Math.floor(Math.random()*11);
 		}
@@ -678,15 +679,16 @@ function generateStats(settings){
 		
 		var p = settings.away.lineup.substitutions[i];
 		
-		settings.away.substitute_data.push({player_id:p.player.uid,
-											 event_id: Math.ceil(Math.random()*100),
-											 event_number: Math.ceil(Math.random()*10000),
-											 time: Math.ceil(Math.random()*90),
-											 suboff: settings.away.lineup.starters[Math.ceil(Math.random()*9)+1].player.uid,
-											 reason:'Tactical'
-											}
-		);
-
+		if(typeof p.player !== 'undefined'){
+			settings.away.substitute_data.push({player_id:p.player.uid,
+												 event_id: Math.ceil(Math.random()*100),
+												 event_number: Math.ceil(Math.random()*10000),
+												 time: Math.ceil(Math.random()*90),
+												 suboff: settings.away.lineup.starters[Math.ceil(Math.random()*9)+1].player.uid,
+												 reason:'Tactical'
+												}
+			);
+		}
 		for(var s in non_keeper_stats){
 			p.stats[non_keeper_stats[s]] = Math.floor(Math.random()*11);
 		}

@@ -19,7 +19,7 @@
                                 </div><!-- end .avatar-big -->
                                 <p><?=h($official['name'])?></p>
                                 <div>
-                                    SS$<?=number_format($official['salary'])?> / Week
+                                    SS$ <?=number_format($official['salary'])?> / Week
                                 </div>
                                 <div>
                                     <?php if(@$official['hired']):?>

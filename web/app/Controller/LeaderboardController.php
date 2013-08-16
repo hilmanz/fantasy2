@@ -49,7 +49,7 @@ class LeaderboardController extends AppController {
 	    foreach($rs as $n=>$r){
 	    	//get manager's name
 	    	$manager = $this->User->findById($r['Team']['user_id']);
-	    	$rs[$n]['Manager'] = $manager['User'];
+	    	$rs[$n]['Manager'] = @$manager['User'];
 	    }
 	    $this->set('team',$rs);
 
