@@ -46,6 +46,7 @@ exports.getReports = function(game_id,done){
 				onJsonData(json,function(err,rs){
 					callback(null,json);
 				});
+				//callback(null,json);
 			}
 		],
 		function(err,result){

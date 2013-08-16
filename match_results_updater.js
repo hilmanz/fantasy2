@@ -78,6 +78,7 @@ function process_report(game_id,done){
 		function(result,callback){
 			
 			console.log('update lineup');
+			
 			lineup_stats.update(game_id,0,function(err,is_done,next_offset){
 				console.log('lineup stats updated !');
 				if(!is_done){
@@ -92,6 +93,12 @@ function process_report(game_id,done){
 					});
 				}
 			});
+			/*
+			business_stats.update(game_id,0,function(err){
+						console.log('business stats update completed');
+						console.log('all batches has been processed');
+						callback(err,'done');
+					});*/
 		}
 	],
 	function(err,result){

@@ -30,11 +30,28 @@ var pool  = mysql.createPool({
    user     : config.database.username,
    password : config.database.password,
 });
+var frontend_schema = config.database.frontend_schema;
+var total_teams = 0;
 console.log('business_stats : pool opened');
 exports.update = function(game_id,start,done){
 	
 	async.waterfall(
 		[
+			function(callback){
+				//get total teams participated
+				pool.getConnection(function(err,conn){
+					console.log('open connection');
+					conn.query("SELECT COUNT(*) as total FROM ffgame.game_users",
+								[],
+								function(err,rs){
+										conn.end(function(err){
+											total_teams = rs[0].total;
+											console.log('total_teams',total_teams);
+											callback(err);
+										});	
+								});
+				});
+			},
 			function(callback){
 				getGameFixture(game_id,function(err,game){
 					callback(err,game);
@@ -87,7 +104,7 @@ function calculateIncomeForAllHomeTeams(game_id,game,home_team,away_team,done){
 	var limit = 100;
 	var start = 0;
 	var team_id = home_team[0].uid;
-	processHomeTeams(start,limit,team_id,game_id,home_team[0].rank,away_team[0].rank,game,done);
+	processHomeTeams(start,limit,team_id,game_id,0,0,game,done);
 	
 }
 function calculateIncomeForAllAwayTeams(game_id,game,home_team,away_team,done){
@@ -95,15 +112,26 @@ function calculateIncomeForAllAwayTeams(game_id,game,home_team,away_team,done){
 	var limit = 100;
 	var start = 0;
 	var team_id = away_team[0].uid;
-	processAwayTeams(start,limit,team_id,game_id,home_team[0].rank,away_team[0].rank,game,done);
+	processAwayTeams(start,limit,team_id,game_id,0,0,game,done);
 	
 }
 function processHomeTeams(start,limit,team_id,game_id,rank,away_rank,game,done){
 	pool.getConnection(function(err,conn){
 		console.log('open connection');
-		conn.query("SELECT * FROM ffgame.game_teams WHERE team_id = ? AND n_status=1 LIMIT ?,?;",
+		conn.query("SELECT a.*,e.rank FROM ffgame.game_teams a\
+					INNER JOIN ffgame.game_users b\
+					ON a.user_id = b.id\
+					INNER JOIN "+frontend_schema+".users c\
+					ON c.fb_id = b.fb_id\
+					INNER JOIN "+frontend_schema+".teams d\
+					ON d.user_id = c.id\
+					LEFT JOIN\
+					"+frontend_schema+".points e\
+					ON e.team_id = d.id\
+					WHERE a.team_id = ? AND a.n_status=1 LIMIT ?,?;",
 					[team_id,start,limit],
 					function(err,rs){
+						console.log(this.sql);
 							conn.end(function(err){
 								async.each(rs,
 									function(team,callback){
@@ -125,7 +153,17 @@ function processHomeTeams(start,limit,team_id,game_id,rank,away_rank,game,done){
 function processAwayTeams(start,limit,team_id,game_id,rank,away_rank,game,done){
 	pool.getConnection(function(err,conn){
 		console.log('open connection');
-		conn.query("SELECT * FROM ffgame.game_teams WHERE team_id = ? AND n_status=1 LIMIT ?,?;",
+		conn.query("SELECT a.*,e.rank FROM ffgame.game_teams a\
+					INNER JOIN ffgame.game_users b\
+					ON a.user_id = b.id\
+					INNER JOIN "+frontend_schema+".users c\
+					ON c.fb_id = b.fb_id\
+					INNER JOIN "+frontend_schema+".teams d\
+					ON d.user_id = c.id\
+					LEFT JOIN\
+					"+frontend_schema+".points e\
+					ON e.team_id = d.id\
+					WHERE a.team_id = ? AND a.n_status=1 LIMIT ?,?;",
 					[team_id,start,limit],
 					function(err,rs){
 							conn.end(function(err){
@@ -160,7 +198,10 @@ function calculate_home_revenue_stats(team,game_id,game,rank,away_rank,done){
 	console.log('-----');
 	var cashflow = [];
 	var attendance = game[0].attendance;
-	var quadrant = getQuadrant(rank);
+	if(team.rank==null){
+		team.rank = 0;
+	}
+	var quadrant = getQuadrant(team.rank);
 	var stadium_income_type = getStadiumIncome(away_rank);
 	console.log('home team quadrant : ',quadrant);
 	console.log('stadium_income_type : ',stadium_income_type);
@@ -597,11 +638,15 @@ function getStadiumIncome(away_rank){
 	}
 }
 function getQuadrant(rank){
-	if(rank>=1 &&  rank<=4){
+	if(rank==0){
+		return 'q4';
+	}
+	var ratio = rank/total_teams;
+	if(ratio<=0.25){
 		return 'q1';
-	}else if(rank>=5 && rank<=10){
+	}else if(ratio>0.25 && ratio<=0.5){
 		return 'q2';
-	}else if(rank>=11 && rank<=15){
+	}else if(ratio>0.5 && ratio<=0.75){
 		return 'q3';
 	}else{
 		return 'q4';
