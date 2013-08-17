@@ -52,7 +52,7 @@ VALUES
 function process_match_data(conn,competition_id,session_id,data,done){
 	async.eachSeries(data,
 		function(item,callback){
-			var game_id = item.uID.replace('g','');
+			var game_id = item.uID.replace('g','f');
 			var team = getTeam(item.TeamData);
 			
 			var matchday = item.MatchInfo.MatchDay;

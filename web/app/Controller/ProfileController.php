@@ -289,53 +289,60 @@ class ProfileController extends AppController {
 			$user_fb = $this->Session->read('UserFBDetail');
 			$this->set('user',$user_fb);
 			$this->set('phone_empty',false);
-			if($this->request->is('post') && $this->request->data['phone_number']!=null){
-				$data = array('fb_id'=>$user_fb['id'],
-							  'name'=>$this->request->data['name'],
-							  'email'=>$this->request->data['email'],
-							  'location'=>$this->request->data['city'],
-							  'phone_number'=>$this->request->data['phone_number'],
-							  'register_date'=>date("Y-m-d H:i:s"),
-							  'survey_about'=>$this->request->data['hearffl'],
-							  'survey_daily_email'=>$this->request->data['daylyemail'],
-							  'survey_daily_sms'=>$this->request->data['daylysms'],
-							  'survey_has_play'=>$this->request->data['firstime'],
-							  'n_status'=>1,
-							  'register_completed'=>0
-							  );
-				//make sure that the fb_id is unregistered
-				$check = $this->User->findByFb_id($user_fb['id']);
+			if($user_fb['id']==null){
+				$this->Session->setFlash('Mohon maaf, tidak berhasil login menggunakan akun facebook kamu. 
+															Silahkan coba kembali beberapa saat lagi!');
+								$this->redirect('/profile/error');
+			}else{
+				if($this->request->is('post') && $this->request->data['phone_number']!=null){
+					$data = array('fb_id'=>$user_fb['id'],
+								  'name'=>$this->request->data['name'],
+								  'email'=>$this->request->data['email'],
+								  'location'=>$this->request->data['city'],
+								  'phone_number'=>$this->request->data['phone_number'],
+								  'register_date'=>date("Y-m-d H:i:s"),
+								  'survey_about'=>$this->request->data['hearffl'],
+								  'survey_daily_email'=>$this->request->data['daylyemail'],
+								  'survey_daily_sms'=>$this->request->data['daylysms'],
+								  'survey_has_play'=>$this->request->data['firstime'],
+								  'n_status'=>1,
+								  'register_completed'=>0
+								  );
+					//make sure that the fb_id is unregistered
+					$check = $this->User->findByFb_id($user_fb['id']);
 
-				if(isset($check['User'])){
-					$this->Session->destroy();
-					$this->Session->setFlash('Mohon maaf, akun kamu sudah terdaftar sebelumnya. !');
-					$this->redirect('/profile/error');
-				}else{
-					$this->User->create();
-					$rs = $this->User->save($data);
-					if(isset($rs['User'])){
+					if(isset($check['User'])){
+						$this->Session->destroy();
+						$this->Session->setFlash('Mohon maaf, akun kamu sudah terdaftar sebelumnya. !');
+						$this->redirect('/profile/error');
+					}else{
+						$this->User->create();
+						$rs = $this->User->save($data);
+						if(isset($rs['User'])){
 
-						//register user into gameAPI.
-						$response = $this->ProfileModel->setProfile($data);
-						
-						if($response['status']==1){
-							//send info
-							$msg = "@p1_".$rs['User']['id']." sudah terdaftar dalam fantasy football.";
-							$this->Info->write('new player',$msg);
+							//register user into gameAPI.
+							$response = $this->ProfileModel->setProfile($data);
 							
-							$this->redirect("/profile/register_team");
-						}else{
-							$this->User->delete($this->User->id);
-							$this->Session->setFlash('Mohon maaf, tidak berhasil mendaftarkan akun kamu. 
-														Silahkan coba kembali beberapa saat lagi!');
-							$this->redirect('/profile/error');
+							if($response['status']==1){
+								//send info
+								$msg = "@p1_".$rs['User']['id']." sudah terdaftar dalam fantasy football.";
+								$this->Info->write('new player',$msg);
+								
+								$this->redirect("/profile/register_team");
+							}else{
+								$this->User->delete($this->User->id);
+								$this->Session->setFlash('Mohon maaf, tidak berhasil mendaftarkan akun kamu. 
+															Silahkan coba kembali beberapa saat lagi!');
+								$this->redirect('/profile/error');
+							}
 						}
 					}
+				}else if($this->request->is('post') && $this->request->data['phone_number']==null){
+					$this->Session->setFlash('Harap mengisi nomor mobile phone terlebih dahulu !');
+					$this->set('phone_empty',true);
 				}
-			}else if($this->request->is('post') && $this->request->data['phone_number']==null){
-				$this->Session->setFlash('Harap mengisi nomor mobile phone terlebih dahulu !');
-				$this->set('phone_empty',true);
 			}
+			
 		}else{
 			$this->redirect('/manage/team');
 		}

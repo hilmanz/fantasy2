@@ -6,7 +6,8 @@ exports.config = {
 		username:'root',
 		password:'root',
 		database:'ffgame',
-		frontend_schema:'ffg'
+		frontend_schema:'ffg',
+		optadb: 'opta'
 	},
 	port: 3002,
 	redis:{
