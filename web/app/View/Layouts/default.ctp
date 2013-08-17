@@ -25,7 +25,7 @@
                             </a>
                             <div class="entry fl">
                                 <h3 class="username"><a href="<?=$this->Html->url('/profile')?>"><?=h($USER_DATA['name'])?></a> |
-                                 <a class="logout" href="<?=$this->Html->url('/profile/logout')?>">Logout</a></h3>
+                                 <a class="logout" href="<?=$this->Html->url('/profile/logout')?>">Keluar</a></h3>
                                 <span class="points red"><?=number_format($USER_POINTS)?> Pts</span>
                                 
                                 
@@ -43,21 +43,21 @@
                 <div id="navigation">
                 	<ul>
                     	<li>
-                        	<a href="<?=$this->Html->url('/manage/team')?>">MANAGE TEAM</a>
+                        	<a href="<?=$this->Html->url('/manage/team')?>">Mengelola Tim</a>
                         </li>
                     	<li>
-                        	<a href="<?=$this->Html->url('/manage/club')?>">MY CLUB</a>
+                        	<a href="<?=$this->Html->url('/manage/club')?>">Klab Saya</a>
                         </li>
                     	<li>
-                        	<a href="<?=$this->Html->url('/profile')?>">MY PROFILE</a>
+                        	<a href="<?=$this->Html->url('/profile')?>">Profil Saya</a>
                         </li>
                     	<li>
-                        	<a href="<?=$this->Html->url('/leaderboard')?>">LEADERBOARD</a>
+                        	<a href="<?=$this->Html->url('/leaderboard')?>">Papan Peringkat</a>
                         </li>
                     	<li>
-                        	<a href="#">TRANSFER MARKET</a>
+                        	<a href="#">Bursa Transfer</a>
                         </li>
-                    	<li><a href="<?=$this->Html->url('/pages/faq')?>">HELP &amp; FAQ</a></li>
+                    	<li><a href="<?=$this->Html->url('/pages/faq')?>">Bantuan & FAQ</a></li>
                     </ul>
                 </div>
             <?php endif;?>

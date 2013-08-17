@@ -5,7 +5,7 @@
         	<div class="content">
             	<div class="row-2">
                     <div class="col2">
-                        <h1 class="red lh50">Jajaran Pemain Starter dan Pemain Cadangan </h1>
+                        <h1 class="lh30">Jajaran Pemain Starter <br/>dan Pemain Cadangan </h1>
                     </div>
                     <div class="col2">
 						  <img class="teamlogo" src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$original['uid'])?>.png"/>
@@ -54,7 +54,7 @@
 	    <div class="widget">
 	        <div class="nav-side">
 	            <ul>
-                   <li><span>Profile Anda</span></li>
+                   <li><span>Isi data lengkap Anda</span></li>
                    <li><span>Pilih Tim</span></li>
                    <li class="current"><span>Pilih Pemain</span></li>
                    <li><span>Pilih Staff</span></li>

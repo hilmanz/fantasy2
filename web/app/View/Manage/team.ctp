@@ -9,7 +9,7 @@ if(isset($first_time) && $first_time==true):
        
         <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
         <h4><?=h($club['team_name'])?></h4>
-        <h5>Pilih formasi, pemain starter dan cadangan untuk memulai dalam kompetisi </h5>
+        <h5>Pilih formasi, pemain starter dan cadangan untuk mulai berkompetisi </h5>
     </div>
 </div>
 <?php

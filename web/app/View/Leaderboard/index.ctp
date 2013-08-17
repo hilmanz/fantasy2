@@ -25,7 +25,7 @@
                 <thead>
                     <tr>
                         <th>Peringkat</th>
-                        <th>Klab/th>
+                        <th>Klab</th>
                         <th>Manajer</th>
                         <th>Jumlah Poin</th>
                     </tr>

@@ -60,7 +60,7 @@
 	    <div class="widget">
 	        <div class="nav-side">
 	            <ul>
-                   <li><span>Profile Anda</span></li>
+                   <li><span>Isi data lengkap Anda</span></li>
                    <li class="current"><span>Pilih Tim</span></li>
                    <li><span>Pilih Pemain</span></li>
                    <li ><span>Pilih Staff</span></li>

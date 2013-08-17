@@ -47,13 +47,10 @@
 	    <div class="widget">
 	        <div class="nav-side">
 	            <ul>
-	               <li><a href="details">Profile Anda</a></li>
-	               <li class="current"><a href="teams">Pilih Tim Anda</a></li>
-	               <li><a href="players">Pilih Pemain</a></li>
-	               <li><a href="staffs">Pilih Staff</a></li>
-	               <li><a href="clubs">Pilih Klab</a></li>
-	               <li><a href="formations">Mengatur Formasi</a></li>
-	               <li><a href="invite_friends">Undang Teman</a></li>
+                   <li><span>Isi data lengkap Anda</span></li>
+                   <li class="current"><span>Pilih Tim</span></li>
+                   <li><span>Pilih Pemain</span></li>
+                   <li ><span>Pilih Staff</span></li>
 	            </ul>
 	        </div><!-- end .nav-side -->
 	    </div><!-- end .widget -->

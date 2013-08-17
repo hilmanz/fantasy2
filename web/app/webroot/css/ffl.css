@@ -316,10 +316,12 @@ a:hover{
 	display:inline-block;
 }
 .perform-team .span1{
-	width:85px;
+	width:110px;
+	font-size:16px;
 }
 .perform-team .span2{
 	padding:0 10px;
+	font-size:16px;
 }
 .selectFormation{
 	position:relative;
@@ -468,7 +470,7 @@ a:hover{
 }
 .prev,.next{
 	background:url(../images/prev_btn.png) no-repeat;
-	padding:0 0 0 30px;
+	padding:0 0 0 40px;
 	display:block;
 	width:50px;
 	height:17px;
@@ -1316,6 +1318,10 @@ td,th{
 }
 .lh50{
 	line-height:50px !important;
+	margin:0 !important;
+}
+.lh30{
+	line-height:30px !important;
 	margin:0 !important;
 }
 .drophighlight{

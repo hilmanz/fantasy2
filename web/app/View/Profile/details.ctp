@@ -50,7 +50,7 @@
 	            <h1>SS$ <?=number_format($team_bugdet)?></h1>
 	            <h3 class="red">JUMLAH POINT</h3>
 	            <h1><?=number_format($USER_POINTS)?> pts</h1> 
-                <h3 class="red">CURRENT RANK</h3>
+                <h3 class="red">PERINGKAT SAAT INI</h3>
                 <h1><?=number_format($USER_RANK)?></h1> 
 	        </div>
 	    </div><!-- end .widget -->

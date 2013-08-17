@@ -71,19 +71,19 @@
 	    <div class="widget">
 	        <div class="nav-side">
 	            <ul>
-	               <li class="current"><span>Fill in Your Detail</span></li>
-	               <li><span>Fill in Your Team</span></li>
-	               <li><span>Fill in Your Players</span></li>
-	               <li><span>Fill in Your Staff</span></li>
+                   <li class="current"><span>Isi data lengkap Anda</span></li>
+                   <li><span>Pilih Tim</span></li>
+                   <li><span>Pilih Pemain</span></li>
+                   <li><span>Pilih Staff</span></li>
 	            </ul>
 	        </div><!-- end .nav-side -->
 	    </div><!-- end .widget -->
 	    <div class="widget">
 	        <div class="cash-left">
-	            <h3 class="red">Cash Left</h3>
-	            <h1>SS$ <?=@number_format($INITIAL_BUDGET)?></h1>
-	            <h3 class="red">Est. Weekly Expenses</h3>
-	            <h1>SS$ 0</h1> 
+	            <h3 class="red">SISA UANG</h3>
+	            <h1>SS$ <?=number_format($INITIAL_BUDGET)?></h1>
+	            <h3 class="red">Est. PENGELUARAN MINGGUAN</h3>
+	            <h1>SS$ <span class="expense">0</span></h1> 
 	        </div>
 	    </div><!-- end .widget -->
 	</div><!-- end #sidebar -->
