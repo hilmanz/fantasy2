@@ -13,7 +13,7 @@
             <?php endforeach;endif;?>
           </ul><!-- end #newsticker -->
     </div>
-    <h4 class="fr countdown"><span class="yellow ctday">6</span> DAYS <span class="yellow cthour">0</span> HOUR <span class="yellow ctminute">0</span> MINUTE to close</h4>
+    <h4 class="fr countdown"><span class="yellow ctday">6</span> HARI  <span class="yellow cthour">0</span> JAM  <span class="yellow ctminute">0</span> MENIT ke penutupan</h4>
 </div><!-- end #info-bar -->
 <script>
 var match_date_ts = <?=$match_date_ts?>;

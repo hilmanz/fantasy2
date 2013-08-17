@@ -10,11 +10,11 @@
               $week = ($matchday - 1);
             }
           ?>
-        	<h3>Leaderboard - Week <?=$week?></h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <br />Nulla quam velit, vulputate eu pharetra nec, mattis ac neque.</p>
+        	<h3>Papan Peringkat – Minggu ke <?=$week?></h3>
+            <p>Daftar urutan manajer berdasarkan poin tertinggi.<br />Diperbaharui secara mingguan. </p>
         </div>
         <div class="leaderboard-rank fr">
-            <span>Your Rank:</span>
+            <span>Peringkat Anda:</span>
             <h3><?=number_format($rank)?></h3>
             <span>Tier 2</span>
         </div>
@@ -24,10 +24,10 @@
         	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
                 <thead>
                     <tr>
-                        <th>Rank</th>
-                        <th>Club</th>
-                        <th>Manager</th>
-                        <th>Points</th>
+                        <th>Peringkat</th>
+                        <th>Klab/th>
+                        <th>Manajer</th>
+                        <th>Jumlah Poin</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,11 +48,11 @@
             </table>
             <div class="widget action-button tr">
               <?php
-              echo $this->Paginator->prev(__('PREV'), array(), null, 
+              echo $this->Paginator->prev(__('Sebelumnya'), array(), null, 
                                           array('class' => 'prev'));
               ?>
               <?php
-              echo $this->Paginator->next(__('NEXT'), array(), null, 
+              echo $this->Paginator->next(__('Berikutnya'), array(), null, 
                                       array('class' => 'next'));
               ?>
              

@@ -4,8 +4,8 @@
         <div id="content">
             <div class="content">
                 <div class="row-2">
-                    <h1 class="red">Choose Your Staff</h1>
-                    <p>Aenean lacinia bibendum nulla sed consectetur. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Etiam porta sem malesuada magna mollis euismod. Nulla vitae elit libero, a pharetra augue. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+                    <h1 class="red">Pilih Staff Anda</h1>
+                    <p>Tentukan sendiri staff mana yang akan Anda rekrut untuk membantu Anda mengelola tim dan klab secara maksimal. Pilih dengan bijak dan sesuaikan dengan kondisi keuangan.</p>
                 </div><!-- end .row-2 -->
                 <form class="theForm" action="<?=$this->Html->url('/profile/register_staff')?>"
                     method="post" enctype="application/x-www-form-urlencoded">
@@ -20,13 +20,13 @@
                                 </div><!-- end .avatar-big -->
                                 <p><?=h($official['name'])?></p>
                                 <div>
-                                    SS$<?=number_format($official['salary'])?> / Week
+                                    SS$<?=number_format($official['salary'])?> / minggu
                                 </div>
                                 <div>
                                     <?php if(@$official['hired']):?>
-                                        <a id="staff-<?=$official['id']?>" href="#/dismiss/<?=$official['id']?>" class="button">Hired</a>
+                                        <a id="staff-<?=$official['id']?>" href="#/dismiss/<?=$official['id']?>" class="button">Direkrut</a>
                                     <?php else:?>
-                                        <a id="staff-<?=$official['id']?>" href="#/hire/<?=$official['id']?>" class="button">Select</a>
+                                        <a id="staff-<?=$official['id']?>" href="#/hire/<?=$official['id']?>" class="button">Pilih</a>
                                     <?php endif;?>
                                 </div>
                             </div><!-- end .thumbStaff -->
@@ -39,7 +39,7 @@
                    <div class="row-2">
                         <input type="hidden" name="fb_id" value="<?=$USER_DATA['fb_id']?>"/>
                         <input type="hidden" name="complete_registration" value="1"/>
-                        <input type="submit" value="Save &amp; Continue" class="button" />
+                        <input type="submit" value="Simpan &amp; Lanjutkan" class="button" />
                    </div>
                 </form>
             </div><!-- end .content -->
@@ -55,19 +55,19 @@
         <div class="widget">
             <div class="nav-side">
                 <ul>
-                   <li><span>Fill in Your Detail</span></li>
-                   <li><span>Fill in Your Team</span></li>
-                   <li><span>Fill in Your Players</span></li>
-                   <li class="current"><span>Fill in Your Staff</span></li>
+                   <li><span>Profile Anda</span></li>
+                   <li><span>Pilih Tim</span></li>
+                   <li><span>Pilih Pemain</span></li>
+                   <li class="current"><span>Pilih Staff</span></li>
                   
                 </ul>
             </div><!-- end .nav-side -->
         </div><!-- end .widget -->
         <div class="widget">
             <div class="cash-left">
-                <h3 class="red">Cash Left</h3>
+                <h3 class="red">SISA UANG</h3>
                 <h1>SS$ <?=number_format($team_bugdet)?></h1>
-                <h3 class="red">Est. Weekly Expenses</h3>
+                <h3 class="red">EST. PENGELUARAN MINGGUAN</h3>
                 <h1 class="expenses">SS$ <?=number_format($weekly_salaries)?></h1> 
             </div>
         </div><!-- end .widget -->

@@ -4,12 +4,12 @@
         <div id="content">
             <div class="content">
                 <div class="row-2">
-                    <h1 class="red">Fill in Your Teams</h1>
-                    <p>Aenean lacinia bibendum nulla sed consectetur. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Etiam porta sem malesuada magna mollis euismod. Nulla vitae elit libero, a pharetra augue. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+                    <h1 class="red">Pilih Tim Anda</h1>
+                    <p>Buat unik nama tim Anda dan jangan lupa pilih logo yang paling mewakili Anda.</p>
                 </div><!-- end .row-2 -->
                 <div class="select-team">
                     <form class="theForm" action="teams" method="post">
-                        <h3>Hey, we've noticed you like these teams:</h3>
+                        <h3>Hei, Sepertinya Anda Menyukai Tim ini:</h3>
                         <div class="row">
                             <a class="teamBox" href="#">
                                 <img src="images/team/logo1.png" />
@@ -18,7 +18,7 @@
                                 <img src="images/team/logo2.png" />
                             </a><!-- end .teamBox -->
                         </div><!-- end .row -->
-                        <h3>Our you can select others:</h3>
+                        <h3>Atau Anda dapat memilih Tim yang lain:</h3>
                         <div class="row">
                             <?php 
                                 $teamList = json_decode($team_list,true);
@@ -30,14 +30,14 @@
                             <?php endfor;?>
                         </div><!-- end .row -->
                         <div class="row">
-                            <label>Personalize Your Team Name</label>
+                            <label>Personalisasi Nama Tim Anda</label>
                             <input type="text" />
                         </div><!-- end .row -->
                         <div class="row">
                             <input type="hidden" name="team_id" value="<?=$team['uid']?>"/>
                             <input type="hidden" name="fb_id" value="<?=$fb_id?>"/>
                             <input type="hidden" name="create_team" value="1"/>
-                            <input type="submit" value="Save &amp; Continue" class="button" />
+                            <input type="submit" value="Simpan &amp; Lanjutkan" class="button" />
                         </div><!-- end .row -->
                     </form>
                 </div><!-- end .select-team -->
@@ -47,21 +47,21 @@
 	    <div class="widget">
 	        <div class="nav-side">
 	            <ul>
-	               <li><a href="details">Fill in Your Detail</a></li>
-	               <li class="current"><a href="teams">Fill in Your Team</a></li>
-	               <li><a href="players">Fill in Your Players</a></li>
-	               <li><a href="staffs">Fill in Your Staff</a></li>
-	               <li><a href="clubs">Fill in Your Club</a></li>
-	               <li><a href="formations">Set Your First Formation</a></li>
-	               <li><a href="invite_friends">Invite Friends</a></li>
+	               <li><a href="details">Profile Anda</a></li>
+	               <li class="current"><a href="teams">Pilih Tim Anda</a></li>
+	               <li><a href="players">Pilih Pemain</a></li>
+	               <li><a href="staffs">Pilih Staff</a></li>
+	               <li><a href="clubs">Pilih Klab</a></li>
+	               <li><a href="formations">Mengatur Formasi</a></li>
+	               <li><a href="invite_friends">Undang Teman</a></li>
 	            </ul>
 	        </div><!-- end .nav-side -->
 	    </div><!-- end .widget -->
 	    <div class="widget">
 	        <div class="cash-left">
-	            <h3 class="red">Cash Left</h3>
+	            <h3 class="red">SISA UANG</h3>
 	            <h1>SS$ <?=number_format($team_bugdet)?></h1>
-	            <h3 class="red">Est. Monthly Expenses</h3>
+	            <h3 class="red">EST. PENGELUARAN BULANAN</h3>
 	            <h1>SS$ 0</h1> 
 	        </div>
 	    </div><!-- end .widget -->

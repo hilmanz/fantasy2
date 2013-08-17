@@ -4,8 +4,8 @@
         <div id="content">
             <div class="content">
                 <div class="row-2">
-                    <h1 class="red">Choose Your Staff</h1>
-                    <p>Aenean lacinia bibendum nulla sed consectetur. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Etiam porta sem malesuada magna mollis euismod. Nulla vitae elit libero, a pharetra augue. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+                    <h1 class="red">Pilih Staff Anda</h1>
+                    <p>Tentukan sendiri staff mana yang akan Anda rekrut untuk membantu Anda mengelola tim dan klab secara maksimal. Pilih dengan bijak dan sesuaikan dengan kondisi keuangan.</p>
                 </div><!-- end .row-2 -->
                 <form class="theForm">
                     <div class="row-2">
@@ -63,13 +63,13 @@
 	    <div class="widget">
 	        <div class="nav-side">
 	            <ul>
-	               <li><a href="details">Fill in Your Detail</a></li>
-	               <li><a href="teams">Fill in Your Team</a></li>
-	               <li><a href="players">Fill in Your Players</a></li>
-	               <li class="current"><a href="staffs">Fill in Your Staff</a></li>
-	               <li><a href="clubs">Fill in Your Club</a></li>
-	               <li><a href="formations">Set Your First Formation</a></li>
-	               <li><a href="invite_friends">Invite Friends</a></li>
+	               <li><a href="details">Profile Anda</a></li>
+	               <li><a href="teams">Pilih Tim Anda</a></li>
+	               <li><a href="players">Pilih Pemain</a></li>
+	               <li class="current"><a href="staffs">Pilih Staff</a></li>
+	               <li><a href="clubs">Pilih Klab</a></li>
+	               <li><a href="formations">Mengatur Formasi</a></li>
+	               <li><a href="invite_friends">Undang Teman</a></li>
 	            </ul>
 	        </div><!-- end .nav-side -->
 	    </div><!-- end .widget -->

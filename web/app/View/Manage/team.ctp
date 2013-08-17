@@ -20,10 +20,10 @@ endif;
     <div id="thecontent">
         <div class="box4 fl">
             <div class="widget tr match-date">
-                <h2>next match</h2>
+                <h2>PERTANDINGAN BERIKUTNYA</h2>
                 <span class="date yellow">
                     <?=date("d/m/Y",strtotime($next_match['match_date']))?><br/>
-                    Week : <?=$next_match['matchday']?>
+                    Minggu ke: <?=$next_match['matchday']?>
                 </span>
             </div><!-- end .widget -->
             <div class="widget tr match-team">
@@ -45,15 +45,15 @@ endif;
             </div><!-- end .widget -->
             <div class="widget tr match-place">
                 <p class="stadion"><?=h($venue['name'])?></p>
-                <p class="attendance">Capacity : <?=number_format($venue['capacity'])?></p>
+                <p class="attendance">Kapasitas : <?=number_format($venue['capacity'])?></p>
               
-                <a class="view-more" href="<?=$this->Html->url('/match')?>">See All Matches</a>
+                <a class="view-more" href="<?=$this->Html->url('/match')?>">Lihat Semua Pertandingan</a>
             </div><!-- end .widget -->
             <div class="widget tr perform-team">
-                <h2>your perfomance</h2>
-                <h3><span class="span1">League Rank</span>:<span class="span2"><?=number_format($USER_RANK)?></span></h3>
-                <h3><span class="span1">Last Earning</span>:<span class="span2"><?=number_format($last_earning)?></span></h3>
-                <h3><span class="span1">Best PLayer</span>:
+                <h2>Performa Anda</h2>
+                <h3><span class="span1">Peringkat Liga</span>:<span class="span2"><?=number_format($USER_RANK)?></span></h3>
+                <h3><span class="span1">Perolehan Terakhir</span>:<span class="span2"><?=number_format($last_earning)?></span></h3>
+                <h3><span class="span1">Pemain Terbaik</span>:
                 <span class="span2">
                     <?php
                         if(isset($best_player)):
@@ -67,9 +67,9 @@ endif;
                     endif;
                     ?>
                 </span></h3>
-                <h3><span class="span1">Best Match</span>:<span class="span2"><?=$best_match?></span></h3>
-                <h3><span class="span1">Money</span>:<span class="span2">SS$ <?=number_format($team_bugdet)?></span></h3>
-                <a class="view-more" href="<?=$this->Html->url('/leaderboard')?>">View Leaderboard</a>
+                <h3><span class="span1">Pertandingan Terbaik</span>:<span class="span2"><?=$best_match?></span></h3>
+                <h3><span class="span1">Kekayaan</span>:<span class="span2">SS$ <?=number_format($team_bugdet)?></span></h3>
+                <a class="view-more" href="<?=$this->Html->url('/leaderboard')?>">Lihat Papan Peringkat</a>
             </div><!-- end .widget -->
            
         </div><!-- end .box4 -->
@@ -77,7 +77,7 @@ endif;
             <div class="field-container">
                 <div class="selectFormation">
                 <select name="formations" id="formation-select" class="styled">
-                    <option>Select Formation</option>
+                    <option>Pilih Formasi</option>
                     <option>4-4-2</option>
                     <option>4-4-2-A</option>
                     <option>4-3-3</option>
@@ -93,7 +93,7 @@ endif;
                     <option>3-4-3</option>
                     <option>3-4-2-1</option>
                 </select>
-                <a id="btn_save" class="showPopup button" href="#popup-messages">Save Formation</a>
+                <a id="btn_save" class="showPopup button" href="#popup-messages">Simpan Formasi</a>
                 </div>
                 <div id="droppable" class="field-formation">
                     <div id="the-formation">
@@ -109,7 +109,7 @@ endif;
             </div><!-- end .widget -->
             <div id="rooster" class="widget tr squad-team">
             	<div class="starters">
-                    <h4>Starters</h4>
+                    <h4>Pemain Starters</h4>
                     <div id="jp-container" class="jp-container">
                     <?php
                     foreach($players as $n=>$player):
@@ -151,7 +151,7 @@ endif;
                     </div><!-- end #jp-container -->
                 </div><!-- end .starter -->
             	<div class="substitutions drop">
-                    <h4>Substitutions</h4>
+                    <h4>Pemain Cadangan</h4>
                 </div><!-- end .substitutions -->
             </div><!-- end .widget -->
             <!--

@@ -4,13 +4,13 @@
         <div id="content">
             <div class="content">
                 <div class="row-2">
-                    <h1 class="red">Fill in Your Teams</h1>
-                    <p>Aenean lacinia bibendum nulla sed consectetur. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Etiam porta sem malesuada magna mollis euismod. Nulla vitae elit libero, a pharetra augue. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+                    <h1 class="red">Pilih Tim Anda</h1>
+                    <p>Buat unik nama tim Anda dan jangan lupa pilih logo yang paling mewakili Anda.</p>
                 </div><!-- end .row-2 -->
                 <div class="select-team">
                     <form class="theForm" action="<?=$this->Html->url('/profile/register_team')?>" method="post" enctype="multipart/form-data">
                         <div class="row">
-                            <label>Personalize Your Team Name</label>
+                            <label>Personalisasi Nama Tim Anda</label>
                             <?php
                             $init_team_name = (isset($previous_team)) ? $previous_team['team_name'] : $USER_DATA['name'].' FC';
                             ?>
@@ -19,7 +19,7 @@
                             <span class="icon_available check"></span>
 
                         </div><!-- end .row -->
-                        <h3>Choose your team:</h3>
+                        <h3>Pilih tim:</h3>
                         <div class="row">
                         	<?php $previous_team_id = "";?>
                             <?php foreach($team_list as $team):?>
@@ -43,7 +43,7 @@
                             <input type="hidden" name="fb_id" value="<?=$USER_DATA['fb_id']?>"/>
                             <input type="hidden" name="team_id" value="<?=$previous_team_id?>"/>
                             <input type="hidden" name="create_team" value="1"/>
-                            <input type="button" value="Save &amp; Continue" class="button" id="btnsave"/>
+                            <input type="button" value="Simpan &amp; Lanjutkan" class="button" id="btnsave"/>
                         </div><!-- end .row -->
                     </form>
                 </div><!-- end .select-team -->
@@ -60,20 +60,19 @@
 	    <div class="widget">
 	        <div class="nav-side">
 	            <ul>
-	               <li><span>Fill in Your Detail</span></li>
-	               <li class="current"><span>Fill in Your Team</span></li>
-	               <li><span>Fill in Your Players</span></li>
-	               <li><span>Fill in Your Staff</span></li>
-	              
+                   <li><span>Profile Anda</span></li>
+                   <li class="current"><span>Pilih Tim</span></li>
+                   <li><span>Pilih Pemain</span></li>
+                   <li ><span>Pilih Staff</span></li>
 	            </ul>
 	        </div><!-- end .nav-side -->
 	    </div><!-- end .widget -->
 	    <div class="widget">
 	        <div class="cash-left">
-	            <h3 class="red">Cash Left</h3>
+	            <h3 class="red">SISA UANG</h3>
 	            <h1>SS$ <?=number_format($INITIAL_BUDGET)?></h1>
-	            <h3 class="red">Est. Weekly Expenses</h3>
-	            <h1 class="expenses">SS$ 0</h1> 
+	            <h3 class="red">Est. PENGELUARAN MINGGUAN</h3>
+	            <h1>SS$ <span class="expense">0</span></h1> 
 	        </div>
 	    </div><!-- end .widget -->
 	</div><!-- end #sidebar -->
@@ -87,8 +86,8 @@
         </div><!-- END .popupHeader -->
         <div class="popupContent">
             <div class="entry-popup">
-                <h1>Name Taken</h1>
-		        <p>Your team name has been taken by somebody else, please input another name.</p>
+                <h1>Nama TIm sudah digunakan</h1>
+		        <p>Nama Tim Anda telah digunakan oleh orang lain, silahkan masukan nama lain.</p>
             </div><!--END .entry-popup-->
         </div><!-- END .popupContent -->
     </div><!-- END .popupContainer -->

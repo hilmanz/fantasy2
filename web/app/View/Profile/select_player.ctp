@@ -5,7 +5,7 @@
         	<div class="content">
             	<div class="row-2">
                     <div class="col2">
-                        <h1 class="red lh50">Starting Lineup and Substitutions</h1>
+                        <h1 class="red lh50">Jajaran Pemain Starter dan Pemain Cadangan </h1>
                     </div>
                     <div class="col2">
 						  <img class="teamlogo" src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$original['uid'])?>.png"/>
@@ -18,14 +18,14 @@
                     <div class="row-2">
 						<div class="playerlistbox last">
 							<div class="titles">
-								<h2>Your Players</h2>
+								<h2>Pemain-Pemain Anda</h2>
 							</div><!-- end .titles -->
                        		 <!-- available players -->
 							<table width="100%" border="0" cellspacing="0" cellpadding="0">
 							<thead>
 							  <tr>
-								<th>Name</th>
-								<th>Position</th>
+								<th>Nama</th>
+								<th>Posisi</th>
 							  </tr>
 							 </thead>
 							 <tbody  id="available">
@@ -37,8 +37,8 @@
                     
                     <div class="row-2">
                         <input type="hidden" name="players" value="">
-                        <a class="button fl" href="javascript:void();" onclick="create_team();return false;">Save &amp; Continue</a>
-                        <a class="button fr" href="<?=$this->Html->url('/profile/register_team')?>">Choose another team</a>
+                        <a class="button fl" href="javascript:void();" onclick="create_team();return false;">Simpan & Lanjutkan</a>
+                        <a class="button fr" href="<?=$this->Html->url('/profile/register_team')?>">Pilih Tim Lain</a>
                     </div><!-- end .row-2 -->
                 </form>
 			</div><!-- end .content -->
@@ -54,19 +54,19 @@
 	    <div class="widget">
 	        <div class="nav-side">
 	            <ul>
-	               <li><span>Fill in Your Detail</span></li>
-	               <li><span>Fill in Your Team</span></li>
-	               <li class="current"><span>Fill in Your Players</span></li>
-	               <li><span>Fill in Your Staff</span></li>
+                   <li><span>Profile Anda</span></li>
+                   <li><span>Pilih Tim</span></li>
+                   <li class="current"><span>Pilih Pemain</span></li>
+                   <li><span>Pilih Staff</span></li>
 	              
 	            </ul>
 	        </div><!-- end .nav-side -->
 	    </div><!-- end .widget -->
 	    <div class="widget">
 	        <div class="cash-left">
-	            <h3 class="red">Cash Left</h3>
+	            <h3 class="red">SISA UANG</h3>
 	            <h1>SS$ <?=number_format($INITIAL_BUDGET)?></h1>
-	            <h3 class="red">Est. Weekly Expenses</h3>
+	            <h3 class="red">Est. PENGELUARAN MINGGUAN</h3>
 	            <h1>SS$ <span class="expense">0</span></h1> 
 	        </div>
 	    </div><!-- end .widget -->

@@ -4,8 +4,8 @@
         <div id="content">
             <div class="content">
                 <div class="row-2">
-                    <h1 class="red">MATCH DETAILS</h1>
-                    <p>Aenean lacinia bibendum nulla sed consectetur. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Etiam porta sem malesuada magna mollis euismod. Nulla vitae elit libero, a pharetra augue. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+                    <h1 class="red">Rincian Pertandingan</h1>
+                    <p>Info lebih rinci dari satu pertandingan. Tak hanya skor akhir, detail statistik dari masing-masing pemain yang turun ke lapangan juga ditampilkan secara lengkap. </p>
                 </div><!-- end .row-2 -->
                 <div class="row">
                     <table width="100%">
@@ -68,7 +68,7 @@
                         </tr>
                     </table>
                     <div class="row">
-                        <a href="<?=$this->Html->url('/match')?>" class="button">Back to List</a>
+                        <a href="<?=$this->Html->url('/match')?>" class="button">Kembali ke Daftar</a>
                     </div>
                 </div>
             </div><!-- end .content -->

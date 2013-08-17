@@ -4,13 +4,13 @@
         <div id="content">
             <div class="content">
                 <div class="row-2">
-                    <h1 class="red">MATCHES</h1>
-                    <p>Aenean lacinia bibendum nulla sed consectetur. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Etiam porta sem malesuada magna mollis euismod. Nulla vitae elit libero, a pharetra augue. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+                    <h1 class="red">Daftar Pertandingan</h1>
+                    <p>Lihat info lengkap daftar seluruh pertandingan yang telah/sedang/akan berjalan. Dari waktu tanding, status kandang/tandang masing-masing tim, hingga rincian statistik tiap pertandingan, semua bisa didapatkan di sini.</p>
                 </div><!-- end .row-2 -->
                 <div class="row">
                     <table cellspacing="0" cellpadding="0" width="100%">
                         <tr class="head">
-                            <td>Matchday</td><td>Home</td><td width="50px" align="center"></td><td>Away</td><td>Status</td><td>Details</td>
+                            <td>Hari Tanding</td><td>Tim Kandang</td><td width="50px" align="center"></td><td>Tim Tandang</td><td>Status</td><td>Rincian</td>
                         </tr>
                         <?php
                             foreach($matches as $match):
@@ -32,7 +32,7 @@
                                 ?>
                             </td>
                             <td><?=$match['away_name']?></td><td><?=$match['period']?></td>
-                            <td><a href="<?=$this->Html->url('/match/details/'.$match['game_id'])?>">View</a></td>
+                            <td><a href="<?=$this->Html->url('/match/details/'.$match['game_id'])?>">Lihat</a></td>
                         </tr>
                         <?php endforeach;?>
                     </table>
