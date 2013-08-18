@@ -91,10 +91,10 @@ class ProfileController extends AppController {
 		$this->User->id = $user['User']['id'];
 		$rs = $this->User->save($data);
 		if(isset($rs)){
-			$this->Session->setFlash('Your profile has been changed successfully!');
+			$this->Session->setFlash('Profil Anda telah berhasil diubah!');
 			$this->redirect('/profile/success');
 		}else{
-			$this->Session->setFlash('Cannot save your changes, please try again later !');
+			$this->Session->setFlash('Gagal menyimpan perubahan, coba beberapa saat lagi!');
 			$this->redirect('/profile/error');
 		}
 	
@@ -176,7 +176,7 @@ class ProfileController extends AppController {
 			$result = $this->Game->create_team($data);
 			
 			if(isset($result['error'])){
-				$this->Session->setFlash('Sorry, cannot create another team. Your team probably already created !');
+				$this->Session->setFlash('Maaf, Anda tidak dapat membentuk tim lagi. Nampaknya Anda sudah melakukan pembentukan tim sebelumnya.');
 				$this->redirect('/profile/team_error');
 			}else{
 				$this->loadModel('User');			

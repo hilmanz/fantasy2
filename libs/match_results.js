@@ -80,6 +80,16 @@ function onJsonData(data,done){
 					callback(null,
 							 data.SoccerFeed.SoccerDocument.uID,
 							 data.SoccerFeed.SoccerDocument.MatchData.TeamData);
+				}else if(data.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Period=='FirstHalf'){
+					//console.log(data.SoccerFeed.SoccerDocument.MatchData.TeamData);
+					callback(null,
+							 data.SoccerFeed.SoccerDocument.uID,
+							 data.SoccerFeed.SoccerDocument.MatchData.TeamData);
+				}else if(data.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Period=='SecondHalf'){
+					//console.log(data.SoccerFeed.SoccerDocument.MatchData.TeamData);
+					callback(null,
+							 data.SoccerFeed.SoccerDocument.uID,
+							 data.SoccerFeed.SoccerDocument.MatchData.TeamData);
 				}else{
 					callback(new Error('the game is not played yet, or it has been postponed'),
 							'not finished yet');
@@ -221,7 +231,7 @@ function updateGameFixtures(game_id,data,done){
 	var home_id,away_id;
 	var period = data.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Period;
 	var matchday = 1;
-	var is_processed = (period=='PreMatch') ? 0 : 1;
+	var is_processed = (period!='FullTime') ? 0 : 1;
 	for(var i in data.SoccerFeed.SoccerDocument.MatchData.TeamData){
 		var team_data = data.SoccerFeed.SoccerDocument.MatchData.TeamData[i];
 		if(team_data.Side=='Home'){
@@ -497,9 +507,13 @@ function getPositionAlias(position){
 */
 function savePlayerStats(game_id,team_id,data,callback){
 	//make sure that the stat is not undefined.
+
 	if(typeof data.Stat !== 'undefined'){
 		pool.getConnection(function(err,conn){
 			
+			if(!Array.isArray(data.Stat)){
+				data.Stat = [data.Stat];
+			}
 			if(data.Status=='Start'){
 				data.Stat.push({Type:'starter',$t:1});
 			}else{

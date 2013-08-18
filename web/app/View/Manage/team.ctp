@@ -534,14 +534,14 @@ $(document).ready(function(){
 </script>
 <script type="text/template" id="tplsave">
     <div class="confirm">
-        <h1>Confirmation</h1>
-        <h3>are you sure want to save the new lineups ?</h3>
+        <h1>Konfirmasi</h1>
+        <h3>Apakah Anda yakin ingin menyimpan formasi pemain yang baru?</h3>
         <p><a href="#/save_formation" class="button">Yes</a>
             <a href="#" class="button" onclick="$.fancybox.close();return false;">Cancel</a></p>
     </div>
     <div class="saving" style="display:none;">
-        <h1>Saving your lineup</h1>
-        <h3>Please wait..</h3>
+        <h1>Menyimpan formasi pemain</h1>
+        <h3>Harap tunggu sebentar..</h3>
         <p><img src="<?=$this->Html->url('/css/fancybox/fancybox_loading@2x.gif')?>"/></p>
     </div>
 </script>

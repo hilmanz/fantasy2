@@ -87,8 +87,9 @@ class GameController extends AppController {
 		$lineup = $this->Game->setLineup($userData['team']['id'],$formation,$players);
 
 		header('Content-type: application/json');
+
 		if(@$lineup['status']==1){
-			$msg = "@p1_".$this->userDetail['User']['id']." has set his/her formation.";
+			$msg = "@p1_".$this->userDetail['User']['id']." telah menentukan formasinya.";
 			$this->Info->write('set formation',$msg);
 		}
 		print json_encode($lineup);
@@ -103,7 +104,7 @@ class GameController extends AppController {
 		
 		$rs = $this->Game->hire_staff($userData['team']['id'],$staff_id);
 		if($rs['status']==1){
-			$msg = "@p1_".$this->userDetail['User']['id']." has hired a new {$rs['officials']['name']}.";
+			$msg = "@p1_".$this->userDetail['User']['id']." telah merekrut {$rs['officials']['name']} baru.";
 			$this->Info->write('set formation',$msg);
 		}
 		header('Content-type: application/json');

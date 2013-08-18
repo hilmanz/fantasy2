@@ -92,7 +92,7 @@ function save_formation(){
 				$("#popup-messages .popupContent .entry-popup").html('');
 				console.log('total',total);
 				render_view(tplmsg,'#popup-messages .popupContent .entry-popup',
-							{title:'Oops !',result:'Your lineup should consist 11 players and 5 substitutions !'});
+							{title:'Oops !',result:'Jajaran pemain Anda harus terdiri dari 11 starters dan 5 cadangan!'});
 			}
 		});
 	

@@ -184,7 +184,7 @@ class ApiController extends AppController {
 			$lineup = $this->Game->setLineup($game_team['id'],$formation,$players);
 			
 			if($lineup['status']==1){
-				$msg = "@p1_".$user['User']['id']." has set his/her formation.";
+				$msg = "@p1_".$user['User']['id']." telah menentukan formasinya.";
 				$this->Info->write('set formation',$msg);
 				$this->set('response',array('status'=>1,'message'=>'Formation is been saved successfully !'));
 			}else{

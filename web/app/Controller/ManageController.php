@@ -107,7 +107,7 @@ class ManageController extends AppController {
 			if($official_id>0){
 				$rs = $this->Game->hire_staff($userData['team']['id'],$official_id);
 				if($rs['status']==1){
-					$msg = "@p1_".$this->userDetail['User']['id']." has hired a new {$rs['officials']['name']}.";
+					$msg = "@p1_".$this->userDetail['User']['id']." telah merekrut {$rs['officials']['name']} baru.";
 					$this->Info->write('set formation',$msg);
 				}
 			}
@@ -307,7 +307,7 @@ class ManageController extends AppController {
 	public function new_user_event(){
 		if(Configure::read('debug')>0){
 			$this->loadModel('Info');
-			$msg = "@p1_".$this->userDetail['User']['id']." has joined the league.";
+			$msg = "@p1_".$this->userDetail['User']['id']." telah bergabung ke dalam liga.";
 			$this->Info->write('new player',$msg);
 			$this->redirect('/');
 		}else{
