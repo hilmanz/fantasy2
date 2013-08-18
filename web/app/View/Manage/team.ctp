@@ -1,4 +1,8 @@
 <?php
+$can_update_formation = true;
+if(time() > $match_date_ts-(24*60*60)){
+    $can_update_formation = false;
+}
 if(isset($first_time) && $first_time==true):
 ?>
 <div id="bgPopup"></div>
@@ -93,7 +97,9 @@ endif;
                     <option>3-4-3</option>
                     <option>3-4-2-1</option>
                 </select>
+                <?php if($can_update_formation):?>
                 <a id="btn_save" class="showPopup button" href="#popup-messages">Simpan Formasi</a>
+                <?php endif;?>
                 </div>
                 <div id="droppable" class="field-formation">
                     <div id="the-formation">
@@ -446,6 +452,7 @@ $(document).ready(function(){
             }
         }
         function replaceLineup(x,y){
+            <?php if($can_update_formation):?>
             var  curr_item = {
                             item:null,
                             left:0,
@@ -527,6 +534,7 @@ $(document).ready(function(){
                 }
                 
             });
+            <?php endif;?>
         }
 
     getLineUp();  

@@ -79,6 +79,13 @@ function save_formation(){
 						if(typeof response.status !== 'undefined' &&
 								response.status==1){
 							$.fancybox.close();
+						}else if(typeof response.status !== 'undefined' &&
+								response.status==0){
+							$("#popup-messages .popupContent .entry-popup").html('');
+				
+							render_view(tplmsg,'#popup-messages .popupContent .entry-popup',
+							{title:'Oops !',result:'Mohon maaf, waktu untuk mengganti formasi sudah habis.'});
+
 						}else{
 							$("#popup-messages .popupContent .entry-popup").html('');
 				

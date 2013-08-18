@@ -16,7 +16,7 @@
     <h4 class="fr countdown"><span class="yellow ctday">6</span> HARI  <span class="yellow cthour">0</span> JAM  <span class="yellow ctminute">0</span> MENIT ke penutupan</h4>
 </div><!-- end #info-bar -->
 <script>
-var match_date_ts = <?=$match_date_ts?>;
+var match_date_ts = <?=$match_date_ts-(24*60*60)?>;
 function countdown(){
 	var date = new Date();
 	var td = date.getTime();

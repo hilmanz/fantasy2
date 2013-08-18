@@ -76,21 +76,26 @@ class GameController extends AppController {
 	public function save_lineup(){
 		$this->loadModel('Team');
 		$this->loadModel('User');
-		$userData = $this->getUserData();
-		$formation = $this->request->data['formation'];
-		$players = array();
-		foreach($this->request->data as $n=>$v){
-			if(eregi('player-',$n)&&$v!=0){
-				$players[] = array('player_id'=>str_replace('player-','',$n),'no'=>intval($v));
+		$time_limit = $this->nextMatch['match']['match_date_ts']-(24*60*60);
+		if(time() < $time_limit){
+			$userData = $this->getUserData();
+			$formation = $this->request->data['formation'];
+			$players = array();
+			foreach($this->request->data as $n=>$v){
+				if(eregi('player-',$n)&&$v!=0){
+					$players[] = array('player_id'=>str_replace('player-','',$n),'no'=>intval($v));
+				}
 			}
-		}
-		$lineup = $this->Game->setLineup($userData['team']['id'],$formation,$players);
+			$lineup = $this->Game->setLineup($userData['team']['id'],$formation,$players);
 
-		header('Content-type: application/json');
+			header('Content-type: application/json');
 
-		if(@$lineup['status']==1){
-			$msg = "@p1_".$this->userDetail['User']['id']." telah menentukan formasinya.";
-			$this->Info->write('set formation',$msg);
+			if(@$lineup['status']==1){
+				$msg = "@p1_".$this->userDetail['User']['id']." telah menentukan formasinya.";
+				$this->Info->write('set formation',$msg);
+			}
+		}else{
+			$lineup['status'] = 0;
 		}
 		print json_encode($lineup);
 		die();
