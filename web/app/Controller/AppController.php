@@ -173,7 +173,7 @@ class AppController extends Controller {
 				&& $this->request->params['controller']!='api'){
 				$this->redirect('/login/service_unavailable');
 			}else{
-				die(json_encode(array('error'=>'service unavailable')));
+				//die(json_encode(array('error'=>'service unavailable')));
 			}
 		}
 		return 0;

@@ -77,7 +77,7 @@ class GameController extends AppController {
 		$this->loadModel('Team');
 		$this->loadModel('User');
 		$time_limit = $this->nextMatch['match']['match_date_ts']-(24*60*60);
-		if(time() < $time_limit){
+		if(time() < $time_limit || Configure::read('debug') > 0){
 			$userData = $this->getUserData();
 			$formation = $this->request->data['formation'];
 			$players = array();
