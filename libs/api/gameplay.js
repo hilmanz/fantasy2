@@ -186,8 +186,7 @@ function getPlayers(game_team_id,callback){
 	conn = prepareDb();
 	async.waterfall([
 			function(callback){
-				conn.query("SELECT b.uid,b.name,b.position, \
-				b.salary,b.transfer_value,b.known_name\
+				conn.query("SELECT b.* \
 				FROM ffgame.game_team_players a\
 				INNER JOIN ffgame.master_player b \
 				ON a.player_id = b.uid\
