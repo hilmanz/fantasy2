@@ -468,7 +468,7 @@ function best_match(game_team_id,done){
 	);
 }
 /**
-*	getting team's last earning.
+*	getting team's last week's earnings.
 */
 function last_earning(game_team_id,done){
 	var async = require('async');
@@ -497,7 +497,60 @@ function last_earning(game_team_id,done){
 							FROM ffgame.game_team_expenditures \
 							WHERE game_team_id = ? \
 							AND \
-							game_id = ?;",
+							game_id = ? AND amount >= 0;",
+							[game_team_id,game_id],
+							function(err,rs){
+
+								if(!err){
+									if(typeof rs[0] !== 'undefined'){
+										callback(err,rs[0]);
+									}else{
+										callback(new Error('no data'),{});
+									}
+								}else{
+									callback(err,{});
+								}
+							});
+			}
+		],
+		function(err,result){
+			conn.end(function(e){
+				done(err,result);
+			});
+		}
+	);
+}
+/**
+*	getting team's last week's expenses.
+*/
+function last_expenses(game_team_id,done){
+	var async = require('async');
+	conn = prepareDb();
+	async.waterfall(
+		[
+			function(callback){
+				conn.query("SELECT game_id FROM ffgame.game_team_expenditures \
+							WHERE game_team_id=? ORDER BY id DESC \
+							LIMIT 1;\
+						",[game_team_id],function(err,rs){
+							
+							if(err){
+								callback(new Error('no data'),{});
+							}else{
+								if(typeof rs[0] !== 'undefined'){
+									callback(err,rs[0].game_id);	
+								}else{
+									callback(new Error('no data'),{});
+								}
+							}
+						});
+			},
+			function(game_id,callback){
+				conn.query("SELECT SUM(amount) AS total_expenses \
+							FROM ffgame.game_team_expenditures \
+							WHERE game_team_id = ? \
+							AND \
+							game_id = ? AND amount <= 0;",
 							[game_team_id,game_id],
 							function(err,rs){
 

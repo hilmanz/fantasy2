@@ -87,6 +87,7 @@ class ManageController extends AppController {
 
 			$report = array('total_matches' => $finance['data']['total_matches'],
 							'budget' => $finance['data']['budget']);
+			
 			foreach($finance['data']['report'] as $n=>$v){
 				$report[$v['item_name']] = $v['total'];
 			}
