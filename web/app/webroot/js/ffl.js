@@ -7,6 +7,15 @@ $(document).ready(function() {
 	$("table tbody tr:nth-child(even)").addClass("even");
 	// Popup
 	//$('.showPopup').fancybox();
+	
+	// Drop Down Menu
+	$('ul#topnav').superfish({ 
+        delay:       600,
+        animation:   {opacity:'show',height:'show'},
+        speed:       'fast',
+        autoArrows:  true,
+        dropShadows: false
+    });
 });
 // SLIDER
 $(window).load(function(){

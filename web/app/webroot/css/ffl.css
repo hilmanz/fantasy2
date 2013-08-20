@@ -110,6 +110,7 @@ a:hover{
 	-o-box-shadow:0 0 50px rgba(0,0,0,0.25) inset,0 0 10px rgba(0,0,0,0.7) inset;
 	border-radius:7px;
 	overflow:hidden;
+	clear:both;
 }
 #logo{
 	background:url(../images/logo.png) no-repeat;
@@ -214,6 +215,83 @@ a:hover{
 	background:url(../images/tr2.png) repeat;
 	text-decoration:none;
 	color:#FC0;
+}
+
+.topnav{
+	width:1030px;
+	margin:0 auto;
+	position:relative;
+	top:13px;
+	height:70px;
+}
+#topnav ul{
+	margin:0;
+	list-style:none;
+}
+#topnav li{
+	margin:0;
+	float:left;
+}
+#topnav li a{
+	color:#fff;
+	line-height:30px;
+	display:block;
+	padding:0 10px 0 37px;
+	text-transform:uppercase;
+	font-size:12px;
+}
+#topnav li a:hover{
+	text-decoration:none;
+	color:#F00;
+}
+.nav1{
+	background:url(../images/nav-home.jpg) no-repeat;
+}
+.nav2{
+	background:url(../images/nav-tv.jpg) no-repeat;
+}
+.nav3{
+	background:url(../images/nav-english-league.jpg) no-repeat;
+}
+.nav4{
+	background:url(../images/nav-international-soccer.jpg) no-repeat;
+}
+.nav5{
+	background:url(../images/nav-indonesian-league.jpg) no-repeat;
+}
+.nav6{
+	background:url(../images/nav-futsal.jpg) no-repeat;
+	padding:0 10px 0 45px !important;
+}
+.nav7{
+	padding:0 !important;
+	width:200px !important;
+	text-align:center;
+}
+#topnav ul li{
+	float:none;
+	display:block;
+	position:relative;
+}
+#topnav ul li a{
+	display:block;
+	background:url(../images/tr4.png) repeat;
+	border-top:solid 1px #333;
+	line-height:35px;
+	padding:0 15px;
+}
+#topnav ul li a:hover{
+	background:#000;
+}
+#topnav ul{
+	position:absolute;
+	z-index:1000;
+	width:200px;
+	top:40px;
+}
+#topnav ul ul{
+	left:200px;
+	top:0;
 }
 /*============= SLIDER ===============*/
 #slider{
