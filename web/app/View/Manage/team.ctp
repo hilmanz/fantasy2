@@ -56,9 +56,9 @@ endif;
             <div class="widget tr perform-team">
                 <h2>Performa Anda</h2>
                 <h3><span class="span1">Peringkat Liga</span>:<span class="span2"><?=number_format($USER_RANK)?></span></h3>
-                <h3><span class="span1">Perolehan Terakhir</span>:<span class="span2"><?=number_format($last_earning)?></span></h3>
-                <h3><span class="span1">Pemain Terbaik</span>:
-                <span class="span2">
+                <h3><span class="span1">Perolehan Terakhir</span>:<span class="span2">SS$ <?=number_format($last_earning)?></span></h3>
+                <h3><span class="span1">Kekayaan</span>:<span class="span2">SS$ <?=number_format($team_bugdet)?></span></h3>
+                <h3><span class="span1">Pemain Terbaik</span>:<span class="span2">
                     <?php
                         if(isset($best_player)):
                     ?>
@@ -71,8 +71,8 @@ endif;
                     endif;
                     ?>
                 </span></h3>
-                <h3><span class="span1">Pertandingan Terbaik</span>:<span class="span2"><?=$best_match?></span></h3>
-                <h3><span class="span1">Kekayaan</span>:<span class="span2">SS$ <?=number_format($team_bugdet)?></span></h3>
+                
+                 <h3><span class="span1">Pertandingan Terbaik</span>:<span class="span2"><?=$best_match?></span></h3>
                 <a class="view-more" href="<?=$this->Html->url('/leaderboard')?>">Lihat Papan Peringkat</a>
             </div><!-- end .widget -->
            
