@@ -37,6 +37,7 @@
             <div class="entry">
             	<p>
             	<a href="javascript:fb_login();" class="boxButton loginFacebook">&nbsp;</a>
+            	<a href="index.php?menu=fill-details" class="boxButton createAccount last">&nbsp;</a>
                 </p>
             </div><!-- end .entry -->
         </div><!-- end .box -->
