@@ -356,9 +356,15 @@ function isStaffExist($staff_token,$name){
                 <table width="100%" border="0" cellspacing="0" cellpadding="0">
                 <thead>
                   <tr>
-                    <th>Nama</th>
-                    <th>Posisi</th>
-                    <th>Nilai</th>
+                    <th width="210">Nama</th>
+                   
+                    <th width="50">No</th>
+                    <th width="64">Tgl.Lahir</th>
+                    <th width="64">Negara Asal</th>
+                    <th width="70">Posisi</th>
+                    <th width="64">Posisi Asli</th>
+                    <th width="120">Gaji*</th>
+                    <th width="120">Nilai</th>
                     <th style="text-align:center;">Tindakan</th>
                   </tr>
                  </thead>
@@ -385,8 +391,15 @@ function isStaffExist($staff_token,$name){
                     }
                   ?>
                   <tr>
-                    <td><a class="yellow" href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"><?=h($player['name'])?></a></td>
+                    <td>
+                      <a class="yellow" href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"><?=h($player['name'])?></a></td>
+                    
+                    <td><?=$player['jersey_num']?></td>
+                    <td><?=date("d-m-Y",strtotime($player['birth_date']))?></td>
+                    <td><?=h($player['country'])?></td>
                     <td><?=$player_pos?></td>
+                    <td><?=h($player['real_position'])?></td>
+                    <td>SS$ <?=number_format($player['salary'])?></td>
                     <?php
                       $performance_bonus = round(floatval($player['last_performance']/100) * 
                                             intval($player['transfer_value']));
@@ -395,6 +408,9 @@ function isStaffExist($staff_token,$name){
                     <td width="10"><a class="icon-cart buttons" href="#"><span>Jual</span></a></td>
                   </tr>
                   <?php endforeach;?>
+                  <tr>
+                    <td colspan="10">*) Gaji Per Minggu</td>
+                  </tr>
                  </tbody>
                 </table>
                 </div><!-- end .player-list -->
