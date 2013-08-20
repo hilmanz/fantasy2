@@ -357,8 +357,7 @@ function isStaffExist($staff_token,$name){
                 <thead>
                   <tr>
                     <th width="210">Nama</th>
-                   
-                    <th width="50">No</th>
+                    <th width="50">Umur</th>
                     <th width="64">Tgl.Lahir</th>
                     <th width="64">Negara Asal</th>
                     <th width="70">Posisi</th>
@@ -394,17 +393,17 @@ function isStaffExist($staff_token,$name){
                     <td>
                       <a class="yellow" href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"><?=h($player['name'])?></a></td>
                     
-                    <td><?=$player['jersey_num']?></td>
+                    <td><?=round((time()-strtotime($player['birth_date']))/(24*60*60*365))?></td>
                     <td><?=date("d-m-Y",strtotime($player['birth_date']))?></td>
                     <td><?=h($player['country'])?></td>
                     <td><?=$player_pos?></td>
                     <td><?=h($player['real_position'])?></td>
-                    <td>SS$ <?=number_format($player['salary'])?></td>
+                    <td><?=number_format($player['salary'])?></td>
                     <?php
                       $performance_bonus = round(floatval($player['last_performance']/100) * 
                                             intval($player['transfer_value']));
                     ?>
-                    <td>SS$ <?=number_format(intval($player['transfer_value'])+$performance_bonus)?></td>
+                    <td><?=number_format(intval($player['transfer_value'])+$performance_bonus)?></td>
                     <td width="10"><a class="icon-cart buttons" href="#"><span>Jual</span></a></td>
                   </tr>
                   <?php endforeach;?>
