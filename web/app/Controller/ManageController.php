@@ -46,6 +46,7 @@ class ManageController extends AppController {
 		$userData = $this->userData;
 		//user data
 		$user = $this->userDetail;
+
 		$this->set('user',$user['User']);
 
 		//budget
@@ -87,7 +88,7 @@ class ManageController extends AppController {
 
 			$report = array('total_matches' => $finance['data']['total_matches'],
 							'budget' => $finance['data']['budget']);
-			
+
 			foreach($finance['data']['report'] as $n=>$v){
 				$report[$v['item_name']] = $v['total'];
 			}
@@ -139,6 +140,7 @@ class ManageController extends AppController {
 	public function team(){
 		
 		$userData = $this->userData;
+
 		//list of players
 		$players = $this->Game->get_team_players($userData['fb_id']);
 		$this->set('players',$players);
@@ -146,6 +148,7 @@ class ManageController extends AppController {
 		//user data
 		$user = $this->userDetail;
 		$this->set('user',$user['User']);
+		
 
 		//budget
 		$budget = $this->Game->getBudget($userData['team']['id']);

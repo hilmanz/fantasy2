@@ -22,12 +22,15 @@ class LeaderboardController extends AppController {
  */
 	public $uses = array();
 	protected $userData;
+
 	public function beforeFilter(){
 		parent::beforeFilter();
 		
 		if(!$this->hasTeam()){
 			$this->redirect('/login/expired');
 		}
+		$user = $this->userDetail;
+		$this->set('user',$user['User']);
 	}
 	public function hasTeam(){
 		$userData = $this->getUserData();

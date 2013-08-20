@@ -51,6 +51,13 @@ class PagesController extends AppController {
  * @param mixed What page to display
  * @return void
  */
+	public function beforeFilter(){
+		parent::beforeFilter();
+		
+		
+		$user = $this->userDetail;
+		$this->set('user',$user['User']);
+	}
 	public function display() {
 		$path = func_get_args();
 
