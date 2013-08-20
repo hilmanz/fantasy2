@@ -127,7 +127,7 @@
  * Turn off all caching application-wide.
  *
  */
-	//Configure::write('Cache.disable', true);
+	Configure::write('Cache.disable', true);
 
 /**
  * Enable cache checking.
@@ -189,8 +189,8 @@
  */
 	Configure::write('Session', array(
 		'defaults' => 'php',
-		'timeout'	=> 60*3,
-		'cookieTimeout'	=> 60*3,
+		'timeout'	=> 600*3,
+		'cookieTimeout'	=> 600*3,
 	));
 
 /**
@@ -359,3 +359,5 @@ Configure::write('API_URL','http://localhost:3002');
 Configure::write('API_KEY','1234567890');
 Configure::write('API_SALT',md5("hello world"));
 Configure::write('INITIAL_BUDGET','100000000');
+Configure::write('DB','ffg');
+Configure::write('AVATAR_URL','http://localhost/fantasy/files/');

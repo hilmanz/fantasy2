@@ -311,6 +311,7 @@ class ApiController extends AppController {
 		$next_match = $this->Game->getNextMatch($game_team['team_id']);
 		$next_match['match']['home_original_name'] = $next_match['match']['home_name'];
 		$next_match['match']['away_original_name'] = $next_match['match']['away_name'];
+
 		if($next_match['match']['home_id']==$game_team['team_id']){
 			$next_match['match']['home_name'] = $club['Team']['team_name'];
 		}else{
@@ -339,6 +340,7 @@ class ApiController extends AppController {
 			}else{
 				$this->set('response',array('status'=>0,'error'=>'Cannot save profile'));
 			}
+			
 		}else{
 			$user['User']['next_match'] = array('game_id'=>$next_match['match']['game_id'],
 										'home_name'=>$next_match['match']['home_name'],

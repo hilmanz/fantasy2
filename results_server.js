@@ -91,47 +91,51 @@ function extractData(filename,callback){
 				callback(null,json);
 			},
 			function(json,callback){
-				console.log(json.SoccerFeed.SoccerDocument);
-				var data = {
-					game_id: json.SoccerFeed.SoccerDocument.uID,
-					competition_id: json.SoccerFeed.SoccerDocument.Competition.uID,
-				};
-				var competition_stat = json.SoccerFeed.SoccerDocument.Competition.Stat;
-				for(var i in competition_stat){
-					data[competition_stat[i].Type] = competition_stat[i]['$t'];
+				try{
+					console.log(json.SoccerFeed.SoccerDocument);
+					var data = {
+						game_id: json.SoccerFeed.SoccerDocument.uID,
+						competition_id: json.SoccerFeed.SoccerDocument.Competition.uID,
+					};
+					var competition_stat = json.SoccerFeed.SoccerDocument.Competition.Stat;
+					for(var i in competition_stat){
+						data[competition_stat[i].Type] = competition_stat[i]['$t'];
 
-				}
-				data.matchtype = json.SoccerFeed.SoccerDocument.MatchData.MatchInfo.MatchType;
-				data.period = json.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Period;
-				data.matchdate = toDate(json.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Date);
-			
-				try{
-					data.result_type = json.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Result.Type;
-				}catch(e){
-					data.result_type = '';
-				}
-				try{
-					data.result_winner = json.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Result.Winner;
-				}catch(e){
-					data.result_winner = '';	
-				}
-				data.referee = json.SoccerFeed.SoccerDocument.MatchData.MatchOfficial.OfficialName;
-				data.matchtime = json.SoccerFeed.SoccerDocument.MatchData.Stat['$t'];
-				var teamData = json.SoccerFeed.SoccerDocument.MatchData.TeamData;
-				for(var i in teamData){
-					if(teamData[i].Side=='Home'){
-						data.home_team = teamData[i].TeamRef;
-						data.home_score = teamData[i].Score;
-					}else{
-						data.away_team = teamData[i].TeamRef;
-						data.away_score = teamData[i].Score;
 					}
+					data.matchtype = json.SoccerFeed.SoccerDocument.MatchData.MatchInfo.MatchType;
+					data.period = json.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Period;
+					data.matchdate = toDate(json.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Date);
+				
+					try{
+						data.result_type = json.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Result.Type;
+					}catch(e){
+						data.result_type = '';
+					}
+					try{
+						data.result_winner = json.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Result.Winner;
+					}catch(e){
+						data.result_winner = '';	
+					}
+					data.referee = json.SoccerFeed.SoccerDocument.MatchData.MatchOfficial.OfficialName;
+					data.matchtime = json.SoccerFeed.SoccerDocument.MatchData.Stat['$t'];
+					var teamData = json.SoccerFeed.SoccerDocument.MatchData.TeamData;
+					for(var i in teamData){
+						if(teamData[i].Side=='Home'){
+							data.home_team = teamData[i].TeamRef;
+							data.home_score = teamData[i].Score;
+						}else{
+							data.away_team = teamData[i].TeamRef;
+							data.away_score = teamData[i].Score;
+						}
+					}
+					teamData = null;
+					data.attendance = json.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Attendance;
+					data.venue = json.SoccerFeed.SoccerDocument.Venue;
+					data.team = json.SoccerFeed.SoccerDocument.Team;
+					callback(null,json,data);
+				}catch(e){
+					callback(new Error('document is empty'),null,null);
 				}
-				teamData = null;
-				data.attendance = json.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Attendance;
-				data.venue = json.SoccerFeed.SoccerDocument.Venue;
-				data.team = json.SoccerFeed.SoccerDocument.Team;
-				callback(null,json,data);
 			},
 			function(json,data,callback){
 				update_match_data(data,function(err,rs){
@@ -168,12 +172,27 @@ function extractData(filename,callback){
 					callback(err,json,data);
 				});
 			},
+			
 			function(json,data,callback){
 				update_lineup(data.game_id,
 								json.SoccerFeed.SoccerDocument.MatchData.TeamData,
 								function(err,rs){
-					callback(err,data);
+					callback(err,json,data);
 				});
+			},
+			function(json,data,callback){
+				update_team_ref(data.game_id,
+								json.SoccerFeed.SoccerDocument.Team,
+								function(err,rs){
+									callback(err,json,data);					
+								});				
+			},
+			function(json,data,callback){
+				update_player_stats(data.game_id,
+								json.SoccerFeed.SoccerDocument.MatchData.TeamData,
+								function(err,rs){
+									callback(err,data);					
+								});				
 			}
 		],
 	function(err,result){
@@ -488,15 +507,6 @@ function update_substitutions(game_id,teams,done){
 	
 }
 function update_lineup(game_id,teams,done){
-	async.eachSeries(teams,
-			function(team,next){
-				console.log(team.TeamRef);
-				console.log(team.PlayerLineUp);
-				next();
-			},
-			function(err){});
-	done(null,null);
-
 
 	pool.getConnection(function(err,conn){
 		if(!err){
@@ -527,9 +537,146 @@ function update_lineup(game_id,teams,done){
 								player.Status
 							],
 							function(err,rs){
-								console.log(err);
+								//console.log(err);
 								finish();
 							});
+					},function(err){
+						next();
+					});
+				}else{
+					next();
+				}
+			},function(err){
+				conn.end(function(err){
+					done(err,'ok');
+				});
+			});
+		}else{
+			done(new Error('db lost'),null);
+		}
+	});
+}
+
+function update_team_ref(game_id,teams,done){
+	console.log('update team ref ',game_id);
+	pool.getConnection(function(err,conn){
+		if(!err){
+			async.eachSeries(teams,function(team,next){
+				//console.log(team);
+				async.waterfall([
+					function(callback){
+						conn.query("INSERT INTO "+config.database.optadb+".teamrefs\
+									(game_id,\
+									team_id,team_name,team_manager,\
+									team_country,\
+									last_update)\
+									VALUES(\
+									?,\
+									?,?,?,?,\
+									NOW()\
+									)\
+									ON DUPLICATE KEY UPDATE\
+									team_id = VALUES(team_id),\
+									team_name = VALUES(team_name),\
+									team_manager = VALUES(team_manager),\
+									team_country = VALUES(team_country),\
+									last_update = VALUES(last_update)\
+									",
+							[
+								game_id,
+								team.uID,
+								team.Name,
+								team.TeamOfficial.PersonName.First+' '+team.TeamOfficial.PersonName.Last,
+								team.Country
+							],
+							function(err,rs){
+								callback(err,rs);
+							});
+					},
+					function(rs,callback){
+						async.eachSeries(team.Player,function(player,next_player){
+							//inserting the player refs
+							conn.query("INSERT INTO\
+										"+config.database.optadb+".playerrefs\
+										(game_id,team_id,player_id,name,position,last_update)\
+										VALUES\
+										(?,?,?,?,?,NOW())\
+										ON DUPLICATE KEY UPDATE\
+										name = VALUES(name),\
+										position = VALUES(position),\
+										last_update = VALUES(last_update);",
+										[	game_id,
+											team.uID,
+											player.uID,
+											player.PersonName.First+' '+player.PersonName.Last,
+											player.Position
+										],
+										function(err,rs){
+											next_player();
+										});
+						},function(err){
+							callback(err,'done');
+						});
+					},
+				],
+
+				function(err,result){
+					next();
+				});
+
+
+			},function(err){
+				conn.end(function(err){
+					done(err,'ok');
+				});
+			});
+		}else{
+			done(new Error('db lost'),null);
+		}
+	});
+}
+
+
+function update_player_stats(game_id,teams,done){
+
+	pool.getConnection(function(err,conn){
+		if(!err){
+			async.eachSeries(teams,
+			function(team,next){
+				console.log(team.TeamRef);
+				
+				if(typeof team.PlayerLineUp !== 'undefined'){
+					
+					//console.log(team);
+					async.eachSeries(team.PlayerLineUp.MatchPlayer,function(player,finish){
+						if(typeof player.Stat !== 'undefined'){
+							if(!Array.isArray(player.Stat)){
+								player.Stat = [player.Stat];
+							}
+							async.eachSeries(player.Stat,function(player_stats,next_stats){
+								console.log(player.PlayerRef,player_stats);
+								conn.query(	"INSERT INTO "+config.database.optadb+".player_stats\
+											(game_id,team_id,player_id,stats_name,stats_value)\
+											VALUES\
+											(?,?,?,?,?)\
+											ON DUPLICATE KEY UPDATE\
+											stats_name = VALUES(stats_name),\
+											stats_value = VALUES(stats_value);",
+											[	game_id,
+												team.TeamRef,
+												player.PlayerRef,
+											 	player_stats.Type,
+											 	player_stats['$t']
+											 ],
+											function(err,rs){
+												next_stats();
+											});
+							},function(err){
+								finish();
+							});
+						}else{
+							finish();
+						}
 					},function(err){
 						next();
 					});

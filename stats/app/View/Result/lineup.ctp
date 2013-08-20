@@ -1,6 +1,7 @@
 <?php
 $lineup = array();
 $subs = array();
+
 foreach($result['lineup']['home'] as $player){
   if($player['Lineup']['status']=='Start'){
     $lineup[] = array('home'=>$player['Player'],'away'=>array());
@@ -105,7 +106,7 @@ function position($p){
              <?php endforeach;?>
           </tbody>                    
         </table>
-        <!--
+     
         <table width="100%" border="0" cellspacing="0" cellpadding="0" class="blacktable">
         <thead>
               <tr>
@@ -119,16 +120,16 @@ function position($p){
               <tr>
                 <td class="tcenter">
                   <a class="red-arrow">
-                      <?=@$lu['home']['jersey_num']?> <?=@$lu['home']['name']?> (<?=position(@$lu['home']['position'])?>)</a>
+                      <?=@__($result['team_refs']['home']['team_manager'])?></a>
                 </td>
                 <td class="tcenter">&nbsp;</td>
                 <td class="tcenter">
                      <a class="red-arrow">
-                      <?=@$lu['away']['jersey_num']?> <?=@$lu['away']['name']?> (<?=position(@$lu['away']['position'])?>)</a>
+                      <?=@__($result['team_refs']['away']['team_manager'])?></a>
                 </td>
               </tr>
             
           </tbody>                    
-        </table>-->
+        </table>
     </div><!-- end .widget-content -->
 </div><!-- end .widget -->

@@ -19,17 +19,15 @@
                 <div id="navigation">
                 	<ul>
                     	<li>
-                        	<a href="<?=$this->Html->url('/news')?>">News</a>
+                        	<a href="<?=$this->Html->url('/')?>">Dashboard</a>
                         </li>
                     	<li>
-                        	<a href="<?=$this->Html->url('/schedules')?>">Schedule</a>
+                        	<a href="<?=$this->Html->url('/schedule')?>">Schedule</a>
                         </li>
                     	<li>
                         	<a href="<?=$this->Html->url('/players')?>">Players</a>
                         </li>
-                    	<li>
-                        	<a href="<?=$this->Html->url('/statistics')?>">Statistics</a>
-                        </li>
+                    	
                     	<li><a href="<?=$this->Html->url('/login/logout')?>">Logout</a></li>
                     </ul>
                 </div>
