@@ -28,7 +28,7 @@
         <div class="box tr">
             <h3>Cara Bermain</h3>
             <div class="entry">
-                <p>Maecenas sed diam eget risus varius blandit sit amet non magna. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.</p>
+                <p>Isi data lengkap, pilih tim, pemain, serta staff lalu atur formasi dan strategi untuk menjadi yang terbaik diantara manajer lain. Buktikan kemampuan Anda sebagai pengatur keuangan handal dan pengelola tim yang profesional! </p>
                 <a class="readmore" href="index.php?menu=faq">Selengkapnya</a>
             </div><!-- end .entry -->
         </div><!-- end .box -->
