@@ -140,13 +140,7 @@
             </div><!-- end #container -->
             <div id="footer">
                 <div id="footNav">
-                  
-                    <ul>
-                        <li><a href="<?=$this->Html->url('/pages/about')?>">Tentang Fantasy Football League</a></li>
-                        <li><a href="<?=$this->Html->url('/pages/tos')?>">Syarat & Ketentuan</a></li>
-                        <li><a href="<?=$this->Html->url('/pages/contact')?>">Kontak</a></li>
-
-                    </ul>
+                  	<p>Copyright &copy; Supersoccer.co.id 2013</p>
                      <?php
                             if($debug>0):
                         ?>
