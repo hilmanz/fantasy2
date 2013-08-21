@@ -79,6 +79,26 @@ a:hover{
 .white{
 	color:#FFF;
 }
+a.download-googleplay,
+a.download-appstore{
+	background:url(../images/googleplay.png) no-repeat;
+	display:block; width:105px; height:35px;
+	text-decoration:none;
+	float:left;
+	margin:0 0 5px 0;
+}
+a.download-appstore{
+	background:url(../images/appstore.png) no-repeat;
+	float:right;
+}
+.downloadapp{
+	padding:10px 20px !important;
+	text-align:center;
+}
+.downloadapp h3{
+	margin:10px 0 5px 0;
+	font-size:16px;
+}
 /*============= LAYOUT ===============*/
 #body{
 	background:url(../images/top-nav-bg.png) top repeat-x;

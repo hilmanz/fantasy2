@@ -75,6 +75,12 @@ endif;
                  <h3><span class="span1">Pertandingan Terbaik</span>:<span class="span2"><?=$best_match?></span></h3>
                 <a class="view-more" href="<?=$this->Html->url('/leaderboard')?>">Lihat Papan Peringkat</a>
             </div><!-- end .widget -->
+            <div class="widget tr downloadapp">
+            		<h3>Tugas Manajer Tidak Akan Pernah Selesai</h3>
+                    <a href="#" class="download-googleplay">&nbsp;</a>
+                    <a href="#" class="download-appstore">&nbsp;</a>
+                    <p class="yellow">Download Mobile App Supersoccer Football Manager Sekarang.</p>
+            </div><!-- end .widget -->
            
         </div><!-- end .box4 -->
         <div class="box3 tr fl drop">
