@@ -245,18 +245,17 @@ $(document).ready(function(){
             },
         });
 
+        
         $(".bench").mouseover(function(e){
             if(!drag_busy){
                 var target = $(this);
+              
                 player_in_lineup($(this).find('a').attr('no'),function(is_exist){
                     if(!is_exist){
                         $("#draggable").html(target.html());
-                        //console.log($(target).html());
-                       // console.log($(target).offset().left+","+$(target).offset().top);
-                       // console.log($('#universal').offset().left+","+$('#universal').offset().top);
-                       // console.log($("#fillDetailsPage").offset().left+","+$("#fillDetailsPage").offset().top);
+                       
                         var nx = 0;
-                        //console.log(navigator.userAgent);
+                       
                         if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
                             //only for firefox
                             nx = target.offset().left - ($("#universal").offset().left + 13);
@@ -270,7 +269,7 @@ $(document).ready(function(){
                         
                         var ny = target.offset().top - $("#universal").offset().top;
 
-                        //console.log('->'+nx+","+ny);
+                       
                         $("#draggable").css('top',ny);
                         $("#draggable").css('left',nx);
                         $("#draggable").find('.player-name').hide();
@@ -278,6 +277,11 @@ $(document).ready(function(){
                         $("#draggable").show();
                         $("div.bench").removeClass('playerBoxSelected');
                         target.addClass('playerBoxSelected');
+                          //pas di klik, langsung munculin slotnya.
+                            var pos = target.find('div.num').html();
+                            hide_slots();
+                            show_slots(pos);
+
 
                     }else{
                         $("#draggable").hide();
