@@ -29,7 +29,7 @@
             <h3>Cara Bermain</h3>
             <div class="entry">
                 <p>Selamat datang di SuperSoccer Football Manager, ajang unjuk gigi kemampuan kamu sebagai manager klab liga utama inggris.</p>
-                <a class="readmore" href="">Selengkapnya </a>
+                <a class="readmore" href="<?=$this->Html->url('/pages/cara')?>">Selengkapnya </a>
             </div><!-- end .entry -->
         </div><!-- end .box -->
         <div class="box tr last">
