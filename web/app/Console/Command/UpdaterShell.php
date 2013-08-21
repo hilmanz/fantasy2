@@ -26,15 +26,23 @@ class UpdaterShell extends AppShell{
     	foreach($users as $user){
     		$response = $this->Game->getTeamPoints($user['User']['fb_id']);
     		$response['points'] = intval($response['points']);
-    		$this->Team->query("
-    			INSERT INTO points
-				(team_id,points)
-				VALUES
-				({$user['Team']['id']},{$response['points']})
-				ON DUPLICATE KEY UPDATE
-				points = VALUES(points);
-    		");
-    		$this->out("Updating #".$user['Team']['id']." -> ".$response['points']);
+        if($user['Team']['id']>0){
+          $sql = "
+            INSERT INTO points
+          (team_id,points)
+          VALUES
+          ({$user['Team']['id']},{$response['points']})
+          ON DUPLICATE KEY UPDATE
+          points = VALUES(points);
+          ";
+         
+          try{
+      		  $this->Team->query($sql);
+          }catch(Exception $e){
+            $this->out('Error : '.$e->getMessage());
+          }
+      		$this->out("Updating #".$user['Team']['id']." -> ".$response['points']);
+        }
     	}
     }
     private function recalculate_ranks(){

@@ -402,6 +402,7 @@ $(document).ready(function(){
                 $("#formation-select option").filter(function() {
                     return $(this).text() == data.formation; 
                 }).prop('selected', true);
+                $("#formation-select option").trigger('change');
                 $("#the-formation").removeClass().addClass('formation-'+data.formation);
                 selectedVal['formations'] = {label:data.formation,
                                             value:data.formation};
