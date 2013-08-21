@@ -370,7 +370,7 @@ class ProfileController extends AppController {
 				Configure::read('avatar_img_dir').$_FILES['file']['name'])){
 			//resize to 120x120 pixels
 			$thumb = new Thumbnail();
-			$thumb->resizeImage('crop', $_FILES['file']['name'], 
+			$thumb->resizeImage('resizeCrop', $_FILES['file']['name'], 
 							Configure::read('avatar_img_dir'), 
 							'120x120_'.$_FILES['file']['name'], 
 							120, 
