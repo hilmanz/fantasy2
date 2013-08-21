@@ -28,8 +28,8 @@
         <div class="box tr">
             <h3>Cara Bermain</h3>
             <div class="entry">
-                <p>Isi data lengkap, pilih tim, pemain, serta staff lalu atur formasi dan strategi untuk menjadi yang terbaik diantara manajer lain. Buktikan kemampuan Anda sebagai pengatur keuangan handal dan pengelola tim yang profesional! </p>
-                <a class="readmore" href="index.php?menu=faq">Selengkapnya</a>
+                <p>Selamat datang di SuperSoccer Football Manager, ajang unjuk gigi kemampuan kamu sebagai manager klab liga utama inggris.</p>
+                <a class="readmore" href="">Selengkapnya </a>
             </div><!-- end .entry -->
         </div><!-- end .box -->
         <div class="box tr last">
