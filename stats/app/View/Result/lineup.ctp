@@ -11,6 +11,7 @@ foreach($result['lineup']['home'] as $player){
 }
 $n=0;
 $m=0;
+
 foreach($result['lineup']['away'] as $t=>$player){
    if($player['Lineup']['status']=='Start'){
       if(!isset($lineup[$m])){
@@ -27,7 +28,8 @@ foreach($result['lineup']['away'] as $t=>$player){
     }
 }   
 $result['lineup'] = null;
-
+//pr($lineup);
+//pr($subs);
 function position($p){
   switch($p){
     case "Defender":
@@ -90,14 +92,14 @@ function position($p){
             <?php foreach($subs as $lu): ?>
               <tr>
                 <td class="tcenter">
-                  <?php if($lu['home']['name']!=null):?>
+                  <?php if(@$lu['home']['name']!=null):?>
                   <a class="red-arrow">
                        <?=@h($lu['home']['name'])?> (<?=position(@$lu['home']['position'])?>)</a>
                   <?php endif;?>
                 </td>
                 <td class="tcenter">&nbsp;</td>
                 <td class="tcenter">
-                   <?php if($lu['away']['name']!=null):?>
+                   <?php if(@$lu['away']['name']!=null):?>
                      <a class="red-arrow">
                        <?=@h($lu['away']['name'])?> (<?=position(@$lu['away']['position'])?>)</a>
                     <?php endif;?>

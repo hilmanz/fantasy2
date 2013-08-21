@@ -1,10 +1,10 @@
 
-function get_widget(target,type,manual){
+function get_widget(url,target,type,manual){
 	manual = (typeof type === 'undefined') ? false : manual;
 	type = (typeof type === 'undefined') ? 1 : type;
 	game_id = (typeof game_id === 'undefined') ? 1 : game_id;
 	$.ajax({
-	  url:'proxy.php?id='+game_id+'&type='+type+'&r='+Math.random()*999999,
+	  url:url+'?id='+game_id+'&type='+type+'&r='+Math.random()*999999,
 	  dataType: '',
 	  success: function(response){
 		$(target).html(response);
@@ -43,6 +43,6 @@ function get_widget(target,type,manual){
 		console.log(e);
 	}});
 	window.setTimeout(function(){
-		get_widget(target,type,manual);
+		get_widget(url,target,type,manual);
 	},1000*5);
 }
