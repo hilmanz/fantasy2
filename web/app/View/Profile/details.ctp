@@ -32,7 +32,7 @@
                     </div><!-- end .row -->
                     <div class="row">
                         <label>Lokasi</label>
-                        <?=@$user['location']?>
+                        <input type="text" name="location" value="<?=h(@$user['location'])?>"/>
                     </div><!-- end .row -->
                    
                     <div class="row">

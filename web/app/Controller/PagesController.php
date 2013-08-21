@@ -53,8 +53,6 @@ class PagesController extends AppController {
  */
 	public function beforeFilter(){
 		parent::beforeFilter();
-		
-		
 		$user = $this->userDetail;
 		$this->set('user',$user['User']);
 	}
@@ -85,7 +83,10 @@ class PagesController extends AppController {
 		
 		$this->set('info',$info);
 		//-->
-
+		
+		if($path[0]=='home'&&$this->userDetail['Team']['id']>0){
+			$this->redirect('/manage/team');
+		}
 		$this->render(implode('/', $path));
 	}
 }

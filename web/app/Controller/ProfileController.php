@@ -82,7 +82,7 @@ class ProfileController extends AppController {
 		$data = array(
 			'name'=>$this->request->data['name'],
 			'email'=>$this->request->data['email'],
-			'city'=>$this->request->data['city']
+			'location'=>$this->request->data['location']
 		);
 		$userData = $this->getUserData();
 		$this->loadModel('User');
