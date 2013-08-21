@@ -24,7 +24,13 @@
                             <?php endif;?>
                             </a>
                             <div class="entry fl">
-                                <h3 class="username"><a href="<?=$this->Html->url('/profile')?>"><?=h($user['name'])?></a> |
+                                <h3 class="username"><a href="<?=$this->Html->url('/profile')?>">
+                                    <?php if(isset($user)):?>
+                                    <?=h($user['name'])?>
+                                    <?php else:?>
+                                    <?=h($USER_DATA['name'])?>
+                                    <?php endif;?>
+                                </a> |
                                  <a class="logout" href="<?=$this->Html->url('/profile/logout')?>">Keluar</a></h3>
                                 <span class="points red"><?=number_format($USER_POINTS)?> Pts</span>
                                 

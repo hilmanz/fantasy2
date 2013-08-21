@@ -20,10 +20,12 @@ class DashboardController extends AppController {
 	public function add_ticker(){
 		$this->loadModel('Ticker');
 		$this->Ticker->create();
-		$this->Ticker->save(array(
+		$rs = $this->Ticker->save(array(
 			'content'=>$this->request->data['content']
 		));
-		
+		if($rs) $this->Session->setFlash("Ticker added !");
+		else $this->Session->setFlash("Cannot add news, please try again later !");
+		$this->redirect('/dashboard');
 	}
 	public function delete_tickers(){
 		$id = intval($this->request->query['id']);

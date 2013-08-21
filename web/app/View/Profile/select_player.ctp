@@ -26,6 +26,10 @@
 							  <tr>
 								<th>Nama</th>
 								<th>Posisi</th>
+                                <th>Tgl.Lahir</th>
+                                <th>Usia</th>
+                                <th>Negara Asal</th>
+                                <th>Gaji</th>
 							  </tr>
 							 </thead>
 							 <tbody  id="available">
@@ -135,11 +139,19 @@ $(document).ready(function(){
         }
 		$("table tbody tr:nth-child(odd)").addClass("odd");
 		$("table tbody tr:nth-child(even)").addClass("even");
+        var bod = new Date(birth_date);
+        var age = Math.round((new Date().getTime() - bod.getTime()) / (24*60*60*1000*365));
+        var birthday = ((bod.getDate()<10)?'0'+bod.getDate():bod.getDate())+'-'+
+                        (((bod.getMonth()+1)<10)?'0'+(bod.getMonth()+1):(bod.getMonth()+1))+'-'+bod.getFullYear();
     %>
 	
   <tr id="<%=uid%>">
     <td><%=name%></td>
     <td><%=pos_code%></td>
+    <td><%=birthday%></td>
+    <td><%=age%></td>
+    <td><%=country%></td>
+    <td><%=number_format(salary)%></td>
   </tr>
 </script>
 <script type="text/template" id="player_selected">

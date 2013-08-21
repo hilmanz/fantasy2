@@ -34,9 +34,10 @@ function getTeams(callback){
 /** get master player data **/
 function getPlayers(team_uid,callback){
 	conn = prepareDb();
-	conn.query("SELECT uid,name,birth_date,position,country,salary,transfer_value \
+	conn.query("SELECT uid,name,birth_date,real_position,known_name,join_date,\
+				position,country,salary,transfer_value \
 				FROM ffgame.master_player \
-				WHERE team_id=? ORDER BY name ASC LIMIT 100",
+				WHERE team_id=? ORDER BY last_name ASC,position ASC LIMIT 100",
 				[team_uid],
 		function(err,players){
 			
