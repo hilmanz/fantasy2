@@ -234,6 +234,7 @@ $(document).ready(function(){
                // $(this).css('border','');
                 drag_busy = true;
                 var pos = $(this).find('div.num').html();
+                hide_slots();
                 show_slots(pos);
             },
             stop: function( event, ui ) {
@@ -392,6 +393,7 @@ $(document).ready(function(){
             }
         }
         function getLineUp(){
+            var n_player = 0;
             api_call('<?=$this->Html->url("/game/lineup")?>',function(data){
                 $("#formation-select option").filter(function() {
                     return $(this).text() == data.formation; 
@@ -402,9 +404,10 @@ $(document).ready(function(){
 
                 render_view(defaultformation,'#the-formation',{});
                 append_view(defaultsubs,'#the-formation',{});
-
-                if(data.lineup.length==0){
+                n_player = data.lineup.length;
+                if(n_player==0){
                     initLineupEvents();
+                    show_slots();
                 }else{
                     //$("#the-formation").html('');
                     for(var i in data.lineup){
@@ -414,7 +417,9 @@ $(document).ready(function(){
                     initLineupEvents();
                 }
                 flag_players();
-                hide_slots();
+                if(n_player>0){
+                    hide_slots();
+                }
             });
 
         }
@@ -537,7 +542,9 @@ $(document).ready(function(){
             <?php endif;?>
         }
 
-    getLineUp();  
+    getLineUp(); 
+
+
 });
 </script>
 <script type="text/template" id="tplsave">
