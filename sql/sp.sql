@@ -7,7 +7,12 @@ DECLARE i INT DEFAULT 1;
 DECLARE a BIGINT(11);
 DECLARE b INT(11);
 
-DECLARE curs CURSOR FOR SELECT team_id,points FROM points ORDER BY points DESC;
+DECLARE curs CURSOR FOR 
+	SELECT a.team_id,a.points 
+	FROM points a
+	INNER JOIN teams b
+	ON a.team_id = b.id 
+	ORDER BY a.points DESC;
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET isDone = TRUE;
 
 OPEN curs;
