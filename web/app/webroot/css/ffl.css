@@ -1465,3 +1465,46 @@ td,th{
 	border:1px solid #ff0000;
 	padding:10px;
 }
+#logoutpage{
+	background:url(../images/bg_logout.png) no-repeat;
+	position:relative;
+	width:876px; height:615px;
+	margin:0 auto;
+	text-align:center;
+}
+#logoutpage h1{
+	margin:0;
+	font-size:40px;
+	position:absolute;
+	top:50px;
+	width:100%;
+	text-align:center;
+}
+#logoutpage h2{
+	margin:0;
+	font-size:30px;
+	color:#fff;
+	top:105px;
+	width:100%;
+	text-align:center;
+	position:absolute;
+}
+#logoutpage a{
+	display:block;
+	width:149px; height:35px;
+	position:absolute;
+	opacity:0.5;
+	bottom:75px;
+	text-decoration:none;
+}
+#logoutpage a:hover{
+	opacity:1;
+}
+.download-android{
+	background:url(../images/btn_android.png) no-repeat;
+	left:260px;
+}
+.download-apple{
+	background:url(../images/btn_comingsoon.png) no-repeat;
+	right:250px;
+}
