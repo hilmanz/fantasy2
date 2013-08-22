@@ -16,6 +16,8 @@ class ResultController extends AppController {
 	public $name = 'Result';
 
 	public function index(){
+		$id = $this->request->query('id');
+		$type = intval($this->request->query('type'));
 		$this->setupData();
 		if($type==1){
 			//overall match
@@ -32,6 +34,8 @@ class ResultController extends AppController {
 		}
 	}
 	public function json(){
+		$id = $this->request->query('id');
+		$type = intval($this->request->query('type'));
 		$this->setupData();
 		$this->layout = 'ajax';
 		if($type==1){
@@ -48,7 +52,7 @@ class ResultController extends AppController {
 			$this->render('json/index');
 		}
 	}
-	private setupData(){
+	private function setupData(){
 		$id = $this->request->query('id');
 		$type = intval($this->request->query('type'));
 		$this->loadModel('Game_maps');
@@ -80,7 +84,7 @@ class ResultController extends AppController {
 				@$player = $this->Player->findByUid($v['Lineup']['player_id']);
 				$home_lineup[$n]['Player'] = @$player['Player'];
 			}
-
+			
 			$home_lineup_refs = $this->Playerrefs->find('all',
 										array('conditions'=>array(
 												'game_id'=>$game_id,
