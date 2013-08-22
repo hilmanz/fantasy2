@@ -360,7 +360,7 @@ class ProfileController extends AppController {
 
 	public function logout(){
 		$this->Session->destroy();
-		$this->redirect('/');
+		$this->redirect('/login/thankyou');
 	}
 
 	public function upload_image(){

@@ -119,6 +119,8 @@ class LoginController extends AppController {
 		
 		$this->set('USER_IS_LOGIN',false);
 	}
-
+	public function thankyou(){
+		$this->render('logout');
+	}
 
 }
