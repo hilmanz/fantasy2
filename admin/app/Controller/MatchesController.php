@@ -30,6 +30,22 @@ class MatchesController extends AppController {
 
 		$this->set('data',$rs);
 	}
+	public function player_stats($game_id,$team_id,$player_id){
+		$this->loadModel('Matches');
+		$this->loadModel('Player');
+
+		$match = $this->Matches->findByGame_id($game_id);
+		$match['home'] = $this->Matches->getTeam($match['Matches']['home_team']);
+		$match['away'] = $this->Matches->getTeam($match['Matches']['away_team']);
+		$this->set('match',$match);
+
+		$player = $this->Player->findByUid($player_id);
+		$player['Player']['team'] = $this->Matches->getTeam($player['Player']['team_id']);
+
+		$this->set('player',$player['Player']);
+
+		$this->set('stats',$this->getPlayerStats($game_id,$team_id,$player_id));
+	}
 	public function view($game_id){
 		$this->loadModel('Matches');
 		$this->loadModel('Player');
@@ -131,6 +147,19 @@ class MatchesController extends AppController {
 									 'team_id'=>$team_id),
 				'limit'=>1000,
 				'order'=>array('Team_stat.stats_name'=>'ASC')
+			));
+		
+		return $stats;
+
+	}
+	private function getPlayerStats($game_id,$team_id,$player_id){
+		$this->loadModel('Player_stat');
+		$stats = $this->Player_stat->find('all',array(
+				'conditions'=>array('game_id'=>$game_id,
+									 'team_id'=>$team_id,
+									 'player_id'=>$player_id),
+				'limit'=>1000,
+				'order'=>array('Player_stat.stats_name'=>'ASC')
 			));
 		
 		return $stats;
