@@ -19,7 +19,7 @@
 	if(isset($data)):foreach($data as $d):
 	?>
 	<tr>
-		<td><?=$d['Matches']['game_id']?></td>
+		<td><a href="<?=$this->Html->url('/matches/view/'.$d['Matches']['game_id'])?>"><?=$d['Matches']['game_id']?></a></td>
 		<td><?=$d['Matches']['matchday']?></td>
 		<td><?=date("d/m/Y H:i:s",strtotime($d['Matches']['matchdate']))?></td>
 		<td><?=$d['home']['name']?></td>
