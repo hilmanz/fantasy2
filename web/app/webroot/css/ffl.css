@@ -92,7 +92,7 @@ a.download-appstore{
 	float:right;
 }
 .downloadapp{
-	padding:10px 20px !important;
+	padding:28px 20px !important;
 	text-align:center;
 }
 .downloadapp h3{
@@ -409,12 +409,28 @@ a.download-appstore{
 .match-place p,.perform-team h3{
 	margin:0;
 }
+.perform-team h4{
+	font-size:20px;
+	margin:0;
+}
 .perform-team .span1,
 .perform-team .span2{
 	display:inline-block;
 }
+.perform-team h4{
+	margin:10px 0 0 0;
+}
+.perform-team h4 .span1,
+.perform-team h4 .span2{
+	display:block;
+	padding:0;
+	width:auto;
+}
+.perform-team h4 .span2{
+	color:#fdcb02;
+}
 .perform-team .span1{
-	width:110px;
+	width:115px;
 	font-size:16px;
 }
 .perform-team .span2{
