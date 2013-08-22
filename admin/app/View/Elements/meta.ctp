@@ -20,6 +20,10 @@
 	  array('jquery-1.9.1',
 			'jquery-ui-1.10.3.custom.min',
 			'fancybox/jquery.fancybox.js?v=2.1.5',
+			'highcharts',
+			'underscore-min',
+			'backbone-min',
+			'kit'
 	  ));
 ?>
 	<!--[if IE 6]>

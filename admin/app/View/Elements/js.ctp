@@ -8,13 +8,9 @@
 			'jquery.jscrollpane.min',
 			'scroll-startstop.events.jquery',
 			'detectbrowser',
-			'underscore-min',
-			'backbone-min',
-			'ffl',
-			'ffkit',
 			'hoverIntent',
 			'superfish',
-			'customform',
+			
 			'slider/jquery.flexslider',
 			'ffl-footer'
 			

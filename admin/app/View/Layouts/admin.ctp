@@ -27,7 +27,13 @@
                     	<li>
                         	<a href="<?=$this->Html->url('/players')?>">Players</a>
                         </li>
-                    	
+                    	<li>
+                            <a href="<?=$this->Html->url('/pushlogs')?>">Push Logs</a>
+                        </li>
+                        <li>
+                            <a href="<?=$this->Html->url('/matches')?>">Match Results</a>
+                        </li>
+                        
                     	<li><a href="<?=$this->Html->url('/login/logout')?>">Logout</a></li>
                     </ul>
                 </div>
