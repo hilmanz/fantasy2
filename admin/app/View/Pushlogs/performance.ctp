@@ -7,7 +7,7 @@ var seconds = [];
 var category = [];
 var minutes = [];
 for(var i in data){
-	category.push(i+1);
+	category.push(data[i].dt);
 	seconds.push(data[i].d);
 	minutes.push(data[i].m);
 }
@@ -21,7 +21,10 @@ $(function () {
         },
         
         xAxis: {
-            categories: category
+            categories: category,
+            labels:{
+            	rotation:60
+            }
         },
         yAxis: {
             title: {

@@ -101,15 +101,17 @@ class PushlogsController extends AppController {
 		//we need the starting hour
 		$start_hour_ts = $last_time - (60*60*4);
 		$start_hour = (date("Y-m-d H:i:s",$start_hour_ts));
-		$sql = "SELECT UNIX_TIMESTAMP(push_date) AS ts 
+		$sql = "SELECT UNIX_TIMESTAMP(push_date) AS ts,push_date
 				FROM pushlogs WHERE push_date > '{$start_hour}' 
 				LIMIT 100000;";
 		$logs = $this->Pushlogs->query($sql);
 		$rs = array();
+		
 		for($i=1;$i<sizeof($logs);$i++){
+			$dt = date("d/m H:i:s",$logs[$i][0]['ts']);
 			$d = $logs[$i][0]['ts'] - $logs[$i-1][0]['ts'];
 			$m = round($d/60);
-			$rs[] = array('m'=>$m,'d'=>$d);
+			$rs[] = array('dt'=>$dt,'m'=>$m,'d'=>$d);
 		}
 		$this->set('rs',$rs);
 	}
