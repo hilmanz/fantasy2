@@ -115,7 +115,8 @@ class AppController extends Controller {
 											));
 		$this->layout = 'ajax';
 		if($this->request->params['action']!='auth'){
-			$access_token = $_REQUEST['access_token'];
+			$access_token = @$_REQUEST['access_token'];
+			
 			if(!$this->validateAPIAccessToken($access_token)){
 				print json_encode(array('status'=>401,'error'=>'invalid access token !'));
 				die();
@@ -146,38 +147,51 @@ class AppController extends Controller {
 		return $this->Session->read('Userlogin.info');
 	}
 	public function getAccessToken(){
-
 		$access_token = $this->Session->read('access_token');
 		
 		return $access_token;
 	}
 	public function initAccessToken(){
-		$ckfile = tempnam ("/tmp", "CURLCOOKIE");
-		$response = $this->api_post('/auth',array(),
-									$ckfile);
-		if(!isset($response['error'])){
-			$challenge_code = $response['challenge_code'];
-			$request_code = sha1($this->getAPIKey().'|'.$challenge_code.'|'.$this->salt());
-			$response = $this->api_post('/auth',
-										array('request_code'=>$request_code),
-										$ckfile);
-
-			unlink($ckfile);
-			$this->Session->write('access_token',$response['access_token']);
-			$access_token = $this->Session->read('access_token');
-			return $access_token;
+		
+		if($this->getAccessToken()!=null){
 			
-		}else{
-			
-			if($this->request->params['controller']!='login'
-				&& $this->request->params['action']!='service_unavailable' 
-				&& $this->request->params['controller']!='api'){
-				$this->redirect('/login/service_unavailable');
-			}else{
-				//die(json_encode(array('error'=>'service unavailable')));
+			$check = $this->api_call('/checkSession',array('access_token'=>$this->getAccessToken()));
+			if($check['status']==0){
+				$this->Session->write('access_token',null);
 			}
 		}
-		return 0;
+		if($this->Session->read('access_token')==null){
+			$ckfile = tempnam ("/tmp", "CURLCOOKIE");
+			$response = $this->api_post('/auth',array(),
+									$ckfile);
+			if(!isset($response['error'])){
+				$challenge_code = $response['challenge_code'];
+				$request_code = sha1($this->getAPIKey().'|'.$challenge_code.'|'.$this->salt());
+				$response = $this->api_post('/auth',
+											array('request_code'=>$request_code),
+											$ckfile);
+
+				unlink($ckfile);
+				$this->Session->write('access_token',$response['access_token']);
+				$access_token = $this->Session->read('access_token');
+				return $access_token;
+				
+			}else{
+				unlink($ckfile);
+				if($this->request->params['controller']!='login'
+					&& $this->request->params['action']!='service_unavailable' 
+					&& $this->request->params['controller']!='api'){
+					$this->redirect('/login/service_unavailable');
+				}else{
+					//die(json_encode(array('error'=>'service unavailable')));
+				}
+			}
+			return 0;
+		}else{
+
+			return $this->Session->read('access_token');
+		}
+		
 	}
 	public function getAPIUrl(){
 		return Configure::read('API_URL');

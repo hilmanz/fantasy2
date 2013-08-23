@@ -101,6 +101,15 @@ app.post('/sponsorship/apply',[auth.canAccess],gameplay.applySponsorship);
 app.get('/finance/:game_team_id',[auth.canAccess],gameplay.financial_statements);
 app.get('/last_earning/:game_team_id',[auth.canAccess],gameplay.last_earning);
 app.get('/venue/:team_id',[auth.canAccess],gameplay.get_venue);
+app.get('/checkSession',function(req,res){
+	auth.checkSession(req,res,function(is_valid){
+		if(is_valid){
+			res.send(200,{status:1});
+		}else{
+			res.send(200,{status:0});
+		}
+	});
+});
 app.post('/auth',auth.authenticate);
 app.get('/ping',function(req,res){
 	res.send(200,{status:1,message:'Server Alive'});

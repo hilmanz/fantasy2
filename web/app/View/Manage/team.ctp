@@ -1,5 +1,9 @@
 <?php
 $can_update_formation = true;
+
+if(date_default_timezone_get()=='Asia/Jakarta'){
+    $match_date_ts += 6*60*60;
+}
 if(time() > $match_date_ts-(24*60*60) && Configure::read('debug') == 0){
     $can_update_formation = false;
 }

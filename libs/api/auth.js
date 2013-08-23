@@ -127,3 +127,23 @@ exports.canAccess = function(req,res,next){
 		res.send(401,{error:'access denied !'});
 	}
 }
+exports.checkSession = function(req,res,callback){
+	var access_token;
+	if(req.body.access_token!=null){
+		access_token = req.body.access_token;
+	}else{
+		access_token = req.query.access_token;
+	}
+	if(access_token!=null){
+		req.redisClient.get(access_token,function(err,rs){
+			console.log(rs);
+			if(rs==null){
+				callback(false);
+			}else{
+				callback(true);
+			}
+		});
+	}else{
+		callback(false);
+	}
+}
