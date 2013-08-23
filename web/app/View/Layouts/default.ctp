@@ -70,7 +70,7 @@
                 <div id="topnavs" class="topnav">
                     <ul id="topnav">
                         <li><a href="http://www.supersoccer.co.id/" target="_blank" class="nav1">Home</a></li>
-                        <li><a href="http://www.supersoccer.co.id/category/supersoccer-tv/" class="nav2">Suppersoccer TV</a>
+                        <li><a href="http://www.supersoccer.co.id/category/supersoccer-tv/" class="nav2">Supersoccer TV</a>
                         <ul>
                                <li><a href="#">Live Streaming Service</a></li>
                                 <li><a href="#">Video Collections</a></li>
