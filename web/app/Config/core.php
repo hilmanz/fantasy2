@@ -189,8 +189,8 @@
  */
 	Configure::write('Session', array(
 		'defaults' => 'php',
-		'timeout'	=> 60*3,
-		'cookieTimeout'	=> 60*3,
+		'timeout'	=> 60*60*3,
+		'cookieTimeout'	=> 60*60*3,
 	));
 
 /**
@@ -317,7 +317,7 @@
 $engine = 'File';
 
 // In development mode, caches should expire quickly.
-$duration = '+999 days';
+$duration = '+10 seconds';
 if (Configure::read('debug') > 0) {
 	$duration = '+10 seconds';
 }

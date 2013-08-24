@@ -91,6 +91,7 @@ class ProfileController extends AppController {
 		$this->User->id = $user['User']['id'];
 		$rs = $this->User->save($data);
 		if(isset($rs)){
+
 			$this->Session->setFlash('Profil Anda telah berhasil diubah!');
 			$this->redirect('/profile/success');
 		}else{
@@ -355,6 +356,10 @@ class ProfileController extends AppController {
 		$this->render('error');
 	}
 	public function success(){
+
+		$user = $this->User->findByFb_id($this->userData['fb_id']);
+
+		$this->set('user',$user['User']);
 		$this->render('success');
 	}
 
