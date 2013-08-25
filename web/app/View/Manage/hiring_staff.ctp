@@ -12,10 +12,11 @@
                         <div class=" staff-list" id="available">
                             <?php
                                 foreach($officials as $official):
+                                    $img = str_replace(' ','_',strtolower($official['name'])).'.jpg';
                             ?>
                             <div class="thumbStaff">
                                 <div class="avatar-big">
-                                    <img src="<?=$this->Html->url('/content/thumb/default_avatar.png')?>" />
+                                    <img src="<?=$this->Html->url('/content/thumb/'.$img)?>" />
                                 </div><!-- end .avatar-big -->
                                 <p><?=h($official['name'])?></p>
                                 <div>
