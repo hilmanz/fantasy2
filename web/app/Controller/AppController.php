@@ -43,7 +43,10 @@ class AppController extends Controller {
 	protected $redisClient;
 	protected $gameApiAccessToken;
 	public function beforeFilter(){
-
+		
+		$this->disableCache();
+		$this->response->disableCache();
+		
 		$this->loadModel('Game');
 		//set acces token
 		$this->initAccessToken();

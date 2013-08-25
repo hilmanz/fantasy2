@@ -49,9 +49,9 @@ async.waterfall([
 		async.eachSeries(
 			data,
 			function(item,next){
-				//console.log(item);
-				conn.query("SELECT * FROM ffgame.master_player WHERE name=? LIMIT 1",
-							[item.name],
+				console.log(item);
+				conn.query("UPDATE ffgame.master_player SET salary = ? WHERE name=?",
+							[item.salary,item.name],
 							function(err,rs){
 								if(!err&&rs.length>0){
 									total_found++;
