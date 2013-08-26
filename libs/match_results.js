@@ -411,8 +411,8 @@ function calculatePlayerPoints(conn,points,game_id,player,done){
 			var game_points = 0;
 			var player_stats = {};
 			for(var i in stats){
-				if(typeof stat_maps[stats[i].stats_name] !== 'undefined'){
-					var point_name = stat_maps[stats[i].stats_name];
+				if(typeof points[stats[i].stats_name] !== 'undefined'){
+					var point_name = stats[i].stats_name;
 					if(typeof player_stats[point_name] === 'undefined'){
 						player_stats[point_name] = stats[i].stats_value;
 					}else{
