@@ -82,7 +82,7 @@ function results(game_id,done){
 								WHERE game_id=? GROUP BY team_id,stats_name;",
 					[game_id],
 					function(err,stats){
-					
+						console.log(this.sql);
 						callback(err,game,stats);
 					});
 				},
@@ -138,25 +138,30 @@ function getMatchResultData(game,stats,player_stats,callback){
 	
 	console.log(stats);
 	//console.log(stats_map);
-	var stats_list = require(path.resolve('./libs/stats_map')).getStats();
+	//var stats_list = require(path.resolve('./libs/stats_map')).getStats();
 	var home_overall_stats = {};
 	var away_overall_stats = {};
-	for(var i in stats_map){
-		home_overall_stats[i] = 0;
-		away_overall_stats[i] = 0;
-	}
-	console.log(home_overall_stats);
+	
+
+	
 	//generate overall stats for each team
 	for(var i in stats){
-		if(typeof stats_list[stats[i].stats_name]!=='undefined'){
+		//if(typeof stats_list[stats[i].stats_name]!=='undefined'){
 
 			if(stats[i].team_id == home.team_id){
-				home_overall_stats[stats_list[stats[i].stats_name]] += stats[i].total;
+				if(typeof home_overall_stats[stats[i].stats_name] === 'undefined'){
+					home_overall_stats[stats[i].stats_name] = 0;
+				}
+				home_overall_stats[stats[i].stats_name] += stats[i].total;
 			}else{
-				away_overall_stats[stats_list[stats[i].stats_name]] += stats[i].total;
+				if(typeof away_overall_stats[stats[i].stats_name] === 'undefined'){
+					away_overall_stats[stats[i].stats_name] = 0;
+				}
+				away_overall_stats[stats[i].stats_name] += stats[i].total;
 			}
-		}
+		//}
 	}
+	console.log('home overall stats : ',home_overall_stats);
 	home.overall_stats =  home_overall_stats;
 	away.overall_stats = away_overall_stats;
 	
@@ -166,7 +171,7 @@ function getMatchResultData(game,stats,player_stats,callback){
 
 	//process player's stats
 	for(var i in player_stats){
-		if(typeof stats_list[player_stats[i].stats_name]!=='undefined'){
+		//if(typeof stats_list[player_stats[i].stats_name]!=='undefined'){
 			if(player_stats[i].team_id == home.team_id){
 				if(typeof home.player_stats[player_stats[i].player_id] === 'undefined'){
 					home.player_stats[player_stats[i].player_id] = {
@@ -175,10 +180,10 @@ function getMatchResultData(game,stats,player_stats,callback){
 						stats:{}
 					};
 				}
-				if(typeof home.player_stats[player_stats[i].player_id]['stats'][stats_list[player_stats[i].stats_name]] === 'undefined'){
-					 home.player_stats[player_stats[i].player_id]['stats'][stats_list[player_stats[i].stats_name]] = 0;
+				if(typeof home.player_stats[player_stats[i].player_id]['stats'][player_stats[i].stats_name] === 'undefined'){
+					 home.player_stats[player_stats[i].player_id]['stats'][player_stats[i].stats_name] = 0;
 				}
-				 home.player_stats[player_stats[i].player_id]['stats'][stats_list[player_stats[i].stats_name]] += player_stats[i].total;
+				 home.player_stats[player_stats[i].player_id]['stats'][player_stats[i].stats_name] += player_stats[i].total;
 			}else{
 				if(typeof away.player_stats[player_stats[i].player_id] === 'undefined'){
 					away.player_stats[player_stats[i].player_id] = {
@@ -187,12 +192,12 @@ function getMatchResultData(game,stats,player_stats,callback){
 						stats:{}
 					};
 				}
-				if(typeof away.player_stats[player_stats[i].player_id]['stats'][stats_list[player_stats[i].stats_name]] === 'undefined'){
-					 away.player_stats[player_stats[i].player_id]['stats'][stats_list[player_stats[i].stats_name]] = 0;
+				if(typeof away.player_stats[player_stats[i].player_id]['stats'][player_stats[i].stats_name] === 'undefined'){
+					 away.player_stats[player_stats[i].player_id]['stats'][player_stats[i].stats_name] = 0;
 				}
-				 away.player_stats[player_stats[i].player_id]['stats'][stats_list[player_stats[i].stats_name]] += player_stats[i].total;
+				 away.player_stats[player_stats[i].player_id]['stats'][player_stats[i].stats_name] += player_stats[i].total;
 			}
-		}
+		//}
 	}
 
 	result.push(home);

@@ -60,6 +60,14 @@ class MatchController extends AppController {
 	public function details($game_id){
 		$game_id = Sanitize::paranoid($game_id);
 		$rs = $this->Game->getMatchDetails($game_id);
+		$modifier = $this->Team->query("SELECT name FROM ffgame.game_matchstats_modifier as stats;");
+		$stats = array();
+		foreach($modifier as $mod){
+			$stats[] = $mod['stats']['name'];
+		}
+		$modifier = null;
+		unset($modifier);
+		$this->set('mods',$stats);
 		$this->set('o',$rs);
 	}
 	public function error(){

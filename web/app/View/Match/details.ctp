@@ -1,3 +1,13 @@
+<?php
+
+function isAllowedStats($mods,$name){
+    foreach($mods as $m){
+        if($name==$m){
+            return true;
+        }
+    }
+}
+?>
 <div id="fillDetailsPage">
      <?php echo $this->element('infobar'); ?>
     <div id="thecontent">
@@ -17,11 +27,13 @@
                         <tr>
                             <td valign="top">
                                 <table width="100%">
-                                    <?php foreach($o['data'][0]['overall_stats'] as $stats=>$val):?>
+                                    <?php foreach($o['data'][0]['overall_stats'] as $stats=>$val):
+                                            if(isAllowedStats($mods,$stats)):
+                                    ?>
                                     <tr>
                                         <td><?=ucfirst(str_replace("_"," ",$stats))?></td><td><?=$val?></td>
                                     </tr>
-                                    <?php endforeach;?>
+                                    <?php endif;endforeach;?>
                                 </table>
                                 <table width="100%">
                                     <?php foreach($o['data'][0]['player_stats'] as $player=>$data):?>
@@ -30,11 +42,12 @@
                                     </tr>
                                         <?php
                                             foreach($data['stats'] as $stats=>$val):
+                                                if(isAllowedStats($mods,$stats)):
                                         ?>
                                         <tr>
                                             <td><?=ucfirst(str_replace("_"," ",$stats))?></td><td><?=$val?></td>
                                         </tr>
-                                        <?php endforeach;?>
+                                        <?php endif;endforeach;?>
                                     <?php endforeach;?>
                                 </table>
                             </td>
@@ -43,25 +56,30 @@
                             </td>
                             <td valign="top">
                                 <table width="100%">
-                                    <?php foreach($o['data'][1]['overall_stats'] as $stats=>$val):?>
+                                    <?php foreach($o['data'][1]['overall_stats'] as $stats=>$val):
+                                            if(isAllowedStats($mods,$stats)):
+                                    ?>
                                     <tr>
                                         <td><?=ucfirst(str_replace("_"," ",$stats))?></td><td><?=$val?></td>
                                     </tr>
-                                    <?php endforeach;?>
+                                    <?php endif;endforeach;?>
                                 </table>
                                 <table width="100%">
                                     
-                                    <?php foreach($o['data'][1]['player_stats'] as $player=>$data):?>
+                                    <?php foreach($o['data'][1]['player_stats'] as $player=>$data):
+                                            
+                                    ?>
                                     <tr style="background-color:#353535;color:white;padding:5px">
                                         <td><?=$data['name']?></td><td><?=$data['position']?></td>
                                     </tr>
                                         <?php
                                             foreach($data['stats'] as $stats=>$val):
+                                                if(isAllowedStats($mods,$stats)):
                                         ?>
                                         <tr>
                                             <td><?=ucfirst(str_replace("_"," ",$stats))?></td><td><?=$val?></td>
                                         </tr>
-                                        <?php endforeach;?>
+                                        <?php endif;endforeach;?>
                                     <?php endforeach;?>
                                 </table>
                             </td>
