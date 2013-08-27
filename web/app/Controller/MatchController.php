@@ -31,6 +31,9 @@ class MatchController extends AppController {
 		$this->userData = $this->getUserData();
 		$this->user = $this->User->findByFb_id($this->userData['fb_id']);
 		$this->club = $this->Team->findByUser_id($this->user['User']['id']);
+		if(!$this->hasTeam()){
+			$this->redirect('/login/expired');
+		}
 	}
 	public function hasTeam(){
 		$userData = $this->userData;
