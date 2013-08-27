@@ -11,7 +11,7 @@ function isAllowedStats($mods,$name){
 <div id="fillDetailsPage">
      <?php echo $this->element('infobar'); ?>
     <div id="thecontent">
-        <div id="content">
+        <div id="contents">
             <div class="content">
                 <div class="row-2">
                     <h1 class="red">Rincian Pertandingan</h1>
@@ -20,9 +20,9 @@ function isAllowedStats($mods,$name){
                 <div class="row">
                     <table width="100%">
                         <tr>
-                            <td><?=$o['data'][0]['name']?></td>
-                            <td><?=$o['data'][0]['score']?> - <?=$o['data'][1]['score']?></td>
-                            <td><?=$o['data'][1]['name']?></td>
+                            <td align="center" width="45%"><h3><?=$o['data'][0]['name']?></h3></td>
+                            <td align="center"><h3><?=$o['data'][0]['score']?> - <?=$o['data'][1]['score']?></h3></td>
+                            <td align="center" width="45%"><h3><?=$o['data'][1]['name']?></h3></td>
                         </tr>
                         <tr>
                             <td valign="top">
@@ -31,21 +31,24 @@ function isAllowedStats($mods,$name){
                                             if(isAllowedStats($mods,$stats)):
                                     ?>
                                     <tr>
-                                        <td><?=ucfirst(str_replace("_"," ",$stats))?></td><td><?=$val?></td>
+                                        <td><?=ucfirst(str_replace("_"," ",$stats))?></td>
+                                        <td width="100" align="center"><?=$val?></td>
                                     </tr>
                                     <?php endif;endforeach;?>
                                 </table>
                                 <table width="100%">
                                     <?php foreach($o['data'][0]['player_stats'] as $player=>$data):?>
                                     <tr style="background-color:#353535;color:white;padding:5px">
-                                        <td><?=$data['name']?></td><td><?=$data['position']?></td>
+                                        <td><?=$data['name']?></td>
+                                        <td width="100" align="center"><?=$data['position']?></td>
                                     </tr>
                                         <?php
                                             foreach($data['stats'] as $stats=>$val):
                                                 if(isAllowedStats($mods,$stats)):
                                         ?>
                                         <tr>
-                                            <td><?=ucfirst(str_replace("_"," ",$stats))?></td><td><?=$val?></td>
+                                            <td><?=ucfirst(str_replace("_"," ",$stats))?></td>
+                                            <td width="100" align="center"><?=$val?></td>
                                         </tr>
                                         <?php endif;endforeach;?>
                                     <?php endforeach;?>
