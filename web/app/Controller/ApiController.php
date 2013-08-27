@@ -237,6 +237,11 @@ class ApiController extends AppController {
 		$players = $this->Game->get_team_players($fb_id);
 		$response['players'] = $players;
 		
+		//lineup starters
+		$lineup = $this->Game->getLineup($game_team['id']);
+		$response['lineup_settings'] = $lineup;
+
+
 
 		//list of staffs
 		//get officials
@@ -274,7 +279,46 @@ class ApiController extends AppController {
 										'match_date'=>date("Y-m-d H:i:s",strtotime($next_match['match']['match_date'])),
 										'match_date_ts'=>strtotime($next_match['match']['match_date'])
 										);
+		//match venue
+		$match_venue = $this->Game->getVenue($next_match['match']['home_id']);
+		$response['match_venue'] = $match_venue;
 
+		//best match
+		$best_match = $this->Game->getBestMatch($game_team['id']);
+		$team_id = $game_team['team_id'];
+		
+		if($best_match['status']==0){
+			$this->set('best_match','N/A');
+			$response['stats']['best_match'] = 'N/A';
+		}else{
+			$best_match['data']['points'] = number_format($best_match['data']['points']);
+			if($best_match['data']['match']['home_id']==$team_id){
+				$against = $best_match['data']['match']['away_name'];
+			}else if($best_match['data']['match']['away_id']==$team_id){
+				$against = $best_match['data']['match']['home_name'];
+			}
+			
+			$response['stats']['best_match'] = "VS. {$against} (+{$best_match['data']['points']})";
+		}
+
+		//last earnings
+		$rs = $this->Game->getLastEarnings($game_team['id']);
+		if($rs['status']==1){
+			$this->set('last_earning',$rs['data']['total_earnings']);
+			$response['stats']['last_earning'] = $rs['data']['total_earnings'];
+		}else{
+			$response['stats']['last_earning'] = 0;
+		}
+
+		//best player
+		$rs = $this->Game->getBestPlayer($game_team['id']);
+		
+		if($rs['status']==1){
+			$this->set('best_player',$rs['data']);
+			$response['stats']['best_player'] = $rs['data'];
+		}
+
+		
 		$this->set('response',array('status'=>1,'data'=>$response));
 		$this->render('default');
 	}
