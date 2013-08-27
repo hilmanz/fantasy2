@@ -38,6 +38,7 @@ exports.getReports = function(game_id,done){
 			},
 			function(doc,callback){
 				console.log('parse json output');
+				console.log(doc.toString());
 				var json = JSON.parse(xmlparser.toJson(doc.toString()));
 				callback(null,json);
 			},
@@ -92,7 +93,7 @@ function onJsonData(data,done){
 							 data.SoccerFeed.SoccerDocument.MatchData.TeamData);
 				}else{
 					callback(new Error('the game is not played yet, or it has been postponed'),
-							'not finished yet');
+							null,null);
 				}
 			},
 			function(game_id,data,callback){
@@ -338,13 +339,14 @@ function generatePlayerPoints(game_id,callback){
 					conn.query("SELECT * FROM ffgame.game_matchstats_modifier;",[],function(err,rs){
 						if(err){ console.log(err.message); }
 						for(var i in rs){
-							points[rs[i].name] = {
+							points[rs[i].name.toLowerCase()] = {
 								g: rs[i].g,
 								d: rs[i].d,
 								m: rs[i].m,
 								f: rs[i].f
 							}
 						}
+						console.log(points);
 						callback(null,points);
 					});
 				},
@@ -400,7 +402,7 @@ function calculatePlayerPoints(conn,points,game_id,player,done){
 				 FROM ffgame_stats.master_match_result_stats\
 				 WHERE game_id = ?\
 				 AND player_id=?\
-				 LIMIT 100;",
+				 LIMIT 1000;",
 				 [game_id,player.player_id],
 				 function(err,stats){
 				 	if(err){console.log(err.message);}
@@ -412,7 +414,8 @@ function calculatePlayerPoints(conn,points,game_id,player,done){
 			var player_stats = {};
 			for(var i in stats){
 				if(typeof points[stats[i].stats_name] !== 'undefined'){
-					var point_name = stats[i].stats_name;
+					var point_name = stats[i].stats_name.toLowerCase();
+					console.log('#',player_id,'point_name',point_name);
 					if(typeof player_stats[point_name] === 'undefined'){
 						player_stats[point_name] = stats[i].stats_value;
 					}else{
@@ -523,11 +526,13 @@ function savePlayerStats(game_id,team_id,data,callback){
 				function(item,onDone){
 					var q = conn.query("INSERT INTO ffgame_stats.master_match_result_stats\
 								(game_id,team_id,player_id,stats_name,stats_value)\
-								VALUES(?,?,?,?,?);",
+								VALUES(?,?,?,?,?)\
+								ON DUPLICATE KEY UPDATE\
+								stats_value = VALUES(stats_value)",
 								[game_id,team_id,data.PlayerRef,item.Type,item.$t],
 								function(err,rs){
-									//if(err) console.log(err.message);
-									//console.log(this.sql);
+									if(err) console.log(err.message);
+									console.log(this.sql);
 									onDone();	
 								});
 
