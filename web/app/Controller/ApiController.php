@@ -63,6 +63,11 @@ class ApiController extends AppController {
 		$fb_id = $api_session['fb_id'];
 
 		$user = $this->User->findByFb_id($fb_id);
+		if($user['User']['avatar_img']==null){
+			$user['User']['avatar_img'] = "http://graph.facebook.com/".$fb_id."/picture";
+		}else{
+			$user['User']['avatar_img'] = Configure::read('avatar_web_url').$user['User']['avatar_img'];
+		}
 		$game_team = $this->Game->getTeam($fb_id);
 		$this->loadModel('Point');
 
@@ -204,6 +209,11 @@ class ApiController extends AppController {
 		$fb_id = $api_session['fb_id'];
 		
 		$user = $this->User->findByFb_id($fb_id);
+		if($user['User']['avatar_img']==null){
+			$user['User']['avatar_img'] = "http://graph.facebook.com/".$fb_id."/picture";
+		}else{
+			$user['User']['avatar_img'] = Configure::read('avatar_web_url').$user['User']['avatar_img'];
+		}
 		$game_team = $this->Game->getTeam($fb_id);
 		
 		$response = array();
@@ -345,9 +355,12 @@ class ApiController extends AppController {
 		$api_session = $this->readAccessToken();
 		$fb_id = $api_session['fb_id'];
 		$user = $this->User->findByFb_id($fb_id);
-		if(@eregi('.jpg',$user['User']['avatar_img'])){
+		if($user['User']['avatar_img']==null){
+			$user['User']['avatar_img'] = "http://graph.facebook.com/".$fb_id."/picture";
+		}else{
 			$user['User']['avatar_img'] = Configure::read('avatar_web_url').$user['User']['avatar_img'];
 		}
+		
 		$game_team = $this->Game->getTeam($fb_id);
 		//club
 		$club = $this->Team->findByUser_id($user['User']['id']);
