@@ -63,7 +63,7 @@ class ApiController extends AppController {
 		$fb_id = $api_session['fb_id'];
 
 		$user = $this->User->findByFb_id($fb_id);
-		if(strlen($user['User']['avatar_img'])>1){
+		if(strlen($user['User']['avatar_img'])<2){
 			$user['User']['avatar_img'] = "http://graph.facebook.com/".$fb_id."/picture";
 		}else{
 			$user['User']['avatar_img'] = Configure::read('avatar_web_url').'120x120_'.$user['User']['avatar_img'];
@@ -209,7 +209,8 @@ class ApiController extends AppController {
 		$fb_id = $api_session['fb_id'];
 		
 		$user = $this->User->findByFb_id($fb_id);
-		if(strlen($user['User']['avatar_img'])>1){
+		
+		if(strlen($user['User']['avatar_img'])<2){
 			$user['User']['avatar_img'] = "http://graph.facebook.com/".$fb_id."/picture";
 		}else{
 			$user['User']['avatar_img'] = Configure::read('avatar_web_url').'120x120_'.$user['User']['avatar_img'];
@@ -355,7 +356,7 @@ class ApiController extends AppController {
 		$api_session = $this->readAccessToken();
 		$fb_id = $api_session['fb_id'];
 		$user = $this->User->findByFb_id($fb_id);
-		if(strlen($user['User']['avatar_img'])>1){
+		if(strlen($user['User']['avatar_img'])<2){
 			$user['User']['avatar_img'] = "http://graph.facebook.com/".$fb_id."/picture";
 		}else{
 			$user['User']['avatar_img'] = Configure::read('avatar_web_url').'120x120_'.$user['User']['avatar_img'];
