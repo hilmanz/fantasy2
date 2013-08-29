@@ -265,7 +265,7 @@ function getPlayerDetail(player_id,callback){
 		a.first_name,a.last_name,a.known_name,a.birth_date,\
 		a.weight,a.height,a.jersey_num,a.real_position,a.real_position_side,\
 		a.country,team_id AS original_team_id,\
-		b.name AS original_team_name\
+		b.name AS original_team_name,a.salary,a.transfer_value\
 		FROM ffgame.master_player a\
 		INNER JOIN ffgame.master_team b\
 		ON a.team_id = b.uid\
@@ -296,6 +296,26 @@ function getPlayerStats(player_id,callback){
 	conn.query(sql,
 				[player_id],
 				function(err,rs){
+					conn.end(function(e){
+						callback(err,rs);	
+					});
+				});
+}
+/**
+*	get player's overall stats
+*/
+function getPlayerOverallStats(player_id,callback){
+	sql = "SELECT stats_name,SUM(stats_value) AS total \
+			FROM ffgame_stats.master_player_stats a\
+			INNER JOIN ffgame.game_fixtures b\
+			ON a.game_id = b.game_id\
+			WHERE a.player_id=?\
+			GROUP BY stats_name;";
+	conn = prepareDb();
+	conn.query(sql,
+				[player_id],
+				function(err,rs){
+					console.log(this.sql);
 					conn.end(function(e){
 						callback(err,rs);	
 					});
@@ -626,3 +646,4 @@ exports.getBudget = getBudget;
 exports.match = require(path.resolve('./libs/api/match'));
 exports.officials = require(path.resolve('./libs/api/officials'));
 exports.sponsorship = require(path.resolve('./libs/api/sponsorship'));
+exports.getPlayerOverallStats = getPlayerOverallStats;

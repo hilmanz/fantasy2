@@ -225,6 +225,7 @@ class ManageController extends AppController {
 
 		//player detail : 
 		$rs = $this->Game->get_team_player_info($userData['fb_id'],$player_id);
+		
 		if($rs['status']==1){
 			$this->set('data',$rs['data']);
 		}

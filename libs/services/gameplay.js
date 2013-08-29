@@ -224,8 +224,15 @@ exports.player_team_data = function(req,res){
 								callback(err,{player:player,stats:rs});	
 							});
 			},
+			function(result,callback){
+				gameplay.getPlayerOverallStats(result.player.player_id,function(err,rs){
+					result.overall_stats = rs;
+					callback(err,result);
+				});
+			}
 		],
 		function(err,result){
+			console.log(result);
 			if(err){
 				handleError(res);
 			}else{
