@@ -1,6 +1,13 @@
 <script>
 function profileLoaded(widget, data, id){
     $('.player-detail .opta-widget-container h2 span').html('Player Profile');
+    $(".opta-widget-container div.profile-container div.profile dl").find('dt').each(
+        function(k,item){
+            if($(item).html()=='Name'){
+                $(item).next().remove();
+                $(item).remove();
+            }
+        });
 }
 _optaParams.callbacks = [profileLoaded];
 </script>
