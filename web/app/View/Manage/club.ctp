@@ -357,6 +357,7 @@ function isStaffExist($staff_token,$name){
                 <table width="100%" border="0" cellspacing="0" cellpadding="0">
                 <thead>
                   <tr>
+                    <th></th>
                     <th width="210">Nama</th>
                     <th width="50">Umur</th>
                     <th width="64">Tgl.Lahir</th>
@@ -391,6 +392,9 @@ function isStaffExist($staff_token,$name){
                     }
                   ?>
                   <tr>
+                    <td>
+                      <img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=1&dimensions=103x155&id=<?=str_replace('p','',$player['uid'])?>"/>
+                    </td>
                     <td>
                       <a class="yellow" href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"><?=h($player['name'])?></a></td>
                     

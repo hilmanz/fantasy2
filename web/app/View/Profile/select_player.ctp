@@ -24,6 +24,7 @@
 							<table width="100%" border="0" cellspacing="0" cellpadding="0">
 							<thead>
 							  <tr>
+                                <th></th>
 								<th>Nama</th>
 								<th>Posisi</th>
                                 <th>Tgl.Lahir</th>
@@ -143,9 +144,11 @@ $(document).ready(function(){
         var age = Math.round((new Date().getTime() - bod.getTime()) / (24*60*60*1000*365));
         var birthday = ((bod.getDate()<10)?'0'+bod.getDate():bod.getDate())+'-'+
                         (((bod.getMonth()+1)<10)?'0'+(bod.getMonth()+1):(bod.getMonth()+1))+'-'+bod.getFullYear();
+        var custId = uid.replace('p','');
     %>
 	
   <tr id="<%=uid%>">
+    <td><img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=1&dimensions=103x155&id=<%=custId%>"/></td>
     <td><%=name%></td>
     <td><%=pos_code%></td>
     <td><%=birthday%></td>
