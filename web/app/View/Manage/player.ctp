@@ -40,9 +40,11 @@ _optaParams.callbacks = [profileLoaded];
 							<?php 
                                 if(isset($data['overall_stats'])):
                                     foreach($data['overall_stats'] as $stats):
+                                        $stats_name = ucfirst(str_replace("_"," ",
+                                                                 $stats['stats_name']));
                             ?>
                               <dl>
-                                <dt><p class="s-title"><?=$stats['stats_name']?></p></dt>
+                                <dt><p class="s-title"><?=$stats_name?></p></dt>
                                 <dd class="tcenter">
                                     <a class="red-arrow"><?=number_format($stats['total'])?></a>
                                 </dd>
