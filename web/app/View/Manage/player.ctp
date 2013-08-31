@@ -31,32 +31,29 @@ _optaParams.callbacks = [profileLoaded];
                 <div class="player-detail">
                     <opta widget="playerprofile" sport="football" competition="8" season="2013" team="1" player="<?=str_replace("p","",$data['player']['player_id'])?>" show_image="true" show_nationality="true" opta_logo="false" narrow_limit="400"></opta>
                 </div>
-            </div><!-- end #Info -->
-            <div id="tabs-Info">
-                <table width="300" border="0" cellspacing="0" cellpadding="0" class="blacktable">
-                <thead>
-                      <tr>
-                        <th>Performance Stats</th>
-                        <th></th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                    <?php 
-                        if(isset($data['overall_stats'])):
-                            foreach($data['overall_stats'] as $stats):
-                    ?>
-                      <tr>
-                        <td><p class="s-title"><?=$stats['stats_name']?></p></td>
-                        <td class="tcenter">
-                            <a class="red-arrow"><?=number_format($stats['total'])?></a>
-                        </td>
-                      </tr>
-                    <?php
-                        endforeach;
-                        endif;
-                    ?>
-                  </tbody>                    
-                </table>       
+                
+            	<div class="profileStats-container" style="display: block;">
+                  <h2><span>Performance Stats</span></h2>
+                  <div class="profileStatsContainer">
+                    <div class="profileStats">
+
+							<?php 
+                                if(isset($data['overall_stats'])):
+                                    foreach($data['overall_stats'] as $stats):
+                            ?>
+                              <dl>
+                                <dt><p class="s-title"><?=$stats['stats_name']?></p></dt>
+                                <dd class="tcenter">
+                                    <a class="red-arrow"><?=number_format($stats['total'])?></a>
+                                </dd>
+                              </dl>
+                            <?php
+                                endforeach;
+                                endif;
+                            ?>
+                    </div><!-- end .profileStats -->
+                  </div><!-- end .profileStats-container -->
+                </div><!-- end .profileStats-container -->     
             </div><!-- end #Info -->
             <div class="row">
                 <div class="stats"></div>

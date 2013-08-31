@@ -1508,11 +1508,66 @@ td,th{
 	background:url(../images/btn_comingsoon.png) no-repeat;
 	right:250px;
 }
-.player-detail{
-	width:425px;
+.player-detail,.profileStats-container{
+	width:500px;
 	float:left;
+	border-radius:10px;
+	overflow:hidden;
 
 }
-.opta-widget-container h2{
-	background-color:#000;
+.profileStats-container{
+	float:right;
+}
+.opta-widget-container{
+	margin:0;
+}
+.opta-widget-container h2,.profileStats-container h2{
+	background-color: #000;
+	height: 38px;
+	line-height: 38px;
+	text-transform: uppercase;
+	margin: 0;
+	font-size: 18px;
+	font-family: 'BebasNeueRegular';
+	font-weight: normal;
+}
+.opta-widget-container h2 span,.profileStats-container h2 span{
+	padding:0 20px;
+}
+.player-detail .profile,.profileStats-container{
+	background:url(../images/tr.png) repeat !important;
+	border:solid 1px #000;
+	color:#fff;
+	box-shadow:0 0 20px rgba(0,0,0,0.3) inset;
+}
+.player-detail .opta-widget-container .profile dd{
+	border-bottom:solid 1px #000;
+}
+.player-detail .opta-widget-container .profile .team-logo{
+	border-right:solid 1px #000;
+}
+.player-height{
+	border:none !important;
+}
+.profileStats{
+	height:175px;
+	overflow:auto;
+}
+.profileStats dl{
+	clear:both;
+	overflow:hidden;
+	padding:6px 12px;
+	border-bottom:solid 1px #000;
+}
+.profileStats dl:last-child{
+	border:none;
+}
+.profileStats dt{
+	float:left;
+	width:80%;
+}
+.profileStats dd{
+	float:left;
+	width:20%;
+	text-align:center;
 }
