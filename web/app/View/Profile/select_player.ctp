@@ -99,6 +99,7 @@ function getPlayers(team_id){
             $.each(response,function(k,v){
                 if(v!=null){
                     est_expenses += v.salary;
+                    v.team_id = team_id;
                     append_view(player,'#available',v);    
                 }
                 if(k==(n-1)){
@@ -145,10 +146,11 @@ $(document).ready(function(){
         var birthday = ((bod.getDate()<10)?'0'+bod.getDate():bod.getDate())+'-'+
                         (((bod.getMonth()+1)<10)?'0'+(bod.getMonth()+1):(bod.getMonth()+1))+'-'+bod.getFullYear();
         var custId = uid.replace('p','');
+        var n_team_id = team_id.replace('t','');
     %>
 	
   <tr id="<%=uid%>">
-    <td><img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=1&dimensions=103x155&id=<%=custId%>"/></td>
+    <td><img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<%=n_team_id%>&dimensions=103x155&id=<%=custId%>"/></td>
     <td><%=name%></td>
     <td><%=pos_code%></td>
     <td><%=birthday%></td>
