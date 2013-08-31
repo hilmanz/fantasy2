@@ -1508,3 +1508,11 @@ td,th{
 	background:url(../images/btn_comingsoon.png) no-repeat;
 	right:250px;
 }
+.player-detail{
+	width:425px;
+	float:left;
+
+}
+.opta-widget-container h2{
+	background-color:#000;
+}

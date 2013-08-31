@@ -80,6 +80,12 @@ class ManageController extends AppController {
 		$finance = $this->getFinancialStatements($userData['fb_id']);
 		
 		$this->set('finance',$finance);
+
+
+		//enable OPTA Widget
+		$this->set('ENABLE_OPTA',true);
+		$this->set('OPTA_CUSTOMER_ID',Configure::read('OPTA_CUSTOMER_ID'));
+		//-->
 	}
 	private function getFinancialStatements($fb_id){
 		$finance = $this->Game->financial_statements($fb_id);
@@ -230,6 +236,10 @@ class ManageController extends AppController {
 			$this->set('data',$rs['data']);
 		}
 		
+		//enable OPTA Widget
+		$this->set('ENABLE_OPTA',true);
+		$this->set('OPTA_CUSTOMER_ID',Configure::read('OPTA_CUSTOMER_ID'));
+		//-->
 	}
 	public function error(){
 		$this->render('error');

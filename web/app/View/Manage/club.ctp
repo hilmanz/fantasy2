@@ -29,6 +29,7 @@ function isStaffExist($staff_token,$name){
   }
 }
 ?>
+
 <div id="myClubPage">
     <?php echo $this->element('infobar'); ?>
     <div class="headbar tr">
@@ -400,8 +401,12 @@ function isStaffExist($staff_token,$name){
                     <td><?=h($player['real_position'])?></td>
                     <td><?=number_format($player['salary'])?></td>
                     <?php
-                      $performance_bonus = round(floatval($player['last_performance']/100) * 
+                      if($player['points']>0){
+                        $performance_bonus = round(floatval($player['last_performance']/100) * 
                                             intval($player['transfer_value']));
+                      }else{
+                        $performance_bonus = 0;
+                      }
                     ?>
                     <td><?=number_format(intval($player['transfer_value'])+$performance_bonus)?></td>
                     <td width="10"><a class="icon-cart buttons" href="#"><span>Jual</span></a></td>

@@ -11,6 +11,28 @@
 	var est_expenses = 0; 
 	var staffs = [];
 	</script>
+
+	<?php
+	if(isset($ENABLE_OPTA)):
+	?>
+	<link rel="stylesheet" href="http://widget.cloud.opta.net/2.0/css/widgets.opta.css" type="text/css">
+	<!--[if IE 9]>
+		<link rel="stylesheet" type="text/css" href="http://widget.cloud.opta.net/2.0/css/ie9.widgets.opta.css" media="screen" />
+	<![endif]-->
+	<!--[if IE 8]>
+		<link rel="stylesheet" type="text/css" href="http://widget.cloud.opta.net/2.0/css/ie8.widgets.opta.css" media="screen" />
+	<![endif]-->
+	<!--[if IE 7]>
+		<link rel="stylesheet" type="text/css" href="http://widget.cloud.opta.net/2.0/css/ie7.widgets.opta.css" media="screen" />
+	<![endif]-->
+	<script type="text/javascript" src="http://widget.cloud.opta.net/2.0/js/widgets.opta.js"></script>
+	<script type="text/javascript">
+		var _optaParams = {
+			custID:		'<?=$OPTA_CUSTOMER_ID?>',
+			language:	'en',
+		};
+	</script>
+	<?php endif;?>
 	<!-- Le styles -->
 	<?php echo $this->Html->css(
 			  array('ffl','superfish','fancybox/jquery.fancybox.css?v=2.1.5'),

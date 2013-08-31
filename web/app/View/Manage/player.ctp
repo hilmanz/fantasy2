@@ -1,3 +1,9 @@
+<script>
+function profileLoaded(widget, data, id){
+    $('.player-detail .opta-widget-container h2 span').html('Player Profile');
+}
+_optaParams.callbacks = [profileLoaded];
+</script>
 <div id="myClubPage">
      <?php echo $this->element('infobar'); ?>
     <div class="headbar tr">
@@ -14,40 +20,9 @@
     <div id="thecontent">
         <div class="content">
             <div id="tabs-Info">
-              <div class="avatar-big fl">
-                  <img src="<?=$this->Html->url('/content/thumb/default_avatar.png')?>" />
-              </div>
-              <div class="user-details fl">
-                  <table width="100%">
-                        <tr>
-                            <td>Posisi</td>
-                            <td><?=h($data['player']['position'])?></td>
-                        </tr>
-                        <tr>
-                            <td>Umur</td>
-                            <td>
-                                <?php
-                                    $t = strtotime($data['player']['birth_date']);
-                                    $d = time() - $t;
-                                    $age = round($d/(24*60*60*365));
-                                    echo $age;
-                                ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tgl Lahir</td>
-                            <td><?=date("d/m/Y",strtotime($data['player']['birth_date']))?></td>
-                        </tr>
-                        <tr>
-                            <td>Negara</td>
-                            <td><?=h($data['player']['country'])?></td>
-                        </tr>
-                        <tr>
-                            <td>Salary</td>
-                            <td><?=number_format($data['player']['salary'])?></td>
-                        </tr>
-                  </table>
-              </div><!-- end .row -->
+                <div class="player-detail">
+                    <opta widget="playerprofile" sport="football" competition="8" season="2013" team="1" player="<?=str_replace("p","",$data['player']['player_id'])?>" show_image="true" show_nationality="true" opta_logo="false" narrow_limit="400"></opta>
+                </div>
             </div><!-- end #Info -->
             <div id="tabs-Info">
                 <table width="300" border="0" cellspacing="0" cellpadding="0" class="blacktable">

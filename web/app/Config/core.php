@@ -366,3 +366,5 @@ Configure::write('REDIS.Database','15');
 Configure::write('avatar_img_dir','/home/duf/node_workspace/fantasy/web/app/webroot/files/');
 Configure::write('avatar_web_dir','/files/');
 Configure::write('avatar_web_url','http://localhost/fantasy/files/');
+
+Configure::write('OPTA_CUSTOMER_ID','c8bb60c8f6d0184c33a87e6f3041b9cc');
