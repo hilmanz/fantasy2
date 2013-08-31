@@ -6,6 +6,7 @@ _optaParams.callbacks = [profileLoaded];
 </script>
 <div id="myClubPage">
      <?php echo $this->element('infobar'); ?>
+     <?php if($data['player']!=null):?>
     <div class="headbar tr">
         <div class="club-info fl">
             
@@ -48,16 +49,24 @@ _optaParams.callbacks = [profileLoaded];
                         endif;
                     ?>
                   </tbody>                    
-                </table>
-                    
+                </table>       
             </div><!-- end #Info -->
             <div class="row">
-              <div class="stats">
-              
-              </div>
+                <div class="stats"></div>
             </div>
         </div><!-- end .content -->
     </div><!-- end #thecontent -->
+    <?php else:?>
+    <div id="thecontent">
+        <div class="content">
+            <div>
+                <h1 class="yellow">Pemain ini bukan anggota Klab.</h1>
+               
+               
+            </div><!-- end #logoutpage -->
+        </div>
+    </div>
+    <?php endif;?>
 </div><!-- end #myClubPage -->
 <?=$this->Html->script(array('highcharts'))?>
 <script>

@@ -287,18 +287,18 @@ function getPlayerDetail(player_id,callback){
 * get team's player detail
 */
 function getTeamPlayerDetail(game_team_id,player_id,callback){
-	sql = "SELECT a.uid AS player_id,a.name,a.position,
-			a.first_name,a.last_name,a.known_name,a.birth_date,
-			a.weight,a.height,a.jersey_num,a.real_position,a.real_position_side,
-			a.country,team_id AS original_team_id,
-			b.name AS original_team_name,a.salary,a.transfer_value
-			FROM ffgame.master_player a
-			INNER JOIN ffgame.master_team b
-			ON a.team_id = b.uid
-			WHERE a.uid IN (
-				SELECT player_id FROM ffgame.game_team_players 
-				WHERE game_team_id=? AND player_id=?
-			)
+	sql = "SELECT a.uid AS player_id,a.name,a.position,\
+			a.first_name,a.last_name,a.known_name,a.birth_date,\
+			a.weight,a.height,a.jersey_num,a.real_position,a.real_position_side,\
+			a.country,team_id AS original_team_id,\
+			b.name AS original_team_name,a.salary,a.transfer_value\
+			FROM ffgame.master_player a\
+			INNER JOIN ffgame.master_team b\
+			ON a.team_id = b.uid\
+			WHERE a.uid IN (\
+				SELECT player_id FROM ffgame.game_team_players \
+				WHERE game_team_id=? AND player_id=?\
+			)\
 			LIMIT 1;";
 	conn = prepareDb();
 	conn.query(sql,
@@ -677,3 +677,4 @@ exports.match = require(path.resolve('./libs/api/match'));
 exports.officials = require(path.resolve('./libs/api/officials'));
 exports.sponsorship = require(path.resolve('./libs/api/sponsorship'));
 exports.getPlayerOverallStats = getPlayerOverallStats;
+exports.getTeamPlayerDetail = getTeamPlayerDetail;

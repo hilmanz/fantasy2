@@ -235,7 +235,7 @@ class ManageController extends AppController {
 		if($rs['status']==1){
 			$this->set('data',$rs['data']);
 		}
-		
+
 		//enable OPTA Widget
 		$this->set('ENABLE_OPTA',true);
 		$this->set('OPTA_CUSTOMER_ID',Configure::read('OPTA_CUSTOMER_ID'));

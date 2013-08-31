@@ -212,7 +212,9 @@ exports.player_team_data = function(req,res){
 	async.waterfall(
 		[
 			function(callback){
-				gameplay.getPlayerDetail(req.params.id,function(err,player){
+				gameplay.getTeamPlayerDetail(req.params.game_team_id,
+											 req.params.id,
+											 function(err,player){
 					callback(err,player);
 				});
 			},
@@ -225,10 +227,17 @@ exports.player_team_data = function(req,res){
 							});
 			},
 			function(result,callback){
-				gameplay.getPlayerOverallStats(result.player.player_id,function(err,rs){
-					result.overall_stats = rs;
-					callback(err,result);
-				});
+
+				if(result.player != null){
+					gameplay.getPlayerOverallStats(result.player.player_id,function(err,rs){
+						result.overall_stats = rs;
+						callback(err,result);
+					});
+				}else{
+					//we don't need to throw an error, 
+					//so just return empty result.
+					callback(null,result);
+				}
 			}
 		],
 		function(err,result){
