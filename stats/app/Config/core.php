@@ -361,4 +361,4 @@ Configure::write('API_SALT',md5("hello world"));
 Configure::write('INITIAL_BUDGET','100000000');
 Configure::write('opta_file_folder','/home/duf/node_workspace/fantasy/data/');
 Configure::write('worker_api','http://localhost:3080/');
-Configure::write('optadb','opta');
+Configure::write('optadb','optadb');

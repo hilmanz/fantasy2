@@ -61,7 +61,7 @@ class DATABASE_CONFIG {
 		'host' => 'localhost',
 		'login' => 'root',
 		'password' => 'root',
-		'database' => 'opta',
+		'database' => 'optadb',
 		'prefix' => '',
 		'encoding' => 'utf8',
 	);

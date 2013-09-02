@@ -42,7 +42,7 @@ var conn = mysql.createConnection({
 
 conn.query("SELECT * FROM ffgame.game_fixtures \
 		WHERE is_processed=0 \
-		ORDER BY id ASC LIMIT 100;",[],function(err,games){
+		ORDER BY id ASC LIMIT 10;",[],function(err,games){
 			conn.end(function(err){
 				generateReports(games);
 		});
