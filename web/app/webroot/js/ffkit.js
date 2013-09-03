@@ -9,6 +9,8 @@ var App = Backbone.Router.extend({
     "hire/:staff_id":"hire",
     "dismiss/:staff_id":"dismiss",
     "sale/:player_id":"sale_player",
+    "stats_detail/:tab":"player_stats_tab",
+    "close_detail":"hide_player_stats"
   },
   hire:hire,
   dismiss:dismiss,
@@ -16,8 +18,19 @@ var App = Backbone.Router.extend({
   select_player:select_player,
   unselect_player:unselect_player,
   save_formation:save_formation,
-  sale_player:sale_player
+  sale_player:sale_player,
+  player_stats_tab:player_stats_tab,
+  hide_player_stats:hide_player_stats
 });
+function player_stats_tab(tab){
+	$("#chartbox").hide();
+	$("#profiletabs").show();
+	$("#profiletabs").tabs({active: tab});
+}
+function hide_player_stats(){
+	$("#profiletabs").hide();
+	$("#chartbox").fadeIn();
+}
 function sale_player(player_id,confirm){
 	if(typeof confirm === 'undefined'){
 		confirm = 0;

@@ -240,6 +240,8 @@ class ManageController extends AppController {
 		$this->set('ENABLE_OPTA',true);
 		$this->set('OPTA_CUSTOMER_ID',Configure::read('OPTA_CUSTOMER_ID'));
 		//-->
+
+		//$this->set('tab',@$this->request->query['tab']);
 	}
 	public function error(){
 		$this->render('error');
