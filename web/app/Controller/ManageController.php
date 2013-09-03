@@ -236,6 +236,10 @@ class ManageController extends AppController {
 			$this->set('data',$rs['data']);
 		}
 
+		//stats modifier
+		$modifier = $this->Game->query("SELECT * FROM ffgame.game_matchstats_modifier as Modifier");
+		$this->set('modifiers',$modifier);
+
 		//enable OPTA Widget
 		$this->set('ENABLE_OPTA',true);
 		$this->set('OPTA_CUSTOMER_ID',Configure::read('OPTA_CUSTOMER_ID'));

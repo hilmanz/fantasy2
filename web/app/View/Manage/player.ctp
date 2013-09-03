@@ -83,6 +83,20 @@ $map = array(
         'Cross_not_claimed'=>'cross_not_claimed'
     )
 );
+switch($data['player']['position']){
+    case 'Forward':
+        $pos = "f";
+    break;
+    case 'Midfielder':
+        $pos = "m";
+    break;
+    case 'Defender':
+        $pos = "d";
+    break;
+    default:
+        $pos = 'g';
+    break;
+}
 $main_stats_vals = array('goals_and_assists'=>0,
                             'shooting'=>0,
                             'defending'=>0,
@@ -101,14 +115,28 @@ if(isset($data['overall_stats'])){
                     if(!isset($main_stats_vals[$mainstats])){
                         $main_stats_vals[$mainstats] = 0;
                     }
-                    $main_stats_vals[$mainstats] += $stats['total'];
+                   
+                    $main_stats_vals[$mainstats] += ($stats['total'] *
+                                                    getModifierValue($modifiers,
+                                                                            $v,
+                                                                            $pos));
                 }
             }
         }
     }
 }
 
-function getStats($category,$map,$stats){
+function getModifierValue($modifiers,$statsName,$pos){
+    foreach($modifiers as $m){
+        if($m['Modifier']['name']==$statsName){
+            return abs($m['Modifier'][$pos]);
+        }
+    }
+    return 0;
+}
+function getStats($category,$pos,$modifiers,$map,$stats){
+    
+    
     $statTypes = $map[$category];
     //pr($statTypes);
     $collection = array();
@@ -118,14 +146,13 @@ function getStats($category,$map,$stats){
                 $collection[$n] = 0;
             }
             if($s['stats_name'] == $v){
-                $collection[$n] = $s['total'];
+                $collection[$n] = $s['total'] * getModifierValue($modifiers,$v,$pos);
             }
         }
     }
+    
     return $collection;
 }
-
-getStats('defending',$map,$data['overall_stats']);
 
 
 ?>
@@ -216,16 +243,16 @@ getStats('defending',$map,$data['overall_stats']);
                         if($data['player']['position']=='Goalkeeper'):
                         ?>
                         <div class="statsbox">
-                            <h4><a href="#/stats_detail/4">Goalkeeping</a></h4>
+                            <h4><a href="#/stats_detail/3">Goalkeeping</a></h4>
                             <p><?=number_format($main_stats_vals['goalkeeping'])?></p>
                         </div>
                         <?php endif;?>
                         <div class="statsbox">
-                            <h4><a href="#/stats_detail/5">Discipline</a></h4>
+                            <h4><a href="#/stats_detail/4">Discipline</a></h4>
                             <p><?=number_format($main_stats_vals['discipline'])?></p>
                         </div>
                         <div class="statsbox">
-                            <h4><a href="#/stats_detail/6">Mistakes &amp; Errors</a></h4>
+                            <h4><a href="#/stats_detail/5">Mistakes &amp; Errors</a></h4>
                             <p><?=number_format($main_stats_vals['mistakes_and_errors'])?></p>
                         </div>
                     </div><!-- end .profileStats -->
@@ -257,7 +284,7 @@ getStats('defending',$map,$data['overall_stats']);
                 <div class="profileStatsContainer">
                     <div class="profileStats">
                         <?php 
-                            $profileStats = getStats('goals_and_assists',$map,$data['overall_stats']);
+                            $profileStats = getStats('goals_and_assists',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
                                 foreach($profileStats as $statsName=>$statsVal):
                                     $statsName = ucfirst(str_replace('_',' ',$statsName));
@@ -279,7 +306,7 @@ getStats('defending',$map,$data['overall_stats']);
                   <div class="profileStatsContainer">
                     <div class="profileStats">
                         <?php 
-                            $profileStats = getStats('shooting',$map,$data['overall_stats']);
+                            $profileStats = getStats('shooting',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
                                 foreach($profileStats as $statsName=>$statsVal):
                                     $statsName = ucfirst(str_replace('_',' ',$statsName));
@@ -301,7 +328,7 @@ getStats('defending',$map,$data['overall_stats']);
                <div class="profileStatsContainer">
                     <div class="profileStats">
                         <?php 
-                            $profileStats = getStats('passing',$map,$data['overall_stats']);
+                            $profileStats = getStats('passing',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
                                 foreach($profileStats as $statsName=>$statsVal):
                                     $statsName = ucfirst(str_replace('_',' ',$statsName));
@@ -324,7 +351,7 @@ getStats('defending',$map,$data['overall_stats']);
                    <div class="profileStatsContainer">
                     <div class="profileStats">
                         <?php 
-                            $profileStats = getStats('goalkeeping',$map,$data['overall_stats']);
+                            $profileStats = getStats('goalkeeping',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
                                 foreach($profileStats as $statsName=>$statsVal):
                                     $statsName = ucfirst(str_replace('_',' ',$statsName));
@@ -347,7 +374,7 @@ getStats('defending',$map,$data['overall_stats']);
                   <div class="profileStatsContainer">
                     <div class="profileStats">
                         <?php 
-                            $profileStats = getStats('defending',$map,$data['overall_stats']);
+                            $profileStats = getStats('defending',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
                                 foreach($profileStats as $statsName=>$statsVal):
                                     $statsName = ucfirst(str_replace('_',' ',$statsName));
@@ -370,7 +397,7 @@ getStats('defending',$map,$data['overall_stats']);
                    <div class="profileStatsContainer">
                     <div class="profileStats">
                         <?php 
-                            $profileStats = getStats('discipline',$map,$data['overall_stats']);
+                            $profileStats = getStats('discipline',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
                                 foreach($profileStats as $statsName=>$statsVal):
                                     $statsName = ucfirst(str_replace('_',' ',$statsName));
@@ -392,7 +419,7 @@ getStats('defending',$map,$data['overall_stats']);
                    <div class="profileStatsContainer">
                     <div class="profileStats">
                         <?php 
-                            $profileStats = getStats('mistakes_and_errors',$map,$data['overall_stats']);
+                            $profileStats = getStats('mistakes_and_errors',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
                                 foreach($profileStats as $statsName=>$statsVal):
                                     $statsName = ucfirst(str_replace('_',' ',$statsName));
