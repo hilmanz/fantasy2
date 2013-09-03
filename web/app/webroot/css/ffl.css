@@ -1551,7 +1551,7 @@ td,th{
 }
 .profileStats{
 	height:175px;
-	overflow:auto;
+	overflow:hidden;
 }
 .profileStats dl{
 	clear:both;
@@ -1570,4 +1570,14 @@ td,th{
 	float:left;
 	width:20%;
 	text-align:center;
+}
+.statsbox{
+	float:left;
+	background:none repeat scroll 0 0 #000000;
+	width:140px;
+	height:70px;
+	text-align: center;
+	margin: 3px 4px 0px 8px;
+	padding:5px;
+
 }
