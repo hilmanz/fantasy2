@@ -229,7 +229,9 @@ exports.player_team_data = function(req,res){
 			function(result,callback){
 
 				if(result.player != null){
-					gameplay.getPlayerOverallStats(result.player.player_id,function(err,rs){
+					gameplay.getPlayerOverallStats(req.params.game_team_id,
+												   result.player.player_id,
+												   function(err,rs){
 						result.overall_stats = rs;
 						callback(err,result);
 					});

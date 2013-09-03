@@ -126,7 +126,11 @@ if(isset($data['overall_stats'])){
             <div>Nilai Transfer</div>
             <div>
                 <?php
-                    $performance = $data['stats'][sizeof($data['stats'])-1]['performance'];
+                    if(sizeof($data['stats'])>0){
+                        $performance = $data['stats'][sizeof($data['stats'])-1]['performance'];
+                    }else{
+                        $performance = 0;
+                    }
                     $bonus = round($data['player']['transfer_value'] * ($performance/100));
                     $transfer_value = $data['player']['transfer_value'] + $bonus;
                     echo number_format($transfer_value);
@@ -178,7 +182,7 @@ if(isset($data['overall_stats'])){
                             <p><?=number_format($main_stats_vals['passing'])?></p>
                         </div>
                         <?php 
-                        if($data['player']['position']!='goalkeeper'):
+                        if($data['player']['position']!='Goalkeeper'):
                         ?>
                         <div class="statsbox">
                             <h4>Defending</h4>
@@ -188,7 +192,7 @@ if(isset($data['overall_stats'])){
                         endif;
                         ?>
                         <?php 
-                        if($data['player']['position']=='goalkeeper'):
+                        if($data['player']['position']=='Goalkeeper'):
                         ?>
                         <div class="statsbox">
                             <h4>Goalkeeping</h4>
