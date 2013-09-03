@@ -225,7 +225,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
             	<div class="profileStats-container" style="display: block;">
                   <h2><span>Performance Stats</span></h2>
                   <div class="profileStatsContainer">
-                    <div class="profileStats">
+                    <div class="profileStats" style="overflow:hidden;">
                         <div class="statsbox">
                             <h4><a href="#/stats_detail/0">Goals &amp; Assists</a></h4>
                             <p><?=number_format($main_stats_vals['goals_and_assists'])?></p>
