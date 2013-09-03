@@ -233,9 +233,22 @@ class ManageController extends AppController {
 		$rs = $this->Game->get_team_player_info($userData['fb_id'],$player_id);
 		
 		if($rs['status']==1){
+			if(isset($rs['data']['daily_stats'])&&sizeof($rs['data']['daily_stats'])>0){
+				foreach($rs['data']['daily_stats'] as $n=>$v){
+					$fixture = $this->Team->query("SELECT matchday,match_date,
+										UNIX_TIMESTAMP(match_date) as ts
+										FROM ffgame.game_fixtures 
+										WHERE game_id='{$n}' 
+										LIMIT 1");
+					
+					$rs['data']['daily_stats'][$n]['fixture'] = $fixture[0]['game_fixtures'];
+					$rs['data']['daily_stats'][$n]['fixture']['ts'] = $fixture[0][0]['ts'];
+				}
+			}
+			
 			$this->set('data',$rs['data']);
 		}
-
+		
 		//stats modifier
 		$modifier = $this->Game->query("SELECT * FROM ffgame.game_matchstats_modifier as Modifier");
 		$this->set('modifiers',$modifier);

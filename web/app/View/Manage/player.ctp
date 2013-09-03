@@ -10,6 +10,16 @@ function profileLoaded(widget, data, id){
         });
 }
 _optaParams.callbacks = [profileLoaded];
+<?php
+if(isset($data['daily_stats'])):
+?>
+var daily_stats = JSON.parse('<?=json_encode($data['daily_stats'])?>');
+<?php
+else:
+?>
+var daily_stats = {};
+<?php endif;?>
+
 </script>
 <?php
 //mapping statistics
@@ -456,17 +466,42 @@ function getStats($category,$pos,$modifiers,$map,$stats){
 </div><!-- end #myClubPage -->
 <?=$this->Html->script(array('highcharts'))?>
 <script>
-var stats  = <?=json_encode($data['stats']);?>;
+var stats  = [];
+for(var i in daily_stats){
+    stats.push({
+        ts:daily_stats[i].ts,
+        goals_and_assists:daily_stats[i].goals_and_assists,
+        shooting:daily_stats[i].shooting,
+        passing:daily_stats[i].passing,
+        defending:daily_stats[i].defending,
+        goalkeeping:daily_stats[i].goalkeeping,
+        discipline:daily_stats[i].discipline,
+        mistakes:daily_stats[i].mistakes
+    });
+}
 var categories = [];
-var values = [];
+var goals_and_assists = [];
+var shooting = [];
+var passing = [];
+var defending = [];
+var goalkeeping = [];
+var discipline = [];
+var mistakes = [];
+
 $.each(stats,function(k,v){
-  categories.push(v.matchday);
-  values.push(parseFloat(v.performance));
+  categories.push(v.ts);
+  goals_and_assists.push(parseFloat(v.goals_and_assists));
+  shooting.push(parseFloat(v.shooting));
+  passing.push(parseFloat(v.passing));
+  defending.push(parseFloat(v.defending));
+  goalkeeping.push(parseFloat(v.goalkeeping));
+  discipline.push(parseFloat(v.discipline));
+  mistakes.push(parseFloat(v.mistakes));
 });
 $('.stats').highcharts({
     chart: {
-        type: 'line',
-        backgroundColor:'transparent',
+        type: 'area',
+        backgroundColor:'#000',
         style: {
             color: "#fff"
         },
@@ -511,10 +546,37 @@ $('.stats').highcharts({
         }
     },
     credits:false,
-    series: [{
-        name: 'Value',
-        data: values
-    }]
+    series: [
+        {
+            name: 'Goals and Assists',
+            data: goals_and_assists
+        },
+        {
+            name: 'Shooting',
+            data: shooting
+        },
+        {
+            name: 'Defending',
+            data: defending
+        },
+        {
+            name: 'Passing',
+            data: passing
+        },
+        {
+            name: 'Goalkeeping',
+            data: goalkeeping
+        },
+        {
+            name: 'Discipline',
+            data: discipline
+        },
+        {
+            name: 'Mistakes and Errors',
+            data: mistakes
+        },
+
+    ]
 });
 </script>
 <script>

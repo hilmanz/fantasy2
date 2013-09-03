@@ -12,7 +12,7 @@ var mysql = require('mysql');
 var dateFormat = require('dateformat');
 var redis = require('redis');
 var formations = require(path.resolve('./libs/game_config')).formations;
-
+var player_stats_category = require(path.resolve('./libs/game_config')).player_stats_category;
 
 function prepareDb(){
 	var connection = mysql.createConnection({
@@ -335,12 +335,7 @@ function getPlayerStats(player_id,callback){
 *	get player's overall stats
 */
 function getPlayerOverallStats(game_team_id,player_id,callback){
-	sql = "SELECT stats_name,SUM(stats_value) AS total \
-			FROM ffgame_stats.master_player_stats a\
-			INNER JOIN ffgame.game_fixtures b\
-			ON a.game_id = b.game_id\
-			WHERE a.player_id=?\
-			GROUP BY stats_name;";
+	
 	sql = "SELECT stats_name,SUM(stats_value) AS total\
 			FROM ffgame_stats.master_player_stats a\
 			INNER JOIN ffgame.game_fixtures b\
@@ -386,8 +381,111 @@ function getPlayerTeamStats(game_team_id,player_id,callback){
 					});
 				});
 }
+/**get player daily stats relative to game_team
+*/
+function getPlayerDailyTeamStats(game_team_id,player_id,player_pos,done){
+	var pos = 'g';
+	switch(player_pos){
+		case 'Forward':
+			pos = 'f';
+		break;
+		case 'Midfielder':
+			pos = 'm';
+		break;
+		case 'Defender':
+			pos = 'd';
+		break;
+		default:
+			pos = 'g';
+		break;
+	}
+	sql = "SELECT a.game_id,stats_name,SUM(stats_value) AS total\
+			FROM ffgame_stats.master_player_stats a \
+			INNER JOIN ffgame.game_fixtures b\
+			ON a.game_id = b.game_id\
+			WHERE a.player_id=?\
+			AND EXISTS(\
+				SELECT 1\
+				FROM ffgame.game_team_lineups_history c\
+				WHERE c.game_team_id=?\
+				AND c.player_id = a.player_id\
+				AND c.game_id = a.game_id\
+				LIMIT 1\
+			)\
+			GROUP BY a.game_id,stats_name \
+			ORDER BY game_id ASC LIMIT 20000;";
+	conn = prepareDb();
+	async.waterfall([
+		function(callback){
+			conn.query(sql,
+				[player_id,game_team_id],
+				function(err,rs){
+					console.log(this.sql);			
+					callback(err,rs);	
+					
+				});
+		},
+		function(result,callback){
+			conn.query("SELECT * FROM ffgame.game_matchstats_modifier;",
+			[],
+			function(err,rs){
+				callback(err,rs,result);	
+				
+			});
+		},
+		function(modifiers,result,callback){
+			//mapping
+			var daily = {};
+			
+			if(result.length>0){
+				for(var i in result){
+					if(typeof daily[result[i].game_id] === 'undefined'){
+						daily[result[i].game_id] = {
+							goals_and_assists:0,
+							shooting:0,
+							defending:0,
+							passing:0,
+							goalkeeping:0,
+							discipline:0,
+							mistakes:0
+						};
+					}
+					//distributed the counts for each categories
+					for(var category in player_stats_category){
+						for(var j in player_stats_category[category]){
 
-
+							if(player_stats_category[category][j] == result[i].stats_name){
+								
+								daily[result[i].game_id][category] += (parseInt(result[i].total) 
+																	  * getModifierValue(modifiers,
+																	  					result[i].stats_name,
+																	  					pos));
+							}
+						}
+					}
+				}
+			}
+			callback(null,daily);
+		}
+	],
+	function(err,result){
+		conn.end(function(e){
+			done(err,result);
+		});
+	});	
+}
+/**
+* get modifier value based on player's position
+*/
+function getModifierValue(modifiers,stats_name,position){
+	
+	for(var i in modifiers){
+		if(modifiers[i].name==stats_name){
+			return Math.abs(parseInt(modifiers[i][position]));
+		}
+	}
+	return 0;
+}
 /**
 * get user's financial statement
 */
@@ -692,3 +790,4 @@ exports.officials = require(path.resolve('./libs/api/officials'));
 exports.sponsorship = require(path.resolve('./libs/api/sponsorship'));
 exports.getPlayerOverallStats = getPlayerOverallStats;
 exports.getTeamPlayerDetail = getTeamPlayerDetail;
+exports.getPlayerDailyTeamStats = getPlayerDailyTeamStats;

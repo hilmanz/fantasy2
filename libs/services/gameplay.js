@@ -227,7 +227,6 @@ exports.player_team_data = function(req,res){
 							});
 			},
 			function(result,callback){
-
 				if(result.player != null){
 					gameplay.getPlayerOverallStats(req.params.game_team_id,
 												   result.player.player_id,
@@ -240,10 +239,26 @@ exports.player_team_data = function(req,res){
 					//so just return empty result.
 					callback(null,result);
 				}
+			},
+			function(result,callback){
+				
+				if(result.player != null){
+					gameplay.getPlayerDailyTeamStats(req.params.game_team_id,
+												   result.player.player_id,
+												   result.player.position,
+												   function(err,rs){
+						result.daily_stats = rs;
+						callback(err,result);
+					});
+				}else{
+					//we don't need to throw an error, 
+					//so just return empty result.
+					callback(null,result);
+				}
 			}
 		],
 		function(err,result){
-			console.log(result);
+			
 			if(err){
 				handleError(res);
 			}else{
