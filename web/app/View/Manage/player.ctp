@@ -170,22 +170,22 @@ if(isset($data['overall_stats'])){
                   <div class="profileStatsContainer">
                     <div class="profileStats">
                         <div class="statsbox">
-                            <h4>Goals &amp; Assists</h4>
+                            <h4><a href="#">Goals &amp; Assists</a></h4>
                             <p><?=number_format($main_stats_vals['goals_and_assists'])?></p>
                         </div>
                         <div class="statsbox">
-                            <h4>Shooting</h4>
+                            <h4><a href="#">Shooting</a></h4>
                             <p><?=number_format($main_stats_vals['shooting'])?></p>
                         </div>
                         <div class="statsbox">
-                            <h4>Passing</h4>
+                            <h4><a href="#">Passing</a></h4>
                             <p><?=number_format($main_stats_vals['passing'])?></p>
                         </div>
                         <?php 
                         if($data['player']['position']!='Goalkeeper'):
                         ?>
                         <div class="statsbox">
-                            <h4>Defending</h4>
+                            <h4><a href="#">Defending</a></h4>
                             <p><?=number_format($main_stats_vals['defending'])?></p>
                         </div>
                         <?php
@@ -195,16 +195,16 @@ if(isset($data['overall_stats'])){
                         if($data['player']['position']=='Goalkeeper'):
                         ?>
                         <div class="statsbox">
-                            <h4>Goalkeeping</h4>
+                            <h4><a href="#">Goalkeeping</a></h4>
                             <p><?=number_format($main_stats_vals['goalkeeping'])?></p>
                         </div>
                         <?php endif;?>
                         <div class="statsbox">
-                            <h4>Discipline</h4>
+                            <h4><a href="#">Discipline</a></h4>
                             <p><?=number_format($main_stats_vals['discipline'])?></p>
                         </div>
                         <div class="statsbox">
-                            <h4>Mistakes &amp; Errors</h4>
+                            <h4><a href="#">Mistakes &amp; Errors</a></h4>
                             <p><?=number_format($main_stats_vals['mistakes_and_errors'])?></p>
                         </div>
                     </div><!-- end .profileStats -->
@@ -214,7 +214,179 @@ if(isset($data['overall_stats'])){
             <div class="row">
                 <div class="stats"></div>
             </div>
+
+            <div id="clubtabs">
+              <h3>Defending</h3>
+              <ul>
+                <li><a href="#tabs-Goals">Goals and Shootings</a></li>
+                <li><a href="#tabs-Shooting">Shooting</a></li>
+                <li><a href="#tabs-Passing">Passing</a></li>
+                <?php if($data['player']['position']=='Goalkeeper'):?>
+                <li><a href="#tabs-Goalkeeping">Goalkeeping</a></li>
+                <?php else: ?>
+                <li><a href="#tabs-Defending">Defending</a></li>
+                <?php endif;?>
+                <li><a href="#tabs-Discipline">Discipline</a></li>
+
+                <li><a href="#tabs-Mistakes">Mistakes &amp; Errors</a></li>
+              </ul>
+              <div id="tabs-Goals">
+                <div class="profileStatsContainer">
+                    <div class="profileStats">
+                        <?php 
+                            if(isset($data['overall_stats'])):
+                                foreach($data['overall_stats'] as $stats):
+                                    $stats['stats_name'] = ucfirst(str_replace('_',' ',$stats['stats_name']));
+                        ?>
+                          <dl>
+                            <dt><p class="s-title"><?=$stats['stats_name']?></p></dt>
+                            <dd class="tcenter">
+                                <a class="red-arrow"><?=number_format($stats['total'])?></a>
+                            </dd>
+                          </dl>
+                        <?php
+                            endforeach;
+                            endif;
+                        ?>
+                    </div><!-- end .profileStats -->
+                </div><!-- end .profileStats-container -->
+              </div><!-- end #Info -->
+              <div id="tabs-Shooting">
+                  <div class="profileStatsContainer">
+                    <div class="profileStats">
+                        <?php 
+                            if(isset($data['overall_stats'])):
+                                foreach($data['overall_stats'] as $stats):
+                                    $stats['stats_name'] = ucfirst(str_replace('_',' ',$stats['stats_name']));
+                        ?>
+                          <dl>
+                            <dt><p class="s-title"><?=$stats['stats_name']?></p></dt>
+                            <dd class="tcenter">
+                                <a class="red-arrow"><?=number_format($stats['total'])?></a>
+                            </dd>
+                          </dl>
+                        <?php
+                            endforeach;
+                            endif;
+                        ?>
+                    </div><!-- end .profileStats -->
+                </div><!-- end .profileStats-container -->
+              </div><!-- end #tabs-Keuagan -->
+              <div id="tabs-Passing">
+               <div class="profileStatsContainer">
+                    <div class="profileStats">
+                        <?php 
+                            if(isset($data['overall_stats'])):
+                                foreach($data['overall_stats'] as $stats):
+                                    $stats['stats_name'] = ucfirst(str_replace('_',' ',$stats['stats_name']));
+                        ?>
+                          <dl>
+                            <dt><p class="s-title"><?=$stats['stats_name']?></p></dt>
+                            <dd class="tcenter">
+                                <a class="red-arrow"><?=number_format($stats['total'])?></a>
+                            </dd>
+                          </dl>
+                        <?php
+                            endforeach;
+                            endif;
+                        ?>
+                    </div><!-- end .profileStats -->
+                </div><!-- end .profileStats-container -->
+              </div><!-- end #tabs-Squad -->
+              <?php if($data['player']['position']=='Goalkeeper'):?>
+              <div id="tabs-Goalkeeping">
+                   <div class="profileStatsContainer">
+                    <div class="profileStats">
+                        <?php 
+                            if(isset($data['overall_stats'])):
+                                foreach($data['overall_stats'] as $stats):
+                                    $stats['stats_name'] = ucfirst(str_replace('_',' ',$stats['stats_name']));
+                        ?>
+                          <dl>
+                            <dt><p class="s-title"><?=$stats['stats_name']?></p></dt>
+                            <dd class="tcenter">
+                                <a class="red-arrow"><?=number_format($stats['total'])?></a>
+                            </dd>
+                          </dl>
+                        <?php
+                            endforeach;
+                            endif;
+                        ?>
+                    </div><!-- end .profileStats -->
+                </div><!-- end .profileStats-container -->
+              </div><!-- end #tabs-Staff -->
+              <?php else:?>
+              <div id="tabs-Defending">
+                  <div class="profileStatsContainer">
+                    <div class="profileStats">
+                        <?php 
+                            if(isset($data['overall_stats'])):
+                                foreach($data['overall_stats'] as $stats):
+                                    $stats['stats_name'] = ucfirst(str_replace('_',' ',$stats['stats_name']));
+                        ?>
+                          <dl>
+                            <dt><p class="s-title"><?=$stats['stats_name']?></p></dt>
+                            <dd class="tcenter">
+                                <a class="red-arrow"><?=number_format($stats['total'])?></a>
+                            </dd>
+                          </dl>
+                        <?php
+                            endforeach;
+                            endif;
+                        ?>
+                    </div><!-- end .profileStats -->
+                </div><!-- end .profileStats-container -->
+              </div><!-- end #tabs-Staff -->
+              <?php endif;?>
+              <div id="tabs-Discipline">
+                   <div class="profileStatsContainer">
+                    <div class="profileStats">
+                        <?php 
+                            if(isset($data['overall_stats'])):
+                                foreach($data['overall_stats'] as $stats):
+                                    $stats['stats_name'] = ucfirst(str_replace('_',' ',$stats['stats_name']));
+                        ?>
+                          <dl>
+                            <dt><p class="s-title"><?=$stats['stats_name']?></p></dt>
+                            <dd class="tcenter">
+                                <a class="red-arrow"><?=number_format($stats['total'])?></a>
+                            </dd>
+                          </dl>
+                        <?php
+                            endforeach;
+                            endif;
+                        ?>
+                    </div><!-- end .profileStats -->
+                </div><!-- end .profileStats-container -->
+              </div><!-- end #tabs-Staff -->
+              <div id="tabs-Mistakes">
+                   <div class="profileStatsContainer">
+                    <div class="profileStats">
+                        <?php 
+                            if(isset($data['overall_stats'])):
+                                foreach($data['overall_stats'] as $stats):
+                                    $stats['stats_name'] = ucfirst(str_replace('_',' ',$stats['stats_name']));
+                        ?>
+                          <dl>
+                            <dt><p class="s-title"><?=$stats['stats_name']?></p></dt>
+                            <dd class="tcenter">
+                                <a class="red-arrow"><?=number_format($stats['total'])?></a>
+                            </dd>
+                          </dl>
+                        <?php
+                            endforeach;
+                            endif;
+                        ?>
+                    </div><!-- end .profileStats -->
+                </div><!-- end .profileStats-container -->
+              </div><!-- end #tabs-Staff -->
+            </div><!-- end #clubtabs -->
+
+
         </div><!-- end .content -->
+
+
+
     </div><!-- end #thecontent -->
     <?php else:?>
     <div id="thecontent">

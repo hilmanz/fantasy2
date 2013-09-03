@@ -1551,7 +1551,7 @@ td,th{
 }
 .profileStats{
 	height:175px;
-	overflow:hidden;
+	overflow:auto;
 }
 .profileStats dl{
 	clear:both;
