@@ -29,7 +29,8 @@ _optaParams.callbacks = [profileLoaded];
         <div class="content">
             <div id="tabs-Info">
                 <div class="player-detail">
-                    <opta widget="playerprofile" sport="football" competition="8" season="2013" team="1" player="<?=str_replace("p","",$data['player']['player_id'])?>" show_image="true" show_nationality="true" opta_logo="false" narrow_limit="400"></opta>
+                    <opta widget="playerprofile" sport="football" competition="8" season="2013" 
+                        team="<?=str_replace('t','',$data['player']['original_team_id'])?>" player="<?=str_replace("p","",$data['player']['player_id'])?>" show_image="true" show_nationality="true" opta_logo="false" narrow_limit="400"></opta>
                 </div>
                 
             	<div class="profileStats-container" style="display: block;">

@@ -65,7 +65,16 @@ class DATABASE_CONFIG {
 		'prefix' => '',
 		'encoding' => 'utf8',
 	);
-
+	public $opta = array(
+		'datasource' => 'Database/Mysql',
+		'persistent' => false,
+		'host' => 'localhost',
+		'login' => 'root',
+		'password' => 'root',
+		'database' => 'optadb',
+		'prefix' => '',
+		'encoding' => 'utf8',
+	);
 	public $test = array(
 		'datasource' => 'Database/Mysql',
 		'persistent' => false,

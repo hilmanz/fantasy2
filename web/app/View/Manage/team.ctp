@@ -564,8 +564,8 @@ $(document).ready(function(){
     <div class="confirm">
         <h1>Konfirmasi</h1>
         <h3>Apakah Anda yakin ingin menyimpan formasi pemain yang baru?</h3>
-        <p><a href="#/save_formation" class="button">Yes</a>
-            <a href="#" class="button" onclick="$.fancybox.close();return false;">Cancel</a></p>
+        <p><a href="#/save_formation" class="button">Ya</a>
+            <a href="#" class="button" onclick="$.fancybox.close();return false;">Batal</a></p>
     </div>
     <div class="saving" style="display:none;">
         <h1>Menyimpan formasi pemain</h1>

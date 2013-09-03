@@ -1,6 +1,6 @@
 <?php
 class StatsUpdateShell extends AppShell{
-	var $uses = array('Matchinfo');
+	var $uses = array('Matchinfo','PlayerStats');
 
 	public function main() {
        $this->dummy();
@@ -100,11 +100,90 @@ class StatsUpdateShell extends AppShell{
      $player['ball_wins'] = $this->ball_wins($game_id,$teamA,$player_id,$player_stats);
      $player['def_fails'] = $this->def_fails($game_id,$teamA,$player_id,$player_stats);
      $player['liable'] = $this->liable($game_id,$teamA,$player_id,$player_stats);
-    
+     $player['gk_score'] = $this->gk_score($game_id,$teamA,$player_id,$player_stats,$teamB);
+     $player['shot_stopping_percentage'] = $this->shot_stopping_percentage($game_id,$teamA,$player_id,$player_stats,$teamB);
+     $player['best_at_crosses'] = $this->best_at_crosses($game_id,$teamA,$player_id,$player_stats);
+     $player['one_v_one'] = $this->one_v_one($game_id,$teamA,$player_id,$player_stats);
+     $player['deadkick'] = $this->deadkick($game_id,$teamA,$player_id,$player_stats);
 
-
-
-     print_r($player);
+     
+     $this->PlayerStats->query(
+      "INSERT INTO master_player_summary
+       (game_id,team_id,player_id,
+        most_influence,
+        def_influence,
+        mid_influence,
+        fw_influence,
+        def_score,
+        atk_score,
+        creativity,
+        most_accurate_pass,
+        least_accurate_pass,
+        shoot_accuracy,
+        chance_created,
+        dangerous_pass,
+        assist,
+        best_cross_percentage,
+        worst_cross_percentage,
+        ball_wins,
+        def_fails,
+        liable,
+        gk_score,
+        shot_stopping_percentage,
+        best_at_crosses,
+        one_v_one,
+        deadkick)
+       VALUES
+       ('{$game_id}','{$teamA}','{$player_id}',
+        '{$player['most_influence']}',
+        '{$player['def_influence']}',
+        '{$player['mid_influence']}',
+        '{$player['fw_influence']}',
+        '{$player['def_score']}',
+        '{$player['atk_score']}',
+        '{$player['creativity']}',
+        '{$player['most_accurate_pass']}',
+        '{$player['least_accurate_pass']}',
+        '{$player['shoot_accuracy']}',
+        '{$player['chance_created']}',
+        '{$player['dangerous_pass']}',
+        '{$player['assist']}',
+        '{$player['best_cross_percentage']}',
+        '{$player['worst_cross_percentage']}',
+        '{$player['ball_wins']}',
+        '{$player['def_fails']}',
+        '{$player['liable']}',
+        '{$player['gk_score']}',
+        '{$player['shot_stopping_percentage']}',
+        '{$player['best_at_crosses']}',
+        '{$player['one_v_one']}',
+        '{$player['deadkick']}')
+        ON DUPLICATE KEY UPDATE
+        most_influence = VALUES(most_influence),
+        def_influence = VALUES(def_influence),
+        mid_influence = VALUES(mid_influence),
+        fw_influence = VALUES(fw_influence),
+        def_score = VALUES(def_score),
+        atk_score = VALUES(atk_score),
+        creativity = VALUES(creativity),
+        most_accurate_pass = VALUES(most_accurate_pass),
+        least_accurate_pass = VALUES(least_accurate_pass),
+        shoot_accuracy = VALUES(shoot_accuracy),
+        chance_created = VALUES(chance_created),
+        dangerous_pass = VALUES(dangerous_pass),
+        assist = VALUES(assist),
+        best_cross_percentage = VALUES(best_cross_percentage),
+        worst_cross_percentage = VALUES(worst_cross_percentage),
+        ball_wins = VALUES(ball_wins),
+        def_fails = VALUES(def_fails),
+        liable = VALUES(liable),
+        gk_score = VALUES(gk_score),
+        shot_stopping_percentage = VALUES(shot_stopping_percentage),
+        best_at_crosses = VALUES(best_at_crosses),
+        one_v_one = VALUES(one_v_one),
+        deadkick = VALUES(deadkick)
+        ;"
+     );  
   }
   private function getPlayers($game_id,$team_id){
     $sql = "SELECT player_id FROM player_stats 
@@ -225,20 +304,76 @@ class StatsUpdateShell extends AppShell{
     $str = "dangerous_play,red_card,second_yellow,yellow_card,penalty_conceded,fk_foul_lost,error_lead_to_goal,error_lead_to_shot,error_lead_to_shot,dispossessed,unsuccessful_touch";
     return $this->getTotalValuesFromAttributes($str,$stats); 
   }
-  function gk_score($game_id,$team_id,$player_id,$stats){
-
+  function gk_score($game_id,$team_id,$player_id,$stats,$teamB){
+    //p1 / (p3 + p2)
+    $p1 = "good_high_claim,good_one_on_one,accurate_keeper_sweeper,saves";
+    $p2 = "total_one_on_one,total_high_claim";
+    $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
+    $score2 = $this->getTotalValuesFromAttributes($p2,$stats);
+    $score3 = $this->getOtherTeamStats($game_id,$teamB,"ontarget_scoring_att");
+    $this->out('punches,good_high_claim,good_one_on_one,accurate_keeper_sweeper,saves,gk_smother');
+    $this->out('score1 / (score2+score3) -> '.$score1.'/('.$score2.'+'.$score3.')');
+    $sum = $score2 + $score3;
+    if($sum>0){
+      return $score1 / $sum;
+    }else{
+      return 0;
+    }
   }
-  function shot_stopping_percentage($game_id,$team_id,$player_id,$stats){
-
+  function shot_stopping_percentage($game_id,$team_id,$player_id,$stats,$teamB){
+    $p1 = "saves";
+    $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
+    $score2 = $this->getOtherTeamStats($game_id,$teamB,"ontarget_scoring_att");
+    $this->out('score1 / (score2) -> '.$score1.'/('.$score2.')');
+    if($score2>0){
+      return $score1 / $score2;
+    }else{
+      return 0;
+    }
   }
   function best_at_crosses($game_id,$team_id,$player_id,$stats){
+    //(good_high_claim/total_high_claim)
+    $p1 = "good_high_claim";
+    $p2 = "total_high_claim";
+   
+    $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
+    $score2 = $this->getTotalValuesFromAttributes($p2,$stats);
 
+
+    if($score2==0){
+      return 0;
+    }else{
+      return ($score1/$score2);  
+    }
   }
   function one_v_one($game_id,$team_id,$player_id,$stats){
+    $p1 = "good_one_on_one,accurate_keeper_sweeper";
+    $p2 = "total_one_on_one,total_keeper_sweeper";
+   
+    $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
+    $score2 = $this->getTotalValuesFromAttributes($p2,$stats);
 
+
+    if($score2==0){
+      return 0;
+    }else{
+      return ($score1/$score2);  
+    }
   }
   function deadkick($game_id,$team_id,$player_id,$stats){
+    //(att_freekick_goal)/(att_freekick_total)
+    $p1 = "att_freekick_goal";
+    $p2 = "att_freekick_total";
+   
+    $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
+    $score2 = $this->getTotalValuesFromAttributes($p2,$stats);
 
+
+    if($score2==0){
+      return 0;
+    }else{
+      return ($score1/$score2);  
+    }
   }
   function getTotalValuesFromAttributes($str,$stats){
     $arr = explode(",",$str);
@@ -253,6 +388,22 @@ class StatsUpdateShell extends AppShell{
     unset($arr);
     unset($str);
     return $score;
+  }
+  function getOtherTeamStats($game_id,$team_id,$statsName){
+    $sql = "SELECT stats_name,stats_value
+            FROM 
+            optadb.team_stats 
+            WHERE 
+            game_id = '{$game_id}' 
+            AND team_id='{$team_id}' 
+            AND stats_name = '{$statsName}' 
+            LIMIT 1;";
+    $rs = $this->Matchinfo->query($sql,false);
+    if(sizeof($rs)>0){
+      return $rs[0]['team_stats']['stats_value'];
+    }else{
+      return 0;
+    }
   }
   private function dummy(){
     $sql = 'TRUNCATE TABLE statsjob_queue';

@@ -8,14 +8,26 @@ var App = Backbone.Router.extend({
     "save_formation":"save_formation",
     "hire/:staff_id":"hire",
     "dismiss/:staff_id":"dismiss",
+    "sale/:player_id":"sale_player",
   },
   hire:hire,
   dismiss:dismiss,
   selectTeam:selectTeam,
   select_player:select_player,
   unselect_player:unselect_player,
-  save_formation:save_formation
+  save_formation:save_formation,
+  sale_player:sale_player
 });
+function sale_player(player_id,confirm){
+	if(typeof confirm === 'undefined'){
+		confirm = 0;
+	}
+	console.log('sale player #',player_id,' confirm:',confirm);
+	$('.saving').show();
+	$('.confirm').hide();
+	$('.success').hide();
+	document.location = "#";
+}
 function getStaffSalary(id){
 	for(var i in staffs){
 		if(staffs[i].id==id){
