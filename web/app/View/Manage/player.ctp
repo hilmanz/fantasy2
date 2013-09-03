@@ -469,7 +469,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
 var stats  = [];
 for(var i in daily_stats){
     stats.push({
-        ts:daily_stats[i].ts,
+        ts:daily_stats[i].fixture.ts*1000,
         goals_and_assists:daily_stats[i].goals_and_assists,
         shooting:daily_stats[i].shooting,
         passing:daily_stats[i].passing,
@@ -514,17 +514,25 @@ $('.stats').highcharts({
     },
    
     xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: { // don't display the dummy year
+            day: '%e. %b',
+            month: '%e. %b',
+            year: '%b'
+        },
         categories: categories,
-        title:{
-           text:'Matchday',
-            style:{
-              color:'#fff'
+        labels: {
+            align:'left',
+            rotation:60,
+            formatter: function() {
+                
+                return Highcharts.dateFormat('%d/%m', this.value);
             }
         }
     },
     yAxis: {
         title: {
-            text: 'Value',
+            text: 'Total',
             style:{
               color:'#fff'
             }
@@ -534,15 +542,20 @@ $('.stats').highcharts({
     tooltip: {
         enabled: true,
         formatter: function() {
-            return 'Matchday '+this.x +': '+ this.y +'';
+            console.log(this);
+            return '<strong>'+Highcharts.dateFormat('%d/%m/%Y', this.x)+'</strong><br/>'+
+                    this.series.name+': '+ this.y +'';
         }
     },
     plotOptions: {
-        line: {
-            dataLabels: {
-                enabled: true
-            },
-           
+        area: {
+            stacking: 'normal',
+            lineColor: '#666666',
+            lineWidth: 1,
+            marker: {
+                lineWidth: 1,
+                lineColor: '#666666'
+            }
         }
     },
     credits:false,
