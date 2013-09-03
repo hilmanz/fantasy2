@@ -160,19 +160,18 @@ function getStats($category,$pos,$modifiers,$map,$stats){
      <?php echo $this->element('infobar'); ?>
      <?php if($data['player']!=null):?>
     <div class="headbar tr">
-        <div class="club-info fl">
+        <div class="club-info fl player-club">
             <div class="fl club-info-entry">
                 <h3 class="clubname"><?=h($data['player']['name'])?></h3>
-                
             </div>
         </div>
         <div class="club-info fl">
-            <div>Gaji</div>
-            <div><?=number_format($data['player']['salary'])?></div>
+            <p>Gaji</p>
+            <h4><?=number_format($data['player']['salary'])?></h4>
         </div>
         <div class="club-info fl">
-            <div>Nilai Transfer</div>
-            <div>
+            <p>Nilai Transfer</p>
+            <h4>
                 <?php
                     if(sizeof($data['stats'])>0){
                         $performance = $data['stats'][sizeof($data['stats'])-1]['performance'];
@@ -183,14 +182,14 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                     $transfer_value = $data['player']['transfer_value'] + $bonus;
                     echo number_format($transfer_value);
                 ?>
-            </div>
+            </h4>
         </div>
         <div class="club-info fl">
-            <div>Status</div>
-            <div>N/A</div>
+            <p>Status</p>
+            <h4>N/A</h4>
         </div>
         <div class="club-info fl">
-            <div>
+            <h5>
                 <?php
                     $points = 0;
                     foreach($data['stats'] as $stats){
@@ -199,7 +198,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                     print number_format($points);
                 ?>
                 Poin
-            </div>
+            </h5>
         </div>
         <div class="club-money fr">
             <a href="#" class="button">JUAL</a>
@@ -263,7 +262,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                 <div class="stats"></div>
             </div>
             <div id="profiletabs" style="display:none">
-              <h3>Defending</h3>
+              <h3 class="tabtitle">Defending</h3>
               <div class="fr">
                 <a href="#/close_detail" class="button">KEMBALI</a>
                 </div>

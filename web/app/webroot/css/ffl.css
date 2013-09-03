@@ -967,7 +967,7 @@ input[type=text]{
 
 #profiletabs ul li{
 	float:left;
-	width:150px;
+	width:125px;
 	text-align:center;
 	margin:0 10px 0 0;
 }
@@ -1029,7 +1029,8 @@ input[type=text]{
 	color:#FC0;
 }
 .club-info h3.clubname{
-	font-size:20px;
+	font-size:26px;
+	line-height:40px;
 }
 .club-money h3{
 	font-size:30px;
@@ -1605,9 +1606,46 @@ td,th{
 	float:left;
 	background:none repeat scroll 0 0 #000000;
 	width:140px;
-	height:70px;
+	height:50px;
 	text-align: center;
-	margin: 3px 4px 0px 8px;
-	padding:5px;
-
+	margin: 5px 5px 0 10px;
+	padding:15px 5px;
+	border-radius:10px;
+}
+.statsbox h4{
+	margin:0;
+	font-size:16px;
+}
+.statsbox p{
+	font-size:26px;
+	font-family:'BebasNeueRegular';
+	line-height:24px;
+}
+.headbar .club-info{
+	width:140px;
+	text-align:center;
+}
+.headbar .player-club{
+	width:300px;
+}
+.club-info h4{
+	font-size:16px;
+	margin:0;
+	color:#fdcb02;
+}
+.club-info h5{
+	font-size:28px;
+	line-height:40px;
+	margin:0;
+	color:#fdcb02;
+}
+#profiletabs ul li:first-child,#profiletabs ul li:last-child{
+	width:155px;
+}
+h3.tabtitle{
+	clear: both;
+	margin: 0 0 20px 0;
+	padding: 20px 0 10px 0;
+	border-bottom: solid 1px #000;
+	font-size: 26px;
 }
