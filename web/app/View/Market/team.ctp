@@ -9,10 +9,10 @@
     </div><!-- end .headbar -->
    
     <div id="thecontent">
+        <div class="headbars tr">
+            <h3><?=h($club['name'])?></h3>
+        </div>
         <div class="contents tr">
-            <div>
-                <h4><?=h($club['name'])?></h4>
-            </div>
         	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
                 <thead>
                     <tr>

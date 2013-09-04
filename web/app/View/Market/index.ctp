@@ -9,10 +9,10 @@
     </div><!-- end .headbar -->
    
     <div id="thecontent">
+        <div class="headbars tr">
+            <h3>Pilih Team</h3>
+        </div>
         <div class="contents tr">
-            <div>
-                <h4>Pilih Team</h4>
-            </div>
         	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
                 <thead>
                     <tr>
@@ -51,16 +51,17 @@
                 <?php endforeach;endif;?>
                 </tbody>
             </table>
-            <div>
+            <div class="row">
                 <p>Untuk memperlancar pembelian atau pencarian pemain performa tinggi, pekerjakanlah General Scount atau Chief Scout</p>
-                
-                    <div class="avatar-big">
+                <div class="row">
+                    <div class="avatar-big fl">
                         <img src="<?=$this->Html->url('/content/thumb/general_scout.jpg')?>"/>
                     </div>
-                    <div class="avatar-big">
+                    <div class="avatar-big fl">
                         <img src="<?=$this->Html->url('/content/thumb/chief_scout.jpg')?>"/>
                     </div>
-                <div>
+                </div>
+                <div class="rowBtn">
                     <a href="#" class="button">Rekrut Staff</a>
                 </div>
             </div>
