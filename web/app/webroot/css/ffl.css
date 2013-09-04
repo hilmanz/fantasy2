@@ -1602,7 +1602,7 @@ td,th{
 	width:20%;
 	text-align:center;
 }
-.statsbox{
+a.statsbox{
 	float:left;
 	background:none repeat scroll 0 0 #000000;
 	width:140px;
@@ -1610,7 +1610,13 @@ td,th{
 	text-align: center;
 	margin: 5px 5px 0 10px;
 	padding:15px 5px;
+	display:block;
+	text-decoration:none;
 	border-radius:10px;
+}
+a.statsbox:hover{
+	background:#222;
+	text-decoration:none;
 }
 .statsbox h4{
 	margin:0;

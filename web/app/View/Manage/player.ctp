@@ -223,47 +223,47 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                 </div>
                 
             	<div class="profileStats-container" style="display: block;">
-                  <h2><span>Performance Stats</span></h2>
+                  <h2><span>Weekly Performance</span></h2>
                   <div class="profileStatsContainer">
                     <div class="profileStats" style="overflow:hidden;">
-                        <div class="statsbox">
-                            <h4><a href="#/stats_detail/0">Goals &amp; Assists</a></h4>
+                        <a href="#/stats_detail/0" class="statsbox">
+                            <h4>Goals &amp; Assists</h4>
                             <p><?=number_format($main_stats_vals['goals_and_assists'])?></p>
-                        </div>
-                        <div class="statsbox">
-                            <h4><a href="#/stats_detail/1">Shooting</a></h4>
+                        </a>
+                        <a href="#/stats_detail/1" class="statsbox">
+                            <h4>Shooting</h4>
                             <p><?=number_format($main_stats_vals['shooting'])?></p>
-                        </div>
-                        <div class="statsbox">
-                            <h4><a href="#/stats_detail/2">Passing</a></h4>
+                        </a>
+                        <a href="#/stats_detail/2" class="statsbox">
+                            <h4>Passing</h4>
                             <p><?=number_format($main_stats_vals['passing'])?></p>
-                        </div>
+                        </a>
                         <?php 
                         if($data['player']['position']!='Goalkeeper'):
                         ?>
-                        <div class="statsbox">
-                            <h4><a href="#/stats_detail/3">Defending</a></h4>
+                        <a href="#/stats_detail/3" class="statsbox">
+                            <h4>Defending</h4>
                             <p><?=number_format($main_stats_vals['defending'])?></p>
-                        </div>
+                        </a>
                         <?php
                         endif;
                         ?>
                         <?php 
                         if($data['player']['position']=='Goalkeeper'):
                         ?>
-                        <div class="statsbox">
-                            <h4><a href="#/stats_detail/3">Goalkeeping</a></h4>
+                        <a href="#/stats_detail/3" class="statsbox">
+                            <h4>Goalkeeping</h4>
                             <p><?=number_format($main_stats_vals['goalkeeping'])?></p>
-                        </div>
+                        </a>
                         <?php endif;?>
-                        <div class="statsbox">
-                            <h4><a href="#/stats_detail/4">Discipline</a></h4>
+                        <a href="#/stats_detail/4" class="statsbox">
+                            <h4>Discipline</h4>
                             <p><?=number_format($main_stats_vals['discipline'])?></p>
-                        </div>
-                        <div class="statsbox">
-                            <h4><a href="#/stats_detail/5">Mistakes &amp; Errors</a></h4>
+                        </a>
+                        <a href="#/stats_detail/5" class="statsbox">
+                            <h4>Mistakes &amp; Errors</h4>
                             <p><?=number_format($main_stats_vals['mistakes_and_errors'])?></p>
-                        </div>
+                        </a>
                     </div><!-- end .profileStats -->
                   </div><!-- end .profileStats-container -->
                 </div><!-- end .profileStats-container -->     
