@@ -69,10 +69,9 @@ app.get('/best_player/:game_team_id',[auth.canAccess],gameplay.best_player);
 app.get('/player/:id',[auth.canAccess],gameplay.player_data);
 app.post('/user/register',[auth.canAccess],users.register);
 app.post('/create_team',[auth.canAccess],team.create);
-
-
 app.get('/user/financial_statement',user.list);
 app.get('/game/rank',user.list);
+app.post('/sale',[auth.canAccess],gameplay.sale);
 
 app.get('/test',function(req,res){
 	client.get(req.query.access_token,function(err,rs){
@@ -101,6 +100,7 @@ app.post('/sponsorship/apply',[auth.canAccess],gameplay.applySponsorship);
 app.get('/finance/:game_team_id',[auth.canAccess],gameplay.financial_statements);
 app.get('/last_earning/:game_team_id',[auth.canAccess],gameplay.last_earning);
 app.get('/venue/:team_id',[auth.canAccess],gameplay.get_venue);
+
 app.get('/checkSession',function(req,res){
 	auth.checkSession(req,res,function(is_valid){
 		if(is_valid){

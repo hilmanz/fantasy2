@@ -13,32 +13,38 @@ var dummy = {
 	fb_id: '111111',
 	email:'foo@bar.com',
 	phone:'123123123',
-	game_team_id:277,
+	game_team_id:378,
+	player_id:'p43250',
 }
 describe('gameplay',function(){
 		it('get the current lineup',function(done){
-			gameplay.getLineup(1,function(err,rs){
+			gameplay.getLineup(dummy.game_team_id,function(err,rs){
 				should.not.exist(err);
 				should.exist(rs);
-				rs.lineup.should.have.length(11);
+				rs.lineup.should.have.length(16);
 				rs.formation.should.equal('4-4-2');
 				done();
 			});
 		});
 		
 		it('can setup the lineup',function(done){
-			gameplay.setLineup(1,[
-					{player_id:"p12882",no:9},
+			gameplay.setLineup(dummy.game_team_id,[
+					{player_id:"p3",no:9},
 					{player_id:"p13017",no:10},
-					{player_id:"p14075",no:3},
-					{player_id:"p14965",no:4},
-					{player_id:"p18892",no:6},
-					{player_id:"p2034",no:5},
-					{player_id:"p20695",no:7},
-					{player_id:"p3",no:8},
+					{player_id:"p14965",no:3},
+					{player_id:"p2034",no:4},
+					{player_id:"p20695",no:6},
+					{player_id:"p54771",no:5},
+					{player_id:"p2404",no:7},
+					{player_id:"p38530",no:8},
 					{player_id:"p51940",no:1},
-					{player_id:"p54772",no:2},
-					{player_id:"p8595",no:11}
+					{player_id:"p14075",no:2},
+					{player_id:"p12297",no:11},
+					{player_id:"p50175",no:12},
+					{player_id:"p82403",no:13},
+					{player_id:"p18892",no:14},
+					{player_id:"p43250",no:15},
+					{player_id:"p55909",no:16}
 				],'4-4-2',function(err,rs){
 				should.not.exist(err);
 				//should.equal(rs.total,11);
@@ -85,7 +91,7 @@ describe('gameplay',function(){
 		});
 		
 		it('retrieves player master detail',function(done){
-			gameplay.getPlayerDetail('p19557',
+			gameplay.getPlayerDetail(dummy.player_id,
 			function(err,rs){
 				should.not.exist(err);
 				should.exist(rs);
@@ -150,6 +156,15 @@ describe('gameplay',function(){
 				done();
 			});
 
+		});
+
+
+		it('can sale a player',function(done){
+			gameplay.sale(378,'p43250',function(err,result){
+				console.log(result);
+				should.exist(result);
+				done();
+			});
 		});
 	
 });

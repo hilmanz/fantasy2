@@ -56,7 +56,7 @@ class ManageController extends AppController {
 		//club
 		$club = $this->Team->findByUser_id($user['User']['id']);
 		$this->set('club',$club['Team']);
-
+		
 		//get original club
 		$original_club = $this->Game->getClub($club['Team']['team_id']);
 		$this->set('original',$original_club);

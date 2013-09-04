@@ -83,6 +83,16 @@ class Game extends AppModel {
 		return $response;
 	}
 	/*
+	* selling player
+	*/
+	public function sale_player($team_id,$player_id){
+		$response = $this->api_post('/sale',array(
+			'game_team_id'=>$team_id,
+			'player_id'=>$player_id
+		));
+		return $response;
+	}
+	/*
 	* get current lineup settings
 	* @team_id game_team_id 
 	*/

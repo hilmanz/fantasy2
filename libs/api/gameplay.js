@@ -772,6 +772,166 @@ function best_player(game_team_id,done){
 		}
 	);
 }
+
+/*sale player
+* step 1 - make sure that the player_id is owned by the team.
+* step 2 - count the transfer value accordingly
+* step 3 - remove the player from possession and from lineups
+* step 4 - add a transfer money to game_team_expenditures
+* 
+*/
+function sale(game_team_id,player_id,done){
+	var async = require('async');
+	conn = prepareDb();
+	async.waterfall(
+		[
+			function(callback){
+				console.log('selling player #',player_id,'from team #',game_team_id);
+				conn.query(
+					"SELECT COUNT(id) AS total\
+					FROM \
+					ffgame.game_team_players \
+					WHERE game_team_id=? AND player_id = ? LIMIT 1;",
+					[game_team_id,player_id],
+					function(err,rs){
+						if(!err && rs[0]['total']==1){
+							callback(err,true);	
+						}else{
+							callback(err,false);
+						}
+					});
+			},
+			function(is_valid,callback){
+				console.log('player is owned by the club ? ',is_valid);
+				if(is_valid){
+					//check for transfer value
+					conn.query(
+					"SELECT name,transfer_value FROM ffgame.master_player WHERE uid = ? LIMIT 1;",
+					[player_id],
+					function(err,rs){
+						if(!err){
+							callback(err,rs[0]['name'],rs[0]['transfer_value']);
+						}else{
+							callback(new Error('player not in master data'),null);
+						}
+					});
+					
+				}else{
+					callback(new Error('no player in the club'),null);
+				}
+			},
+			function(name,transfer_value,callback){
+				//check for player's latest performances
+				var performance_diff = 0;
+				conn.query(
+				"SELECT points,performance FROM ffgame_stats.game_match_player_points \
+				 WHERE game_team_id=? AND player_id=? ORDER BY id DESC;",
+				[game_team_id,player_id],
+				function(err,rs){
+					if(!err){
+						//@TODO we need to calculate the player's performance value to affect
+						//the latest transfer value
+						callback(err,name,transfer_value);
+
+					}else{
+						callback(new Error('player_got no performance'),null);
+					}
+				});
+			},
+			function(name,transfer_value,callback){
+				console.log('the price',transfer_value);
+				
+				async.waterfall(
+					[
+						function(callback){
+							//remove player from lineup
+							conn.query(
+									"DELETE FROM ffgame.game_team_lineups\
+									 WHERE game_team_id=? AND player_id=?",
+									 [game_team_id,player_id],function(err,rs){
+									 	callback(err,rs);
+									 });
+									 
+						},
+						function(rs,callback){
+							//remove player from team's rooster
+							if(rs!=null){
+								conn.query(
+									"DELETE FROM ffgame.game_team_players \
+									 WHERE game_team_id=? AND player_id=?;",
+									 [game_team_id,player_id],
+									 function(err,rs){
+									 	callback(err,rs);
+									 });
+							}
+							
+						},
+						function(rs,callback){
+							if(rs!=null){
+								//we need to know the next week game_id
+								conn.query("SELECT team_id FROM ffgame.game_teams WHERE id=? LIMIT 1",
+									 [game_team_id],
+									 function(err,rs){
+									 	
+									 	callback(err,name,transfer_value,rs[0]['team_id']);
+									 	
+									 });
+							}
+						},
+						function(name,transfer_value,team_id,callback){
+							//we need to know next match's game_id and matchdate
+							conn.query("SELECT a.id,\
+							a.game_id,a.home_id,b.name AS home_name,a.away_id,\
+							c.name AS away_name,a.home_score,a.away_score,\
+							a.matchday,a.period,a.session_id,a.attendance,match_date\
+							FROM ffgame.game_fixtures a\
+							INNER JOIN ffgame.master_team b\
+							ON a.home_id = b.uid\
+							INNER JOIN ffgame.master_team c\
+							ON a.away_id = c.uid\
+							WHERE (home_id = ? OR away_id=?) AND period <> 'FullTime'\
+							ORDER BY a.matchday\
+							LIMIT 1;\
+							",[team_id,team_id],function(err,rs){
+								callback(err,name,transfer_value,rs[0]['game_id'],rs[0]['matchday']);
+							});
+						},
+						function(name,transfer_value,game_id,matchday,callback){
+							//ok now we have all the ingridients..  
+							//lets insert into financial expenditure
+							conn.query("INSERT INTO ffgame.game_team_expenditures\
+										(game_team_id,item_name,item_type,amount,game_id,match_day)\
+										VALUES\
+										(?,?,?,?,?,?)\
+										ON DUPLICATE KEY UPDATE\
+										amount = amount + VALUES(amount);",
+										[game_team_id,
+										'player_sold',
+										 1,
+										 transfer_value,
+										 game_id,
+										 matchday
+										],
+										function(err,rs){
+											console.log(this.sql);
+											callback(err,{name:name,transfer_value:transfer_value});
+							});
+						}
+					],
+					function(err,result){
+						//we're done :D
+						callback(err,result);
+					}
+				);
+			}
+		],
+		function(err,result){
+			conn.end(function(e){
+				done(err,result);
+			});
+		}
+	);
+}
 exports.best_player = best_player;
 exports.last_earning = last_earning;
 exports.best_match = best_match;
@@ -791,3 +951,4 @@ exports.sponsorship = require(path.resolve('./libs/api/sponsorship'));
 exports.getPlayerOverallStats = getPlayerOverallStats;
 exports.getTeamPlayerDetail = getTeamPlayerDetail;
 exports.getPlayerDailyTeamStats = getPlayerDailyTeamStats;
+exports.sale = sale;

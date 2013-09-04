@@ -362,7 +362,7 @@ function isStaffExist($staff_token,$name){
                     <th width="64">Tgl.Lahir</th>
                     <th width="64">Negara Asal</th>
                     <th width="70">Posisi</th>
-                    <th width="64">Posisi Asli</th>
+                   
                     <th width="120">Gaji*</th>
                     <th width="120">Poin</th>
                     <th width="120">Nilai</th>
@@ -402,7 +402,7 @@ function isStaffExist($staff_token,$name){
                     <td><?=date("d-m-Y",strtotime($player['birth_date']))?></td>
                     <td><?=h($player['country'])?></td>
                     <td><?=$player_pos?></td>
-                    <td><?=h($player['real_position'])?></td>
+                   
                     <td><?=number_format($player['salary'])?></td>
                     <?php
                       if($player['points']>0){
@@ -414,7 +414,7 @@ function isStaffExist($staff_token,$name){
                     ?>
                     <td><?=number_format(intval($player['points']))?></td>
                     <td><?=number_format(intval($player['transfer_value'])+$performance_bonus)?></td>
-                    <td width="10"><a data-team="<?=$player['team_id']?>" data-player="<?=$player['uid']?>" id="btnSale" class="icon-cart buttons" href="#popup-messages"><span>Jual</span></a></td>
+                    <td width="10"><a data-team-name="<?=h($club['team_name'])?>" data-player-name="<?=$player['name']?>" data-team="<?=$player['team_id']?>" data-player="<?=$player['uid']?>" id="btnSale" class="icon-cart buttons" href="#popup-messages"><span>Jual</span></a></td>
                   </tr>
                   <?php endforeach;?>
                   <tr>
@@ -473,9 +473,12 @@ $("#btnSale").fancybox({
       $('.saving').hide();
       $('.confirm').show();
       $('.success').hide();
+      $('.failure').hide();
       render_view(tplsale,"#popup-messages .popupContent .entry-popup",{
         player_id:$(this.element).data('player'),
-        team_id:$(this.element).data('team')
+        team_id:$(this.element).data('team'),
+        player_name:$(this.element).data('player-name'),
+        team_name:$(this.element).data('team-name'),
       });
       $jqOpta.widgetStart(_optaParams);
     },
@@ -502,6 +505,10 @@ $("#btnSale").fancybox({
     </div>
     <div class="success" style="display:none;">
         <h1>Penjualan Berhasil</h1>
-        <h3><nama pemain> sudah dijual dari <nama_team></h3>
+        <h3><%=player_name%> sudah dijual dari <%=team_name%></h3>
+    </div>
+    <div class="failure" style="display:none;">
+        <h1>Penjualan Tidak Berhasil</h1>
+        <h3>Silahkan coba kembali !</h3>
     </div>
 </script>

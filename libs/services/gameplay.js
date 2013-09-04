@@ -348,3 +348,21 @@ exports.get_venue = function(req,res){
 function handleError(res){
 	res.send(501,{error:'no data available'});
 }
+//sale a player
+exports.sale = function(req,res){
+	gameplay.sale(
+		req.body.game_team_id,
+		req.body.player_id,
+		function(err,result){
+			if(err){
+				handleError(res);
+			}else{
+				if(result!=null){
+					res.send(200,{status:1,data:result,message:'the player has been successfully sold.'});
+				}else{
+					res.send(200,{status:0,message:'Oops, cannot sale the player.'});
+				}	
+			}
+		}
+	);
+}

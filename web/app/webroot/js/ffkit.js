@@ -32,6 +32,7 @@ function hide_player_stats(){
 	$("#chartbox").fadeIn();
 }
 function sale_player(player_id,confirm){
+	document.location = "#";
 	if(typeof confirm === 'undefined'){
 		confirm = 0;
 	}
@@ -39,7 +40,18 @@ function sale_player(player_id,confirm){
 	$('.saving').show();
 	$('.confirm').hide();
 	$('.success').hide();
-	document.location = "#";
+	$('.failure').hide();
+	api_post(api_url+'game/sale',{player_id:player_id},
+			function(response){
+				$('.saving').hide();
+				if(typeof response.status!=='undefined' && response.status == 1){
+					$('.success').show();
+
+				}else{
+					$('.failure').show();
+				}
+	});
+	
 }
 function getStaffSalary(id){
 	for(var i in staffs){
