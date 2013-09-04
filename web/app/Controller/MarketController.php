@@ -42,12 +42,32 @@ class MarketController extends AppController {
 		$this->set('teams',$teams['data']);
 	}
 	public function team($team_id){
+		$userData = $this->getUserData();
 		$club = $this->Game->getClub($team_id);
 		$this->set('club',$club);
 
 		$players = $this->Game->getMasterTeam($team_id);
 
-		$this->set('players',$players);
+		//list of players
+		$my_players = $this->Game->get_team_players($userData['fb_id']);
+
+		$player_list = array();
+		while(sizeof($players)>0){
+			$p = array_shift($players);
+			if(!$this->isMyPlayer($p['uid'],$my_players)){
+				$player_list[] = $p;
+			}
+		}
+
+		$this->set('players',$player_list);
+
+	}
+	private function isMyPlayer($player_id,$my_players){
+		foreach($my_players as $m){
+				if($m['uid']==$player_id){
+					return true;
+				}
+			}
 	}
 	public function player($player_id){
 		$userData = $this->userData;
@@ -66,6 +86,10 @@ class MarketController extends AppController {
 		//player detail : 
 		$rs = $this->Game->get_player_info($player_id);
 		
+
+		
+
+
 		if($rs['status']==1){
 			if(isset($rs['data']['daily_stats'])&&sizeof($rs['data']['daily_stats'])>0){
 				foreach($rs['data']['daily_stats'] as $n=>$v){
