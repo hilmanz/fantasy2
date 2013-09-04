@@ -211,9 +211,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                 Poin
             </h5>
         </div>
-        <div class="club-money fr">
-            <a data-team-name="<?=h($club['team_name'])?>" data-player-name="<?=$data['player']['name']?>" data-team="<?=$data['player']['original_team_id']?>" data-player="<?=$data['player']['player_id']?>" id="btnSale" class="icon-cart buttons" href="#popup-messages"><span>JUAL</span></a>
-        </div>
+        
     </div><!-- end .headbar -->
     <div id="thecontent">
         <div class="content">
@@ -223,7 +221,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                         team="<?=str_replace('t','',$data['player']['original_team_id'])?>" player="<?=str_replace("p","",$data['player']['player_id'])?>" show_image="true" show_nationality="true" opta_logo="false" narrow_limit="400"></opta>
                 </div>
                 
-            	<div class="profileStats-container" style="display: block;">
+                <div class="profileStats-container" style="display: block;">
                   <h2><span>Weekly Performance</span></h2>
                   <div class="profileStatsContainer">
                     <div class="profileStats" style="overflow:hidden;">
@@ -269,6 +267,9 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                   </div><!-- end .profileStats-container -->
                 </div><!-- end .profileStats-container -->     
             </div><!-- end #Info -->
+            <div class="club-money fl">
+                    <a data-team-name="<?=h($club['team_name'])?>" data-player-name="<?=$data['player']['name']?>" data-team="<?=$data['player']['original_team_id']?>" data-player="<?=$data['player']['player_id']?>" id="btnBuy" class="icon-cart buttons" href="#popup-messages"><span>REQUEST TRANSFER</span></a>
+                </div>
             <div id="chartbox" class="row">
                 <div class="stats"></div>
             </div>

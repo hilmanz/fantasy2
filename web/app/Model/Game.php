@@ -118,6 +118,13 @@ class Game extends AppModel {
 		}
 		return $response;
 	}
+	/*
+	* similar to get_team_player_info, but we dont care if the player is not ours
+	*/
+	public function get_player_info($player_id){
+		$response = $this->api_call('/player/'.$player_id);
+		return $response;
+	}
 	/**
 	* get match list
 	*

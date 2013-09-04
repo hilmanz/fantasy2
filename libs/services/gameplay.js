@@ -191,6 +191,36 @@ exports.player_data = function(req,res){
 								callback(err,{player:player,stats:rs});	
 							});
 			},
+			function(result,callback){
+				if(result.player != null){
+					gameplay.getPlayerOverallStats(0,
+												   result.player.player_id,
+												   function(err,rs){
+						result.overall_stats = rs;
+						callback(err,result);
+					});
+				}else{
+					//we don't need to throw an error, 
+					//so just return empty result.
+					callback(null,result);
+				}
+			},
+			function(result,callback){
+				
+				if(result.player != null){
+					gameplay.getPlayerDailyTeamStats(0,
+												   result.player.player_id,
+												   result.player.position,
+												   function(err,rs){
+						result.daily_stats = rs;
+						callback(err,result);
+					});
+				}else{
+					//we don't need to throw an error, 
+					//so just return empty result.
+					callback(null,result);
+				}
+			}
 		],
 		function(err,result){
 			if(err){

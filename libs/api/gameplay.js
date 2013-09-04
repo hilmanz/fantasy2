@@ -335,21 +335,29 @@ function getPlayerStats(player_id,callback){
 *	get player's overall stats
 */
 function getPlayerOverallStats(game_team_id,player_id,callback){
-	
-	sql = "SELECT stats_name,SUM(stats_value) AS total\
-			FROM ffgame_stats.master_player_stats a\
-			INNER JOIN ffgame.game_fixtures b\
-			ON a.game_id = b.game_id\
-			WHERE a.player_id=?\
-			AND EXISTS(\
-				SELECT 1 \
-				FROM ffgame.game_team_lineups_history c\
-				WHERE c.game_team_id=? \
-				AND c.player_id = a.player_id \
-				AND c.game_id = a.game_id\
-				LIMIT 1\
-			)\
-			GROUP BY stats_name;";
+	if(game_team_id!=0){
+		sql = "SELECT stats_name,SUM(stats_value) AS total\
+				FROM ffgame_stats.master_player_stats a\
+				INNER JOIN ffgame.game_fixtures b\
+				ON a.game_id = b.game_id\
+				WHERE a.player_id=?\
+				AND EXISTS(\
+					SELECT 1 \
+					FROM ffgame.game_team_lineups_history c\
+					WHERE c.game_team_id=? \
+					AND c.player_id = a.player_id \
+					AND c.game_id = a.game_id\
+					LIMIT 1\
+				)\
+				GROUP BY stats_name;";
+	}else{
+		sql = "SELECT stats_name,SUM(stats_value) AS total\
+				FROM ffgame_stats.master_player_stats a\
+				INNER JOIN ffgame.game_fixtures b\
+				ON a.game_id = b.game_id\
+				WHERE a.player_id=?\
+				GROUP BY stats_name;";
+	}
 	conn = prepareDb();
 	conn.query(sql,
 				[player_id,game_team_id],
@@ -399,21 +407,31 @@ function getPlayerDailyTeamStats(game_team_id,player_id,player_pos,done){
 			pos = 'g';
 		break;
 	}
-	sql = "SELECT a.game_id,stats_name,SUM(stats_value) AS total\
-			FROM ffgame_stats.master_player_stats a \
-			INNER JOIN ffgame.game_fixtures b\
-			ON a.game_id = b.game_id\
-			WHERE a.player_id=?\
-			AND EXISTS(\
-				SELECT 1\
-				FROM ffgame.game_team_lineups_history c\
-				WHERE c.game_team_id=?\
-				AND c.player_id = a.player_id\
-				AND c.game_id = a.game_id\
-				LIMIT 1\
-			)\
-			GROUP BY a.game_id,stats_name \
-			ORDER BY game_id ASC LIMIT 20000;";
+	if(game_team_id!=0){
+		sql = "SELECT a.game_id,stats_name,SUM(stats_value) AS total\
+				FROM ffgame_stats.master_player_stats a \
+				INNER JOIN ffgame.game_fixtures b\
+				ON a.game_id = b.game_id\
+				WHERE a.player_id=?\
+				AND EXISTS(\
+					SELECT 1\
+					FROM ffgame.game_team_lineups_history c\
+					WHERE c.game_team_id=?\
+					AND c.player_id = a.player_id\
+					AND c.game_id = a.game_id\
+					LIMIT 1\
+				)\
+				GROUP BY a.game_id,stats_name \
+				ORDER BY game_id ASC LIMIT 20000;";
+	}else{
+		sql = "SELECT a.game_id,stats_name,SUM(stats_value) AS total\
+				FROM ffgame_stats.master_player_stats a \
+				INNER JOIN ffgame.game_fixtures b\
+				ON a.game_id = b.game_id\
+				WHERE a.player_id=?\
+				GROUP BY a.game_id,stats_name \
+				ORDER BY game_id ASC LIMIT 20000;";
+	}
 	conn = prepareDb();
 	async.waterfall([
 		function(callback){
