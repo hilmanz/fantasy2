@@ -86,6 +86,8 @@ class ManageController extends AppController {
 		$this->set('ENABLE_OPTA',true);
 		$this->set('OPTA_CUSTOMER_ID',Configure::read('OPTA_CUSTOMER_ID'));
 		//-->
+
+		
 	}
 	private function getFinancialStatements($fb_id){
 		$finance = $this->Game->financial_statements($fb_id);

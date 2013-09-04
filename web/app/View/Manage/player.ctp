@@ -107,6 +107,7 @@ switch($data['player']['position']){
         $pos = 'g';
     break;
 }
+$total_points = 0;
 $main_stats_vals = array('goals_and_assists'=>0,
                             'shooting'=>0,
                             'defending'=>0,
@@ -125,7 +126,6 @@ if(isset($data['overall_stats'])){
                     if(!isset($main_stats_vals[$mainstats])){
                         $main_stats_vals[$mainstats] = 0;
                     }
-                   
                     $main_stats_vals[$mainstats] += ($stats['total'] *
                                                     getModifierValue($modifiers,
                                                                             $v,
@@ -134,6 +134,10 @@ if(isset($data['overall_stats'])){
             }
         }
     }
+    foreach($main_stats_vals as $n){
+        $total_points += $n;
+    }
+
 }
 
 function getModifierValue($modifiers,$statsName,$pos){
@@ -201,11 +205,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
         <div class="club-info fl">
             <h5>
                 <?php
-                    $points = 0;
-                    foreach($data['stats'] as $stats){
-                        $points+=$stats['performance'];
-                    }
-                    print number_format($points);
+                    print number_format($total_points);
                 ?>
                 Poin
             </h5>
