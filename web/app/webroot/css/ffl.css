@@ -1581,7 +1581,6 @@ td,th{
 	border:none !important;
 }
 .profileStats{
-	height:175px;
 	overflow:auto;
 }
 .profileStats dl{
@@ -1613,10 +1612,12 @@ a.statsbox{
 	display:block;
 	text-decoration:none;
 	border-radius:10px;
+	color:#fff;
 }
 a.statsbox:hover{
 	background:#222;
 	text-decoration:none;
+	color:#fdcb02;
 }
 .statsbox h4{
 	margin:0;
