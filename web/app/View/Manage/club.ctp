@@ -391,7 +391,7 @@ function isStaffExist($staff_token,$name){
                       break;
                     }
                   ?>
-                  <tr>
+                  <tr id="<?=$player['uid']?>">
                     <td>
                      <a href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"> <img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$player['team_id'])?>&dimensions=103x155&id=<?=str_replace('p','',$player['uid'])?>"/></a>
                     </td>
@@ -495,7 +495,7 @@ $("#btnSale").fancybox({
         <opta widget="playerprofile" sport="football" competition="8" season="2013" team="<%=team%>" 
           player="<%=uid%>" show_image="true" show_nationality="true" opta_logo="false" 
           narrow_limit="400"></opta>
-        <p><a href="#/sale/<%=player_id%>" class="button">Jual</a>
+        <p><a href="#/sale/<%=player_id%>/0" class="button">Jual</a>
             <a href="#" class="button" onclick="$.fancybox.close();return false;">Batal</a></p>
     </div>
     <div class="saving" style="display:none;">
@@ -512,3 +512,9 @@ $("#btnSale").fancybox({
         <h3>Silahkan coba kembali !</h3>
     </div>
 </script>
+
+<?php if(isset($tab)):?>
+<script>
+$( "#clubtabs" ).tabs({active:<?=intval($tab)?>});
+</script>
+<?php endif;?>

@@ -8,7 +8,7 @@ var App = Backbone.Router.extend({
     "save_formation":"save_formation",
     "hire/:staff_id":"hire",
     "dismiss/:staff_id":"dismiss",
-    "sale/:player_id":"sale_player",
+    "sale/:player_id/:option":"sale_player",
     "stats_detail/:tab":"player_stats_tab",
     "close_detail":"hide_player_stats"
   },
@@ -31,12 +31,8 @@ function hide_player_stats(){
 	$("#profiletabs").hide();
 	$("#chartbox").fadeIn();
 }
-function sale_player(player_id,confirm){
+function sale_player(player_id,option){
 	document.location = "#";
-	if(typeof confirm === 'undefined'){
-		confirm = 0;
-	}
-	console.log('sale player #',player_id,' confirm:',confirm);
 	$('.saving').show();
 	$('.confirm').hide();
 	$('.success').hide();
@@ -46,7 +42,13 @@ function sale_player(player_id,confirm){
 				$('.saving').hide();
 				if(typeof response.status!=='undefined' && response.status == 1){
 					$('.success').show();
-
+					if(option==1){
+						if(typeof club_url !== 'undefined'){
+							document.location = club_url;
+						}
+					}else{
+						$("tr#"+player_id).remove();
+					}
 				}else{
 					$('.failure').show();
 				}

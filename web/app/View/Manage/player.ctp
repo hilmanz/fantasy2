@@ -10,6 +10,7 @@ function profileLoaded(widget, data, id){
         });
 }
 _optaParams.callbacks = [profileLoaded];
+var club_url = "<?=$this->Html->url('/manage/club/?tab=2')?>";
 <?php
 if(isset($data['daily_stats'])):
 ?>
@@ -211,7 +212,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
             </h5>
         </div>
         <div class="club-money fr">
-            <a href="#" class="button">JUAL</a>
+            <a data-team-name="<?=h($club['team_name'])?>" data-player-name="<?=$data['player']['name']?>" data-team="<?=$data['player']['original_team_id']?>" data-player="<?=$data['player']['player_id']?>" id="btnSale" class="icon-cart buttons" href="#popup-messages"><span>JUAL</span></a>
         </div>
     </div><!-- end .headbar -->
     <div id="thecontent">
@@ -464,6 +465,22 @@ function getStats($category,$pos,$modifiers,$map,$stats){
     </div>
     <?php endif;?>
 </div><!-- end #myClubPage -->
+<!--popups-->
+<div class="popup">
+    <div class="popupContainer popup-small" id="popup-messages">
+        <div class="popupHeader">
+        </div><!-- END .popupHeader -->
+        <div class="popupContent">
+            <div class="entry-popup">
+                yellow
+            </div><!--END .entry-popup-->
+        </div><!-- END .popupContent -->
+    </div><!-- END .popupContainer -->
+</div><!-- END .popup --> 
+
+
+
+
 <?=$this->Html->script(array('highcharts'))?>
 <script>
 var stats  = [];
@@ -607,4 +624,52 @@ $( "#profiletabs" ).tabs({
 });
 
 
+</script>
+
+<script>
+$("#btnSale").fancybox({
+    beforeLoad : function(){
+      $("#popup-messages .popupContent .entry-popup").html('');
+      $('.saving').hide();
+      $('.confirm').show();
+      $('.success').hide();
+      $('.failure').hide();
+      render_view(tplsale,"#popup-messages .popupContent .entry-popup",{
+        player_id:$(this.element).data('player'),
+        team_id:$(this.element).data('team'),
+        player_name:$(this.element).data('player-name'),
+        team_name:$(this.element).data('team-name'),
+      });
+      $jqOpta.widgetStart(_optaParams);
+    },
+});
+</script>
+
+<script type="text/template" id="tplsale">
+    <%
+      var uid = player_id.replace('p','');
+      var team = team_id.replace('t','');
+    %>
+    <div class="confirm">
+        <h1>Apakah kamu ingin menjual pemain ini?</h1>
+        <h3>Pemain yang sudah dijual akan hilang dari lineup dan tidak dapat di undo</h3>
+        <opta widget="playerprofile" sport="football" competition="8" season="2013" team="<%=team%>" 
+          player="<%=uid%>" show_image="true" show_nationality="true" opta_logo="false" 
+          narrow_limit="400"></opta>
+        <p><a href="#/sale/<%=player_id%>/1" class="button">Jual</a>
+            <a href="#" class="button" onclick="$.fancybox.close();return false;">Batal</a></p>
+    </div>
+    <div class="saving" style="display:none;">
+        <h1>Menjual Pemain.</h1>
+        <h3>Harap tunggu sebentar..</h3>
+        <p><img src="<?=$this->Html->url('/css/fancybox/fancybox_loading@2x.gif')?>"/></p>
+    </div>
+    <div class="success" style="display:none;">
+        <h1>Penjualan Berhasil</h1>
+        <h3><%=player_name%> sudah dijual dari <%=team_name%></h3>
+    </div>
+    <div class="failure" style="display:none;">
+        <h1>Penjualan Tidak Berhasil</h1>
+        <h3>Silahkan coba kembali !</h3>
+    </div>
 </script>

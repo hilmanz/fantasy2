@@ -56,7 +56,7 @@ class ManageController extends AppController {
 		//club
 		$club = $this->Team->findByUser_id($user['User']['id']);
 		$this->set('club',$club['Team']);
-		
+
 		//get original club
 		$original_club = $this->Game->getClub($club['Team']['team_id']);
 		$this->set('original',$original_club);
@@ -87,7 +87,9 @@ class ManageController extends AppController {
 		$this->set('OPTA_CUSTOMER_ID',Configure::read('OPTA_CUSTOMER_ID'));
 		//-->
 
-		
+		if(isset($this->request->query['tab'])){
+			$this->set('tab',$this->request->query['tab']);
+		}
 	}
 	private function getFinancialStatements($fb_id){
 		$finance = $this->Game->financial_statements($fb_id);
