@@ -34,17 +34,49 @@ function getTeams(callback){
 /** get master player data **/
 function getPlayers(team_uid,callback){
 	conn = prepareDb();
-	conn.query("SELECT uid,name,birth_date,real_position,known_name,join_date,\
+	async.waterfall([
+			function(callback){
+				conn.query("SELECT uid,name,birth_date,real_position,known_name,join_date,\
 				position,country,salary,transfer_value \
 				FROM ffgame.master_player \
 				WHERE team_id=? ORDER BY last_name ASC,position ASC LIMIT 100",
 				[team_uid],
-		function(err,players){
-			
+				function(err,players){
+					callback(err,players);
+				});
+			},
+			function(players,callback){
+				var player_with_stats = [];
+				async.eachSeries(players,function(player,next){
+					conn.query("SELECT SUM(points) AS points,AVG(performance) AS performance \
+								FROM ffgame_stats.master_player_performance \
+								WHERE \
+								player_id = ? \
+								AND game_id IS NOT NULL;",
+								[player.uid],
+								function(err,rs){
+									if(rs!=null){
+										player.stats = rs[0];	
+									}else{
+										player.stats = {};
+									}
+									player_with_stats.push(player);
+									next();
+								}
+							);
+				},function(err){
+
+					callback(err,player_with_stats);
+				});
+			}
+		],
+		function(err,result){
 			conn.end(function(err){
-				callback(err,players);
-		});
-	});
+				callback(err,result);
+			});
+		}
+	);
+	
 }
 
 /** get team detail from master **/
@@ -229,6 +261,7 @@ function getUserTeamPoints(fb_id,done){
 	);
 
 }
+
 //make it accessable from anywhere
 exports.getUserTeamPoints = getUserTeamPoints;
 exports.getTeams = getTeams;

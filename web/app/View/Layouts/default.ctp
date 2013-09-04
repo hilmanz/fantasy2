@@ -61,7 +61,7 @@
                         	<a href="<?=$this->Html->url('/leaderboard')?>">Papan Peringkat</a>
                         </li>
                     	<li>
-                        	<a href="#">Bursa Transfer</a>
+                        	<a href="<?=$this->Html->url('/market')?>">Bursa Transfer</a>
                         </li>
                     	<li><a href="<?=$this->Html->url('/pages/faq')?>">Bantuan & FAQ</a></li>
                     </ul>

@@ -175,4 +175,11 @@ class Game extends AppModel {
 			return array();
 		}
 	}
+
+	/** get master match result statistic **/
+	function getMatchResultStats(){
+		$response = $this->api_call('/leaderboard');
+		return $response;
+	}
 }
+

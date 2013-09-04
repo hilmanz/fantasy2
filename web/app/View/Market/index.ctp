@@ -2,142 +2,68 @@
 	 <?php echo $this->element('infobar'); ?>
     <div class="headbar tr">
         <div class="leaderboard-head">
-        	<h3>Transfer-market</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque.</p>
+        	<h3>Bursa Transfer</h3>
+            <p>Bursa Transfer <span class="yellow">Supersoccer Football Manager</span> adalah tempat
+                dimana kamu bisa beli pemain untuk ditambahkan ke line-up team mu.</p>
         </div>
     </div><!-- end .headbar -->
-    <div class="shorterbox tr">
-            <form class="theForm">
-                <div class="row">
-                <label>Search Player</label>
-                <input type="text" value="" />
-                </div>
-                <div class="row">
-                <label>Position</label>
-                <select class="styled">
-                    <option>Goalkeeper</option>
-                    <option>Defender</option>
-                    <option>Midfielder</option>
-                    <option>Forwarder</option>
-                </select>
-                </div>
-                <div class="row">
-                <label>Club</label>
-                <select class="styled">
-                    <option>Persija</option>
-                    <option>Persib Bandung</option>
-                    <option>Persita Tangerang</option>
-                    <option>Persipura</option>
-                </select>
-                </div>
-                <div class="row inputhalf">
-                    <label>Value</label>
-                    <input type="text" value="" /><span>to</span><input type="text" value="" />
-                </div>
-                <div class="row">
-                    <input type="submit" class="button" value="SUBMIT" />
-                </div>
-            </form>
-    </div>
+   
     <div id="thecontent">
         <div class="contents tr">
+            <div>
+                <h4>Pilih Team</h4>
+            </div>
         	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Position</th>
-                        <th>Club</th>
-                        <th>Transfer Value</th>
-                        <th>Action</th>
+                        <th>Team Name</th>
+                        <th>Games Played</th>
+                        <th>Games Won</th>
+                        <th>Games Drawn</th>
+                        <th>Games Lost</th>
+                        <th>Games Scored</th>
+                        <th>Goal Conceded</th>
+                        <th>Top Scorer</th>
+                        <th>Top Assist</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
+                <?php 
+                if(isset($teams)):
+                    foreach($teams as $team):
+                ?>
                   <tr>
-                    <td class="l-player">Rooney</td>
-                    <td class="l-position">Forward</td>
-                    <td class="l-club">Manchester United</td>
-                    <td class="l-value">22.405.300</td>
-                    <td class="l-act"><a href="#" class="button">Details</a><a href="#" class="button">Make Offer</a></td>
+                        <td><?=h($team['team']['name'])?></td>
+                        <td><?=number_format(@$team['stats']['games'])?></td>
+                        <td><?=number_format(@$team['stats']['wins'])?></td>
+                        <td><?=number_format(@$team['stats']['draws'])?></td>
+                        <td><?=number_format(@$team['stats']['loses'])?></td>
+                        <td><?=number_format(@$team['stats']['goals'])?></td>
+                        <td><?=number_format(@$team['stats']['condeded'])?></td>
+                        <td><?=h(@$team['stats']['top_score']['name'])?></td>
+                        <td><?=h(@$team['stats']['top_assist']['name'])?></td>
+                        <td>
+                            <a href="<?=$this->Html->url('/market/team/'.$team['team']['team_id'])?>" 
+                                class="button">PILIH</a>
+                        </td>
                   </tr>
-                  <tr>
-                    <td class="l-player">Firman Utina</td>
-                    <td class="l-position">Midfielder</td>
-                    <td class="l-club">Persija</td>
-                    <td class="l-value">2.405.300</td>
-                    <td class="l-act"><a href="#" class="button">Details</a><a href="#" class="button">Make Offer</a></td>
-                  </tr>
-                  <tr>
-                    <td class="l-player">Rafael</td>
-                    <td class="l-position">Defender</td>
-                    <td class="l-club">Real Madrid</td>
-                    <td class="l-value">12.405.300</td>
-                    <td class="l-act"><a href="#" class="button">Details</a><a href="#" class="button">Make Offer</a></td>
-                  </tr>
-                  <tr>
-                    <td class="l-player">Kurnia Mega</td>
-                    <td class="l-position">Goalkeeper</td>
-                    <td class="l-club">Persema</td>
-                    <td class="l-value">2.000.900</td>
-                    <td class="l-act"><a href="#" class="button">Details</a><a href="#" class="button">Make Offer</a></td>
-                  </tr>
-                  <tr>
-                    <td class="l-player">Rooney</td>
-                    <td class="l-position">Forward</td>
-                    <td class="l-club">Manchester United</td>
-                    <td class="l-value">22.405.300</td>
-                    <td class="l-act"><a href="#" class="button">Details</a><a href="#" class="button">Make Offer</a></td>
-                  </tr>
-                  <tr>
-                    <td class="l-player">Firman Utina</td>
-                    <td class="l-position">Midfielder</td>
-                    <td class="l-club">Persija</td>
-                    <td class="l-value">2.405.300</td>
-                    <td class="l-act"><a href="#" class="button">Details</a><a href="#" class="button">Make Offer</a></td>
-                  </tr>
-                  <tr>
-                    <td class="l-player">Rafael</td>
-                    <td class="l-position">Defender</td>
-                    <td class="l-club">Real Madrid</td>
-                    <td class="l-value">12.405.300</td>
-                    <td class="l-act"><a href="#" class="button">Details</a><a href="#" class="button">Make Offer</a></td>
-                  </tr>
-                  <tr>
-                    <td class="l-player">Kurnia Mega</td>
-                    <td class="l-position">Goalkeeper</td>
-                    <td class="l-club">Persema</td>
-                    <td class="l-value">2.000.900</td>
-                    <td class="l-act"><a href="#" class="button">Details</a><a href="#" class="button">Make Offer</a></td>
-                  </tr>
-                  <tr>
-                    <td class="l-player">Rooney</td>
-                    <td class="l-position">Forward</td>
-                    <td class="l-club">Manchester United</td>
-                    <td class="l-value">22.405.300</td>
-                    <td class="l-act"><a href="#" class="button">Details</a><a href="#" class="button">Make Offer</a></td>
-                  </tr>
-                  <tr>
-                    <td class="l-player">Firman Utina</td>
-                    <td class="l-position">Midfielder</td>
-                    <td class="l-club">Persija</td>
-                    <td class="l-value">2.405.300</td>
-                    <td class="l-act"><a href="#" class="button">Details</a><a href="#" class="button">Make Offer</a></td>
-                  </tr>
-                  <tr>
-                    <td class="l-player">Rafael</td>
-                    <td class="l-position">Defender</td>
-                    <td class="l-club">Real Madrid</td>
-                    <td class="l-value">12.405.300</td>
-                    <td class="l-act"><a href="#" class="button">Details</a><a href="#" class="button">Make Offer</a></td>
-                  </tr>
-                  <tr>
-                    <td class="l-player">Kurnia Mega</td>
-                    <td class="l-position">Goalkeeper</td>
-                    <td class="l-club">Persema</td>
-                    <td class="l-value">2.000.900</td>
-                    <td class="l-act"><a href="#" class="button">Details</a><a href="#" class="button">Make Offer</a></td>
-                  </tr>
+                <?php endforeach;endif;?>
                 </tbody>
             </table>
+            <div>
+                <p>Untuk memperlancar pembelian atau pencarian pemain performa tinggi, pekerjakanlah General Scount atau Chief Scout</p>
+                
+                    <div class="avatar-big">
+                        <img src="<?=$this->Html->url('/content/thumb/general_scout.jpg')?>"/>
+                    </div>
+                    <div class="avatar-big">
+                        <img src="<?=$this->Html->url('/content/thumb/chief_scout.jpg')?>"/>
+                    </div>
+                <div>
+                    <a href="#" class="button">Rekrut Staff</a>
+                </div>
+            </div>
         </div><!-- end .content -->
     </div><!-- end #thecontent -->
 </div><!-- end #leaderboardPage -->

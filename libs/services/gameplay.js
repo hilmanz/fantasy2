@@ -366,3 +366,18 @@ exports.sale = function(req,res){
 		}
 	);
 }
+
+//get the list of match result statistics
+exports.leaderboard = function(req,res){
+	gameplay.leaderboard(function(err,rs){
+		if(err){
+			handleError(res);
+		}else{
+			if(rs!=null){
+				res.json(200,{status:1,data:rs});
+			}else{
+				res.send(200,{status:0});
+			}
+		}
+	});
+}

@@ -932,6 +932,144 @@ function sale(game_team_id,player_id,done){
 		}
 	);
 }
+/**
+* get master leaderboard
+*/
+function leaderboard(done){
+	var async = require('async');
+	conn = prepareDb();
+	async.waterfall(
+		[
+			function(callback){
+				//get team list
+				conn.query("SELECT uid AS team_id,name FROM ffgame.master_team;",
+					[],function(err,rs){
+					callback(err,rs);
+				});
+			},
+			function(teams,callback){
+				//foreach team, get its summaries
+				var team_stats = [];
+				async.eachSeries(teams,function(team,done){
+					getTeamResultStats(conn,team.team_id,function(err,result){
+						team_stats.push({team:team,stats:result});
+						done();	
+					});
+				},function(err){
+					callback(err,team_stats);
+				});
+			}
+		],
+		function(err,result){
+			console.log(result);
+			conn.end(function(e){
+				done(err,result);
+			});
+		}
+	);
+}
+function getTeamResultStats(conn,team_id,callback){
+	var stats = {
+		games:0,
+		wins:0,
+		loses:0,
+		draws:0,
+		goals:0,
+		conceded:0,
+		top_score:{},
+		top_assist:{}
+	};
+	async.waterfall([
+			function(callback){
+				//count how many wins, how many lost
+				//how many goals, how many goals conceded.
+				conn.query("SELECT home_id,away_id,home_score,away_score,period\
+							FROM \
+							ffgame.game_fixtures \
+							WHERE (home_id = ? OR away_id= ?) \
+							AND is_processed=1 AND period='FullTime';",
+							[team_id,team_id],
+							function(err,rs){
+								if(rs.length>0){
+									callback(err,rs);
+								}else{
+									callback(new Error('no data yet'),null);
+								}
+							});
+			},
+			function(games,callback){
+				if(games!=null){
+					for(var i in games){
+						if(games[i].home_id==team_id){
+							if(games[i].home_score > games[i].away_score){
+								stats.wins++;
+							}else if(games[i].home_score < games[i].away_score){
+								stats.loses++;
+							}else{
+								stats.draws++;
+							}
+							stats.goals += games[i].home_score;
+							stats.conceded += games[i].away_score;
+						}else{
+							if(games[i].home_score < games[i].away_score){
+								stats.wins++;
+							}else if(games[i].home_score > games[i].away_score){
+								stats.loses++;
+							}else{
+								stats.draws++;
+							}
+							stats.goals += games[i].away_score;
+							stats.conceded += games[i].home_score;
+						}
+						stats.games++;
+					}
+
+					callback(null,stats);
+				}else{
+					callback(null,stats);
+				}
+			},
+			function(stats,callback){
+				//find for top goals
+				conn.query("SELECT a.player_id,SUM(stats_value) AS goals,b.* \
+							FROM ffgame_stats.master_match_result_stats a\
+							INNER JOIN\
+							ffgame.master_player b ON a.player_id = b.uid\
+							WHERE a.team_id=? AND stats_name='goals'\
+							GROUP BY a.player_id\
+							ORDER BY goals DESC LIMIT 1",
+							[team_id],
+							function(err,rs){
+								if(rs.length>0){
+									stats.top_score = rs[0];
+								}
+								callback(err,stats);
+							});
+			},
+			function(stats,callback){
+				//find for top assist
+				conn.query("SELECT a.player_id,SUM(stats_value) AS assist,b.* \
+							FROM ffgame_stats.master_match_result_stats a\
+							INNER JOIN\
+							ffgame.master_player b ON a.player_id = b.uid\
+							WHERE a.team_id=? AND stats_name='goal_assist'\
+							GROUP BY a.player_id\
+							ORDER BY assist DESC;",
+							[team_id],
+							function(err,rs){
+								if(rs.length>0){
+									stats.top_assist = rs[0];
+								}
+								callback(err,stats);
+							});
+			}
+		],
+		function(err,result){
+			callback(err,result);
+		}
+	);
+}
+exports.leaderboard = leaderboard;
 exports.best_player = best_player;
 exports.last_earning = last_earning;
 exports.best_match = best_match;

@@ -34,9 +34,17 @@ class MarketController extends AppController {
 	}
 
 	public function index(){
-		
+		$teams = $this->Game->getMatchResultStats();
+		$this->set('teams',$teams['data']);
 	}
+	public function team($team_id){
+		$club = $this->Game->getClub($team_id);
+		$this->set('club',$club);
 
+		$players = $this->Game->getMasterTeam($team_id);
+		
+		$this->set('players',$players);
+	}
 	public function error(){
 		$this->render('error');
 	}
