@@ -267,9 +267,11 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                   </div><!-- end .profileStats-container -->
                 </div><!-- end .profileStats-container -->     
             </div><!-- end #Info -->
-            <div class="club-money fl">
-                    <a data-team-name="<?=h($data['player']['original_team_name'])?>" data-player-name="<?=$data['player']['name']?>" data-team="<?=$data['player']['original_team_id']?>" data-player="<?=$data['player']['player_id']?>" id="btnBuy" class="icon-cart buttons" href="#popup-messages"><span>REQUEST TRANSFER</span></a>
-                </div>
+
+            <div class="rowBtn">
+                   <a data-team-name="<?=h($data['player']['original_team_name'])?>" data-player-name="<?=$data['player']['name']?>" data-team="<?=$data['player']['original_team_id']?>" data-player="<?=$data['player']['player_id']?>" id="btnBuy" class="icon-cart buttons" href="#popup-messages"><span>REQUEST TRANSFER</span></a>
+			</div>
+
             <div id="chartbox" class="row">
                 <div class="stats"></div>
             </div>
