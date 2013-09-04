@@ -10,7 +10,7 @@ function profileLoaded(widget, data, id){
         });
 }
 _optaParams.callbacks = [profileLoaded];
-var club_url = "<?=$this->Html->url('/manage/club/?tab=2')?>";
+var club_url = "<?=$this->Html->url('/market/team/'.$data['player']['original_team_id'])?>";
 <?php
 if(isset($data['daily_stats'])):
 ?>
@@ -268,7 +268,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                 </div><!-- end .profileStats-container -->     
             </div><!-- end #Info -->
             <div class="club-money fl">
-                    <a data-team-name="<?=h($club['team_name'])?>" data-player-name="<?=$data['player']['name']?>" data-team="<?=$data['player']['original_team_id']?>" data-player="<?=$data['player']['player_id']?>" id="btnBuy" class="icon-cart buttons" href="#popup-messages"><span>REQUEST TRANSFER</span></a>
+                    <a data-team-name="<?=h($data['player']['original_team_name'])?>" data-player-name="<?=$data['player']['name']?>" data-team="<?=$data['player']['original_team_id']?>" data-player="<?=$data['player']['player_id']?>" id="btnBuy" class="icon-cart buttons" href="#popup-messages"><span>REQUEST TRANSFER</span></a>
                 </div>
             <div id="chartbox" class="row">
                 <div class="stats"></div>
@@ -628,7 +628,7 @@ $( "#profiletabs" ).tabs({
 </script>
 
 <script>
-$("#btnSale").fancybox({
+$("#btnBuy").fancybox({
     beforeLoad : function(){
       $("#popup-messages .popupContent .entry-popup").html('');
       $('.saving').hide();
@@ -652,25 +652,45 @@ $("#btnSale").fancybox({
       var team = team_id.replace('t','');
     %>
     <div class="confirm">
-        <h1>Apakah kamu ingin menjual pemain ini?</h1>
-        <h3>Pemain yang sudah dijual akan hilang dari lineup dan tidak dapat di undo</h3>
+        <h1>Apakah kamu ingin membeli pemain ini?</h1>
+        <h3>Nilai Transfer : <?=number_format($transfer_value)?></h3>
+        <h3>Budget : <?=number_format($team_bugdet)?></h3>
         <opta widget="playerprofile" sport="football" competition="8" season="2013" team="<%=team%>" 
           player="<%=uid%>" show_image="true" show_nationality="true" opta_logo="false" 
           narrow_limit="400"></opta>
-        <p><a href="#/sale/<%=player_id%>/1" class="button">Jual</a>
-            <a href="#" class="button" onclick="$.fancybox.close();return false;">Batal</a></p>
+        <p><a href="#/buy/<%=player_id%>/1" class="button">BELI</a>
+            <a href="#" class="button" onclick="$.fancybox.close();return false;">BATAL</a></p>
     </div>
     <div class="saving" style="display:none;">
-        <h1>Menjual Pemain.</h1>
-        <h3>Harap tunggu sebentar..</h3>
+        <h1>Pembelian Pemain sedang di proses</h1>
+        <h3>Untuk memperlancar pembelian atau pencarian pemain performa tinggi, pekerjakanlah General Scout atau Chief Scout</h3>
+        <div class="avatar-big">
+            <img src="<?=$this->Html->url('/content/thumb/general_scout.jpg')?>"/>
+        </div>
+        <div class="avatar-big">
+            <img src="<?=$this->Html->url('/content/thumb/chief_scout.jpg')?>"/>
+        </div>
         <p><img src="<?=$this->Html->url('/css/fancybox/fancybox_loading@2x.gif')?>"/></p>
     </div>
     <div class="success" style="display:none;">
-        <h1>Penjualan Berhasil</h1>
-        <h3><%=player_name%> sudah dijual dari <%=team_name%></h3>
+        <h1>Pembelian Berhasil</h1>
+        <h3>Untuk memperlancar pembelian atau pencarian pemain performa tinggi, pekerjakanlah General Scout atau Chief Scout</h3>
+        <div class="avatar-big">
+            <img src="<?=$this->Html->url('/content/thumb/general_scout.jpg')?>"/>
+        </div>
+        <div class="avatar-big">
+            <img src="<?=$this->Html->url('/content/thumb/chief_scout.jpg')?>"/>
+        </div>
     </div>
     <div class="failure" style="display:none;">
-        <h1>Penjualan Tidak Berhasil</h1>
+        <h1>Pembelian Tidak Berhasil</h1>
         <h3>Silahkan coba kembali !</h3>
+        <h3>Untuk memperlancar pembelian atau pencarian pemain performa tinggi, pekerjakanlah General Scout atau Chief Scout</h3>
+        <div class="avatar-big">
+            <img src="<?=$this->Html->url('/content/thumb/general_scout.jpg')?>"/>
+        </div>
+        <div class="avatar-big">
+            <img src="<?=$this->Html->url('/content/thumb/chief_scout.jpg')?>"/>
+        </div>
     </div>
 </script>

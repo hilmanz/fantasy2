@@ -131,9 +131,30 @@ class GameController extends AppController {
 		$rs = $this->Game->sale_player($userData['team']['id'],$player_id);
 
 		
-		if($rs['status']==1){
+		if(@$rs['status']==1){
 			$msg = "@p1_".$this->userDetail['User']['id']." telah melepas {$rs['data']['name']} seharga SS$".number_format($rs['data']['transfer_value']);
 			$this->Info->write('sale player',$msg);
+		}
+		header('Content-type: application/json');
+		print json_encode($rs);
+		die();
+	}
+	/**
+	* buy a player
+	*/
+	public function buy(){
+		$this->loadModel('Team');
+		$this->loadModel('User');
+		$userData = $this->getUserData();
+		$player_id = Sanitize::clean($this->request->data['player_id']);
+
+		$rs = $this->Game->buy_player($userData['team']['id'],$player_id);
+
+		
+
+		if(@$rs['status']==1){
+			$msg = "@p1_".$this->userDetail['User']['id']." telah membeli {$rs['data']['name']} seharga SS$".number_format($rs['data']['transfer_value']);
+			$this->Info->write('buy player',$msg);
 		}
 		header('Content-type: application/json');
 		print json_encode($rs);

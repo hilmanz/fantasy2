@@ -396,7 +396,24 @@ exports.sale = function(req,res){
 		}
 	);
 }
-
+//buy a player
+exports.buy = function(req,res){
+	gameplay.buy(
+		req.body.game_team_id,
+		req.body.player_id,
+		function(err,result){
+			if(err){
+				handleError(res);
+			}else{
+				if(result!=null){
+					res.send(200,{status:1,data:result,message:'the player has been successfully bought.'});
+				}else{
+					res.send(200,{status:0,message:'Oops, cannot sale the player.'});
+				}	
+			}
+		}
+	);
+}
 //get the list of match result statistics
 exports.leaderboard = function(req,res){
 	gameplay.leaderboard(function(err,rs){

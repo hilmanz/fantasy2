@@ -166,5 +166,13 @@ describe('gameplay',function(){
 				done();
 			});
 		});
+
+		it('can buy a player',function(done){
+			gameplay.buy(378,'p43250',function(err,result){
+				console.log(result);
+				should.exist(result);
+				done();
+			});
+		});
 	
 });

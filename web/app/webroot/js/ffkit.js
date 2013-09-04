@@ -9,6 +9,7 @@ var App = Backbone.Router.extend({
     "hire/:staff_id":"hire",
     "dismiss/:staff_id":"dismiss",
     "sale/:player_id/:option":"sale_player",
+    "buy/:player_id/:option":"buy_player",
     "stats_detail/:tab":"player_stats_tab",
     "close_detail":"hide_player_stats"
   },
@@ -19,9 +20,29 @@ var App = Backbone.Router.extend({
   unselect_player:unselect_player,
   save_formation:save_formation,
   sale_player:sale_player,
+  buy_player:buy_player,
   player_stats_tab:player_stats_tab,
   hide_player_stats:hide_player_stats
 });
+function buy_player(player_id,option){
+	document.location = "#";
+	$('.saving').show();
+	$('.confirm').hide();
+	$('.success').hide();
+	$('.failure').hide();
+	api_post(api_url+'game/buy',{player_id:player_id},
+			function(response){
+				$('.saving').hide();
+				if(typeof response.status!=='undefined' && response.status == 1){
+					$('.success').show();
+					if(typeof club_url !== 'undefined'){
+						document.location = club_url;
+					}
+				}else{
+					$('.failure').show();
+				}
+	});
+}
 function player_stats_tab(tab){
 	$("#chartbox").hide();
 	$("#profiletabs").show();
