@@ -29,9 +29,7 @@ $map = array(
                             'goals'=>'goals',
                             'assist'=>'goal_assist',
                             'clear_cut_chance_created'=>'big_chance_created',
-                            'penalty_won'=>'penalty_won',
-                            'Assisted_A_Shot'=>'total_att_assist'
-
+                            'penalty_won'=>'penalty_won'
                         ),
 
     'shooting'=>array(
@@ -41,42 +39,31 @@ $map = array(
 
     'passing'=>array(
                 'accurate_flick_on'=>'accurate_flick_on',
-                'accurate_pass'=>'accurate_passes',
+                'accurate_pass'=>'accurate_pass',
                 'accurate_chipped_pass'=>'accurate_chipped_pass',
                 'accurate_launches'=>'accurate_launches',
                 'accurate_layoffs'=>'accurate_layoffs',
                 'accurate_long_balls'=>'accurate_long_balls',
-                'accurate_through_balls'=>'accurate_through_ball',
+                'accurate_through_balls'=>'accurate_through_balls',
                 'long_pass_to_opponents_half'=>'long_pass_own_to_opp_success',
                 'accurate_crossing'=>'accurate_cross',
                 'accurate_attacking_pass'=>'accurate_fwd_zone_pass',
-                'accurate_free_kick_delivery'=>'accurate_freekick_cross',
-                'Accurate_Crossing'=>'accurate_cross_nocorner',
-                'Accurate_Attacking_pass'=>'total_attacking_pass',
-
-
+                'accurate_free_kick_delivery'=>'accurate_freekick_cross'
             ),
     'defending'=>array(
                 'Ball_recovery'=>'ball_recovery',
                 'Duel_Won'=>'duel_won',
                 'Aerial_Duel_Won'=>'aerial_won',
-                'Tackle_won'=>'won_tackle',
+                'Tackle_won'=>'tackle_won',
                 'Tackle_won_as_a_last_man'=>'last_man_contest',
+                'Intercepted_passes'=>'Interception',
                 'Intercepted_a_pass_inside_the_box'=>'interceptions_in_box',
-                'Effective_clearance'=>'effective_clearance',
+                'Effective_clearance'=>'effective_clearence',
                 'Blocked_a_cross'=>'effective_blocked_cross',
-                'Blocked_a_shot'=>'blocked_scoring_att',
-                'Blocked_a_shot_from_within_6_yards_box'=>'six_yard_block',
-                'offsides_provoked'=>'offside_provoked',
-                'Intercepted_Passes'=>'interception_won',
-                
+                'Blocked_a_shot'=>'effective_blocked_shot',
+                'Blocked_a_shot_from_within_6_yards_box'=>'six_yard_block'
 
         ),
-    'dribbling'=>array(
-        'contests_won'=>'won_contest',
-        'Tackles_Won_Against_Last_Man'=>'last_man_tackle',
-        'Last_man_contest'=>'last_man_contest'
-    ),
 
     'goalkeeping'=>array(
                 'Penalty_Save'=>'penalty_save',
@@ -88,8 +75,7 @@ $map = array(
                 'Claimed_a_high_cross_into_the_box'=>'good_high_claim',
                 'Punched_the_ball_away'=>'punches',
                 'Won_a_1v1_challenge'=>'good_one_on_one',
-                'Smothered_an_attack'=>'gk_smother',
-                'Successfull_Sweeps'=>'accurate_keeper_sweeper'
+                'Smothered_an_attack'=>'gk_smother'
         ),
 
     'discipline'=>array(
@@ -105,8 +91,7 @@ $map = array(
         'Poor_pass'=>'poss_lost_ctrl',
         'Poor_touch'=>'unsuccessful_touch',
         'challenge_lost'=>'challenge_lost',
-        'Cross_not_claimed'=>'cross_not_claimed',
-        'Offsides'=>'total_offside',
+        'Cross_not_claimed'=>'cross_not_claimed'
     )
 );
 switch($data['player']['position']){
@@ -130,7 +115,6 @@ $main_stats_vals = array('goals_and_assists'=>0,
                             'passing'=>0,
                             'discipline'=>0,
                             'goalkeeping'=>0,
-                            'dribbling'=>0,
                             'mistakes_and_errors'=>0,
                          );
 if(isset($data['overall_stats'])){
@@ -154,13 +138,13 @@ if(isset($data['overall_stats'])){
     foreach($main_stats_vals as $n){
         $total_points += $n;
     }
-    
+
 }
 
 function getModifierValue($modifiers,$statsName,$pos){
     foreach($modifiers as $m){
         if($m['Modifier']['name']==$statsName){
-            return ($m['Modifier'][$pos]);
+            return abs($m['Modifier'][$pos]);
         }
     }
     return 0;

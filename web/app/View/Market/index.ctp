@@ -65,7 +65,7 @@
                     </div>
                 </div>
                 <div class="rowBtn">
-                    <a href="<?=$this->Html->url('/manage/hiring_staff')?>" class="button">Rekrut Staff</a>
+                    <a href="#" class="button">Rekrut Staff</a>
                 </div>
             </div>
         </div><!-- end .content -->
