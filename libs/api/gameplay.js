@@ -1064,7 +1064,7 @@ function buy(game_team_id,player_id,done){
 								conn.query("SELECT team_id FROM ffgame.game_teams WHERE id=? LIMIT 1",
 									 [game_team_id],
 									 function(err,rs){
-									 	
+									 	console.log(this.sql);
 									 	callback(err,name,transfer_value,rs[0]['team_id']);
 									 	
 									 });
@@ -1085,6 +1085,7 @@ function buy(game_team_id,player_id,done){
 							ORDER BY a.matchday\
 							LIMIT 1;\
 							",[team_id,team_id],function(err,rs){
+								console.log(this.sql);
 								callback(err,name,transfer_value,rs[0]['game_id'],rs[0]['matchday']);
 							});
 						},

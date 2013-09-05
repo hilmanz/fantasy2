@@ -16,6 +16,7 @@
         	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Team Name</th>
                         <th>Games Played</th>
                         <th>Games Won</th>
@@ -32,19 +33,21 @@
                 <?php 
                 if(isset($teams)):
                     foreach($teams as $team):
+                        $urlto= $this->Html->url('/market/team/'.$team['team']['team_id']);
                 ?>
-                  <tr>
-                        <td><?=h($team['team']['name'])?></td>
-                        <td><?=number_format(@$team['stats']['games'])?></td>
-                        <td><?=number_format(@$team['stats']['wins'])?></td>
-                        <td><?=number_format(@$team['stats']['draws'])?></td>
-                        <td><?=number_format(@$team['stats']['loses'])?></td>
-                        <td><?=number_format(@$team['stats']['goals'])?></td>
-                        <td><?=number_format(@$team['stats']['condeded'])?></td>
-                        <td><?=h(@$team['stats']['top_score']['name'])?></td>
-                        <td><?=h(@$team['stats']['top_assist']['name'])?></td>
-                        <td>
-                            <a href="<?=$this->Html->url('/market/team/'.$team['team']['team_id'])?>" 
+                  <tr>  
+                        <td><a href="<?=$urlto?>"><img style="height:46px" src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$team['team']['team_id'])?>.png"/></a></td>
+                        <td><a class="yellow" href="<?=$urlto?>"><?=h($team['team']['name'])?></a></td>
+                        <td align="center"><?=number_format(@$team['stats']['games'])?></td>
+                        <td align="center"><?=number_format(@$team['stats']['wins'])?></td>
+                        <td align="center"><?=number_format(@$team['stats']['draws'])?></td>
+                        <td align="center"><?=number_format(@$team['stats']['loses'])?></td>
+                        <td align="center"><?=number_format(@$team['stats']['goals'])?></td>
+                        <td align="center"><?=number_format(@$team['stats']['condeded'])?></td>
+                        <td align="center"><?=h(@$team['stats']['top_score']['name'])?></td>
+                        <td align="center"><?=h(@$team['stats']['top_assist']['name'])?></td>
+                        <td align="center">
+                            <a href="<?=$urlto?>" 
                                 class="button">PILIH</a>
                         </td>
                   </tr>

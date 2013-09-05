@@ -9,6 +9,7 @@
     </div><!-- end .headbar -->
    
     <div id="thecontent">
+        <div class="fr"><a href="<?=$this->Html->url('/market')?>" class="button">KEMBALI</a></div>
         <div class="headbars tr">
             <h3><?=h($club['name'])?></h3>
         </div>
@@ -29,16 +30,17 @@
                 <?php 
                 if(isset($players)):
                     foreach($players as $player):
+                        $urlto = $this->Html->url('/market/player/'.$player['uid']);
                 ?>
                   <tr>
-                        <td><img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$club['uid'])?>&dimensions=103x155&id=<?=str_replace('p','',$player['uid'])?>"/></td>
-                        <td><?=h($player['name'])?></td>
+                        <td><a href="<?=$urlto?>"><img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$club['uid'])?>&dimensions=103x155&id=<?=str_replace('p','',$player['uid'])?>"/></a></td>
+                        <td><a href="<?=$urlto?>" class="yellow"><?=h($player['name'])?></a></td>
                         <td><?=h($player['position'])?></td>
                         <td>SS$ <?=number_format($player['salary'])?></td>
-                        <td><?=number_format(@$player['stats']['points'])?></td>
+                        <td align="center"><?=number_format(@$player['stats']['points'])?></td>
                         <td>SS$ <?=number_format($player['transfer_value'])?></td>
                         <td>
-                            <a href="<?=$this->Html->url('/market/player/'.$player['uid'])?>" 
+                            <a href="<?=$urlto?>" 
                                 class="button">LIHAT</a>
                         </td>
                   </tr>
