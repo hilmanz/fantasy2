@@ -1685,7 +1685,7 @@ h3.tabtitle{
 .popupContent .opta-widget-container .profile dt{
 	min-width:120px;
 }
-.failure .avatar-big{
+.popupContent .avatar-big{
 	margin:10px;
 	display:inline-block;
 }
