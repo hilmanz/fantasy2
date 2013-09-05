@@ -211,7 +211,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                 Poin
             </h5>
         </div>
-        
+        <div class="fr"><a href="<?=$this->Html->url('/market/team/'.$data['player']['original_team_id'])?>" class="button">KEMBALI</a></div>
     </div><!-- end .headbar -->
     <div id="thecontent">
         <div class="content">
