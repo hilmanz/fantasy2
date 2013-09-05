@@ -1673,3 +1673,23 @@ h3.tabtitle{
 	clear:both;
 	padding:10px 0 0 0;
 }
+.popupContent .profile{
+	background: #222;
+	color: #fff;
+	text-align: left;
+	border:solid 1px #444;
+}
+.popupContent .opta-widget-container .profile dd{
+	border-bottom:solid 1px #444;
+}
+.popupContent .opta-widget-container .profile dt{
+	min-width:120px;
+}
+.failure .avatar-big{
+	margin:10px;
+	display:inline-block;
+}
+.failure h1{
+	font-size:30px;
+	color:#fdcb02;
+}

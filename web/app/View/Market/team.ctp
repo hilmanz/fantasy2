@@ -9,9 +9,9 @@
     </div><!-- end .headbar -->
    
     <div id="thecontent">
-        <div class="fr"><a href="<?=$this->Html->url('/market')?>" class="button">KEMBALI</a></div>
         <div class="headbars tr">
-            <h3><?=h($club['name'])?></h3>
+            <h3 class="fl"><?=h($club['name'])?></h3>
+        	<div class="fr"><a href="<?=$this->Html->url('/market')?>" class="button">KEMBALI</a></div>
         </div>
         <div class="contents tr">
         	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
