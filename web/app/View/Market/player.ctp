@@ -149,6 +149,7 @@ function getModifierValue($modifiers,$statsName,$pos){
     }
     return 0;
 }
+
 function getStats($category,$pos,$modifiers,$map,$stats){
     
     
@@ -161,14 +162,14 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                 $collection[$n] = 0;
             }
             if($s['stats_name'] == $v){
-                $collection[$n] = $s['total'] * getModifierValue($modifiers,$v,$pos);
+                $collection[$n] = array('total'=>$s['total'],
+                                    'points'=>$s['total'] * getModifierValue($modifiers,$v,$pos));
             }
         }
     }
     
     return $collection;
 }
-
 
 ?>
 <div id="myClubPage">
@@ -296,6 +297,15 @@ function getStats($category,$pos,$modifiers,$map,$stats){
               <div id="tabs-Goals">
                 <div class="profileStatsContainer">
                     <div class="profileStats">
+                        <dl>
+                            <dt><p class="s-title">Aksi</p></dt>
+                            <dd class="tcenter">
+                                Frequency
+                            </dd>
+                            <dd class="tcenter">
+                                Poin
+                            </dd>
+                          </dl>
                         <?php 
                             $profileStats = getStats('goals_and_assists',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
@@ -305,7 +315,10 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                           <dl>
                             <dt><p class="s-title"><?=$statsName?></p></dt>
                             <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal)?></a>
+                                <a class="red-arrow"><?=number_format($statsVal['total'])?></a>
+                            </dd>
+                            <dd class="tcenter">
+                                <a class="red-arrow"><?=number_format($statsVal['points'])?></a>
                             </dd>
                           </dl>
                         <?php
@@ -318,6 +331,15 @@ function getStats($category,$pos,$modifiers,$map,$stats){
               <div id="tabs-Shooting">
                   <div class="profileStatsContainer">
                     <div class="profileStats">
+                        <dl>
+                            <dt><p class="s-title">Aksi</p></dt>
+                            <dd class="tcenter">
+                                Frequency
+                            </dd>
+                            <dd class="tcenter">
+                                Poin
+                            </dd>
+                          </dl>
                         <?php 
                             $profileStats = getStats('shooting',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
@@ -327,7 +349,10 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                           <dl>
                             <dt><p class="s-title"><?=$statsName?></p></dt>
                             <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal)?></a>
+                                <a class="red-arrow"><?=number_format($statsVal['total'])?></a>
+                            </dd>
+                            <dd class="tcenter">
+                                <a class="red-arrow"><?=number_format($statsVal['points'])?></a>
                             </dd>
                           </dl>
                         <?php
@@ -340,6 +365,15 @@ function getStats($category,$pos,$modifiers,$map,$stats){
               <div id="tabs-Passing">
                <div class="profileStatsContainer">
                     <div class="profileStats">
+                        <dl>
+                            <dt><p class="s-title">Aksi</p></dt>
+                            <dd class="tcenter">
+                                Frequency
+                            </dd>
+                            <dd class="tcenter">
+                                Poin
+                            </dd>
+                          </dl>
                         <?php 
                             $profileStats = getStats('passing',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
@@ -349,7 +383,10 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                           <dl>
                             <dt><p class="s-title"><?=$statsName?></p></dt>
                             <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal)?></a>
+                                <a class="red-arrow"><?=number_format($statsVal['total'])?></a>
+                            </dd>
+                            <dd class="tcenter">
+                                <a class="red-arrow"><?=number_format($statsVal['points'])?></a>
                             </dd>
                           </dl>
                         <?php
@@ -363,6 +400,15 @@ function getStats($category,$pos,$modifiers,$map,$stats){
               <div id="tabs-Goalkeeping">
                    <div class="profileStatsContainer">
                     <div class="profileStats">
+                        <dl>
+                            <dt><p class="s-title">Aksi</p></dt>
+                            <dd class="tcenter">
+                                Frequency
+                            </dd>
+                            <dd class="tcenter">
+                                Poin
+                            </dd>
+                          </dl>
                         <?php 
                             $profileStats = getStats('goalkeeping',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
@@ -372,7 +418,10 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                           <dl>
                             <dt><p class="s-title"><?=$statsName?></p></dt>
                             <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal)?></a>
+                                <a class="red-arrow"><?=number_format($statsVal['total'])?></a>
+                            </dd>
+                            <dd class="tcenter">
+                                <a class="red-arrow"><?=number_format($statsVal['points'])?></a>
                             </dd>
                           </dl>
                         <?php
@@ -386,6 +435,15 @@ function getStats($category,$pos,$modifiers,$map,$stats){
               <div id="tabs-Defending">
                   <div class="profileStatsContainer">
                     <div class="profileStats">
+                        <dl>
+                            <dt><p class="s-title">Aksi</p></dt>
+                            <dd class="tcenter">
+                                Frequency
+                            </dd>
+                            <dd class="tcenter">
+                                Poin
+                            </dd>
+                          </dl>
                         <?php 
                             $profileStats = getStats('defending',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
@@ -395,7 +453,10 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                           <dl>
                             <dt><p class="s-title"><?=$statsName?></p></dt>
                             <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal)?></a>
+                                <a class="red-arrow"><?=number_format($statsVal['total'])?></a>
+                            </dd>
+                            <dd class="tcenter">
+                                <a class="red-arrow"><?=number_format($statsVal['points'])?></a>
                             </dd>
                           </dl>
                         <?php
@@ -409,6 +470,15 @@ function getStats($category,$pos,$modifiers,$map,$stats){
               <div id="tabs-Discipline">
                    <div class="profileStatsContainer">
                     <div class="profileStats">
+                        <dl>
+                            <dt><p class="s-title">Aksi</p></dt>
+                            <dd class="tcenter">
+                                Frequency
+                            </dd>
+                            <dd class="tcenter">
+                                Poin
+                            </dd>
+                          </dl>
                         <?php 
                             $profileStats = getStats('discipline',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
@@ -418,7 +488,10 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                           <dl>
                             <dt><p class="s-title"><?=$statsName?></p></dt>
                             <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal)?></a>
+                                <a class="red-arrow"><?=number_format($statsVal['total'])?></a>
+                            </dd>
+                            <dd class="tcenter">
+                                <a class="red-arrow"><?=number_format($statsVal['points'])?></a>
                             </dd>
                           </dl>
                         <?php
@@ -431,6 +504,15 @@ function getStats($category,$pos,$modifiers,$map,$stats){
               <div id="tabs-Mistakes">
                    <div class="profileStatsContainer">
                     <div class="profileStats">
+                        <dl>
+                            <dt><p class="s-title">Aksi</p></dt>
+                            <dd class="tcenter">
+                                Frequency
+                            </dd>
+                            <dd class="tcenter">
+                                Poin
+                            </dd>
+                          </dl>
                         <?php 
                             $profileStats = getStats('mistakes_and_errors',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
@@ -440,7 +522,10 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                           <dl>
                             <dt><p class="s-title"><?=$statsName?></p></dt>
                             <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal)?></a>
+                                <a class="red-arrow"><?=number_format($statsVal['total'])?></a>
+                            </dd>
+                            <dd class="tcenter">
+                                <a class="red-arrow"><?=number_format($statsVal['points'])?></a>
                             </dd>
                           </dl>
                         <?php
