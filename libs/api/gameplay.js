@@ -974,6 +974,7 @@ function buy(game_team_id,player_id,done){
 					[game_team_id,player_id],
 					function(err,rs){
 						if(!err && rs[0]['total']==0){
+
 							callback(err,true);	
 						}else{
 							callback(err,false);
@@ -981,13 +982,16 @@ function buy(game_team_id,player_id,done){
 					});
 			},
 			function(is_valid,callback){
-				console.log('player is owned by the club ? ',is_valid);
+
+				console.log('player is not owned by the club ? ',is_valid);
 				if(is_valid){
 					//check for transfer value
 					conn.query(
-					"SELECT name,transfer_value FROM ffgame.master_player WHERE uid = ? LIMIT 1;",
+					"SELECT name,transfer_value \
+					 FROM ffgame.master_player WHERE uid = ? LIMIT 1;",
 					[player_id],
 					function(err,rs){
+						console.log(this.sql);
 						if(!err){
 							callback(err,rs[0]['name'],rs[0]['transfer_value']);
 						}else{
@@ -996,7 +1000,7 @@ function buy(game_team_id,player_id,done){
 					});
 					
 				}else{
-					callback(new Error('no player in the club'),null);
+					callback(new Error('the player is already in the club'),null);
 				}
 			},
 			function(name,transfer_value,callback){
