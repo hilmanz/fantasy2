@@ -1,5 +1,19 @@
 <div id="leaderboardPage">
-	
+    <div class="headbar tr">
+      <div class="fl">
+        <a href="#" class="button">Minggu Lalu</a>
+      </div>
+      <div class="fr">
+        <form action="<?=$this->Html->url('/leaderboard')?>" 
+          method="get" enctype="application/x-www-form-urlencoded">
+          <select name="period">
+              <option value="weekly">Mingguan</option>
+              <option value="monthly">Bulanan</option>
+              <option value="overall">Keseluruhan</option>
+          </select>
+        </form>
+      </div>
+    </div>
     <div class="headbar tr">
         <div class="leaderboard-head fl">
           <?php
@@ -19,6 +33,7 @@
             <span>Tier 2</span>
         </div>
     </div><!-- end .headbar -->
+
     <div id="thecontent">
         <div class="contents">
         	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
