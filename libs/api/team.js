@@ -236,8 +236,9 @@ function getUserTeam(fb_id,done){
 function getUserTeamPoints(fb_id,done){
 	conn = prepareDb();
 	async.waterfall(
-		[
+		[	
 			function(callback){
+				//get overall points
 				conn.query("SELECT a.fb_id,b.user_id,b.id,b.team_id,c.points \
 							FROM ffgame.game_users a\
 							INNER JOIN ffgame.game_teams b\
@@ -247,11 +248,38 @@ function getUserTeamPoints(fb_id,done){
 							WHERE a.fb_id = ?;",
 							[fb_id],
 							function(err,rs){
-								callback(null,rs[0]);
+								if(rs!=null){
+									callback(null,rs[0]);
+								}else{
+									callback(null,null);
+								}
 							});
 				
 			},
-			
+			function(rs,callback){
+				if(rs!=null){
+					//get per game stats
+					if(rs.id!=null){
+						conn.query("SELECT a.game_id,\
+									SUM(points) AS total_points,\
+									b.matchday,\
+									b.match_date\
+									FROM ffgame_stats.game_match_player_points a\
+									INNER JOIN ffgame.game_fixtures b\
+									ON a.game_id = b.game_id\
+									WHERE game_team_id=? \
+									GROUP BY game_id\
+									LIMIT 400;",
+									[rs.id],
+									function(err,result){
+										rs.game_points = result;
+										callback(null,rs);
+									});
+					}
+				}else{
+					callback(null,rs);
+				}
+			}
 		],
 		function(err,result){
 			conn.end(function(e){
