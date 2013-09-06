@@ -92,10 +92,7 @@ $map = array(
                 'Successfull_Sweeps'=>'accurate_keeper_sweeper'
         ),
 
-    'discipline'=>array(
-        'Yellow_Card'=>'yellow_card',
-        'Red_Card'=>'red_card'
-        ),
+
 
     'mistakes_and_errors'=>array(
         'Penalty_Conceded'=>'penalty_conceded',
@@ -107,6 +104,8 @@ $map = array(
         'challenge_lost'=>'challenge_lost',
         'Cross_not_claimed'=>'cross_not_claimed',
         'Offsides'=>'total_offside',
+        'Yellow_Card'=>'yellow_card',
+        'Red_Card'=>'red_card'
     )
 );
 switch($data['player']['position']){
@@ -128,7 +127,7 @@ $main_stats_vals = array('goals_and_assists'=>0,
                             'shooting'=>0,
                             'defending'=>0,
                             'passing'=>0,
-                            'discipline'=>0,
+                            'dribbling'=>0,
                             'goalkeeping'=>0,
                             'mistakes_and_errors'=>0,
                          );
@@ -279,8 +278,8 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                         </a>
                         <?php endif;?>
                         <a href="#/stats_detail/4" class="statsbox">
-                            <h4>Discipline</h4>
-                            <p><?=number_format($main_stats_vals['discipline'])?></p>
+                            <h4>Dribbling</h4>
+                            <p><?=number_format($main_stats_vals['dribbling'])?></p>
                         </a>
                         <a href="#/stats_detail/5" class="statsbox">
                             <h4>Mistakes &amp; Errors</h4>
@@ -307,7 +306,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                 <?php else: ?>
                 <li><a href="#tabs-Defending">Defending</a></li>
                 <?php endif;?>
-                <li><a href="#tabs-Discipline">Discipline</a></li>
+                <li><a href="#tabs-Dribbling">Dribbling</a></li>
 
                 <li><a href="#tabs-Mistakes">Mistakes &amp; Errors</a></li>
               </ul>
@@ -484,7 +483,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                 </div><!-- end .profileStats-container -->
               </div><!-- end #tabs-Staff -->
               <?php endif;?>
-              <div id="tabs-Discipline">
+              <div id="tabs-Dribbling">
                    <div class="profileStatsContainer">
                     <div class="profileStats">
                         <dl>
@@ -497,7 +496,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                             </dd>
                           </dl>
                         <?php 
-                            $profileStats = getStats('discipline',$pos,$modifiers,$map,$data['overall_stats']);
+                            $profileStats = getStats('dribbling',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
                                 foreach($profileStats as $statsName=>$statsVal):
                                     $statsName = ucfirst(str_replace('_',' ',$statsName));
