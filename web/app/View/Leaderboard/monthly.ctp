@@ -2,23 +2,42 @@
 $monthly = isset($monthly) ? "selected='selected'":"";
 $weekly = isset($weekly) ? "selected='selected'":"";
 $overall = isset($overall) ? "selected='selected'":"";
+$months = array('','Januari','Februari','Maret','April','Mei',
+                    'Juni','Juli','Agustus','September','Oktober',
+                    'November','Desember');
+
+$previous_month = ($current_month==1) ? 12 : $current_month - 1;
+$previous_year = ($current_month==1) ? $current_year - 1 : $current_year;
+
+$next_month = ($current_month==12) ? 1 : $current_month + 1;
+$next_year = ($current_month==12) ? $current_year + 1 : $current_year;
+
+function isMonthAvailable($available,$m,$y){
+  foreach($available as $a){
+    if($a[0]['bln'] == $m && $a[0]['thn'] == $y){
+      return true;
+    }
+  }
+}
 ?>
 <div id="leaderboardPage">
-    <div class="headbar tr">
-      
-        <?php if($matchday>1):?>
+    <div class="headbar tr"> 
+       <?php if(isMonthAvailable($available_months,$previous_month,$previous_year)):?>
         <div class="fl">
-          <a href="<?=$this->Html->url('/leaderboard/?week='.($matchday-1))?>" 
-            class="button">Minggu Lalu</a>
+          <a href="<?=$this->Html->url('/leaderboard/monthly?m='.
+                                        ($previous_month).'&y='.$previous_year)?>" 
+            class="button"><?=$months[$previous_month]?> <?=$previous_year?></a>
         </div>
         <?php endif;?>
-        <?php if(($next_match['match']['matchday']-1) > $matchday):?>
+
+        <?php if(isMonthAvailable($available_months,$next_month,$next_year)):?>
         <div class="fl">
-          <a href="<?=$this->Html->url('/leaderboard/?week='.($matchday+1))?>" 
-            class="button">Minggu Berikutnya</a>
+          <a href="<?=$this->Html->url('/leaderboard/monthly?m='.
+                                        ($next_month).'&y='.$next_year)?>" 
+            class="button"><?=$months[$next_month]?> <?=$next_year?></a>
         </div>
         <?php endif;?>
-     
+        
       <div class="fr">
         <form action="<?=$this->Html->url('/leaderboard')?>" 
           method="get" enctype="application/x-www-form-urlencoded">
@@ -33,12 +52,12 @@ $overall = isset($overall) ? "selected='selected'":"";
     <div class="headbar tr">
         <div class="leaderboard-head fl">
          
-        	<h3>Papan Peringkat – Minggu ke <?=$matchday?></h3>
-            <p>Daftar urutan manajer berdasarkan poin tertinggi.<br />Diperbaharui secara mingguan. </p>
+        	<h3>Papan Peringkat – Bulan <?=$months[$current_month]?> <?=$current_year?></h3>
+            <p>Daftar urutan manajer berdasarkan poin tertinggi tiap bulan.<br />Diperbaharui secara mingguan. </p>
         </div>
         <div class="leaderboard-rank fr">
             <span>Peringkat Anda:</span>
-            <h3><?=number_format($rank)?></h3>
+            <h3><?=number_format(@$rank)?></h3>
             <span>Tier 2</span>
         </div>
     </div><!-- end .headbar -->

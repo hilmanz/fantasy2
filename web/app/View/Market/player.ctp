@@ -142,8 +142,8 @@ if(isset($data['overall_stats'])){
                     }
                     $main_stats_vals[$mainstats] += ($stats['total'] *
                                                     getModifierValue($modifiers,
-                                                                            $v,
-                                                                            $pos));
+                                                                    $v,
+                                                                    $pos));
                 }
             }
         }
