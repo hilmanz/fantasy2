@@ -87,3 +87,40 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2013-07-13 19:21:11
+
+
+
+
+CREATE TABLE `monthly_points` (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `team_id` bigint(21) DEFAULT NULL,
+  `bln` int(3) DEFAULT NULL,
+  `thn` int(4) DEFAULT NULL,
+  `points` int(11) DEFAULT NULL,
+  `rank` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE_MONTHLY` (`team_id`,`bln`,`thn`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `weekly_points` (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `team_id` bigint(21) DEFAULT NULL,
+  `game_id` varchar(32) DEFAULT NULL,
+  `matchday` int(11) DEFAULT '0',
+  `matchdate` datetime DEFAULT NULL,
+  `points` bigint(21) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE_TEAM_GAMES` (`team_id`,`game_id`),
+  KEY `team_matchday` (`team_id`,`matchday`),
+  KEY `IDX_MATHCDATE` (`matchdate`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `weekly_ranks` (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `team_id` bigint(21) DEFAULT NULL,
+  `game_id` varchar(32) DEFAULT NULL,
+  `rank` int(11) DEFAULT '0' COMMENT 'the last rank before the income is calculated.',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_team_game` (`team_id`,`game_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8

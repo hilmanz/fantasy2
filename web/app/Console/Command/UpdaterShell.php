@@ -84,5 +84,9 @@ class UpdaterShell extends AppShell{
             $this->Team->query($sql);
           }
         }
+
+        $this->out('recalculating monthly ranks');
+        $sql = "CALL recalculate_monthly_rank();";
+        $this->Team->query($sql);
     }
 }

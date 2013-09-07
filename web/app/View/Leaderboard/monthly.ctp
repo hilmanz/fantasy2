@@ -58,7 +58,7 @@ function isMonthAvailable($available,$m,$y){
         <div class="leaderboard-rank fr">
             <span>Peringkat Anda:</span>
             <h3><?=number_format(@$rank)?></h3>
-            <span>Tier 2</span>
+            <span>Tier <?=$tier?></span>
         </div>
     </div><!-- end .headbar -->
 
@@ -105,3 +105,19 @@ function isMonthAvailable($available,$m,$y){
         </div><!-- end .content -->
     </div><!-- end #thecontent -->
 </div><!-- end #leaderboardPage -->
+<script>
+$("select[name='period']").change(function(){
+  
+  switch($(this).val()){
+    case 'monthly':
+      document.location="<?=$this->Html->url('/leaderboard/monthly')?>";
+    break;
+    case 'overall':
+      document.location="<?=$this->Html->url('/leaderboard/overall')?>";
+    break;
+    default:
+      document.location="<?=$this->Html->url('/leaderboard')?>";
+    break;
+  }
+});
+</script>

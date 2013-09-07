@@ -3,7 +3,10 @@ App::uses('AppModel', 'Model');
 /**
  */
 class Monthly_point extends AppModel {
-
-	public $name = 'Monthly_point';
+	public $belongsTo = array(
+		'Team' => array(
+			'type'=>'INNER'
+		),
+	);
 	
 }

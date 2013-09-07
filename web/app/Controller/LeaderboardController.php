@@ -38,7 +38,27 @@ class LeaderboardController extends AppController {
 			return true;
 		}
 	}
-
+	private function getTier($myRank){
+		$ranks = $this->Point->query("SELECT MAX(rank) as total FROM points a
+									INNER JOIN teams b
+									ON a.team_id = b.id;");
+		
+		$max_rank = intval($ranks[0][0]['total']);
+		$q1 = ceil(0.25 * $max_rank);
+		$q2 = ceil(0.5 * $max_rank);
+		$q3 = ceil(0.75 * $max_rank);
+		
+		if($myRank <= $q1){
+			return 1;
+		}else if($myRank > $q1 && $myRank <= $q2){
+			return 2;
+		}else if($myRank > $q3 && $myRank <= $q4){
+			return 3;
+		}else{
+			return 4;
+		}
+		
+	}
 	public function index(){
 		$this->loadModel("Point");
 	    $this->loadModel('User');
@@ -88,11 +108,14 @@ class LeaderboardController extends AppController {
 	    												'game_id'=>$game_id)));
 	    $this->set('matchday',$matchday);
 	    $this->set('rank',$myRank['Weekly_rank']['rank']);
+
+	    $this->set('tier',$this->getTier($myRank['Weekly_rank']['rank']));
 	}
 	public function monthly(){
 		$this->loadModel("Point");
 	    $this->loadModel('User');
 	    $this->loadModel('Weekly_point');
+	    $this->loadModel('Monthly_point');
 	   
 	   	if(isset($this->request->query['m']) && isset($this->request->query['y'])){
 	   		$current_month = intval($this->request->query['m']);
@@ -117,14 +140,15 @@ class LeaderboardController extends AppController {
 
 	  	
 
-	  	$available_months = $this->Weekly_point->query("SELECT 
-	  													MONTH(matchdate) AS  bln,
-	  													YEAR(matchdate) AS thn 
-														FROM ffg.weekly_points 
-														GROUP BY thn;");
+	  	$available_months = $this->Monthly_point->query("SELECT 
+														bln,
+														thn 
+														FROM ffg.monthly_points
+														GROUP BY thn,bln;");
 
 	  	$this->set('available_months',$available_months);
 
+	  	/*
 	  	$this->paginate = array(
 	  		'fields'=>array('Weekly_point.team_id','SUM(Weekly_point.points) as points','Team.*'),
 			'conditions'=>array('MONTH(matchdate)'=>$current_month,
@@ -135,27 +159,68 @@ class LeaderboardController extends AppController {
 	            'Weekly_point.points' => 'desc'
 	        )
 	    );
-	  	$rs =  $this->paginate('Weekly_point');
+	    */
+		$this->paginate = array(
+			'conditions'=>array('bln'=>$current_month,
+	  							'thn'=>$current_year),
+	        'limit' => 100,
+	        'order' => array(
+	            'Monthly_point.points' => 'desc'
+	        )
+	    );
+	  	$rs =  $this->paginate('Monthly_point');
 	  	
 
 	  	
 	  
 	  	foreach($rs as $n=>$r){
-	    	$rs[$n]['Point'] = $rs[$n]['Weekly_point'];
-	    	$rs[$n]['Point']['points'] = $rs[$n][0]['points'];
-	    	unset($rs[$n]['Weekly_point']);
-	    	unset($rs[$n]['0']);
+	    	$rs[$n]['Point'] = $rs[$n]['Monthly_point'];
+	    	
+	    	unset($rs[$n]['Monthly_point']);
+	    	
 	    	//get manager's name
 	    	$manager = $this->User->findById($r['Team']['user_id']);
 	    	$rs[$n]['Manager'] = @$manager['User'];
 	    }
 
+	    $myRank = $this->Monthly_point->find('first',
+	    										array('conditions'=>array(	
+	    													'Monthly_point.team_id'=>$this->userDetail['Team']['id'],
+	    													'bln'=>$current_month,
+	  														'thn'=>$current_year),
+
+	    										)
+	    									);
+	    
 	    $this->set('team',$rs);
 	    $this->set('monthly',true);
 	    $this->set('current_month',intval($current_month));
 	    $this->set('current_year',intval($current_year));
-	  
+	    $this->set('rank',$myRank['Monthly_point']['rank']);
+	  	$this->set('tier',$this->getTier($myRank['Monthly_point']['rank']));
+
 	}
+	public function overall(){
+		$this->loadModel("Point");
+	    $this->loadModel('User');
+	    $this->paginate = array(
+	        'limit' => 100,
+	        'order' => array(
+	            'Point.points' => 'desc'
+	        )
+	    );
+	    $rs = $this->paginate('Point');
+	    foreach($rs as $n=>$r){
+	    	//get manager's name
+	    	$manager = $this->User->findById($r['Team']['user_id']);
+	    	$rs[$n]['Manager'] = @$manager['User'];
+	    }
+	    $this->set('team',$rs);
+	    $this->set('rank',$this->userRank);
+	    $this->set('tier',$this->getTier($this->userRank));
+	    $this->set('overall',true);
+	}
+
 	public function error(){
 		$this->render('error');
 	}

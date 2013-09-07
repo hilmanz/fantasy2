@@ -25,7 +25,6 @@ OPEN curs;
 	REPEAT
 		FETCH curs INTO a,b,c;
 		IF a IS NOT NULL THEN
-			UPDATE points SET rank = i WHERE team_id=a;
 			INSERT INTO weekly_ranks
 			(team_id,game_id,rank)
 			VALUES

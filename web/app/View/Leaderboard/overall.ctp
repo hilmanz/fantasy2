@@ -2,23 +2,10 @@
 $monthly = isset($monthly) ? "selected='selected'":"";
 $weekly = isset($weekly) ? "selected='selected'":"";
 $overall = isset($overall) ? "selected='selected'":"";
+
 ?>
 <div id="leaderboardPage">
-    <div class="headbar tr">
-      
-        <?php if($matchday>1):?>
-        <div class="fl">
-          <a href="<?=$this->Html->url('/leaderboard/?week='.($matchday-1))?>" 
-            class="button">Minggu Lalu</a>
-        </div>
-        <?php endif;?>
-        <?php if(($next_match['match']['matchday']-1) > $matchday):?>
-        <div class="fl">
-          <a href="<?=$this->Html->url('/leaderboard/?week='.($matchday+1))?>" 
-            class="button">Minggu Berikutnya</a>
-        </div>
-        <?php endif;?>
-     
+    <div class="headbar tr">  
       <div class="fr">
         <form action="<?=$this->Html->url('/leaderboard')?>" 
           method="get" enctype="application/x-www-form-urlencoded">
@@ -33,12 +20,12 @@ $overall = isset($overall) ? "selected='selected'":"";
     <div class="headbar tr">
         <div class="leaderboard-head fl">
          
-        	<h3>Papan Peringkat – Minggu ke <?=$matchday?></h3>
-            <p>Daftar urutan manajer berdasarkan poin tertinggi.<br />Diperbaharui secara mingguan. </p>
+        	<h3>Papan Peringkat Keseluruhan</h3>
+            <p>Daftar urutan manajer berdasarkan poin tertinggi secara keseluruhan.<br />Diperbaharui secara mingguan. </p>
         </div>
         <div class="leaderboard-rank fr">
             <span>Peringkat Anda:</span>
-            <h3><?=number_format($rank)?></h3>
+            <h3><?=number_format(@$rank)?></h3>
             <span>Tier <?=$tier?></span>
         </div>
     </div><!-- end .headbar -->
