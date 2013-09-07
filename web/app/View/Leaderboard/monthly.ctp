@@ -13,8 +13,9 @@ $next_month = ($current_month==12) ? 1 : $current_month + 1;
 $next_year = ($current_month==12) ? $current_year + 1 : $current_year;
 
 function isMonthAvailable($available,$m,$y){
+ 
   foreach($available as $a){
-    if($a[0]['bln'] == $m && $a[0]['thn'] == $y){
+    if($a['monthly_points']['bln'] == $m && $a['monthly_points']['thn'] == $y){
       return true;
     }
   }

@@ -52,7 +52,7 @@ class UpdaterShell extends AppShell{
     }
     private function updating_weekly_stats($team_id,$game_points){
       foreach($game_points as $weekly){
-        $sql = "INSERT INTO ffg.weekly_points
+        $sql = "INSERT INTO weekly_points
                 (team_id,game_id,matchday,matchdate,points)
                 VALUES
                 ({$team_id},'{$weekly['game_id']}',
@@ -66,7 +66,7 @@ class UpdaterShell extends AppShell{
                 }catch(Exception $e){
                   $this->out('Error : '.$e->getMessage());
                 }
-                $this->out("Updating #".$user['Team']['id']." week #".$weekly['matchday'].
+                $this->out("Updating #".$team_id." week #".$weekly['matchday'].
                                         "-> ".$weekly['total_points']);
        
       }
@@ -74,19 +74,26 @@ class UpdaterShell extends AppShell{
     private function recalculate_ranks(){
         $sql = "CALL recalculate_rank;";
         $this->Team->query($sql);
-        $rs = $this->Team->query("SELECT game_id,matchday FROM weekly_points 
-                            GROUP BY game_id ORDER BY game_id 
+        $rs = $this->Team->query("SELECT matchday FROM weekly_points 
+                            GROUP BY matchday ORDER BY matchday 
                             LIMIT 1000");
         if(is_array($rs)){
           foreach($rs as $r){
             $this->out('recalculating matchday #'.$r['weekly_points']['matchday'].' ranks');
-            $sql = "CALL recalculate_weekly_rank('{$r['weekly_points']['game_id']}');";
+            $sql = "CALL recalculate_weekly_rank('{$r['weekly_points']['matchday']}');";
             $this->Team->query($sql);
           }
         }
 
         $this->out('recalculating monthly ranks');
-        $sql = "CALL recalculate_monthly_rank();";
-        $this->Team->query($sql);
+        $months = $this->Team->query("SELECT YEAR(matchdate) AS thn,MONTH(matchdate) AS bln
+                            FROM weekly_points GROUP BY thn,bln;");
+        foreach($months as $m){
+          $mth = $m[0]['bln'];
+          $yr = $m[0]['thn'];
+          $sql = "CALL recalculate_monthly_rank({$mth},{$yr});";
+          $this->Team->query($sql);  
+        }
+        
     }
 }

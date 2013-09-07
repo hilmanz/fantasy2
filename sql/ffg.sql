@@ -119,8 +119,8 @@ CREATE TABLE `weekly_points` (
 CREATE TABLE `weekly_ranks` (
   `id` bigint(21) NOT NULL AUTO_INCREMENT,
   `team_id` bigint(21) DEFAULT NULL,
-  `game_id` varchar(32) DEFAULT NULL,
+  `matchday` int(5) DEFAULT NULL,
   `rank` int(11) DEFAULT '0' COMMENT 'the last rank before the income is calculated.',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_team_game` (`team_id`,`game_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8
+  UNIQUE KEY `unique_team_game` (`team_id`,`matchday`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;

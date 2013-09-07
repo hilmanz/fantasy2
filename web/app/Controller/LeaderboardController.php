@@ -52,7 +52,7 @@ class LeaderboardController extends AppController {
 			return 1;
 		}else if($myRank > $q1 && $myRank <= $q2){
 			return 2;
-		}else if($myRank > $q3 && $myRank <= $q4){
+		}else if($myRank > $q2 && $myRank <= $q3){
 			return 3;
 		}else{
 			return 4;
@@ -98,14 +98,16 @@ class LeaderboardController extends AppController {
 	    	$rs[$n]['Manager'] = @$manager['User'];
 
 	    }
-	    $game_id = $rs[0]['Point']['game_id'];
-
+	    
+	    
 	    $this->set('team',$rs);
+	    
 
 	    $myRank = $this->Weekly_rank->find('first',
 	    									array('conditions'=>
 	    											array('team_id'=>$this->userDetail['Team']['id'],
-	    												'game_id'=>$game_id)));
+	    												'matchday'=>$matchday)));
+	    
 	    $this->set('matchday',$matchday);
 	    $this->set('rank',$myRank['Weekly_rank']['rank']);
 
@@ -143,8 +145,9 @@ class LeaderboardController extends AppController {
 	  	$available_months = $this->Monthly_point->query("SELECT 
 														bln,
 														thn 
-														FROM ffg.monthly_points
+														FROM monthly_points
 														GROUP BY thn,bln;");
+	  	
 
 	  	$this->set('available_months',$available_months);
 
