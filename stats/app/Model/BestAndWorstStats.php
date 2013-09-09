@@ -27,7 +27,7 @@ class BestAndWorstStats extends Stats {
 				INNER JOIN master_team b
 				ON a.team_id = b.uid
 				WHERE game_id IN (".$this->arrayToSql($game_ids).")
-				GROUP BY team_id ORDER BY goals DESC LIMIT 5";
+				GROUP BY team_id ORDER BY goals DESC LIMIT 20";
 		$rs = $this->query($sql);
 		$teams = array();
 		while(sizeof($rs)>0){
@@ -49,7 +49,7 @@ class BestAndWorstStats extends Stats {
 				INNER JOIN master_team b
 				ON a.team_id = b.uid
 				WHERE game_id IN (".$this->arrayToSql($game_ids).")
-				GROUP BY team_id ORDER BY goals_conceded DESC LIMIT 5";
+				GROUP BY team_id ORDER BY goals_conceded DESC LIMIT 20";
 		$rs = $this->query($sql);
 		$teams = array();
 		while(sizeof($rs)>0){
@@ -72,7 +72,7 @@ class BestAndWorstStats extends Stats {
 				INNER JOIN master_team b
 				ON a.team_id = b.uid
 				WHERE game_id IN (".$this->arrayToSql($game_ids).")
-				GROUP BY team_id ORDER BY duels_won DESC LIMIT 5";
+				GROUP BY team_id ORDER BY duels_won DESC LIMIT 20";
 		$rs = $this->query($sql);
 		$teams = array();
 		while(sizeof($rs)>0){
@@ -95,7 +95,7 @@ class BestAndWorstStats extends Stats {
 				INNER JOIN master_team b
 				ON a.team_id = b.uid
 				WHERE game_id IN (".$this->arrayToSql($game_ids).")
-				GROUP BY team_id ORDER BY total_errors DESC LIMIT 5;";
+				GROUP BY team_id ORDER BY total_errors DESC LIMIT 20;";
 		$rs = $this->query($sql);
 		$teams = array();
 		while(sizeof($rs)>0){
@@ -119,7 +119,7 @@ class BestAndWorstStats extends Stats {
 				INNER JOIN master_team b
 				ON a.team_id = b.uid
 				WHERE game_id IN (".$this->arrayToSql($game_ids).")
-				GROUP BY a.team_id ORDER BY total_attempts DESC LIMIT 5;";
+				GROUP BY a.team_id ORDER BY total_attempts DESC LIMIT 20;";
 		$rs = $this->query($sql);
 		$teams = array();
 		while(sizeof($rs)>0){
@@ -144,7 +144,7 @@ class BestAndWorstStats extends Stats {
 				INNER JOIN master_team b
 				ON a.team_id = b.uid
 				WHERE game_id IN (".$this->arrayToSql($game_ids).")
-				GROUP BY a.team_id ORDER BY total_attempts DESC LIMIT 5;";
+				GROUP BY a.team_id ORDER BY total_attempts DESC LIMIT 20;";
 		$rs = $this->query($sql);
 		$teams = array();
 		while(sizeof($rs)>0){

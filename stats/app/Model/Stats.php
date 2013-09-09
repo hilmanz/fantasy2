@@ -160,6 +160,31 @@ class Stats extends AppModel {
 		}
 		return $game_ids;
 	}
+	public function getLastWeekMatches($competition_id,$season_id){
+		$sql = "SELECT MAX(matchday) AS latest_week 
+				FROM matchinfo 
+				WHERE 
+				competition_id='{$competition_id}'
+				AND 
+				season_id='{$season_id}'
+				AND period = 'FullTime';";
+		$matches = $this->query($sql);
+		$matchday = $matches[0][0]['latest_week'];
+		$sql = "SELECT game_id FROM matchinfo 
+				WHERE 
+				competition_id='{$competition_id}'
+				AND 
+				season_id='{$season_id}'
+				AND period = 'FullTime'
+				AND matchday = {$matchday};";
+
+		$rs = $this->query($sql);
+		while(sizeof($rs)>0){
+			$a = array_shift($rs);
+			$game_ids[] = $a['matchinfo']['game_id'];
+		}
+		return $game_ids;
+	}
 	public function arrayToSql($arr){
 		$str = "";
 		foreach($arr as $n=>$a){

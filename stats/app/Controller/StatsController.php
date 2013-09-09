@@ -32,6 +32,9 @@ class StatsController extends AppController {
 			case 3:
 				$response = $this->weekly_match_reports();
 			break;
+			case 4:
+				$response = $this->last_week_best_and_worsts_player();
+			break;
 			default:
 				$response = array('status'=>1,'data'=>'ready');
 			break;
@@ -55,7 +58,12 @@ class StatsController extends AppController {
 		$result = $this->WeeklyMatchStats->getReports($matchday);
 		return array('status'=>'1','data'=>$result);
 	}
-
+	public function last_week_best_and_worsts_player(){
+		$this->loadModel('PlayerStats');
+		$result = array('best_players'=>$this->PlayerStats->best_players(),
+					'worst_players'=>$this->PlayerStats->worst_players());
+		return array('status'=>'1','data'=>$result);	
+	}
 	private function output($status,$data){
 		$this->layout='ajax';
 		$this->set('response',array('status'=>$status,'data'=>$data));
