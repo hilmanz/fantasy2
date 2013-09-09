@@ -20,10 +20,14 @@ class StatsController extends AppController {
 	}
 	public function report($type){
 		$this->loadModel('Stats');
+		$this->loadModel('BestAndWorstStats');
 		$type = intval($type);
 		switch($type){
 			case 1:
 				$response = $this->bpl_leaderboard();
+			break;
+			case 2:
+				$response = $this->best_and_worsts_in_league();
 			break;
 			default:
 				$response = array('status'=>1,'data'=>'ready');
@@ -34,6 +38,10 @@ class StatsController extends AppController {
 	public function bpl_leaderboard(){
 
 		$result = $this->Stats->getLeaderboard();
+		return array('status'=>'1','data'=>$result);
+	}
+	public function best_and_worsts_in_league(){
+		$result = $this->BestAndWorstStats->getReports();
 		return array('status'=>'1','data'=>$result);
 	}
 	private function output($status,$data){

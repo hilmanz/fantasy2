@@ -147,4 +147,27 @@ class Stats extends AppModel {
 		}
 		return $rs;
 	}
+	public function getGameIds($competition_id,$season_id){
+		$sql = "SELECT game_id
+				FROM optadb.matchinfo 
+				WHERE competition_id = '{$competition_id}' AND season_id={$season_id}
+				AND period='FullTime' LIMIT 400";
+		$rs = $this->query($sql);
+		$game_ids = array();
+		while(sizeof($rs)>0){
+			$a = array_shift($rs);
+			$game_ids[] = $a['matchinfo']['game_id'];
+		}
+		return $game_ids;
+	}
+	public function arrayToSql($arr){
+		$str = "";
+		foreach($arr as $n=>$a){
+			if($n>0){
+				$str.=",";
+			}
+			$str.="'{$a}'";
+		}
+		return $str;
+	}
 }

@@ -66,6 +66,231 @@ class StatsUpdateShell extends AppShell{
       $this->processPlayer($game_id,$player['player_stats']['player_id'],$teamA,$teamB);
     }
 
+    //calculate team summaries
+    $this->processTeamStats($game_id,$teamA,$teamB);
+  }
+  private function processTeamStats($game_id,$team_id,$teamB){
+    $this->out('generating summaries');
+    $stats = $this->Matchinfo->query("SELECT stats_name,stats_value FROM team_stats 
+                                      WHERE game_id='{$game_id}' AND team_id='{$team_id}';");
+    $statsB = $this->Matchinfo->query("SELECT stats_name,stats_value FROM team_stats 
+                                      WHERE game_id='{$game_id}' AND team_id='{$teamB}';");
+    $team_stats = array();
+    while(sizeof($stats)>0){
+      $st = array_shift($stats);
+      $team_stats[$st['team_stats']['stats_name']] = $st['team_stats']['stats_value'];
+    }
+    $team_statsB = array();
+    while(sizeof($statsB)>0){
+      $st = array_shift($statsB);
+      $team_statsB[$st['team_stats']['stats_name']] = $st['team_stats']['stats_value'];
+    }
+    //let's get the stats one by one
+    $team['chances_created'] = $this->team_chances_created($team_stats);
+    $team['goals'] = $this->team_goals($team_stats);
+    $team['goals_conceded'] = $this->team_goals_conceded($team_stats);
+    $team['chances_conceded'] = $this->team_chances_conceded($team_stats,$team_statsB);
+    $team['attack_effeciency'] = $this->team_attack_effeciency($team_stats);
+    $team['defense_effeciency'] = $this->team_defense_effeciency($team_stats);
+    $team['ball_recovery'] = $this->getTotalValuesFromAttributes('ball_recovery',$team_stats);
+    $team['duels_won'] = $this->getTotalValuesFromAttributes('duel_won',$team_stats);
+    $team['duels_lost'] = $this->getTotalValuesFromAttributes('duel_lost',$team_stats);
+    $team['challenge_won_ratio'] = $this->team_challenge_won_ratio($team_stats);
+    $team['error_led_to_goals'] = $this->getTotalValuesFromAttributes('error_lead_to_goal',$team_stats);
+    $team['error_led_to_shots'] = $this->getTotalValuesFromAttributes('error_lead_to_shot',$team_stats);
+    $team['poor_control'] = $this->getTotalValuesFromAttributes('unsuccessful_touch',$team_stats);
+
+    $team['counter_attack_goals'] = $this->getTotalValuesFromAttributes('goal_fastbreak',$team_stats);
+    $team['counter_attack_shots'] = $this->getTotalValuesFromAttributes('att_fastbreak',$team_stats);
+    $team['counter_attacks'] = $this->getTotalValuesFromAttributes('total_fastbreak',$team_stats);
+
+    $team['counter_attack_effeciency'] = $this->team_counter_attack_effeciency($team_stats);
+
+    $team['aerial_duels_won'] = $this->getTotalValuesFromAttributes('aerial_won',$team_stats);
+    $team['headers_on_goal'] = $this->getTotalValuesFromAttributes('att_hd_goal',$team_stats);
+    $team['headed_clearance'] = $this->getTotalValuesFromAttributes('effective_head_clearance',$team_stats);
+    $team['crosses_dealt'] = $this->getTotalValuesFromAttributes('good_high_claim',$team_stats);
+    $team['aerial_effeciency'] = $this->team_aerial_effeciency($team_stats);
+    $team['fouling'] = $this->team_fouling($team_stats);
+
+    $sql = "
+    INSERT INTO master_team_summary
+    (game_id,
+    team_id,
+    chances_created,
+    goals,
+    goals_conceded,
+    chances_conceded,
+    attack_effeciency,
+    defense_effeciency,
+    ball_recovery,
+    duels_won,
+    challenge_won_ratio,
+    error_led_to_goals,
+    error_led_to_shots,
+    poor_control,
+    counter_attack_goals,
+    counter_attack_shots,
+    counter_attacks,
+    counter_attack_effeciency,
+    aerial_duels_won,
+    headers_on_goal,
+    headed_clearance,
+    crosses_dealt,
+    aerial_effenciency,
+    fouling,
+    last_update)
+    VALUES
+    ('{$game_id}','{$team_id}',
+     '{$team['chances_created']}',
+     '{$team['goals']}',
+     '{$team['goals_conceded']}',
+     '{$team['chances_conceded']}',
+     '{$team['attack_effeciency']}',
+     '{$team['defense_effeciency']}',
+     '{$team['ball_recovery']}',
+     '{$team['duels_won']}',
+     '{$team['challenge_won_ratio']}',
+     '{$team['error_led_to_goals']}',
+     '{$team['error_led_to_shots']}',
+     '{$team['poor_control']}',
+     '{$team['counter_attack_goals']}',
+     '{$team['counter_attack_shots']}',
+     '{$team['counter_attacks']}',
+     '{$team['counter_attack_effeciency']}',
+     '{$team['aerial_duels_won']}',
+     '{$team['headers_on_goal']}',
+     '{$team['headed_clearance']}',
+     '{$team['crosses_dealt']}',
+     '{$team['aerial_effeciency']}',
+     '{$team['fouling']}',
+      NOW()
+     )
+    ON DUPLICATE KEY UPDATE
+    chances_created = VALUES(chances_created),
+    goals = VALUES(goals),
+    goals_conceded = VALUES(goals_conceded),
+    chances_conceded = VALUES(chances_conceded),
+    attack_effeciency = VALUES(attack_effeciency),
+    defense_effeciency = VALUES(defense_effeciency),
+    ball_recovery = VALUES(ball_recovery),
+    duels_won = VALUES(duels_won),
+    challenge_won_ratio = VALUES(challenge_won_ratio),
+    error_led_to_goals = VALUES(error_led_to_goals),
+    error_led_to_shots = VALUES(error_led_to_shots),
+    poor_control = VALUES(poor_control),
+    counter_attack_goals = VALUES(counter_attack_goals),
+    counter_attack_shots = VALUES(counter_attack_shots),
+    counter_attacks = VALUES(counter_attacks),
+    counter_attack_effeciency = VALUES(counter_attack_effeciency),
+    aerial_duels_won = VALUES(aerial_duels_won),
+    headers_on_goal = VALUES(headers_on_goal),
+    headed_clearance = VALUES(headed_clearance),
+    crosses_dealt = VALUES(crosses_dealt),
+    fouling = VALUES(fouling),
+    aerial_effenciency = VALUES(aerial_effenciency);
+
+    ";
+
+    $this->Matchinfo->query($sql);
+
+  }
+  private function team_fouling($stats){
+    $p1 = "fk_foul_lost,dangerous_play";
+    $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
+
+    $p2 = "total_tackle";
+    $score2 = $this->getTotalValuesFromAttributes($p2,$stats);
+
+    if($score2>0){
+      return $score1 / $score2;
+    }
+    return 0;
+  }
+  private function team_aerial_effeciency($stats){
+    $p1 = "aerial_won,att_hd_goal,att_hd_target,effective_head_clearance,good_high_claim";
+    $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
+
+    $p2 = "aerial_won,aerial_lost,att_hd_total,head_clearance,total_high_claim";
+    $score2 = $this->getTotalValuesFromAttributes($p2,$stats);
+
+    if($score2>0){
+      return $score1 / $score2;
+    }
+    return 0;
+  }
+  private function team_counter_attack_effeciency($stats){
+    $p1 = "goal_fastbreak";
+    $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
+
+    $p2 = "att_fastbreak";
+    $score2 = $this->getTotalValuesFromAttributes($p2,$stats);
+
+    $p3 = "total_fastbreak";
+    $score3 = $this->getTotalValuesFromAttributes($p3,$stats);
+
+    if($score3 > 0){
+      return (($score1+$score2) / $score3);
+    }
+    return 0;
+  }
+  private function team_challenge_won_ratio($stats){
+    $p1 = "duel_won";
+    $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
+
+    $p2 = "duel_lost";
+    $score2 = $this->getTotalValuesFromAttributes($p2,$stats);
+
+    $total = $score1+$score2;
+    
+    if($total>0){
+      return ($score1 / $total);
+    }else{
+      return 0;
+    }
+   
+  }
+  private function team_attack_effeciency($stats){
+    $p1 = "accurate_fwd_zone_pass,goal_assist,goals,ontarget_scoring_att,big_chance_created,big_chance_scored,big_chance_missed,accurate_cross,accurate_through_ball,aerial_won,second_goal_assist,total_att_assist,total_attacking_pass,won_contest,penalty_won,fouled_final_third,last_man_contest,accurate_pull_back";
+    $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
+    return $score1;
+  }
+  private function team_defense_effeciency($stats){
+    $p1 = "interception_won,won_tackle,outfielder_block,effective_clearance,last_man_tackle,interceptions_in_box,offside_provoked,aerial_won,accurate_launches,ball_recovery,clearance_off_line";
+    $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
+    return $score1;
+  }
+  private function team_chances_conceded($stats,$statsB){
+    /*Chances Conceded -->
+    +Attempts Conceded inbox
+    +Attempts conceded outside the box 
+    +Attempts conceded from fastbreak 
+    +Attempts conceded from Set Pieces
+    */
+
+    $p1 = "attempts_conceded_ibox,attempts_conceded_obox";
+    $p2 = "shot_fastbreak";
+    $p3 = "att_setpiece";
+    $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
+    $score2 = $this->getTotalValuesFromAttributes($p2,$statsB);
+    $score3 = $this->getTotalValuesFromAttributes($p3,$statsB);
+    
+    return ($score1+$score2+$score3);
+  }
+  private function team_chances_created($stats){
+    $p1 = "total_scoring_att";
+    $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
+    return $score1;
+  }
+  private function team_goals($stats){
+    $p1 = "goals";
+    $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
+    return $score1;
+  }
+  private function team_goals_conceded($stats){
+    $p1 = "goals_conceded";
+    $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
+    return $score1;
   }
   private function processPlayer($game_id,$player_id,$teamA,$teamB){
      $this->out('processing player #'.$player_id);
