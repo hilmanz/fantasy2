@@ -29,6 +29,9 @@ class StatsController extends AppController {
 			case 2:
 				$response = $this->best_and_worsts_in_league();
 			break;
+			case 3:
+				$response = $this->weekly_match_reports();
+			break;
 			default:
 				$response = array('status'=>1,'data'=>'ready');
 			break;
@@ -36,7 +39,6 @@ class StatsController extends AppController {
 		$this->output($response['status'],$response['data']);
 	}
 	public function bpl_leaderboard(){
-
 		$result = $this->Stats->getLeaderboard();
 		return array('status'=>'1','data'=>$result);
 	}
@@ -44,6 +46,16 @@ class StatsController extends AppController {
 		$result = $this->BestAndWorstStats->getReports();
 		return array('status'=>'1','data'=>$result);
 	}
+	public function weekly_match_reports(){
+		$this->loadModel('WeeklyMatchStats');
+		$matchday = intval($this->request->query['matchday']);
+		if($matchday==0){
+			$matchday = 1;
+		}
+		$result = $this->WeeklyMatchStats->getReports($matchday);
+		return array('status'=>'1','data'=>$result);
+	}
+
 	private function output($status,$data){
 		$this->layout='ajax';
 		$this->set('response',array('status'=>$status,'data'=>$data));
