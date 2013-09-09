@@ -60,8 +60,7 @@ class StatsController extends AppController {
 	}
 	public function last_week_best_and_worsts_player(){
 		$this->loadModel('PlayerStats');
-		$result = array('best_players'=>$this->PlayerStats->best_players(),
-					'worst_players'=>$this->PlayerStats->worst_players());
+		$result = $this->PlayerStats->last_week_report();
 		return array('status'=>'1','data'=>$result);	
 	}
 	private function output($status,$data){

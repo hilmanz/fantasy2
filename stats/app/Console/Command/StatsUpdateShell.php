@@ -1,6 +1,6 @@
 <?php
 class StatsUpdateShell extends AppShell{
-	var $uses = array('Matchinfo','PlayerStats');
+	var $uses = array('Matchinfo');
 
 	public function main() {
        $this->dummy();
@@ -332,7 +332,7 @@ class StatsUpdateShell extends AppShell{
      $player['deadkick'] = $this->deadkick($game_id,$teamA,$player_id,$player_stats);
 
      
-     $this->PlayerStats->query(
+     $this->Matchinfo->query(
       "INSERT INTO master_player_summary
        (game_id,team_id,player_id,
         most_influence,
@@ -474,7 +474,10 @@ class StatsUpdateShell extends AppShell{
       $p2 = "total_scoring_att";
       $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
       $score2 = $this->getTotalValuesFromAttributes($p2,$stats);
-      return ($score1 - $score2);
+      if($score2>0){
+        return ($score1/$score2);
+      }
+      return 0;
   }
   function chance_created($game_id,$team_id,$player_id,$stats){
     $str = "big_chance_created,big_chance_scored,big_chance_missed,att_assist_openplay,att_assist_setplay,second_goal_assist";
