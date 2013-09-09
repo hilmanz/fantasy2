@@ -22,7 +22,8 @@ class TeamStats extends Stats {
 					'greatest_liability'=>$this->greatest_liability($team_id,$game_ids),
 					'attacking_play'=>$this->attacking_play($team_id,$game_ids,$stats),
 					'attacking_style'=>$this->attacking_style($team_id,$game_ids,$stats,$teamBStats),
-
+					'dribbling'=>$this->dribbling($team_id,$game_ids,$stats,$teamBStats),
+					'passing_style'=>$this->passing_style($team_id,$game_ids,$stats,$teamBStats)
 					);
 
 		pr($rs);
@@ -227,6 +228,84 @@ class TeamStats extends Stats {
 					  								"average"=>$goals_from_crosses_avg),
 
 					);
+	}
+
+	private function dribbling($team_id,$game_ids,$stats,$teamB){
+		return array('beating_an_opponent'=>intval(@$stats['won_contest']),
+					  'beating_last_defender'=>intval(@$stats['last_man_contest']),
+					  'fouled_in_attacking_3rd'=>intval(@$stats['fouled_final_third']),
+					);
+	}
+	private function passing_style($team_id,$game_ids,$stats,$teamB){
+		$long_ball = intval(@$stats['total_longballs']);
+		$short_passes = intval(@$stats['total_pass']) - intval(@$stats['total_longballs']);
+		$launches = intval(@$stats['total_launches']);
+		$through_balls = intval(@$stats['total_through_ball']);
+		$chipped_passes = intval(@$stats['total_chipped_pass']);
+		$forward_passes = intval(@$stats['total_fwd_zone_pass']);
+		$total_pass = $long_ball + $short_passes + $launches + $through_balls 
+						+ $chipped_passes + $forward_passes;
+		$leftside_pass = intval(@$stats['leftside_pass']);
+		$rightside_pass = intval(@$stats['rightside_pass']);
+
+		//average
+		$long_ball_avg = $long_ball / $total_pass;
+		$short_passes_avg = $short_passes / $total_pass;
+		$launches_avg = $launches / $total_pass;
+		$through_balls_avg = $through_balls / $total_pass;
+		$chipped_passes_avg = $chipped_passes / $total_pass;
+		$forward_passes_avg = $forward_passes / $total_pass;
+		
+		$leftside_pass_avg = $leftside_pass / ($leftside_pass+$rightside_pass);
+		$rightside_pass_avg = $rightside_pass / ($leftside_pass+$rightside_pass);
+
+		//accuracy
+		$long_ball_acc = intval(@$stats['accurate_long_balls']) / $long_ball;
+		$short_passes_acc = 1;
+		$launches_acc = intval(@$stats['accurate_launches']) / $launches;
+		$through_balls_acc =  intval(@$stats['accurate_through_ball']) / $through_balls;
+		$chipped_passes_acc =  intval(@$stats['accurate_chipped_pass']) / $chipped_passes;
+		$forward_passes_acc =  intval(@$stats['accurate_fwd_zone_pass']) / $forward_passes;
+
+		return array('long_ball'=>array('total'=>$long_ball,
+										 'average'=>$long_ball_avg,
+										 'accuracy'=>$long_ball_acc),
+
+					'short_passes'=>array('total'=>$short_passes,
+										 'average'=>$short_passes_avg,
+										 'accuracy'=>$short_passes_acc),
+
+
+					'launches'=>array('total'=>$launches,
+										 'average'=>$launches_avg,
+										 'accuracy'=>$launches_acc),
+
+					'through_balls'=>array('total'=>$through_balls,
+										 'average'=>$through_balls_avg,
+										 'accuracy'=>$through_balls_acc),
+
+					'chipped_passes'=>array('total'=>$chipped_passes,
+										 'average'=>$chipped_passes_avg,
+										 'accuracy'=>$chipped_passes_acc),
+
+					'forward_passes'=>array('total'=>$forward_passes,
+										 'average'=>$forward_passes_avg,
+										 'accuracy'=>$chipped_passes_acc),
+
+
+					'leftside_pass'=>array('total'=>$leftside_pass,
+										 'average'=>$leftside_pass_avg,
+										 'accuracy'=>0),
+
+					'rightside_pass'=>array('total'=>$rightside_pass,
+										 'average'=>$rightside_pass_avg,
+										 'accuracy'=>0),
+
+
+				);
+
+
+
 	}
 	/*
 	* Frequency | Efficiency | Chances | Goals | Conversion Rate | Average/Game
