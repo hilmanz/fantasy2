@@ -25,6 +25,24 @@ class PlayerStats extends Stats {
 		
 		return $rs;
 	}
+	public function cumulative_reports(){
+		$game_ids = $this->getGameIds(Configure::read('competition_id'),
+												Configure::read('season_id'));
+		
+		$rs = array('best_players'=>$this->best_players($game_ids),
+					'worst_players'=>$this->worst_players($game_ids),
+					'dangerous_passers'=>$this->lastWeekMostDangerousPassers($game_ids),
+					'best_crossers'=>$this->lastWeekBestCrossers($game_ids),
+					'sharpest_shooters'=>$this->SharpestShooters($game_ids),
+					'best_ball_winners'=>$this->BestBallWinners($game_ids),
+					'best_goalkeeper'=>$this->BestGoalKeeper($game_ids),
+					'best_shotstoppers'=>$this->BestShotStoppers($game_ids),
+					'weakest_defenders'=>$this->WeakestDefenders($game_ids),
+					'most_liable'=>$this->MostLiable($game_ids),
+					);
+		
+		return $rs;
+	}
 	public function best_players($last_match){
 		
 

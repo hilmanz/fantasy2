@@ -1,10 +1,8 @@
 <?php
-/**
-* OPTA Valde HTTP Push EndPoint Implementation
-*/
 App::uses('AppController', 'Controller');
 App::uses('Folder', 'Utility');
 App::uses('File', 'Utility');
+App::uses('Sanitize', 'Utility');
 require_once APP.DS.'Vendor'.DS.'common.php';
 class StatsController extends AppController {
 
@@ -35,6 +33,12 @@ class StatsController extends AppController {
 			case 4:
 				$response = $this->last_week_best_and_worsts_player();
 			break;
+			case 5:
+				$response = $this->team_stats_cummulative();
+			break;
+			case 7:
+				$response = $this->cumulative_best_and_worsts_player();
+			break;
 			default:
 				$response = array('status'=>1,'data'=>'ready');
 			break;
@@ -62,6 +66,22 @@ class StatsController extends AppController {
 		$this->loadModel('PlayerStats');
 		$result = $this->PlayerStats->last_week_report();
 		return array('status'=>'1','data'=>$result);	
+	}
+	public function cumulative_best_and_worsts_player(){
+		$this->loadModel('PlayerStats');
+		$result = $this->PlayerStats->cumulative_reports();
+		return array('status'=>'1','data'=>$result);	
+	}
+	public function team_stats_cummulative(){
+		$this->loadModel('TeamStats');
+		if(isset($this->request->query['team_id'])){
+			$team_id = Sanitize::clean($this->request->query['team_id']);
+			$result = $this->TeamStats->getReports($team_id);
+			return array('status'=>'1','data'=>$result);	
+		}else{
+			return array('status'=>'0');
+		}
+		
 	}
 	private function output($status,$data){
 		$this->layout='ajax';
