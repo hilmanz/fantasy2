@@ -80,6 +80,9 @@ class PagesController extends AppController {
 			case 'team':
 				$this->team();
 			break;
+			case 'matchstats':
+				$this->matchstats();
+			break;
 		}
 
 		$this->render(implode('/', $path));
@@ -94,9 +97,29 @@ class PagesController extends AppController {
 	private function team(){
 		$team_id = $this->request->query['team_id'];
 		$rs = $this->Service->request('stats/report/5?team_id='.$team_id);
-		
+
 		if($rs['status']==1){
 			$this->set('data',$rs['data']);	
 		}
+
+		//match report collection
+		$rs = $this->Service->request('stats/report/9?team_id='.$team_id);
+		if($rs['status']==1){
+			$this->set('report',$rs['data']);	
+		}		
+		$this->set('team_id',$team_id);
+	}
+	private function matchstats(){
+		$team_id = $this->request->query['team_id'];
+		$game_id = $this->request->query['game_id'];
+		
+		$rs = $this->Service->request('stats/report/8?game_id='.$game_id.'&team_id='.$team_id);
+
+		if($rs['status']==1){
+			$this->set('data',$rs['data']);	
+		}
+
+			
+		$this->set('team_id',$team_id);
 	}
 }

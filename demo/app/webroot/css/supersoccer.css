@@ -332,6 +332,11 @@ a.logout:hover{
 	float:left;
 	margin:0 10px 0 0;
 }
+.col12{
+	width:959px;
+	float:left;
+	margin:0 10px 0 0;
+}
 .col4last{
 	margin:0;
 	width:210px;

@@ -91,6 +91,8 @@
                 </div><!-- end .widget-content -->
                 
         </div><!-- end .col4 -->
-      
+      </div>
     </div><!-- end .section -->
+    
+
 </div><!-- end #fullcontent -->

@@ -10,12 +10,14 @@ class TeamStats extends Stats {
 	*/
 	public function individualMatchReport($game_id,$team_id){
 		$game_ids = array($game_id);
-
+		$allgame_ids = $this->getGameIds(Configure::read('competition_id'),
+												Configure::read('season_id'));
 
 		$stats = $this->getStats($team_id,$game_ids);
 		if(sizeof($stats)>0){
 			$teamBStats = $this->getTeamBStats($team_id,$game_ids);
 			$rs = array('team'=>$this->getTeam($team_id),
+					'match_results'=>$this->match_results_per_game($game_id,$team_id),
 					'most_influential_player'=>$this->getMostInfluencePlayer($team_id,$game_ids),
 					'top_assist'=>$this->top_assist($team_id,$game_ids),
 					'top_scorer'=>$this->top_scorer($team_id,$game_ids),
@@ -29,7 +31,8 @@ class TeamStats extends Stats {
 					'goalkeeping'=>$this->goalkeeping($team_id,$game_ids,$stats,$teamBStats),
 					'defending_strength_and_weakness'=>$this->defending_strength_and_weakness($team_id,$game_ids,$stats,$teamBStats),
 					'aerial_strength'=>$this->aerial_strength($team_id,$game_ids,$stats,$teamBStats),
-					'setplays'=>$this->setplays($team_id,$game_ids,$stats,$teamBStats)
+					'setplays'=>$this->setplays($team_id,$game_ids,$stats,$teamBStats),
+					'total_games'=>$this->team_total_games($team_id,$allgame_ids)
 					);
 
 		}else{
@@ -67,6 +70,67 @@ class TeamStats extends Stats {
 
 		
 		return $rs;
+	}
+	/**
+	*	collection of match results
+	*/
+	public function match_results($team_id){
+		$game_ids = $this->getGameIds(Configure::read('competition_id'),
+												Configure::read('season_id'));
+
+		$sql = "SELECT game_id,matchday,matchdate,
+				period,home_team,home_score,away_team,away_score,
+				b.name AS home_name,c.name AS away_name
+				FROM matchinfo a
+				INNER JOIN master_team b
+				ON a.home_team = b.uid
+				INNER JOIN master_team c
+				ON a.away_team = c.uid
+				WHERE 
+				game_id IN (".$this->arrayToSql($game_ids).")
+				AND (home_team = '{$team_id}' OR away_team = '{$team_id}')
+				AND period='FullTime'
+				LIMIT 380;";
+		$rs = $this->query($sql);
+		$matches = array();
+		while(sizeof($rs)>0){
+			$r = array_shift($rs);
+			$match = $r['a'];
+			$match['home_name'] = $r['b']['home_name'];
+			$match['away_name'] = $r['c']['away_name'];
+			$matches[] = $match;
+		}
+		
+		return $matches;
+	}
+	public function match_results_per_game($game_id,$team_id){
+		$game_ids = $this->getGameIds(Configure::read('competition_id'),
+												Configure::read('season_id'));
+
+		$sql = "SELECT game_id,matchday,matchdate,
+				period,home_team,home_score,away_team,away_score,
+				b.name AS home_name,c.name AS away_name
+				FROM matchinfo a
+				INNER JOIN master_team b
+				ON a.home_team = b.uid
+				INNER JOIN master_team c
+				ON a.away_team = c.uid
+				WHERE 
+				game_id = '{$game_id}'
+				AND (home_team = '{$team_id}' OR away_team = '{$team_id}')
+				AND period='FullTime'
+				LIMIT 380;";
+		$rs = $this->query($sql);
+		$matches = array();
+		while(sizeof($rs)>0){
+			$r = array_shift($rs);
+			$match = $r['a'];
+			$match['home_name'] = $r['b']['home_name'];
+			$match['away_name'] = $r['c']['away_name'];
+			$matches[] = $match;
+		}
+		
+		return $matches[0];
 	}
 	private function team_total_games($team_id,$game_ids){
 		$sql = "SELECT COUNT(game_id) AS total FROM matchinfo 

@@ -45,6 +45,9 @@ class StatsController extends AppController {
 			case 8:
 				$response = $this->team_stats_per_game();
 			break;
+			case 9:
+				$response = $this->team_match_results();
+			break;
 			case 10:
 				$response = $this->player_stats_per_match();
 			break;
@@ -103,6 +106,17 @@ class StatsController extends AppController {
 			return array('status'=>'0','data'=>'');
 		}
 		
+	}
+	public function team_match_results(){
+		$this->loadModel('TeamStats');
+		if(isset($this->request->query['team_id'])){
+			$team_id = Sanitize::clean($this->request->query['team_id']);
+			$game_id = Sanitize::clean($this->request->query['game_id']);
+			$result = $this->TeamStats->match_results($team_id);
+			return array('status'=>'1','data'=>$result);	
+		}else{
+			return array('status'=>'0','data'=>'');
+		}
 	}
 	public function player_stats_cummulative(){
 		$this->loadModel('PlayerStats');
