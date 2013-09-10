@@ -101,7 +101,14 @@ class PagesController extends AppController {
 		if($rs['status']==1){
 			$this->set('data',$rs['data']);	
 		}
-		
+		$rs = $this->Service->request('stats/report/2');
+		if($rs['status']==1){
+			$this->set('data2',$rs['data']);	
+		}
+		$rs = $this->Service->request('stats/report/4');
+		if($rs['status']==1){
+			$this->set('data3',$rs['data']);	
+		}
 	}
 	private function team(){
 		$team_id = $this->request->query['team_id'];
