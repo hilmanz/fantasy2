@@ -4,8 +4,41 @@ error_reporting(0);
 class TeamStats extends Stats {
 	public $useTable = false;
 	public $useDbConfig = 'opta';
+
+	/*
+	* individual match report
+	*/
+	public function individualMatchReport($game_id,$team_id){
+		$game_ids = array($game_id);
+
+
+		$stats = $this->getStats($team_id,$game_ids);
+		if(sizeof($stats)>0){
+			$teamBStats = $this->getTeamBStats($team_id,$game_ids);
+			$rs = array('team'=>$this->getTeam($team_id),
+					'most_influential_player'=>$this->getMostInfluencePlayer($team_id,$game_ids),
+					'top_assist'=>$this->top_assist($team_id,$game_ids),
+					'top_scorer'=>$this->top_scorer($team_id,$game_ids),
+					'dangerous_passer'=>$this->dangerous_passer($team_id,$game_ids),
+					'greatest_liability'=>$this->greatest_liability($team_id,$game_ids),
+					'attacking_play'=>$this->attacking_play($team_id,$game_ids,$stats),
+					'attacking_style'=>$this->attacking_style($team_id,$game_ids,$stats,$teamBStats),
+					'dribbling'=>$this->dribbling($team_id,$game_ids,$stats,$teamBStats),
+					'passing_style'=>$this->passing_style($team_id,$game_ids,$stats,$teamBStats),
+					'defending_style'=>$this->defending_style($team_id,$game_ids,$stats,$teamBStats),
+					'goalkeeping'=>$this->goalkeeping($team_id,$game_ids,$stats,$teamBStats),
+					'defending_strength_and_weakness'=>$this->defending_strength_and_weakness($team_id,$game_ids,$stats,$teamBStats),
+					'aerial_strength'=>$this->aerial_strength($team_id,$game_ids,$stats,$teamBStats),
+					'setplays'=>$this->setplays($team_id,$game_ids,$stats,$teamBStats)
+					);
+
+		}else{
+			$rs = array('team'=>$this->getTeam($team_id));
+		}
+		return $rs;
+	}
 	/**
-	* get best players across the league
+	* team stats cumulative report
 	*/
 	public function getReports($team_id){
 		$game_ids = $this->getGameIds(Configure::read('competition_id'),
@@ -682,6 +715,8 @@ class TeamStats extends Stats {
 				WHERE game_id IN (".$this->arrayToSql($game_ids).")
 				AND team_id='{$team_id}'
 				GROUP BY stats_name;";
+
+
 		$rs = $this->query($sql);
 		$stats = array();
 		while(sizeof($rs)>0){
