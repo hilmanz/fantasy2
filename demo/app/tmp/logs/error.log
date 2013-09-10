@@ -1,0 +1,93 @@
+2013-09-10 15:08:06 Error: [MissingActionException] Action PagesController::index() could not be found.
+Exception Attributes: array (
+  'controller' => 'PagesController',
+  'action' => 'index',
+)
+Request URL: /ss_demo/pages/
+Stack Trace:
+#0 /home/duf/node_workspace/fantasy/demo/lib/Cake/Routing/Dispatcher.php(187): Controller->invokeAction(Object(CakeRequest))
+#1 /home/duf/node_workspace/fantasy/demo/lib/Cake/Routing/Dispatcher.php(162): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest), Object(CakeResponse))
+#2 /home/duf/node_workspace/fantasy/demo/app/webroot/index.php(110): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#3 {main}
+2013-09-10 15:08:53 Error: [MissingActionException] Action PagesController::display,home() could not be found.
+Exception Attributes: array (
+  'controller' => 'PagesController',
+  'action' => 'display,home',
+)
+Request URL: /ss_demo/
+Stack Trace:
+#0 /home/duf/node_workspace/fantasy/demo/lib/Cake/Routing/Dispatcher.php(187): Controller->invokeAction(Object(CakeRequest))
+#1 /home/duf/node_workspace/fantasy/demo/lib/Cake/Routing/Dispatcher.php(162): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest), Object(CakeResponse))
+#2 /home/duf/node_workspace/fantasy/demo/app/webroot/index.php(110): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#3 {main}
+2013-09-10 15:08:54 Error: [MissingActionException] Action PagesController::display,home() could not be found.
+Exception Attributes: array (
+  'controller' => 'PagesController',
+  'action' => 'display,home',
+)
+Request URL: /ss_demo/
+Stack Trace:
+#0 /home/duf/node_workspace/fantasy/demo/lib/Cake/Routing/Dispatcher.php(187): Controller->invokeAction(Object(CakeRequest))
+#1 /home/duf/node_workspace/fantasy/demo/lib/Cake/Routing/Dispatcher.php(162): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest), Object(CakeResponse))
+#2 /home/duf/node_workspace/fantasy/demo/app/webroot/index.php(110): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#3 {main}
+2013-09-10 15:08:56 Error: [MissingActionException] Action PagesController::display,home() could not be found.
+Exception Attributes: array (
+  'controller' => 'PagesController',
+  'action' => 'display,home',
+)
+Request URL: /ss_demo/
+Stack Trace:
+#0 /home/duf/node_workspace/fantasy/demo/lib/Cake/Routing/Dispatcher.php(187): Controller->invokeAction(Object(CakeRequest))
+#1 /home/duf/node_workspace/fantasy/demo/lib/Cake/Routing/Dispatcher.php(162): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest), Object(CakeResponse))
+#2 /home/duf/node_workspace/fantasy/demo/app/webroot/index.php(110): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#3 {main}
+2013-09-10 15:08:57 Error: [MissingActionException] Action PagesController::display,home() could not be found.
+Exception Attributes: array (
+  'controller' => 'PagesController',
+  'action' => 'display,home',
+)
+Request URL: /ss_demo/
+Stack Trace:
+#0 /home/duf/node_workspace/fantasy/demo/lib/Cake/Routing/Dispatcher.php(187): Controller->invokeAction(Object(CakeRequest))
+#1 /home/duf/node_workspace/fantasy/demo/lib/Cake/Routing/Dispatcher.php(162): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest), Object(CakeResponse))
+#2 /home/duf/node_workspace/fantasy/demo/app/webroot/index.php(110): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#3 {main}
+2013-09-10 15:23:21 Error: [PDOException] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'curlGet' at line 1
+Request URL: /ss_demo/
+Stack Trace:
+#0 /home/duf/node_workspace/fantasy/demo/lib/Cake/Model/Datasource/DboSource.php(460): PDOStatement->execute(Array)
+#1 /home/duf/node_workspace/fantasy/demo/lib/Cake/Model/Datasource/DboSource.php(426): DboSource->_execute('curlGet', Array)
+#2 /home/duf/node_workspace/fantasy/demo/lib/Cake/Model/Datasource/DboSource.php(669): DboSource->execute('curlGet', Array, Array)
+#3 /home/duf/node_workspace/fantasy/demo/lib/Cake/Model/Datasource/DboSource.php(612): DboSource->fetchAll('curlGet', Array, Array)
+#4 /home/duf/node_workspace/fantasy/demo/lib/Cake/Model/Model.php(800): DboSource->query('curlGet', Array, Object(Service))
+#5 /home/duf/node_workspace/fantasy/demo/app/Model/Service.php(14): Model->__call('curlGet', Array)
+#6 /home/duf/node_workspace/fantasy/demo/app/Model/Service.php(14): Service->curlGet('http://localhos...', Array, NULL, 15)
+#7 /home/duf/node_workspace/fantasy/demo/app/Controller/PagesController.php(85): Service->request('stats/report/1')
+#8 /home/duf/node_workspace/fantasy/demo/app/Controller/PagesController.php(78): PagesController->home()
+#9 [internal function]: PagesController->display('home')
+#10 /home/duf/node_workspace/fantasy/demo/lib/Cake/Controller/Controller.php(486): ReflectionMethod->invokeArgs(Object(PagesController), Array)
+#11 /home/duf/node_workspace/fantasy/demo/lib/Cake/Routing/Dispatcher.php(187): Controller->invokeAction(Object(CakeRequest))
+#12 /home/duf/node_workspace/fantasy/demo/lib/Cake/Routing/Dispatcher.php(162): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest), Object(CakeResponse))
+#13 /home/duf/node_workspace/fantasy/demo/app/webroot/index.php(110): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#14 {main}
+2013-09-10 15:23:33 Error: Fatal Error (1): Call to undefined function curlGet() in [/home/duf/node_workspace/fantasy/demo/app/Model/Service.php, line 14]
+2013-09-10 15:23:33 Error: [FatalErrorException] Call to undefined function curlGet()
+Request URL: /ss_demo/
+Stack Trace:
+#0 /home/duf/node_workspace/fantasy/demo/lib/Cake/Error/ErrorHandler.php(184): ErrorHandler::handleFatalError(1, 'Call to undefin...', '/home/duf/node_...', 14)
+#1 [internal function]: ErrorHandler::handleError(1, 'Call to undefin...', '/home/duf/node_...', 14, Array)
+#2 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(927): call_user_func('ErrorHandler::h...', 1, 'Call to undefin...', '/home/duf/node_...', 14, Array)
+#3 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(900): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2013-09-10 15:23:49 Error: Fatal Error (4): syntax error, unexpected 'App' (T_STRING), expecting function (T_FUNCTION) in [/home/duf/node_workspace/fantasy/demo/app/Model/Service.php, line 11]
+2013-09-10 15:23:49 Error: [FatalErrorException] syntax error, unexpected 'App' (T_STRING), expecting function (T_FUNCTION)
+Request URL: /ss_demo/
+Stack Trace:
+#0 /home/duf/node_workspace/fantasy/demo/lib/Cake/Error/ErrorHandler.php(184): ErrorHandler::handleFatalError(4, 'syntax error, u...', '/home/duf/node_...', 11)
+#1 [internal function]: ErrorHandler::handleError(4, 'syntax error, u...', '/home/duf/node_...', 11, Array)
+#2 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(927): call_user_func('ErrorHandler::h...', 4, 'syntax error, u...', '/home/duf/node_...', 11, Array)
+#3 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(900): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}

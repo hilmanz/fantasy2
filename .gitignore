@@ -1,1 +1,3 @@
 stats/app/tmp/logs
+demo/app/tmp/logs
+demo/app/tmp/*

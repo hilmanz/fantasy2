@@ -1,0 +1,29 @@
+/*
+ANIMATION by ACIT JAZZ - 2012
+*/
+@-webkit-keyframes runningLeft {
+from {left:0; }
+to {left:-100% ; }
+}
+@-moz-keyframes runningLeft {
+from {  left:0 ;
+	}
+to {left:-100%; }
+}
+@-webkit-keyframes runningRight {
+from {left:0; }
+to {left:100% ; }
+}
+@-moz-keyframes runningRight {
+from {  left:-100% ;
+	}
+to {left:0%; }
+}
+.anim1 {
+	-webkit-animation:runningLeft 85s infinite linear;
+	-moz-animation: runningLeft 85s infinite linear;
+}
+.anim2 {
+	-webkit-animation:runningRight 85s infinite linear;
+	-moz-animation: runningRight 85s infinite linear;
+}
