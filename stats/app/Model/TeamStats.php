@@ -5,6 +5,17 @@ class TeamStats extends Stats {
 	public $useTable = false;
 	public $useDbConfig = 'opta';
 
+	public function all_team_match_report($game_id){
+		$match = $this->match_results_per_game($game_id);
+
+		$rs = array(
+				'results'=>$match,
+				'home'=>$this->individualMatchReport($game_id,$match['home_team']),
+				'away'=>$this->individualMatchReport($game_id,$match['away_team'])
+			);
+		return $rs;
+	}
+
 	/*
 	* individual match report
 	*/
@@ -17,7 +28,7 @@ class TeamStats extends Stats {
 		if(sizeof($stats)>0){
 			$teamBStats = $this->getTeamBStats($team_id,$game_ids);
 			$rs = array('team'=>$this->getTeam($team_id),
-					'match_results'=>$this->match_results_per_game($game_id,$team_id),
+					'match_results'=>$this->match_results_per_game($game_id),
 					'most_influential_player'=>$this->getMostInfluencePlayer($team_id,$game_ids),
 					'top_assist'=>$this->top_assist($team_id,$game_ids),
 					'top_scorer'=>$this->top_scorer($team_id,$game_ids),
@@ -103,7 +114,7 @@ class TeamStats extends Stats {
 		
 		return $matches;
 	}
-	public function match_results_per_game($game_id,$team_id){
+	public function match_results_per_game($game_id){
 		$game_ids = $this->getGameIds(Configure::read('competition_id'),
 												Configure::read('season_id'));
 
@@ -117,7 +128,6 @@ class TeamStats extends Stats {
 				ON a.away_team = c.uid
 				WHERE 
 				game_id = '{$game_id}'
-				AND (home_team = '{$team_id}' OR away_team = '{$team_id}')
 				AND period='FullTime'
 				LIMIT 380;";
 		$rs = $this->query($sql);
@@ -132,6 +142,7 @@ class TeamStats extends Stats {
 		
 		return $matches[0];
 	}
+	
 	private function team_total_games($team_id,$game_ids){
 		$sql = "SELECT COUNT(game_id) AS total FROM matchinfo 
 				WHERE game_id IN (".$this->arrayToSql($game_ids).") 

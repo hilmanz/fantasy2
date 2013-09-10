@@ -87,7 +87,7 @@
                             <td><?=h($rs['home_name'])?></td>
                             <td><?=h($rs['home_score'])?> - <?=h($rs['away_score'])?></td>
                             <td><?=h($rs['away_name'])?></td>
-                            <td><a href="<?=$this->Html->url('/pages/matchstats/?game_id='.$rs['game_id'].'&team_id='.$team_id)?>" class="button">View</a></td>
+                            <td><a href="<?=$this->Html->url('/pages/matchdetails/?game_id='.$rs['game_id'].'&team_id='.$team_id)?>" class="button">View</a></td>
                           </tr>
                         <?php endforeach;?>
                       </tbody>                    

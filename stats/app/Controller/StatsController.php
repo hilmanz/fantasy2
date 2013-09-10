@@ -43,9 +43,12 @@ class StatsController extends AppController {
 				$response = $this->cumulative_best_and_worsts_player();
 			break;
 			case 8:
-				$response = $this->team_stats_per_game();
+				$response = $this->individual_match_report();
 			break;
 			case 9:
+				$response = $this->team_stats_per_game();
+			break;
+			case 13:
 				$response = $this->team_match_results();
 			break;
 			case 10:
@@ -135,6 +138,17 @@ class StatsController extends AppController {
 			$player_id = Sanitize::clean($this->request->query['player_id']);
 			$game_id = Sanitize::clean($this->request->query['game_id']);
 			$result = $this->PlayerStats->individual_report_per_match($game_id,$player_id);
+			
+			return array('status'=>'1','data'=>$result);	
+		}else{
+			return array('status'=>'0','data'=>'');
+		}
+	}
+	public function individual_match_report(){
+		$this->loadModel('TeamStats');
+		if(isset($this->request->query['game_id'])){
+			$game_id = Sanitize::clean($this->request->query['game_id']);
+			$result = $this->TeamStats->all_team_match_report($game_id);
 			
 			return array('status'=>'1','data'=>$result);	
 		}else{

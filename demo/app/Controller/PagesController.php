@@ -83,6 +83,9 @@ class PagesController extends AppController {
 			case 'matchstats':
 				$this->matchstats();
 			break;
+			case 'matchdetails':
+				$this->matchdetails();
+			break;
 		}
 
 		$this->render(implode('/', $path));
@@ -103,7 +106,7 @@ class PagesController extends AppController {
 		}
 
 		//match report collection
-		$rs = $this->Service->request('stats/report/9?team_id='.$team_id);
+		$rs = $this->Service->request('stats/report/13?team_id='.$team_id);
 		if($rs['status']==1){
 			$this->set('report',$rs['data']);	
 		}		
@@ -113,13 +116,21 @@ class PagesController extends AppController {
 		$team_id = $this->request->query['team_id'];
 		$game_id = $this->request->query['game_id'];
 		
-		$rs = $this->Service->request('stats/report/8?game_id='.$game_id.'&team_id='.$team_id);
+		$rs = $this->Service->request('stats/report/9?game_id='.$game_id.'&team_id='.$team_id);
 
 		if($rs['status']==1){
 			$this->set('data',$rs['data']);	
-		}
+		}	
+		$this->set('team_id',$team_id);
+	}
+	private function matchdetails(){
+		$game_id = $this->request->query['game_id'];
+		$team_id = $this->request->query['team_id'];
+		$rs = $this->Service->request('stats/report/8?game_id='.$game_id);
 
-			
+		if($rs['status']==1){
+			$this->set('report',$rs['data']);	
+		}
 		$this->set('team_id',$team_id);
 	}
 }
