@@ -27,8 +27,8 @@
                             $stats = $d['stats'];
                         ?>
                           <tr>
-                            <td><img style="height:46px" src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$d['team_id'])?>.png"/></td>
-                            <td><?=h($d['name'])?></td>
+                            <td><a href="<?=$this->Html->url('/pages/team/?team_id='.$d['team_id'])?>"><img style="height:46px" src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$d['team_id'])?>.png"/></a></td>
+                            <td><a href="<?=$this->Html->url('/pages/team/?team_id='.$d['team_id'])?>"><?=h($d['name'])?></a></td>
                             <td class="tright">
                               <a class="red-arrow">
                                   <?=number_format($stats['games_played'])?>

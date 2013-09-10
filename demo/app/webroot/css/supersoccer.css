@@ -727,7 +727,7 @@ table h5{
 	color:#ccc;
 }
 td,th{
-	padding:7px 15px;
+	padding:7px 4px;
 	border-bottom:solid 1px #333333;
 }
 .odd td{
@@ -898,4 +898,7 @@ p.jersey{
 	display:block;
 	line-height:20px;
 	padding:0 0 0 30px;
+}
+.section{
+	float:left;
 }

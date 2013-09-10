@@ -61,11 +61,19 @@ class TeamStats extends Stats {
 					'goalkeeping'=>$this->goalkeeping($team_id,$game_ids,$stats,$teamBStats),
 					'defending_strength_and_weakness'=>$this->defending_strength_and_weakness($team_id,$game_ids,$stats,$teamBStats),
 					'aerial_strength'=>$this->aerial_strength($team_id,$game_ids,$stats,$teamBStats),
-					'setplays'=>$this->setplays($team_id,$game_ids,$stats,$teamBStats)
+					'setplays'=>$this->setplays($team_id,$game_ids,$stats,$teamBStats),
+					'total_games'=>$this->team_total_games($team_id,$game_ids)
 					);
 
-		pr($rs);
+		
 		return $rs;
+	}
+	private function team_total_games($team_id,$game_ids){
+		$sql = "SELECT COUNT(game_id) AS total FROM matchinfo 
+				WHERE game_id IN (".$this->arrayToSql($game_ids).") 
+				AND (home_team = 't1' OR away_team = 't1');";
+		$rs = $this->query($sql);
+		return $rs[0][0]['total'];
 	}
 	private function getTeam($team_id){
 		$rs = $this->query("SELECT * FROM master_team WHERE uid='{$team_id}' LIMIT 1");

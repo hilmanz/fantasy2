@@ -77,6 +77,9 @@ class PagesController extends AppController {
 			case 'home':
 				$this->home();
 			break;
+			case 'team':
+				$this->team();
+			break;
 		}
 
 		$this->render(implode('/', $path));
@@ -87,5 +90,13 @@ class PagesController extends AppController {
 			$this->set('data',$rs['data']);	
 		}
 		
+	}
+	private function team(){
+		$team_id = $this->request->query['team_id'];
+		$rs = $this->Service->request('stats/report/5?team_id='.$team_id);
+		
+		if($rs['status']==1){
+			$this->set('data',$rs['data']);	
+		}
 	}
 }

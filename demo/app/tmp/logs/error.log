@@ -91,3 +91,28 @@ Stack Trace:
 #3 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(900): App::_checkFatalError()
 #4 [internal function]: App::shutdown()
 #5 {main}
+2013-09-10 15:52:32 Error: [MissingViewException] View file "/home/duf/node_workspace/fantasy/demo/app/View/Pages/team.ctp" is missing.
+Exception Attributes: array (
+  'file' => '/home/duf/node_workspace/fantasy/demo/app/View/Pages/team.ctp',
+)
+Request URL: /ss_demo/pages/team/?team_id=t1
+Stack Trace:
+#0 /home/duf/node_workspace/fantasy/demo/lib/Cake/View/View.php(468): View->_getViewFileName('team')
+#1 /home/duf/node_workspace/fantasy/demo/lib/Cake/Controller/Controller.php(948): View->render('team', NULL)
+#2 /home/duf/node_workspace/fantasy/demo/app/Controller/PagesController.php(82): Controller->render('team')
+#3 [internal function]: PagesController->display('team')
+#4 /home/duf/node_workspace/fantasy/demo/lib/Cake/Controller/Controller.php(486): ReflectionMethod->invokeArgs(Object(PagesController), Array)
+#5 /home/duf/node_workspace/fantasy/demo/lib/Cake/Routing/Dispatcher.php(187): Controller->invokeAction(Object(CakeRequest))
+#6 /home/duf/node_workspace/fantasy/demo/lib/Cake/Routing/Dispatcher.php(162): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest), Object(CakeResponse))
+#7 /home/duf/node_workspace/fantasy/demo/app/webroot/index.php(110): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#8 {main}
+2013-09-10 18:46:02 Error: Fatal Error (1): Unsupported operand types in [/home/duf/node_workspace/fantasy/demo/app/View/Pages/team.ctp, line 271]
+2013-09-10 18:46:02 Error: [FatalErrorException] Unsupported operand types
+Request URL: /ss_demo/pages/team/?team_id=t1
+Stack Trace:
+#0 /home/duf/node_workspace/fantasy/demo/lib/Cake/Error/ErrorHandler.php(184): ErrorHandler::handleFatalError(1, 'Unsupported ope...', '/home/duf/node_...', 271)
+#1 [internal function]: ErrorHandler::handleError(1, 'Unsupported ope...', '/home/duf/node_...', 271, Array)
+#2 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(927): call_user_func('ErrorHandler::h...', 1, 'Unsupported ope...', '/home/duf/node_...', 271, Array)
+#3 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(900): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
