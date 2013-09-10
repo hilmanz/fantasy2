@@ -464,8 +464,17 @@ class PlayerStats extends Stats {
 		$game_ids = $this->getGameIds(Configure::read('competition_id'),
 												Configure::read('season_id'));
 
-		$player_stats = $this->getPlayerStats($player_id,$game_ids);
+		return $this->getPlayerStatsPerCategory($player_id,$game_ids);
+	}
+	public function individual_report_per_match($game_id,$player_id){
+		$game_ids = $this->getGameIds(Configure::read('competition_id'),
+												Configure::read('season_id'));
 
+		return $this->getPlayerStatsPerCategory($player_id,array($game_id));
+	}
+	private function getPlayerStatsPerCategory($player_id,$game_ids){
+		$player_stats = $this->getPlayerStats($player_id,$game_ids);
+		
 		//the maps
 		$map = array(
 			    'goals_and_assists'=>array(

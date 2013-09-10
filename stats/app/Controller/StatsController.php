@@ -45,6 +45,9 @@ class StatsController extends AppController {
 			case 8:
 				$response = $this->team_stats_per_game();
 			break;
+			case 10:
+				$response = $this->player_stats_per_match();
+			break;
 			default:
 				$response = array('status'=>1,'data'=>'ready');
 			break;
@@ -106,6 +109,18 @@ class StatsController extends AppController {
 		if(isset($this->request->query['player_id'])){
 			$player_id = Sanitize::clean($this->request->query['player_id']);
 			$result = $this->PlayerStats->individual_report($player_id);
+			
+			return array('status'=>'1','data'=>$result);	
+		}else{
+			return array('status'=>'0','data'=>'');
+		}
+	}
+	public function player_stats_per_match(){
+		$this->loadModel('PlayerStats');
+		if(isset($this->request->query['player_id'])&&isset($this->request->query['game_id'])){
+			$player_id = Sanitize::clean($this->request->query['player_id']);
+			$game_id = Sanitize::clean($this->request->query['game_id']);
+			$result = $this->PlayerStats->individual_report_per_match($game_id,$player_id);
 			
 			return array('status'=>'1','data'=>$result);	
 		}else{
