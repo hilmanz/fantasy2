@@ -36,7 +36,9 @@ class StatsController extends AppController {
 			case 5:
 				$response = $this->team_stats_cummulative();
 			break;
-
+			case 6:
+				$response = $this->player_stats_cummulative();
+			break;
 			case 7:
 				$response = $this->cumulative_best_and_worsts_player();
 			break;
@@ -83,7 +85,7 @@ class StatsController extends AppController {
 			$result = $this->TeamStats->getReports($team_id);
 			return array('status'=>'1','data'=>$result);	
 		}else{
-			return array('status'=>'0');
+			return array('status'=>'0','data'=>'');
 		}
 		
 	}
@@ -95,9 +97,20 @@ class StatsController extends AppController {
 			$result = $this->TeamStats->individualMatchReport($game_id,$team_id);
 			return array('status'=>'1','data'=>$result);	
 		}else{
-			return array('status'=>'0');
+			return array('status'=>'0','data'=>'');
 		}
 		
+	}
+	public function player_stats_cummulative(){
+		$this->loadModel('PlayerStats');
+		if(isset($this->request->query['player_id'])){
+			$player_id = Sanitize::clean($this->request->query['player_id']);
+			$result = $this->PlayerStats->individual_report($player_id);
+			
+			return array('status'=>'1','data'=>$result);	
+		}else{
+			return array('status'=>'0','data'=>'');
+		}
 	}
 	private function output($status,$data){
 		$this->layout='ajax';

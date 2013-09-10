@@ -460,4 +460,188 @@ class PlayerStats extends Stats {
 		}
 		return $players;
 	}
+	public function individual_report($player_id){
+		$game_ids = $this->getGameIds(Configure::read('competition_id'),
+												Configure::read('season_id'));
+
+		$player_stats = $this->getPlayerStats($player_id,$game_ids);
+
+		//the maps
+		$map = array(
+			    'goals_and_assists'=>array(
+			                            'goals'=>'goals',
+			                            'assist'=>'goal_assist',
+			                            'clear_cut_chance_created'=>'big_chance_created',
+			                            'penalty_won'=>'penalty_won',
+			                            'Assisted_A_Shot'=>'total_att_assist'
+
+			                        ),
+
+			    'shooting'=>array(
+			                    'shoot_on_target'=>'ontarget_scoring_att',
+			                    'on_target_shot_from_outside_the_box'=>'att_obox_target'
+			                ),
+
+			    'passing'=>array(
+			                'accurate_flick_on'=>'accurate_flick_on',
+			                'accurate_pass'=>'accurate_passes',
+			                'accurate_chipped_pass'=>'accurate_chipped_pass',
+			                'accurate_launches'=>'accurate_launches',
+			                'accurate_layoffs'=>'accurate_layoffs',
+			                'accurate_long_balls'=>'accurate_long_balls',
+			                'accurate_through_balls'=>'accurate_through_ball',
+			                'long_pass_to_opponents_half'=>'long_pass_own_to_opp_success',
+			                'accurate_crossing'=>'accurate_cross',
+			                'accurate_attacking_pass'=>'accurate_fwd_zone_pass',
+			                'accurate_free_kick_delivery'=>'accurate_freekick_cross',
+			                'Accurate_Crossing'=>'accurate_cross_nocorner',
+			                'Accurate_Attacking_pass'=>'total_attacking_pass',
+
+
+			            ),
+			    'defending'=>array(
+			                'Ball_recovery'=>'ball_recovery',
+			                'Duel_Won'=>'duel_won',
+			                'Aerial_Duel_Won'=>'aerial_won',
+			                'Tackle_won'=>'won_tackle',
+			                'Tackle_won_as_a_last_man'=>'last_man_contest',
+			                'Intercepted_a_pass_inside_the_box'=>'interceptions_in_box',
+			                'Effective_clearance'=>'effective_clearance',
+			                'Blocked_a_cross'=>'effective_blocked_cross',
+			                'Blocked_a_shot'=>'blocked_scoring_att',
+			                'Blocked_a_shot_from_within_6_yards_box'=>'six_yard_block',
+			                'offsides_provoked'=>'offside_provoked',
+			                'Intercepted_Passes'=>'interception_won',
+			                
+
+			        ),
+			    'dribbling'=>array(
+			        'contests_won'=>'won_contest',
+			        'Tackles_Won_Against_Last_Man'=>'last_man_tackle',
+			        'Last_man_contest'=>'last_man_contest'
+			    ),
+
+			    'goalkeeping'=>array(
+			                'Penalty_Save'=>'penalty_save',
+			                'Diving_Save'=>'dive_save',
+			                'Diving_Save_and_Caught_the_ball'=>'dive_catch',
+			                'Standing_save'=>'stand_save',
+			                'Standing_save_and_Caught_the_ball'=>'stand_catch',
+			                'Claimed_a_cross'=>'good_claim',
+			                'Claimed_a_high_cross_into_the_box'=>'good_high_claim',
+			                'Punched_the_ball_away'=>'punches',
+			                'Won_a_1v1_challenge'=>'good_one_on_one',
+			                'Smothered_an_attack'=>'gk_smother',
+			                'Successfull_Sweeps'=>'accurate_keeper_sweeper'
+			        ),
+
+			    'mistakes_and_errors'=>array(
+			        'Penalty_Conceded'=>'penalty_conceded',
+			        'Dispossessed'=>'dispossessed',
+			        'Error_that_led_to_a_goal'=>'error_lead_to_goal',
+			        'Error_that_lead_to_a_shot'=>'error_lead_to_shot',
+			        'Poor_pass'=>'poss_lost_ctrl',
+			        'Poor_touch'=>'unsuccessful_touch',
+			        'challenge_lost'=>'challenge_lost',
+			        'Cross_not_claimed'=>'cross_not_claimed',
+			        'Offsides'=>'total_offside',
+			        'Yellow_Card'=>'yellow_card',
+			        'Red_Card'=>'red_card'
+			    )
+			);
+		$main_stats_vals = array('goals_and_assists'=>0,
+                            'shooting'=>0,
+                            'defending'=>0,
+                            'passing'=>0,
+                            'dribbling'=>0,
+                            'goalkeeping'=>0,
+                            'mistakes_and_errors'=>0,
+                         );
+
+		//distribute the points accordingly
+		$goals_and_assists = $this->getStats('goals_and_assists',$map,$player_stats);
+		$shooting = $this->getStats('shooting',$map,$player_stats);
+		$passing = $this->getStats('passing',$map,$player_stats);
+		$defending = $this->getStats('defending',$map,$player_stats);
+		$dribbling = $this->getStats('dribbling',$map,$player_stats);
+		$goalkeeping = $this->getStats('goalkeeping',$map,$player_stats);
+		$mistakes_and_errors = $this->getStats('mistakes_and_errors',$map,$player_stats);
+
+		$total_points = 0;
+		foreach($goals_and_assists as $n=>$v){
+			$total_points+=intval($v);
+		}
+		foreach($shooting as $n=>$v){
+			$total_points+=intval($v);
+		}
+		foreach($passing as $n=>$v){
+			$total_points+=intval($v);
+		}
+		foreach($defending as $n=>$v){
+			$total_points+=intval($v);
+		}
+		foreach($dribbling as $n=>$v){
+			$total_points+=intval($v);
+		}
+		foreach($goalkeeping as $n=>$v){
+			$total_points+=intval($v);
+		}
+		foreach($mistakes_and_errors as $n=>$v){
+			$total_points+=intval($v);
+		}
+		return array('player'=>$this->getPlayerInfo($player_id),
+					 'goals_and_assists'=>$goals_and_assists,
+					 'shooting'=>$shooting,
+					 'passing'=>$passing,
+					 'defending'=>$defending,
+					 'dribbling'=>$dribbling,
+					 'goalkeeping'=>$goalkeeping,
+					 'mistakes_and_errors'=>$mistakes_and_errors,
+					 'total_points'=>$total_points
+					 );
+	}
+	private function getPlayerInfo($player_id){
+		$sql = "SELECT a.uid AS player_id,a.name,a.position,
+				first_name,last_name,known_name,birth_date,
+				weight,height,jersey_num,country,b.name AS team_name
+				FROM master_player a
+				INNER JOIN master_team b
+				ON a.team_id = b.uid
+				WHERE a.uid = '{$player_id}';";
+
+		$rs = $this->query($sql);
+		$player = $rs[0]['a'];
+		$player['team_name'] = $rs[0]['b']['team_name'];
+		return $player;
+	}
+	private function getStats($category,$map,$stats){
+	    $statTypes = $map[$category];
+	    $collection = array();
+	    foreach($stats as $s=>$total){
+	        foreach($statTypes as $n=>$v){
+	            if(!isset($collection[$n])){
+	                $collection[$n] = 0;
+	            }
+	            if($s == $v){
+	                $collection[$n] = $total;
+	            }
+	        }
+	    }
+	    return $collection;
+	}
+	private function getPlayerStats($player_id,$game_ids){
+		$sql = "SELECT stats_name,SUM(stats_value) AS total 
+				FROM player_stats 
+				WHERE player_id = '{$player_id}'
+				AND game_id IN (".$this->arrayToSql($game_ids).")
+				GROUP BY stats_name
+				LIMIT 1000;";
+		$rs = $this->query($sql);
+		$stats = array();
+		while(sizeof($rs)>0){
+			$st = array_shift($rs);
+			$stats[$st['player_stats']['stats_name']] = $st[0]['total'];
+		}
+		return $stats;
+	}
 }
