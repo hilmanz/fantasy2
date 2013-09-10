@@ -1,12 +1,13 @@
+
 <div id="fullcontent">
     <div>
-      <a href="<?=$this->Html->url('/')?>" class="button">Back</a>
+      <a href="<?=$this->Html->url('/pages/team/?team_id='.$team_id)?>" class="button">Back</a>
     </div>
     <div class="section">
         <div class="col12">
             <div class="widget">
                 <div class="widget-title">
-                    <h3><?=$data['team']['name']?></h3>
+                     <h3><?=$data['team']['name']?> (<?=$data['match_results']['home_name']?> vs <?=$data['match_results']['away_name']?>)</h3>
                 </div><!-- end .widget-title -->
                 <div class="widget-content">
                   <div style="text-align:center">
@@ -65,41 +66,6 @@
         <div class="col12">
             <div class="widget">
                 <div class="widget-title">
-                    <h3>Match Report</h3>
-                </div><!-- end .widget-title -->
-                <div class="widget-content">
-                  <table width="100%" border="0" cellspacing="0" cellpadding="0" class="blacktable">
-                    <thead>
-                          <tr>
-                            <th><h4>Date</h4></th>
-                            <th class="tright"><h5>Home</h5></th>
-                            <th class="tright"><h5>Score</h5></th>
-                            <th class="tright"><h5>Away</h5></th>
-                            <th class="tright"></th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                        <?php
-                          foreach($report as $rs):
-                        ?>
-                          <tr>
-                            <td><?=date("d/m/Y H:i",strtotime($rs['matchdate']))?></td>
-                            <td><?=h($rs['home_name'])?></td>
-                            <td><?=h($rs['home_score'])?> - <?=h($rs['away_score'])?></td>
-                            <td><?=h($rs['away_name'])?></td>
-                            <td><a href="<?=$this->Html->url('/pages/matchdetails/?game_id='.$rs['game_id'].'&team_id='.$team_id)?>" class="button">View</a></td>
-                          </tr>
-                        <?php endforeach;?>
-                      </tbody>                    
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="section">
-        <div class="col12">
-            <div class="widget">
-                <div class="widget-title">
                     <h3>LINEUPS</h3>
                 </div><!-- end .widget-title -->
                 <div class="widget-content">
@@ -122,7 +88,7 @@
                             <td><?=h($rs['position'])?></td>
                             <td><?=h($rs['jersey_num'])?></td>
                             <td><?=h($rs['score'])?></td>
-                            <td><a href="<?=$this->Html->url('/pages/player/?player_id='.$rs['player_id'])?>" class="button">View</a></td>
+                            <td><a href="<?=$this->Html->url('/pages/playerstats/?game_id='.$data['match_results']['game_id'].'&player_id='.$rs['player_id'])?>" class="button">View</a></td>
                           </tr>
                         <?php endforeach;?>
                       </tbody>                    

@@ -116,3 +116,12 @@ Stack Trace:
 #3 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(900): App::_checkFatalError()
 #4 [internal function]: App::shutdown()
 #5 {main}
+2013-09-10 20:46:13 Error: [MissingControllerException] Controller class TeamController could not be found.
+Exception Attributes: array (
+  'class' => 'TeamController',
+  'plugin' => NULL,
+)
+Request URL: /ss_demo/team/?team_id=t43
+Stack Trace:
+#0 /home/duf/node_workspace/fantasy/demo/app/webroot/index.php(110): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#1 {main}

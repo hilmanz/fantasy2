@@ -15,7 +15,29 @@ class TeamStats extends Stats {
 			);
 		return $rs;
 	}
+	public function get_lineups($team_id,$game_ids){
+		$sql = "SELECT 
+				b.uid AS player_id,b.name,b.position,b.first_name,b.last_name,b.known_name,
+				b.birth_date,b.country,b.jersey_num,SUM(a.stats_value) AS score
+				FROM player_stats a
+				INNER JOIN master_player b
+				ON a.player_id = b.uid
+				WHERE a.team_id='{$team_id}' 
+				AND game_id IN (".$this->arrayToSql($game_ids).")
+				GROUP BY player_id;";
+		$rs = $this->query($sql);
+		
 
+		$players = array();
+		while(sizeof($rs)>0){
+			$p = array_shift($rs);
+			$player = $p['b'];
+			$player['score'] = $p[0]['score'];
+			$players[] = $player;
+		}
+
+		return $players;
+	}
 	/*
 	* individual match report
 	*/
@@ -43,7 +65,8 @@ class TeamStats extends Stats {
 					'defending_strength_and_weakness'=>$this->defending_strength_and_weakness($team_id,$game_ids,$stats,$teamBStats),
 					'aerial_strength'=>$this->aerial_strength($team_id,$game_ids,$stats,$teamBStats),
 					'setplays'=>$this->setplays($team_id,$game_ids,$stats,$teamBStats),
-					'total_games'=>$this->team_total_games($team_id,$allgame_ids)
+					'total_games'=>$this->team_total_games($team_id,$allgame_ids),
+					'lineups'=>$this->get_lineups($team_id,$game_ids)
 					);
 
 		}else{
@@ -76,7 +99,8 @@ class TeamStats extends Stats {
 					'defending_strength_and_weakness'=>$this->defending_strength_and_weakness($team_id,$game_ids,$stats,$teamBStats),
 					'aerial_strength'=>$this->aerial_strength($team_id,$game_ids,$stats,$teamBStats),
 					'setplays'=>$this->setplays($team_id,$game_ids,$stats,$teamBStats),
-					'total_games'=>$this->team_total_games($team_id,$game_ids)
+					'total_games'=>$this->team_total_games($team_id,$game_ids),
+					'lineups'=>$this->get_lineups($team_id,$game_ids)
 					);
 
 		

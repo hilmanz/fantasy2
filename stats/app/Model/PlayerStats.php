@@ -469,7 +469,7 @@ class PlayerStats extends Stats {
 	public function individual_report_per_match($game_id,$player_id){
 		$game_ids = $this->getGameIds(Configure::read('competition_id'),
 												Configure::read('season_id'));
-
+		
 		return $this->getPlayerStatsPerCategory($player_id,array($game_id));
 	}
 	private function getPlayerStatsPerCategory($player_id,$game_ids){
@@ -611,7 +611,7 @@ class PlayerStats extends Stats {
 	}
 	private function getPlayerInfo($player_id){
 		$sql = "SELECT a.uid AS player_id,a.name,a.position,
-				first_name,last_name,known_name,birth_date,
+				first_name,last_name,known_name,birth_date,a.team_id,
 				weight,height,jersey_num,country,b.name AS team_name
 				FROM master_player a
 				INNER JOIN master_team b

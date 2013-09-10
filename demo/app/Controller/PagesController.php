@@ -86,6 +86,12 @@ class PagesController extends AppController {
 			case 'matchdetails':
 				$this->matchdetails();
 			break;
+			case 'player':
+				$this->player();
+			break;
+			case 'playerstats':
+				$this->playerstats();
+			break;
 		}
 
 		$this->render(implode('/', $path));
@@ -132,5 +138,26 @@ class PagesController extends AppController {
 			$this->set('report',$rs['data']);	
 		}
 		$this->set('team_id',$team_id);
+	}
+	private function player(){
+		
+		$player_id = $this->request->query['player_id'];
+		$rs = $this->Service->request('stats/report/6?player_id='.$player_id);
+
+		if($rs['status']==1){
+			$this->set('data',$rs['data']);	
+		}
+		$this->set('player_id',$player_id);
+	}
+	private function playerstats(){
+		$game_id = $this->request->query['game_id'];
+		$player_id = $this->request->query['player_id'];
+		$rs = $this->Service->request('stats/report/10?game_id='.$game_id.'&player_id='.$player_id);
+
+		if($rs['status']==1){
+			$this->set('data',$rs['data']);	
+		}
+		$this->set('player_id',$player_id);
+		$this->set('game_id',$game_id);
 	}
 }
