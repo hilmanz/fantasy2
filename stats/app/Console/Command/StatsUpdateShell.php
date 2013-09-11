@@ -330,7 +330,8 @@ class StatsUpdateShell extends AppShell{
      $player['best_at_crosses'] = $this->best_at_crosses($game_id,$teamA,$player_id,$player_stats);
      $player['one_v_one'] = $this->one_v_one($game_id,$teamA,$player_id,$player_stats);
      $player['deadkick'] = $this->deadkick($game_id,$teamA,$player_id,$player_stats);
-
+     $player['accurate_cross'] = $this->accurate_cross($game_id,$teamA,$player_id,$player_stats);
+     $player['total_cross'] = $this->total_cross($game_id,$teamA,$player_id,$player_stats);
      
      $this->Matchinfo->query(
       "INSERT INTO master_player_summary
@@ -357,7 +358,9 @@ class StatsUpdateShell extends AppShell{
         shot_stopping_percentage,
         best_at_crosses,
         one_v_one,
-        deadkick)
+        deadkick,
+        accurate_cross,
+        total_cross)
        VALUES
        ('{$game_id}','{$teamA}','{$player_id}',
         '{$player['most_influence']}',
@@ -382,7 +385,9 @@ class StatsUpdateShell extends AppShell{
         '{$player['shot_stopping_percentage']}',
         '{$player['best_at_crosses']}',
         '{$player['one_v_one']}',
-        '{$player['deadkick']}')
+        '{$player['deadkick']}',
+        '{$player['accurate_cross']}',
+        '{$player['total_cross']}')
         ON DUPLICATE KEY UPDATE
         most_influence = VALUES(most_influence),
         def_influence = VALUES(def_influence),
@@ -406,7 +411,9 @@ class StatsUpdateShell extends AppShell{
         shot_stopping_percentage = VALUES(shot_stopping_percentage),
         best_at_crosses = VALUES(best_at_crosses),
         one_v_one = VALUES(one_v_one),
-        deadkick = VALUES(deadkick)
+        deadkick = VALUES(deadkick),
+        accurate_cross = VALUES(accurate_cross),
+        total_cross = VALUES(total_cross)
         ;"
      );  
   }
@@ -504,6 +511,20 @@ class StatsUpdateShell extends AppShell{
       return ($score1/$score2);  
     }
   }
+  function accurate_cross($game_id,$team_id,$player_id,$stats){
+    //accurate_cross_nocorner/total_cross_nocorner
+    $p1 = "accurate_cross_nocorner";
+   
+    $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
+    return $score1;
+  }
+  function total_cross($game_id,$team_id,$player_id,$stats){
+    //accurate_cross_nocorner/total_cross_nocorner
+    $p1 = "total_cross_nocorner";
+   
+    $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
+    return $score1;
+  }
   function worst_cross_percentage($game_id,$team_id,$player_id,$stats){
     //(total_cross_nocorner-accurate_cross_nocorner)/total_cross_nocorner
     $p1 = "total_cross_nocorner";
@@ -551,7 +572,8 @@ class StatsUpdateShell extends AppShell{
   function shot_stopping_percentage($game_id,$team_id,$player_id,$stats,$teamB){
     $p1 = "saves";
     $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
-    $score2 = $this->getOtherTeamStats($game_id,$teamB,"ontarget_scoring_att");
+    $score2 = $this->getOtherTeamStats($game_id,$teamB,"total_scoring_att");
+    $this->out('#'.$game_id.'->'.$team_id.'#saves('.$score1.') vs '.$teamB.'#total_scoring_att('.$score2.')');
     $this->out('score1 / (score2) -> '.$score1.'/('.$score2.')');
     if($score2>0){
       return $score1 / $score2;

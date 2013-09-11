@@ -159,10 +159,10 @@
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
                           <td class="">
-                             <?=round($st['frequency']*100)?> %
+                             <?=round($st['frequency']*100,1)?> %
                           </td>
                           <td class="">
-                             <?=round($st['efficiency']*100)?> %
+                             <?=round($st['efficiency']*100,1)?> %
                           </td>
                           <td class="">
                              <?=$st['chances']?>
@@ -171,7 +171,7 @@
                              <?=$st['goals']?>
                           </td>
                           <td class="">
-                             <?=round($st['conversion_rate']*100)?> %
+                             <?=round($st['conversion_rate']*100,1)?> %
                           </td>
                           <td class="">
                              <?=round($st['average'],1)?>

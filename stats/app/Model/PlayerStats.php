@@ -303,7 +303,9 @@ class PlayerStats extends Stats {
 				AND best_cross_percentage > 0
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;";
-		$rs = $this->query($sql);
+
+		$rs = $this->query($sql,false);
+		
 		$players  = array();
 		while(sizeof($rs)>0){
 			$a = array_shift($rs);
@@ -313,6 +315,7 @@ class PlayerStats extends Stats {
 			$player['player_id'] = $a['a']['player_id'];
 			$players[] = $player;
 		}
+		
 		return $players;
 	}
 	public function SharpestShooters($game_ids){

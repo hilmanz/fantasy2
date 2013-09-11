@@ -73,6 +73,10 @@ class Stats extends AppModel {
 				//the most goals wins
 				if(($q['stats']['goals'] - $q['stats']['goals_conceded']) > ($p['stats']['goals'] - $p['stats']['goals_conceded'])){
 					$swap = true;
+				}else if(($q['stats']['goals'] - $q['stats']['goals_conceded']) == ($p['stats']['goals'] - $p['stats']['goals_conceded'])){
+					if($q['stats']['goals'] > $p['stats']['goals']){
+						$swap = true;
+					}
 				}
 			}
 			

@@ -10,15 +10,15 @@
                     <thead>
                           <tr>
                             <th colspan="2"><h4>Team</h4></th>
-                            <th class="tright"><h5>Games Played</h5></th>
-                            <th class="tright"><h5>Games Won</h5></th>
-                            <th class="tright"><h5>Games Drawn</h5></th>
-                            <th class="tright"><h5>Games Lost</h5></th>
-                            <th class="tright"><h5>Goals Scored</h5></th>
-                            <th class="tright"><h5>Goals Conceded</h5></th>
-                            <th class="tright"><h5>Points Earned</h5></th>
-                            <th class="tright"><h5>Top Scorer</h5></th>
-                            <th class="tright"><h5>Top Assist</h5></th>
+                            <th><h5>Games Played</h5></th>
+                            <th><h5>Games Won</h5></th>
+                            <th><h5>Games Drawn</h5></th>
+                            <th><h5>Games Lost</h5></th>
+                            <th><h5>Goals Scored</h5></th>
+                            <th><h5>Goals Conceded</h5></th>
+                            <th><h5>Points Earned</h5></th>
+                            <th><h5>Top Scorer</h5></th>
+                            <th><h5>Top Assist</h5></th>
                           </tr>
                       </thead>
                       <tbody>
@@ -29,42 +29,42 @@
                           <tr>
                             <td><a href="<?=$this->Html->url('/pages/team/?team_id='.$d['team_id'])?>"><img style="height:46px" src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$d['team_id'])?>.png"/></a></td>
                             <td><a href="<?=$this->Html->url('/pages/team/?team_id='.$d['team_id'])?>"><?=h($d['name'])?></a></td>
-                            <td class="tright">
+                            <td>
                               <a class="red-arrow">
                                   <?=number_format($stats['games_played'])?>
                               </a>
                             </td>
-                            <td class="tright">
+                            <td>
                               <a class="red-arrow">
                                   <?=number_format($stats['games_won'])?>
                               </a>
                             </td>
-                            <td class="tright">
+                            <td>
                               <a class="red-arrow">
                                   <?=number_format($stats['games_drawn'])?>
                               </a>
                             </td>
-                            <td class="tright">
+                            <td>
                               <a class="red-arrow">
                                   <?=number_format($stats['games_lost'])?>
                               </a>
                             </td>
-                            <td class="tright">
+                            <td>
                               <a class="red-arrow">
                                   <?=number_format($stats['goals'])?>
                               </a>
                             </td>
-                            <td class="tright">
+                            <td>
                               <a class="red-arrow">
                                   <?=number_format($stats['goals_conceded'])?>
                               </a>
                             </td>
-                            <td class="tright">
+                            <td>
                               <a class="red-arrow">
                                   <?=number_format($stats['points_earned'])?>
                               </a>
                             </td>
-                            <td class="tright">
+                            <td>
                               <a class="red-arrow">
                                  <?php
                                   if(is_array($stats['top_scorer'])):
@@ -74,7 +74,7 @@
                                 <?php endif;?>
                               </a>
                             </td>
-                            <td class="tright">
+                            <td>
                               <a class="red-arrow">
                                  <?php
                                   if(is_array($stats['top_scorer'])):
@@ -107,9 +107,9 @@
                     <thead>
                           <tr>
                             <th><h4>Name</h4></th>
-                            <th class="tright"><h5>Goals</h5></th>
-                            <th class="tright"><h5>Chances</h5></th>
-                            <th class="tright"><h5>Attack Effeciency</h5></th>
+                            <th><h5>Goals</h5></th>
+                            <th><h5>Chances</h5></th>
+                            <th><h5>Attack Effeciency</h5></th>
                           </tr>
                       </thead>
                       <tbody>
@@ -129,7 +129,7 @@
                              <?=$st['chances']?>
                           </td>
                           <td class="">
-                             <?=round($st['attacking_effeciency'])?>
+                             <?=round($st['attacking_effeciency'],1)?>
                           </td>
                           
                         </tr>
@@ -147,9 +147,9 @@
                     <thead>
                           <tr>
                             <th><h4>Name</h4></th>
-                            <th class="tright"><h5>Goals Conceded</h5></th>
-                            <th class="tright"><h5>Chances Conceded</h5></th>
-                            <th class="tright"><h5>Defense Effeciency</h5></th>
+                            <th><h5>Goals Conceded</h5></th>
+                            <th><h5>Chances Conceded</h5></th>
+                            <th><h5>Defense Effeciency</h5></th>
                           </tr>
                       </thead>
                       <tbody>
@@ -169,7 +169,7 @@
                              <?=$st['chances_conceded']?>
                           </td>
                           <td class="">
-                             <?=round($st['def_effeciency'])?>
+                             <?=round($st['def_effeciency'],1)?>
                           </td>
                           
                         </tr>
@@ -187,10 +187,10 @@
                     <thead>
                           <tr>
                             <th><h4>Name</h4></th>
-                            <th class="tright"><h5>Ball Recovery</h5></th>
-                            <th class="tright"><h5>Duels Won</h5></th>
-                            <th class="tright"><h5>Challenge Won Ratio</h5></th>
-                            <th class="tright"><h5>Fouling Ratio</h5></th>
+                            <th><h5>Ball Recovery</h5></th>
+                            <th><h5>Duels Won</h5></th>
+                            <th><h5>Challenge Won Ratio</h5></th>
+                            <th><h5>Fouling Ratio</h5></th>
                           </tr>
                       </thead>
                       <tbody>
@@ -210,9 +210,9 @@
                              <?=$st['duels_won']?>
                           </td>
                           <td class="">
-                             <?=round($st['challenge_won_ratio']*100)?>%
+                             <?=round($st['challenge_won_ratio']*100,1)?>%
                           </td>
-                          <td><?=round($st['fouling_ratio']*100)?>%</td>
+                          <td><?=round($st['fouling_ratio']*100,1)?>%</td>
                         </tr>
                       <?php endforeach;?>
                       </tbody>                    
@@ -230,10 +230,10 @@
                       <thead>
                             <tr>
                               <th><h4>Name</h4></th>
-                              <th class="tright"><h5>Error lead to goals</h5></th>
-                              <th class="tright"><h5>Error lead to shots</h5></th>
-                              <th class="tright"><h5>Poor Controls</h5></th>
-                              <th class="tright"><h5>Total Errors</h5></th>
+                              <th><h5>Error lead to goals</h5></th>
+                              <th><h5>Error lead to shots</h5></th>
+                              <th><h5>Poor Controls</h5></th>
+                              <th><h5>Total Errors</h5></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -253,9 +253,9 @@
                                <?=$st['error_lead_to_shots']?>
                             </td>
                             <td class="">
-                               <?=round($st['poor_controls'])?>
+                               <?=round($st['poor_controls'],1)?>
                             </td>
-                            <td><?=round($st['total_errors'])?></td>
+                            <td><?=round($st['total_errors'],1)?></td>
                           </tr>
                         <?php endforeach;?>
                         </tbody>                    
@@ -273,10 +273,10 @@
                       <thead>
                             <tr>
                               <th><h4>Name</h4></th>
-                              <th class="tright"><h5>Counter Attack Goals</h5></th>
-                              <th class="tright"><h5>Counter Attack shots</h5></th>
-                              <th class="tright"><h5>Counter Attacks</h5></th>
-                              <th class="tright"><h5>Effeciency</h5></th>
+                              <th><h5>Counter Attack Goals</h5></th>
+                              <th><h5>Counter Attack shots</h5></th>
+                              <th><h5>Counter Attacks</h5></th>
+                              <th><h5>Effeciency</h5></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -298,7 +298,7 @@
                             <td class="">
                                <?=round($st['counter_attacks'])?>
                             </td>
-                            <td><?=round($st['effeciency']*100)?>%</td>
+                            <td><?=round($st['effeciency']*100,1)?>%</td>
                           </tr>
                         <?php endforeach;?>
                         </tbody>                    
@@ -316,11 +316,11 @@
                       <thead>
                             <tr>
                               <th><h4>Name</h4></th>
-                              <th class="tright"><h5>Aerial Duels Won</h5></th>
-                              <th class="tright"><h5>Headers on Goal</h5></th>
-                              <th class="tright"><h5>Crosses Dealt</h5></th>
-                              <th class="tright"><h5>Headed Clearance</h5></th>
-                              <th class="tright"><h5>Effeciency</h5></th>
+                              <th><h5>Aerial Duels Won</h5></th>
+                              <th><h5>Headers on Goal</h5></th>
+                              <th><h5>Crosses Dealt</h5></th>
+                              <th><h5>Headed Clearance</h5></th>
+                              <th><h5>Effeciency</h5></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -345,7 +345,7 @@
                             <td class="">
                                <?=round($st['headed_clearance'])?>
                             </td>
-                            <td><?=round($st['effeciency']*100)?>%</td>
+                            <td><?=round($st['effeciency']*100,1)?>%</td>
                           </tr>
                         <?php endforeach;?>
                         </tbody>                    
@@ -370,9 +370,9 @@
                     <thead>
                           <tr>
                             <th><h4>Name</h4></th>
-                            <th class="tright"><h5>Team</h5></th>
-                            <th class="tright"><h5>Position</h5></th>
-                            <th class="tright"><h5>Score</h5></th>
+                            <th><h5>Team</h5></th>
+                            <th><h5>Position</h5></th>
+                            <th><h5>Score</h5></th>
                           </tr>
                       </thead>
                       <tbody>
@@ -409,9 +409,9 @@
                     <thead>
                           <tr>
                             <th><h4>Name</h4></th>
-                            <th class="tright"><h5>Team</h5></th>
-                            <th class="tright"><h5>Position</h5></th>
-                            <th class="tright"><h5>Score</h5></th>
+                            <th><h5>Team</h5></th>
+                            <th><h5>Position</h5></th>
+                            <th><h5>Score</h5></th>
                           </tr>
                       </thead>
                       <tbody>
@@ -448,9 +448,9 @@
                     <thead>
                           <tr>
                             <th><h4>Name</h4></th>
-                            <th class="tright"><h5>Team</h5></th>
-                            <th class="tright"><h5>Position</h5></th>
-                            <th class="tright"><h5>Score</h5></th>
+                            <th><h5>Team</h5></th>
+                            <th><h5>Position</h5></th>
+                            <th><h5>Score</h5></th>
                           </tr>
                       </thead>
                       <tbody>
@@ -488,9 +488,9 @@
                     <thead>
                           <tr>
                             <th><h4>Name</h4></th>
-                            <th class="tright"><h5>Team</h5></th>
-                            <th class="tright"><h5>Position</h5></th>
-                            <th class="tright"><h5>Score</h5></th>
+                            <th><h5>Team</h5></th>
+                            <th><h5>Position</h5></th>
+                            <th><h5>Score</h5></th>
                           </tr>
                       </thead>
                       <tbody>
@@ -528,9 +528,9 @@
                     <thead>
                           <tr>
                             <th><h4>Name</h4></th>
-                            <th class="tright"><h5>Team</h5></th>
-                            <th class="tright"><h5>Position</h5></th>
-                            <th class="tright"><h5>Score</h5></th>
+                            <th><h5>Team</h5></th>
+                            <th><h5>Position</h5></th>
+                            <th><h5>Score</h5></th>
                           </tr>
                       </thead>
                       <tbody>
@@ -567,9 +567,9 @@
                     <thead>
                           <tr>
                             <th><h4>Name</h4></th>
-                            <th class="tright"><h5>Team</h5></th>
-                            <th class="tright"><h5>Position</h5></th>
-                            <th class="tright"><h5>Score</h5></th>
+                            <th><h5>Team</h5></th>
+                            <th><h5>Position</h5></th>
+                            <th><h5>Score</h5></th>
                           </tr>
                       </thead>
                       <tbody>
@@ -606,9 +606,9 @@
                     <thead>
                           <tr>
                             <th><h4>Name</h4></th>
-                            <th class="tright"><h5>Team</h5></th>
-                            <th class="tright"><h5>Position</h5></th>
-                            <th class="tright"><h5>Score</h5></th>
+                            <th><h5>Team</h5></th>
+                            <th><h5>Position</h5></th>
+                            <th><h5>Score</h5></th>
                           </tr>
                       </thead>
                       <tbody>
@@ -645,9 +645,9 @@
                     <thead>
                           <tr>
                             <th><h4>Name</h4></th>
-                            <th class="tright"><h5>Team</h5></th>
-                            <th class="tright"><h5>Position</h5></th>
-                            <th class="tright"><h5>Score</h5></th>
+                            <th><h5>Team</h5></th>
+                            <th><h5>Position</h5></th>
+                            <th><h5>Score</h5></th>
                           </tr>
                       </thead>
                       <tbody>
@@ -666,7 +666,7 @@
                              <?=$st['position']?>
                           </td>
                           <td class="">
-                             <?=round($st['total'])?>
+                             <?=round($st['total'],1)?>
                           </td>
                           
                         </tr>
@@ -684,9 +684,9 @@
                     <thead>
                           <tr>
                             <th><h4>Name</h4></th>
-                            <th class="tright"><h5>Team</h5></th>
-                            <th class="tright"><h5>Position</h5></th>
-                            <th class="tright"><h5>Score</h5></th>
+                            <th><h5>Team</h5></th>
+                            <th><h5>Position</h5></th>
+                            <th><h5>Score</h5></th>
                           </tr>
                       </thead>
                       <tbody>
@@ -705,7 +705,7 @@
                              <?=$st['position']?>
                           </td>
                           <td class="">
-                             <?=round($st['total'])?>
+                             <?=round($st['total'],1)?>
                           </td>
                           
                         </tr>
@@ -723,9 +723,9 @@
                     <thead>
                           <tr>
                             <th><h4>Name</h4></th>
-                            <th class="tright"><h5>Team</h5></th>
-                            <th class="tright"><h5>Position</h5></th>
-                            <th class="tright"><h5>Score</h5></th>
+                            <th><h5>Team</h5></th>
+                            <th><h5>Position</h5></th>
+                            <th><h5>Score</h5></th>
                           </tr>
                       </thead>
                       <tbody>
@@ -744,7 +744,7 @@
                              <?=$st['position']?>
                           </td>
                           <td class="">
-                             <?=round($st['total'])?>
+                             <?=round($st['total'],1)?>
                           </td>
                           
                         </tr>

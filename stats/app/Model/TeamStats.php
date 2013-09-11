@@ -729,10 +729,17 @@ class TeamStats extends Stats {
 
 	}
 	private function setpieces_conversion($stats){
-		return ($stats['goals'] - $stats['goals_openplay']) / ($stats['total_scoring_att'] - $stats['att_openplay']);
+		//pr($stats['goals'].'-'.$stats['goals_openplay'].'-'.$stats['goal_fastbreak']);
+		$s = ($stats['goals'] - ($stats['goals_openplay']+$stats['goal_fastbreak'])) / ($stats['total_scoring_att'] - $stats['att_openplay']);
+		//sementara jika angkanya minus, kita set jadi 0 aja. sampai ada rumus baru.
+		if($s<0){ $s = 0;}
+		return $s;
 	}
 	private function setpieces_goals($stats){
-		return ($stats['goals'] - $stats['goals_openplay']);
+		$s = ($stats['goals'] - ($stats['goals_openplay']+$stats['goal_fastbreak']));
+		//sementara jika angkanya minus, kita set jadi 0 aja. sampai ada rumus baru.
+		if($s<0){ $s = 0;}
+		return $s;
 
 	}
 	private function setpieces_frequency($stats){
@@ -758,7 +765,7 @@ class TeamStats extends Stats {
 		return $stats['total_scoring_att'] - $stats['att_openplay'];
 	}
 	private function openplay_average_per_game($stats,$total_games){
-		$goals = $this->getTotalValuesFromAttributes('goals',$stats);
+		$goals = $this->getTotalValuesFromAttributes('goals_openplay',$stats);
 		
 		if($total_games>0){
 			return $goals / $total_games;
@@ -770,8 +777,9 @@ class TeamStats extends Stats {
 	}
 	
 	private function openplay_conversion($stats){
-		$s1 = $this->getTotalValuesFromAttributes('goals',$stats);
-		$s2 = $this->getTotalValuesFromAttributes('total_scoring_att',$stats);
+		$s1 = $this->getTotalValuesFromAttributes('goals_openplay',$stats);
+		$s2 = $this->getTotalValuesFromAttributes('att_openplay',$stats);
+
 		if($s2>0){
 			return ($s1/$s2);
 		}

@@ -105,7 +105,7 @@ class PagesController extends AppController {
 		if($rs['status']==1){
 			$this->set('data2',$rs['data']);	
 		}
-		$rs = $this->Service->request('stats/report/4');
+		$rs = $this->Service->request('stats/report/7');
 		if($rs['status']==1){
 			$this->set('data3',$rs['data']);	
 		}
