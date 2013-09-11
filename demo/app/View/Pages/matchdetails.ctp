@@ -111,7 +111,7 @@ $data = $report['home'];
                              <?=round($st['conversion_rate']*100)?> %
                           </td>
                           <td class="">
-                             <?=round($st['average']*100)?> %
+                             <?=round($st['average'],1)?> 
                           </td>
                         </tr>
                       <?php endforeach;?>
@@ -153,7 +153,7 @@ $data = $report['home'];
                              <?=round($st['average']*100)?> %
                           </td>
                           <td class="">
-                             <?=$st['total']/$data['total_games']?>
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -190,7 +190,7 @@ $data = $report['home'];
                           </td>
                          
                           <td class="">
-                             <?=$st/$data['total_games']?>
+                             <?=round($st/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -234,7 +234,7 @@ $data = $report['home'];
                              <?=round($st['accuracy']*100)?> %
                           </td>
                           <td class="">
-                             <?=$st['total']/$data['total_games']?>
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -274,7 +274,7 @@ $data = $report['home'];
                              <?=round($st['average']*100)?> %
                           </td>
                           <td class="">
-                             <?=($st['total']/$data['total_games'])?>
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -319,7 +319,7 @@ $data = $report['home'];
                              <?=round($st['average']*100)?> %
                           </td>
                           <td class="">
-                             <?=$st['total']/$data['total_games']?>
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -359,7 +359,7 @@ $data = $report['home'];
                              <?=round($st['average']*100)?> %
                           </td>
                           <td class="">
-                             <?=($st['total']/$data['total_games'])?>
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -400,7 +400,7 @@ $data = $report['home'];
                              <?=round($st['average']*100)?> %
                           </td>
                           <td class="">
-                             <?=$st['total']/$data['total_games']?>
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -444,7 +444,7 @@ $data = $report['home'];
                              <?=round($st['chance_ratio']*100)?> %
                           </td>
                           <td class="">
-                             <?=($st['total']/$data['total_games'])?>
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -576,7 +576,7 @@ $data = $report['away'];
                              <?=round($st['conversion_rate']*100)?> %
                           </td>
                           <td class="">
-                             <?=round($st['average']*100)?> %
+                             <?=round($st['average'],1)?> 
                           </td>
                         </tr>
                       <?php endforeach;?>
@@ -618,7 +618,7 @@ $data = $report['away'];
                              <?=round($st['average']*100)?> %
                           </td>
                           <td class="">
-                             <?=$st['total']/$data['total_games']?>
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -655,7 +655,7 @@ $data = $report['away'];
                           </td>
                          
                           <td class="">
-                             <?=$st/$data['total_games']?>
+                             <?=round($st/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -699,7 +699,7 @@ $data = $report['away'];
                              <?=round($st['accuracy']*100)?> %
                           </td>
                           <td class="">
-                             <?=$st['total']/$data['total_games']?>
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -739,7 +739,7 @@ $data = $report['away'];
                              <?=round($st['average']*100)?> %
                           </td>
                           <td class="">
-                             <?=($st['total']/$data['total_games'])?>
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -784,7 +784,7 @@ $data = $report['away'];
                              <?=round($st['average']*100)?> %
                           </td>
                           <td class="">
-                             <?=$st['total']/$data['total_games']?>
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -824,7 +824,7 @@ $data = $report['away'];
                              <?=round($st['average']*100)?> %
                           </td>
                           <td class="">
-                             <?=($st['total']/$data['total_games'])?>
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -865,7 +865,7 @@ $data = $report['away'];
                              <?=round($st['average']*100)?> %
                           </td>
                           <td class="">
-                             <?=$st['total']/$data['total_games']?>
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -909,7 +909,7 @@ $data = $report['away'];
                              <?=round($st['chance_ratio']*100)?> %
                           </td>
                           <td class="">
-                             <?=($st['total']/$data['total_games'])?>
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>

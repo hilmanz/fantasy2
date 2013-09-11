@@ -170,7 +170,7 @@ class TeamStats extends Stats {
 	private function team_total_games($team_id,$game_ids){
 		$sql = "SELECT COUNT(game_id) AS total FROM matchinfo 
 				WHERE game_id IN (".$this->arrayToSql($game_ids).") 
-				AND (home_team = 't1' OR away_team = 't1');";
+				AND (home_team = '{$team_id}' OR away_team = '{$team_id}');";
 		$rs = $this->query($sql);
 		return $rs[0][0]['total'];
 	}
@@ -211,7 +211,8 @@ class TeamStats extends Stats {
 				WHERE a.team_id='{$team_id}' AND stats_name='goal_assist' 
 				AND game_id IN (".$this->arrayToSql($game_ids).")
 				GROUP BY player_id LIMIT 5";
-		$rs = $this->query($sql);
+
+		$rs = $this->query($sql,false);
 		
 		$players  = array();
 		while(sizeof($rs)>0){
@@ -256,7 +257,7 @@ class TeamStats extends Stats {
 				ON b.team_id = c.uid
 				WHERE game_id IN (".$this->arrayToSql($game_ids).")
 				AND dangerous_pass > 0
-				AND a.team_id='t1'
+				AND a.team_id='{$team_id}'
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;";
 		$rs = $this->query($sql);
@@ -282,7 +283,7 @@ class TeamStats extends Stats {
 				ON b.team_id = c.uid
 				WHERE game_id IN (".$this->arrayToSql($game_ids).")
 				AND liable > 0
-				AND a.team_id='t1'
+				AND a.team_id='{$team_id}'
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;";
 		$rs = $this->query($sql);
@@ -325,9 +326,9 @@ class TeamStats extends Stats {
 
 		$chances_from_crosses = intval(@$stats['att_hd_total']);
 
-		$shots_from_ibox = intval(@$att_ibox_blocked) + intval(@$att_ibox_goal) + intval(@$att_ibox_miss) + intval(@$att_ibox_target);
+		$shots_from_ibox = intval(@$stats['att_ibox_blocked']) + intval(@$stats['att_ibox_goal']) + intval(@$stats['att_ibox_miss']) + intval(@$stats['att_ibox_target']);
 		
-		$shots_from_obox = intval(@$att_obox_blocked) + intval(@$att_obox_goal) + intval(@$att_obox_miss) + intval(@$att_obox_target);
+		$shots_from_obox = intval(@$stats['att_obox_blocked']) + intval(@$stats['att_obox_goal']) + intval(@$stats['att_obox_miss']) + intval(@$stats['att_obox_target']);
 		
 		$shots_from_ibox_avg = $shots_from_ibox / ($chances_from_crosses + $shots_from_ibox + $shots_from_obox);
 		$shots_from_obox_avg = $shots_from_obox / ($chances_from_crosses + $shots_from_ibox + $shots_from_obox);
@@ -383,8 +384,8 @@ class TeamStats extends Stats {
 					);
 	}
 	private function passing_style($team_id,$game_ids,$stats,$teamB){
-		$long_ball = intval(@$stats['total_longballs']);
-		$short_passes = intval(@$stats['total_pass']) - intval(@$stats['total_longballs']);
+		$long_ball = intval(@$stats['total_long_balls']);
+		$short_passes = intval(@$stats['total_pass']) - intval(@$stats['total_long_balls']);
 		$launches = intval(@$stats['total_launches']);
 		$through_balls = intval(@$stats['total_through_ball']);
 		$chipped_passes = intval(@$stats['total_chipped_pass']);
@@ -537,7 +538,7 @@ class TeamStats extends Stats {
 				);
 	}
 	private function defending_style($team_id,$game_ids,$stats,$teamB){
-		$recover_in_attacking_3rd = intval(@$stats['$poss_won_att_3rd']);
+		$recover_in_attacking_3rd = intval(@$stats['poss_won_att_3rd']);
 		$recover_in_midfield = intval(@$stats['poss_won_mid_3rd']);
 		$recover_in_defending_3rd = intval(@$stats['poss_won_def_3rd']);
 		$recover_in_attacking_3rd_avg = $recover_in_attacking_3rd / ($recover_in_attacking_3rd + $recover_in_midfield + $recover_in_defending_3rd);

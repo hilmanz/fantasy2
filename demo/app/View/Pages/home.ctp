@@ -377,7 +377,7 @@
                       </thead>
                       <tbody>
                         <?php
-                        foreach($data3['best_players']['overall'] as $stats=>$st):
+                        foreach(@$data3['best_players']['overall'] as $stats=>$st):
                         ?>
                         <tr>
                         

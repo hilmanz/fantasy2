@@ -12,14 +12,17 @@ class Stats extends AppModel {
 													Configure::read('competition_id'),
 													Configure::read('season_id'));
 			$stats = $this->compileMatchResults($team,$matchresult);
-			
-			$stats['top_scorer'] = $this->getTopScorer($team['team_id']);
-			$stats['top_assist'] = $this->getTopAssist($team['team_id']);
+
+			$game_ids = $this->getGameIds(Configure::read('competition_id'),
+												Configure::read('season_id'));
+
+			$stats['top_scorer'] = $this->getTopScorer($team['team_id'],$game_ids);
+			$stats['top_assist'] = $this->getTopAssist($team['team_id'],$game_ids);
 			$teams[$n]['stats'] = $stats;
 		}
 		return $this->sortTeamByPoints($teams);
 	}
-	private function getTopScorer($team_id){
+	private function getTopScorer($team_id,$game_ids){
 		$sql = "SELECT player_id,b.name,b.known_name,b.last_name,b.first_name,b.position,b.jersey_num,
 				SUM(stats_value) AS goals
 				FROM optadb.player_stats a 
@@ -27,6 +30,7 @@ class Stats extends AppModel {
 				optadb.master_player b
 				ON a.player_id = b.uid
 				WHERE a.team_id='{$team_id}' AND stats_name='goals'
+				AND a.game_id IN (".$this->arrayToSql($game_ids).")
 				GROUP BY player_id ORDER BY goals DESC LIMIT 1;";
 		$rs = $this->query($sql);
 		$player = @$rs[0]['b'];
@@ -36,7 +40,7 @@ class Stats extends AppModel {
 		return $player;
 		
 	}
-	private function getTopAssist($team_id){
+	private function getTopAssist($team_id,$game_ids){
 		$sql = "SELECT player_id,b.name,b.known_name,b.last_name,b.first_name,b.position,b.jersey_num,
 				SUM(stats_value) AS goals
 				FROM optadb.player_stats a 
@@ -44,6 +48,7 @@ class Stats extends AppModel {
 				optadb.master_player b
 				ON a.player_id = b.uid
 				WHERE a.team_id='{$team_id}' AND stats_name='goal_assist'
+				AND a.game_id IN (".$this->arrayToSql($game_ids).")
 				GROUP BY player_id ORDER BY goals DESC LIMIT 1;";
 		$rs = $this->query($sql);
 		$player = @$rs[0]['b'];
@@ -66,12 +71,8 @@ class Stats extends AppModel {
 				$swap = true;
 			}else if($q['stats']['points_earned'] == $p['stats']['points_earned']){
 				//the most goals wins
-				if($q['stats']['goals'] > $p['stats']['goals']){
+				if(($q['stats']['goals'] - $q['stats']['goals_conceded']) > ($p['stats']['goals'] - $p['stats']['goals_conceded'])){
 					$swap = true;
-				}else if($q['stats']['goals'] == $p['stats']['goals']){
-					if($q['stats']['goals_conceded'] < $p['stats']['goals_conceded']){
-						$swap = true;
-					}
 				}
 			}
 			
