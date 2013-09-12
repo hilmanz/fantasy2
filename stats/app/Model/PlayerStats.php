@@ -268,7 +268,7 @@ class PlayerStats extends Stats {
 		return $players;
 	}
 	public function lastWeekMostDangerousPassers($game_ids){
-		$sql = "SELECT player_id,SUM(chance_created) AS total,b.name,b.position,b.jersey_num,b.team_id,
+		$sql = "SELECT player_id,SUM(dangerous_pass) AS total,b.name,b.position,b.jersey_num,b.team_id,
 				c.name AS team_name
 				FROM master_player_summary a
 				INNER JOIN master_player b
@@ -276,9 +276,10 @@ class PlayerStats extends Stats {
 				INNER JOIN master_team c
 				ON b.team_id = c.uid
 				WHERE game_id IN (".$this->arrayToSql($game_ids).")
-				AND chance_created > 0
+				AND dangerous_pass > 0
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;";
+		
 		$rs = $this->query($sql);
 		$players  = array();
 		while(sizeof($rs)>0){

@@ -49,7 +49,7 @@ class BestAndWorstStats extends Stats {
 				INNER JOIN master_team b
 				ON a.team_id = b.uid
 				WHERE game_id IN (".$this->arrayToSql($game_ids).")
-				GROUP BY team_id ORDER BY goals_conceded DESC LIMIT 20";
+				GROUP BY team_id ORDER BY goals_conceded ASC LIMIT 20";
 		$rs = $this->query($sql);
 		$teams = array();
 		while(sizeof($rs)>0){

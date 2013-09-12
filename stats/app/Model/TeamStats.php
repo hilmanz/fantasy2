@@ -210,7 +210,7 @@ class TeamStats extends Stats {
 				ON a.player_id = b.uid
 				WHERE a.team_id='{$team_id}' AND stats_name='goal_assist' 
 				AND game_id IN (".$this->arrayToSql($game_ids).")
-				GROUP BY player_id LIMIT 5";
+				GROUP BY player_id ORDER BY total DESC LIMIT 5";
 
 		$rs = $this->query($sql,false);
 		
@@ -232,7 +232,7 @@ class TeamStats extends Stats {
 				ON a.player_id = b.uid
 				WHERE a.team_id='{$team_id}' AND stats_name='goals' 
 				AND game_id IN (".$this->arrayToSql($game_ids).")
-				GROUP BY player_id LIMIT 5";
+				GROUP BY player_id ORDER BY total DESC LIMIT 5";
 		$rs = $this->query($sql);
 		
 		$players  = array();
@@ -247,7 +247,7 @@ class TeamStats extends Stats {
 		return $players;
 	}
 	private function dangerous_passer($team_id,$game_ids){
-		$sql = "SELECT player_id,SUM(dangerous_pass) AS total,b.name,
+		$sql = "SELECT player_id,(SUM(dangerous_pass)/COUNT(a.id)) AS total,b.name,
 				b.position,b.jersey_num,b.team_id,
 				c.name AS team_name
 				FROM master_player_summary a
@@ -340,6 +340,8 @@ class TeamStats extends Stats {
 		$goals_from_shot_ibox_avg = $goals_from_shot_ibox / ($goals_from_shot_ibox+$goals_from_shot_obox+$goals_from_crosses);
 		$goals_from_shot_obox_avg = $goals_from_shot_obox / ($goals_from_shot_ibox+$goals_from_shot_obox+$goals_from_crosses);
 		$goals_from_crosses_avg = $goals_from_crosses / ($goals_from_shot_ibox+$goals_from_shot_obox+$goals_from_crosses);
+
+		
 		return array('deep_cross'=>array('total'=>$deep_cross,
 										 'average'=>$deep_cross_avg),
 					  'cross_from_18yd'=>array('total'=>$cross_from_18yd,
@@ -360,15 +362,15 @@ class TeamStats extends Stats {
 					  'chances_from_crosses'=>array("total"=>$chances_from_crosses,
 					  								"average"=>$chances_from_crosses_avg),
 
-					  'shots_from_ibox'=>array("total"=>$shots_from_ibox,
+					  'shots_from_inside_the_box'=>array("total"=>$shots_from_ibox,
 					  								"average"=>$shots_from_ibox_avg),
-					  'shots_from_obox'=>array("total"=>$shots_from_obox,
+					  'shots_from_outside_the_box'=>array("total"=>$shots_from_obox,
 					  								"average"=>$shots_from_obox_avg),
 
-					   'goals_from_shot_ibox'=>array("total"=>$goals_from_shot_ibox,
+					   'goals_from_shot_inside_the_box'=>array("total"=>$goals_from_shot_ibox,
 					  								"average"=>$goals_from_shot_ibox_avg),
 
-					   'goals_from_shot_obox'=>array("total"=>$goals_from_shot_obox,
+					   'goals_from_shot_outside_the_box'=>array("total"=>$goals_from_shot_obox,
 					  								"average"=>$goals_from_shot_obox_avg),
 
 					   'goals_from_crosses'=>array("total"=>$goals_from_crosses,
@@ -409,7 +411,7 @@ class TeamStats extends Stats {
 		//accuracy
 
 		$long_ball_acc = ($long_ball > 0) ? intval(@$stats['accurate_long_balls']) / $long_ball : 0;
-		$short_passes_acc = 1;
+		$short_passes_acc = 0;
 		$launches_acc = intval(@$stats['accurate_launches']) / $launches;
 		$through_balls_acc =  intval(@$stats['accurate_through_ball']) / $through_balls;
 		$chipped_passes_acc =  intval(@$stats['accurate_chipped_pass']) / $chipped_passes;
@@ -508,8 +510,10 @@ class TeamStats extends Stats {
 		$flick_ons = intval(@$stats['accurate_flick_on']);
 		$gk_highclaims = intval(@$stats['good_high_claim']);
 		$gk_crosses_not_claimed = intval(@$stats['cross_not_claimed']);
+		
 
 		$aerial_duels_won_avg = intval(@$stats['aerial_won']) / (intval(@$stats['aerial_won']) + intval(@$stats['aerial_lost']));
+
 		$header_at_goals_avg = intval(@$stats['att_hd_target']) / intval(@$stats['att_hd_total']);
 		$effective_clearance_avg = intval(@$stats['effective_head_clearance']) / intval(@$stats['head_clearance']);
 		$flick_ons_avg = intval(@$stats['accurate_flick_on']) / intval(@$stats['total_flick_on']);
@@ -551,7 +555,7 @@ class TeamStats extends Stats {
 										 'average'=>$recover_in_attacking_3rd_avg),
 					 'recover_in_midfield'=>array('total'=>$recover_in_midfield,
 										 'average'=>$recover_in_midfield_avg),
-					 'recover_in_defending_3rd'=>array('total'=>$recover_in_defending_3rd,
+					 'recove_rin_defending_3rd'=>array('total'=>$recover_in_defending_3rd,
 										 'average'=>$recover_in_defending_3rd_avg)
 				);
 
@@ -570,7 +574,7 @@ class TeamStats extends Stats {
 		$shot_saved_avg = intval(@$stats['saves']) /  intval(@$stats['ontarget_scoring_att']);
 		$one_on_one_avg = (intval(@$stats['total_one_on_one']) > 0 ) ? intval(@$stats['good_one_on_one']) /  intval(@$stats['total_one_on_one']) : 0;
 		$keeper_sweeper_avg = intval(@$stats['accurate_keeper_sweeper']) /  intval(@$stats['total_keeper_sweeper']);
-		$gk_smother_avg = 1;
+		$gk_smother_avg = 0;
 		$gk_highclaims_avg = (intval(@$stats['total_high_claim']) > 0) ? intval(@$stats['good_high_claim']) /  intval(@$stats['total_high_claim']) : 0;
 		$gk_crosses_not_claimed_avg = (intval(@$stats['total_claim']) > 0) ? intval(@$stats['cross_not_claimed']) /  intval(@$stats['total_claim']) : 0;
 
@@ -720,8 +724,9 @@ class TeamStats extends Stats {
 
 	}
 	private function counter_frequency($stats){
-		return (intval(@$stats['goal_fastbreak']) + intval(@$stats['shot_fastbreak']) +intval(@$stats['att_fastbreak']))/ ((intval(@$stats['goals_openplay']) + intval(@$stats['att_openplay'])) + ((intval(@$stats['goals']) - intval(@$stats['goals_openplay'])) +(intval(@$stats['total_scoring_att']) - intval(@$stats['att_openplay'])) )+(intval(@$stats['goal_fastbreak']) + intval(@$stats['shot_fastbreak']) +intval(@$stats['att_fastbreak'])));
-
+		return intval(@$stats['total_fastbreak']);
+		//return (intval(@$stats['goal_fastbreak']) + intval(@$stats['shot_fastbreak']) +intval(@$stats['att_fastbreak']))/ ((intval(@$stats['goals_openplay']) + intval(@$stats['att_openplay'])) + ((intval(@$stats['goals']) - intval(@$stats['goals_openplay'])) +(intval(@$stats['total_scoring_att']) - intval(@$stats['att_openplay'])) )+(intval(@$stats['goal_fastbreak']) + intval(@$stats['shot_fastbreak']) +intval(@$stats['att_fastbreak'])));
+		//return (intval(@$stats['goal_fastbreak']) + intval(@$stats['shot_fastbreak']) +intval(@$stats['att_fastbreak']));
 	}
 	private function setpieces_average_per_game($stats,$total_games){
 		$chances = $this->setpieces_chances($stats);
@@ -744,8 +749,10 @@ class TeamStats extends Stats {
 	}
 	private function setpieces_frequency($stats){
 		//((goals - goals_openplay) +(total_scoring_att - att_openplay) / ((goals_openplay + att_openplay) + ((goals - goals_openplay) +(total_scoring_att - att_openplay) +(goal_fastbreak + shot_fastbreak +att_fastbreak))
+		
 		$a = $this->getStatsValue('goals',$stats) - $this->getStatsValue('goals_openplay',$stats);
 		$b = $this->getStatsValue('total_scoring_att',$stats) - $this->getStatsValue('att_openplay',$stats);
+		/*
 		$c = $this->getTotalValuesFromAttributes('goals_openplay,att_openplay',$stats);
 		$d = $this->getStatsValue('goals',$stats) - $this->getStatsValue('goals_openplay',$stats);
 		$e = $this->getStatsValue('total_scoring_att',$stats) - $this->getStatsValue('att_openplay',$stats);
@@ -755,6 +762,9 @@ class TeamStats extends Stats {
 			return ($a+$b) / $n;
 		}
 		return 0;
+		*/
+		return ($a+$b);
+		
 	}
 	private function setpieces_efficiency($stats){
 		//((goals - goals_openplay) +(total_scoring_att - att_openplay)) / (goals + total_scoring_att)
@@ -786,6 +796,7 @@ class TeamStats extends Stats {
 		return 0;
 	}
 	private function openplay_frequency($stats){
+		/*
 		$s1 = $this->getTotalValuesFromAttributes('goals_openplay,att_openplay',$stats);
 		$goals = $this->getTotalValuesFromAttributes('goals',$stats);
 		$goals_openplay = $this->getTotalValuesFromAttributes('goals_openplay',$stats);
@@ -794,6 +805,8 @@ class TeamStats extends Stats {
 		$s2 = $this->getTotalValuesFromAttributes('goal_fastbreak,shot_fastbreak,att_fastbreak',$stats);
 		$total = ($s1) / ($s1+ ($goals - $goals_openplay) + ($total_scoring_att - $att_openplay) + $s2);
 		return $total;
+		*/
+		return intval(@$stats['att_openplay']);
 	}
 	private function openplay_efficiency($stats){
 		$s1 = $this->getTotalValuesFromAttributes('goals_openplay,att_openplay',$stats);

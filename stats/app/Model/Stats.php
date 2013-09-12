@@ -24,14 +24,14 @@ class Stats extends AppModel {
 	}
 	private function getTopScorer($team_id,$game_ids){
 		$sql = "SELECT player_id,b.name,b.known_name,b.last_name,b.first_name,b.position,b.jersey_num,
-				SUM(stats_value) AS goals
+				SUM(stats_value) AS total
 				FROM optadb.player_stats a 
 				INNER JOIN 
 				optadb.master_player b
 				ON a.player_id = b.uid
 				WHERE a.team_id='{$team_id}' AND stats_name='goals'
 				AND a.game_id IN (".$this->arrayToSql($game_ids).")
-				GROUP BY player_id ORDER BY goals DESC LIMIT 1;";
+				GROUP BY player_id ORDER BY total DESC LIMIT 1;";
 		$rs = $this->query($sql);
 		$player = @$rs[0]['b'];
 		$player['player_id'] = @$rs[0]['a']['player_id'];
@@ -42,14 +42,15 @@ class Stats extends AppModel {
 	}
 	private function getTopAssist($team_id,$game_ids){
 		$sql = "SELECT player_id,b.name,b.known_name,b.last_name,b.first_name,b.position,b.jersey_num,
-				SUM(stats_value) AS goals
+				SUM(stats_value) AS total
 				FROM optadb.player_stats a 
 				INNER JOIN 
 				optadb.master_player b
 				ON a.player_id = b.uid
 				WHERE a.team_id='{$team_id}' AND stats_name='goal_assist'
 				AND a.game_id IN (".$this->arrayToSql($game_ids).")
-				GROUP BY player_id ORDER BY goals DESC LIMIT 1;";
+				GROUP BY player_id ORDER BY total DESC LIMIT 1;";
+
 		$rs = $this->query($sql);
 		$player = @$rs[0]['b'];
 		$player['player_id'] = @$rs[0]['a']['player_id'];

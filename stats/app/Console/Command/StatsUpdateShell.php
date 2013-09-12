@@ -3,7 +3,7 @@ class StatsUpdateShell extends AppShell{
 	var $uses = array('Matchinfo');
 
 	public function main() {
-       $this->dummy();
+       $this->dummy(); //disable these on production
        $this->process_queue();
   }
   private function process_queue(){
@@ -65,16 +65,27 @@ class StatsUpdateShell extends AppShell{
     foreach($players as $player){
       $this->processPlayer($game_id,$player['player_stats']['player_id'],$teamA,$teamB);
     }
-
+    //merge the accumulative stats from player into team stats
+    $this->mergePlayerStatsToTeamStats($game_id,$teamA);
     //calculate team summaries
     $this->processTeamStats($game_id,$teamA,$teamB);
+  }
+  private function mergePlayerStatsToTeamStats($game_id,$team_id){
+    $this->out('merge player stats into team stats');
+    $sql = "INSERT IGNORE INTO team_stats
+            (game_id,team_id,stats_name,stats_value)
+            SELECT game_id,team_id,stats_name,SUM(stats_value) AS stats_value
+            FROM player_stats WHERE game_id='{$game_id}' AND team_id='{$team_id}' 
+            GROUP BY stats_name";
+    $rs = $this->Matchinfo->query($sql,false);
+    $this->out($rs);
   }
   private function processTeamStats($game_id,$team_id,$teamB){
     $this->out('generating summaries');
     $stats = $this->Matchinfo->query("SELECT stats_name,stats_value FROM team_stats 
-                                      WHERE game_id='{$game_id}' AND team_id='{$team_id}';");
+                                      WHERE game_id='{$game_id}' AND team_id='{$team_id}';",false);
     $statsB = $this->Matchinfo->query("SELECT stats_name,stats_value FROM team_stats 
-                                      WHERE game_id='{$game_id}' AND team_id='{$teamB}';");
+                                      WHERE game_id='{$game_id}' AND team_id='{$teamB}';",false);
     $team_stats = array();
     while(sizeof($stats)>0){
       $st = array_shift($stats);
