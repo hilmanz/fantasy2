@@ -67,16 +67,248 @@ class StatsUpdateShell extends AppShell{
     }
     //merge the accumulative stats from player into team stats
     $this->mergePlayerStatsToTeamStats($game_id,$teamA);
+    //add def_goals,mid_goals, and fw_goals
+    $this->mergeGoalGroups($game_id,$teamA);
     //calculate team summaries
     $this->processTeamStats($game_id,$teamA,$teamB);
+  }
+  private function mergeGoalGroups($game_id,$team_id){
+    $this->out('merge goals');
+    $sql = "
+            INSERT INTO team_stats
+            (game_id,team_id,stats_name,stats_value)
+            SELECT game_id,a.team_id,'forward_goals' AS stats_name,SUM(stats_value) AS stats_value 
+            FROM player_stats a 
+            INNER JOIN master_player b 
+            ON a.player_id = b.uid
+            WHERE game_id='{$game_id}' 
+            AND a.team_id='{$team_id}' 
+            AND stats_name='goals' 
+            AND b.position = 'Forward'
+            GROUP BY stats_name
+            ON DUPLICATE KEY UPDATE
+            stats_value = VALUES(stats_value)";
+    $this->Matchinfo->query($sql,false);
+
+    $sql = "
+            INSERT INTO team_stats
+            (game_id,team_id,stats_name,stats_value)
+            SELECT game_id,a.team_id,'midfielder_goals' AS stats_name,SUM(stats_value) AS stats_value 
+            FROM player_stats a 
+            INNER JOIN master_player b 
+            ON a.player_id = b.uid
+            WHERE game_id='{$game_id}' 
+            AND a.team_id='{$team_id}' 
+            AND stats_name='goals' 
+            AND b.position = 'Midfielder'
+            GROUP BY stats_name
+            ON DUPLICATE KEY UPDATE
+            stats_value = VALUES(stats_value)";
+    $this->Matchinfo->query($sql);
+
+
+    $sql = "
+            INSERT INTO team_stats
+            (game_id,team_id,stats_name,stats_value)
+            SELECT game_id,a.team_id,'defender_goals' AS stats_name,SUM(stats_value) AS stats_value 
+            FROM player_stats a 
+            INNER JOIN master_player b 
+            ON a.player_id = b.uid
+            WHERE game_id='{$game_id}' 
+            AND a.team_id='{$team_id}' 
+            AND stats_name='goals' 
+            AND b.position = 'Defender'
+            GROUP BY stats_name
+            ON DUPLICATE KEY UPDATE
+            stats_value = VALUES(stats_value)";
+
+    $this->Matchinfo->query($sql);
+
+     $sql = "
+            INSERT INTO team_stats
+            (game_id,team_id,stats_name,stats_value)
+            SELECT game_id,a.team_id,'gk_goals' AS stats_name,SUM(stats_value) AS stats_value 
+            FROM player_stats a 
+            INNER JOIN master_player b 
+            ON a.player_id = b.uid
+            WHERE game_id='{$game_id}' 
+            AND a.team_id='{$team_id}' 
+            AND stats_name='goals' 
+            AND b.position = 'Goalkeeper'
+            GROUP BY stats_name
+            ON DUPLICATE KEY UPDATE
+            stats_value = VALUES(stats_value)";
+            
+    $this->Matchinfo->query($sql);
   }
   private function mergePlayerStatsToTeamStats($game_id,$team_id){
     $this->out('merge player stats into team stats');
     $sql = "INSERT IGNORE INTO team_stats
             (game_id,team_id,stats_name,stats_value)
             SELECT game_id,team_id,stats_name,SUM(stats_value) AS stats_value
-            FROM player_stats WHERE game_id='{$game_id}' AND team_id='{$team_id}' 
+            FROM player_stats WHERE game_id='{$game_id}' AND team_id='{$team_id}'
+            AND stats_name IN (
+              'accurate_chipped_pass',
+              'accurate_cross',
+              'accurate_cross_nocorner',
+              'accurate_flick_on',
+              'accurate_freekick_cross',
+              'accurate_fwd_zone_pass',
+              'accurate_keeper_sweeper',
+              'accurate_launches',
+              'accurate_layoffs',
+              'accurate_long_balls',
+              'accurate_pass',
+              'accurate_through_ball',
+              'aerial_lost',
+              'aerial_won',
+              'att_assist_openplay',
+              'att_assist_setplay',
+              'att_corner',
+              'att_fastbreak',
+              'att_freekick_goal',
+              'att_freekick_target',
+              'att_freekick_total',
+              'att_hd_goal',
+              'att_hd_miss',
+              'att_hd_target',
+              'att_hd_total',
+              'att_ibox_blocked',
+              'att_ibox_goal',
+              'att_ibox_miss',
+              'att_ibox_target',
+              'att_obox_blocked',
+              'att_obox_miss',
+              'att_obox_target',
+              'att_one_on_one',
+              'att_openplay',
+              'att_pen_goal',
+              'att_pen_miss',
+              'att_pen_target',
+              'att_setpiece',
+              'ball_recovery',
+              'blocked_cross',
+              'blocked_scoring_att',
+              'challenge_lost',
+              'clean_sheet',
+              'cross_not_claimed',
+              'crosses_18yard',
+              'crosses_18yardplus',
+              'dangerous_play',
+              'defender_goals',
+              'dispossessed',
+              'dive_catch',
+              'dive_save',
+              'diving_save',
+              'duel_lost',
+              'duel_won',
+              'effective_blocked_cross',
+              'effective_clearance',
+              'effective_head_clearance',
+              'error_lead_to_goal',
+              'error_lead_to_shot',
+              'fk_foul_lost',
+              'fk_foul_won',
+              'fouled_final_third',
+              'freekick_cross',
+              'gk_smother',
+              'goal_assist',
+              'goal_assist_deadball',
+              'goal_assist_openplay',
+              'goal_assist_setplay',
+              'goals',
+              'good_claim',
+              'good_high_claim',
+              'good_one_on_one',
+              'head_clearance',
+              'head_pass',
+              'hit_woodwork',
+              'interception',
+              'interception_won',
+              'interceptions_in_box',
+              'last_man_contest',
+              'last_man_tackle',
+              'long_pass_own_to_opp_success',
+              'long_pass_own_to_opp',
+              'offside_provoked',
+              'offtarget_att_assist',
+              'ontarget_att_assist',
+              'ontarget_scoring_att',
+              'outfielder_block',
+              'penalty_save',
+              'poss_lost_ctrl',
+              'post_scoring_att',
+              'punches',
+              'red_card',
+              'saves',
+              'second_yellow',
+              'shot_fastbreak',
+              'shot_off_target',
+              'six_yard_block',
+              'stand_catch',
+              'stand_save',
+              'successful_final_third_passes',
+              'touches',
+              'unsuccessful_touch',
+              'won_contest',
+              'won_corners',
+              'won_tackle',
+              'yellow_card',
+              'big_chance_created',
+              'big_chance_missed',
+              'big_chance_scored',
+              'final_third_entries',
+              'final_third_entry',
+              'goal_fastbreak',
+              'goals_conceded',
+              'goals_conceded_ibox',
+              'goals_conceded_obox',
+              'goals_openplay',
+              'leftside_pass',
+              'passes_left',
+              'passes_right',
+              'pen_area_entries',
+              'pen_goals_conceded',
+              'penalty_conceded',
+              'penalty_faced',
+              'penalty_won',
+              'poss_lost_all',
+              'poss_won_att_3rd',
+              'poss_won_def_3rd',
+              'poss_won_mid_3rd',
+              'rightside_pass',
+              'forward_goals',
+              'midfielder_goals',
+              'possession_percentage',
+              'total_attacking_pass',
+              'total_att_assist',
+              'total_chipped_pass',
+              'total_claim',
+              'total_clearance',
+              'total_contest',
+              'total_corners_intobox',
+              'total_cross',
+              'total_cross_nocorner',
+              'total_fastbreak',
+              'total_flick_on',
+              'total_fwd_zone_pass',
+              'total_high_claim',
+              'total_keeper_sweeper',
+              'total_launches',
+              'total_layoffs',
+              'total_long_balls',
+              'total_offside',
+              'total_one_on_one',
+              'total_pass',
+              'total_pull_back',
+              'total_red_card',
+              'total_scoring_att',
+              'total_tackle',
+              'total_through_ball',
+              'total_yel_card'
+            )
             GROUP BY stats_name";
+    $this->out($sql);
     $rs = $this->Matchinfo->query($sql,false);
     $this->out($rs);
   }

@@ -1,3 +1,4 @@
+
 <div id="fullcontent">
    <div>
       <h3><?=$report['results']['home_name']?> VS <?=$report['results']['away_name']?></h3>
@@ -5,6 +6,7 @@
 <?php
 $data = $report['home'];
 ?>
+
     <div>
       <a href="<?=$this->Html->url('/pages/team/?team_id='.$team_id)?>" class="button">Back</a>
     </div>
@@ -39,13 +41,30 @@ $data = $report['home'];
                           <tr>
                             <td>Top Assist</td>
                             <td class="tright">
-                              <?=@$data['top_assist'][0]['name']?>
+                              <?php
+                                $top_assist = $data['top_assist'][0]['name']."({$data['top_assist'][0]['total']})";
+                                for($i=1;$i<sizeof($data['top_assist']);$i++){
+                                    if($data['top_assist'][$i]['total']==$data['top_assist'][$i-1]['total']){
+                                      $top_assist.=','.$data['top_assist'][$i]['name']."({$data['top_assist'][$i]['total']})";
+                                    }
+                                }
+                              ?>
+                              <?=@$top_assist?>
                             </td>
                           </tr>
                           <tr>
                             <td>Top Scorer</td>
                             <td class="tright">
-                              <?=@$data['top_scorer'][0]['name']?>
+                              <?php
+                                $top_scorer = $data['top_scorer'][0]['name']."({$data['top_scorer'][0]['total']})";
+                                for($i=1;$i<sizeof($data['top_scorer']);$i++){
+                                    if($data['top_scorer'][$i]['total']==$data['top_scorer'][$i-1]['total']){
+                                      $top_scorer.=','.$data['top_scorer'][$i]['name']."({$data['top_scorer'][$i]['total']})";
+                                    }
+                                }
+                              ?>
+                              <?=@$top_scorer?>
+                              
                             </td>
                           </tr>
                           <tr>
@@ -81,7 +100,6 @@ $data = $report['home'];
                           <tr>
                             <th><h4>Stats</h4></th>
                             <th><h5>Frequency</h5></th>
-                            <th><h5>Effeciency</h5></th>
                             <th><h5>Chances</h5></th>
                             <th><h5>Goals</h5></th>
                             <th><h5>Conversion Rate</h5></th>
@@ -96,10 +114,7 @@ $data = $report['home'];
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
                           <td class="">
-                             <?=round($st['frequency'])?>
-                          </td>
-                          <td class="">
-                             <?=round($st['efficiency']*100,1)?> %
+                             <?=round($st['frequency'])?> (<?=round($st['efficiency']*100,1)?> %)
                           </td>
                           <td class="">
                              <?=$st['chances']?>
@@ -220,25 +235,54 @@ $data = $report['home'];
                       </thead>
                       <tbody>
                         <?php
+                        $total_pass = $data['passing_style']['total_pass']['total'];
+
+                        $total_passings =  $data['passing_style']['long_ball']['total']+
+                                          $data['passing_style']['short_passes']['total']+
+                                          $data['passing_style']['launches']['total']+
+                                          $data['passing_style']['through_balls']['total']+
+                                          $data['passing_style']['chipped_passes']['total'];
                         foreach($data['passing_style'] as $stats=>$st):
+                          if($stats!='total_pass'):
                         ?>
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
                           <td class="">
-                             <?=$st['total']?>
+                            <?php if($stats!='leftside_pass' && $stats!='rightside_pass' && $stats!='short_passes'):?>
+                             <?=$st['accurate']?> /<?=$st['total']?>
+                            <?php else:?>
+                               <?=$st['total']?>
+                            <?php endif;?>
                           </td>
+                           <td>
+                              <?php
+                                if($stats!='leftside_pass' && $stats!='rightside_pass' && $stats!='short_passes' 
+                                  && $stats!='forward_passes' && $stats!='accurate_passes'){
+                                 
+                                  echo round(@($st['total'] / $total_passings)*100,1).'%';
+
+                                }else if($stats=='short_passes'){
+                                  echo round(($st['total'] / $total_passings)*100,1).'%';
+                                }else if($stats=='forward_passes'){
+                                  echo round(($st['total'] / $total_pass)*100,1).'%';
+                                }else if($stats=='leftside_pass' || $stats=='rightside_pass'){
+                                  echo round(($st['average'])*100,1).'%';
+                                }else{
+                                  //echo 0.'%';
+                                }
+                              ?>
+                           </td>
                           <td class="">
-                             <?=round($st['average']*100,1)?> %
-                          </td>
-                          <td class="">
-                             <?=round($st['accuracy']*100,1)?> %
+                              <?php if($stats!='short_passes'&&$stats!='leftside_pass' && $stats!='rightside_pass'):?>
+                              <?=round($st['accuracy']*100,1)?> %
+                              <?php endif;?>
                           </td>
                           <td class="">
                              <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
-                      <?php endforeach;?>
+                      <?php endif;endforeach;?>
                       </tbody>
                     </table>
                   </div>
@@ -309,11 +353,12 @@ $data = $report['home'];
                       <tbody>
                         <?php
                         foreach($data['goalkeeping'] as $stats=>$st):
+
                         ?>
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
                           <td class="">
-                             <?=$st['total']?>
+                             <?=$st['total']?><?php if(isset($st['total2'])): echo '/'.$st['total2'];endif;?>
                           </td>
                           <td class="">
                              <?=round($st['average']*100,1)?> %
@@ -353,10 +398,19 @@ $data = $report['home'];
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
                           <td class="">
-                             <?=$st['total']?>
+                             <?=$st['total']?><?php if(isset($st['total2'])): echo '/'.$st['total2'];endif;?>
                           </td>
                          <td class="">
-                             <?=round($st['average']*100,1)?> %
+                             <?php if($stats != 'challenge_lost' &&
+                                      $stats != 'attempts_conceded_from_fastbreak' &&
+                                      $stats != 'attempts_conceded_from_setpieces' &&
+                                      $stats != 'error_lead_to_shot' &&
+                                      $stats != 'error_lead_to_goal' &&
+                                      $stats != 'total_errors' &&
+                                      $stats != 'penalty_conceded' &&
+                                      $stats != 'fouls_conceded_in_attacking_3rd'):?>
+                              <?=round($st['average']*100,1)?> %
+                              <?php endif;?>
                           </td>
                           <td class="">
                              <?=round($st['total']/$data['total_games'],1)?>
@@ -394,7 +448,7 @@ $data = $report['home'];
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
                           <td class="">
-                             <?=$st['total']?>
+                             <?=$st['total']?><?php if(isset($st['total2'])): echo '/'.$st['total2'];endif;?>
                           </td>
                           <td class="">
                              <?=round($st['average']*100,1)?> %
@@ -435,13 +489,17 @@ $data = $report['home'];
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
                           <td class="">
-                             <?=$st['total']?>
+                             <?=$st['total']?><?php if(isset($st['total2'])): echo '/'.$st['total2'];endif;?>
                           </td>
                          <td class="">
+                          <?php if($stats!='corners_won' && $stats!='freekicks_won'):?>
                              <?=round($st['accuracy']*100,1)?> %
+                          <?php endif;?>
                           </td>
                           <td class="">
+                             <?php if($stats!='corners_won' && $stats!='freekicks_won'):?>
                              <?=round($st['chance_ratio']*100,1)?> %
+                           <?php endif;?>
                           </td>
                           <td class="">
                              <?=round($st['total']/$data['total_games'],1)?>
@@ -546,7 +604,6 @@ $data = $report['away'];
                           <tr>
                             <th><h4>Stats</h4></th>
                             <th><h5>Frequency</h5></th>
-                            <th><h5>Effeciency</h5></th>
                             <th><h5>Chances</h5></th>
                             <th><h5>Goals</h5></th>
                             <th><h5>Conversion Rate</h5></th>
@@ -561,11 +618,9 @@ $data = $report['away'];
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
                           <td class="">
-                             <?=round($st['frequency'])?>
+                             <?=round($st['frequency'])?> (<?=round($st['efficiency']*100,1)?> %)
                           </td>
-                          <td class="">
-                             <?=round($st['efficiency']*100,1)?> %
-                          </td>
+                         
                           <td class="">
                              <?=$st['chances']?>
                           </td>
@@ -684,26 +739,54 @@ $data = $report['away'];
                           </tr>
                       </thead>
                       <tbody>
-                        <?php
+                     <?php
+                        $total_pass = $data['passing_style']['total_pass']['total'];
+                        $total_passings =  $data['passing_style']['long_ball']['total']+
+                                          $data['passing_style']['short_passes']['total']+
+                                          $data['passing_style']['launches']['total']+
+                                          $data['passing_style']['through_balls']['total']+
+                                          $data['passing_style']['chipped_passes']['total'];
                         foreach($data['passing_style'] as $stats=>$st):
+                          if($stats!='total_pass'):
                         ?>
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
                           <td class="">
-                             <?=$st['total']?>
+                            <?php if($stats!='leftside_pass' && $stats!='rightside_pass' && $stats!='short_passes'):?>
+                             <?=$st['accurate']?> /<?=$st['total']?>
+                            <?php else:?>
+                               <?=$st['total']?>
+                            <?php endif;?>
                           </td>
+                           <td>
+                             <?php
+                                if($stats!='leftside_pass' && $stats!='rightside_pass' && $stats!='short_passes' 
+                                  && $stats!='forward_passes' && $stats!='accurate_passes'){
+                                 
+                                  echo round(@($st['total'] / $total_passings)*100,1).'%';
+
+                                }else if($stats=='short_passes'){
+                                  echo round(($st['total'] / $total_passings)*100,1).'%';
+                                }else if($stats=='forward_passes'){
+                                  echo round(($st['total'] / $total_pass)*100,1).'%';
+                                }else if($stats=='leftside_pass' || $stats=='rightside_pass'){
+                                  echo round(($st['average'])*100,1).'%';
+                                }else{
+                                  //echo 0.'%';
+                                }
+                              ?>
+                           </td>
                           <td class="">
-                             <?=round($st['average']*100,1)?> %
-                          </td>
-                          <td class="">
-                             <?=round($st['accuracy']*100,1)?> %
+                             <?php if($stats!='short_passes'&&$stats!='leftside_pass' && $stats!='rightside_pass'):?>
+                              <?=round($st['accuracy']*100,1)?> %
+                              <?php endif;?>
                           </td>
                           <td class="">
                              <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
-                      <?php endforeach;?>
+                      <?php endif;endforeach;?>
                       </tbody>
                     </table>
                   </div>
@@ -778,7 +861,7 @@ $data = $report['away'];
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
                           <td class="">
-                             <?=$st['total']?>
+                             <?=$st['total']?><?php if(isset($st['total2'])): echo '/'.$st['total2'];endif;?>
                           </td>
                           <td class="">
                              <?=round($st['average']*100,1)?> %
@@ -818,10 +901,19 @@ $data = $report['away'];
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
                           <td class="">
-                             <?=$st['total']?>
+                             <?=$st['total']?><?php if(isset($st['total2'])): echo '/'.$st['total2'];endif;?>
                           </td>
                          <td class="">
-                             <?=round($st['average']*100,1)?> %
+                            <?php if($stats != 'challenge_lost' &&
+                                      $stats != 'attempts_conceded_from_fastbreak' &&
+                                      $stats != 'attempts_conceded_from_setpieces' &&
+                                      $stats != 'error_lead_to_shot' &&
+                                      $stats != 'error_lead_to_goal' &&
+                                      $stats != 'total_errors' &&
+                                      $stats != 'penalty_conceded' &&
+                                      $stats != 'fouls_conceded_in_attacking_3rd'):?>
+                              <?=round($st['average']*100,1)?> %
+                              <?php endif;?>
                           </td>
                           <td class="">
                              <?=round($st['total']/$data['total_games'],1)?>
@@ -859,7 +951,7 @@ $data = $report['away'];
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
                           <td class="">
-                             <?=$st['total']?>
+                             <?=$st['total']?><?php if(isset($st['total2'])): echo '/'.$st['total2'];endif;?>
                           </td>
                           <td class="">
                              <?=round($st['average']*100,1)?> %
@@ -900,13 +992,17 @@ $data = $report['away'];
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
                           <td class="">
-                             <?=$st['total']?>
+                             <?=$st['total']?><?php if(isset($st['total2'])): echo '/'.$st['total2'];endif;?>
                           </td>
-                         <td class="">
+                        <td class="">
+                          <?php if($stats!='corners_won' && $stats!='freekicks_won'):?>
                              <?=round($st['accuracy']*100,1)?> %
+                          <?php endif;?>
                           </td>
                           <td class="">
+                             <?php if($stats!='corners_won' && $stats!='freekicks_won'):?>
                              <?=round($st['chance_ratio']*100,1)?> %
+                           <?php endif;?>
                           </td>
                           <td class="">
                              <?=round($st['total']/$data['total_games'],1)?>

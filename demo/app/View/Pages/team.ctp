@@ -33,13 +33,30 @@
                           <tr>
                             <td>Top Assist</td>
                             <td class="tright">
-                              <?=@$data['top_assist'][0]['name']?>
+                              <?php
+                                $top_assist = $data['top_assist'][0]['name']."({$data['top_assist'][0]['total']})";
+                                for($i=1;$i<sizeof($data['top_assist']);$i++){
+                                    if($data['top_assist'][$i]['total']==$data['top_assist'][$i-1]['total']){
+                                      $top_assist.=','.$data['top_assist'][$i]['name']."({$data['top_assist'][$i]['total']})";
+                                    }
+                                }
+                              ?>
+                              <?=@$top_assist?>
                             </td>
                           </tr>
                           <tr>
                             <td>Top Scorer</td>
                             <td class="tright">
-                              <?=@$data['top_scorer'][0]['name']?>
+                              <?php
+                                $top_scorer = $data['top_scorer'][0]['name']."({$data['top_scorer'][0]['total']})";
+                                for($i=1;$i<sizeof($data['top_scorer']);$i++){
+                                    if($data['top_scorer'][$i]['total']==$data['top_scorer'][$i-1]['total']){
+                                      $top_scorer.=','.$data['top_scorer'][$i]['name']."({$data['top_scorer'][$i]['total']})";
+                                    }
+                                }
+                              ?>
+                              <?=@$top_scorer?>
+                              
                             </td>
                           </tr>
                           <tr>
@@ -144,7 +161,7 @@
                           <tr>
                             <th><h4>Stats</h4></th>
                             <th><h5>Frequency</h5></th>
-                            <th><h5>Effeciency</h5></th>
+                            
                             <th><h5>Chances</h5></th>
                             <th><h5>Goals</h5></th>
                             <th><h5>Conversion Rate</h5></th>
@@ -159,11 +176,9 @@
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
                           <td class="">
-                             <?=round($st['frequency'])?>
+                             <?=round($st['frequency'])?> (<?=round($st['efficiency']*100,1)?> %)
                           </td>
-                          <td class="">
-                             <?=round($st['efficiency']*100,1)?> %
-                          </td>
+                          
                           <td class="">
                              <?=$st['chances']?>
                           </td>

@@ -125,3 +125,73 @@ Request URL: /ss_demo/team/?team_id=t43
 Stack Trace:
 #0 /home/duf/node_workspace/fantasy/demo/app/webroot/index.php(110): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
 #1 {main}
+2013-09-13 14:28:07 Error: Fatal Error (4): syntax error, unexpected 'endif' (T_ENDIF) in [/home/duf/node_workspace/fantasy/demo/app/View/Pages/matchdetails.ctp, line 262]
+2013-09-13 14:28:07 Error: [FatalErrorException] syntax error, unexpected 'endif' (T_ENDIF)
+Request URL: /ss_demo/pages/matchdetails/?game_id=f694904&team_id=t14
+Stack Trace:
+#0 /home/duf/node_workspace/fantasy/demo/lib/Cake/Error/ErrorHandler.php(184): ErrorHandler::handleFatalError(4, 'syntax error, u...', '/home/duf/node_...', 262)
+#1 [internal function]: ErrorHandler::handleError(4, 'syntax error, u...', '/home/duf/node_...', 262, Array)
+#2 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(927): call_user_func('ErrorHandler::h...', 4, 'syntax error, u...', '/home/duf/node_...', 262, Array)
+#3 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(900): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2013-09-13 14:55:06 Error: Fatal Error (4): syntax error, unexpected '%' in [/home/duf/node_workspace/fantasy/demo/app/View/Pages/matchdetails.ctp, line 270]
+2013-09-13 14:55:06 Error: [FatalErrorException] syntax error, unexpected '%'
+Request URL: /ss_demo/pages/matchdetails/?game_id=f694904&team_id=t14
+Stack Trace:
+#0 /home/duf/node_workspace/fantasy/demo/lib/Cake/Error/ErrorHandler.php(184): ErrorHandler::handleFatalError(4, 'syntax error, u...', '/home/duf/node_...', 270)
+#1 [internal function]: ErrorHandler::handleError(4, 'syntax error, u...', '/home/duf/node_...', 270, Array)
+#2 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(927): call_user_func('ErrorHandler::h...', 4, 'syntax error, u...', '/home/duf/node_...', 270, Array)
+#3 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(900): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2013-09-13 14:55:31 Error: Fatal Error (4): syntax error, unexpected '%' in [/home/duf/node_workspace/fantasy/demo/app/View/Pages/matchdetails.ctp, line 756]
+2013-09-13 14:55:31 Error: [FatalErrorException] syntax error, unexpected '%'
+Request URL: /ss_demo/pages/matchdetails/?game_id=f694904&team_id=t14
+Stack Trace:
+#0 /home/duf/node_workspace/fantasy/demo/lib/Cake/Error/ErrorHandler.php(184): ErrorHandler::handleFatalError(4, 'syntax error, u...', '/home/duf/node_...', 756)
+#1 [internal function]: ErrorHandler::handleError(4, 'syntax error, u...', '/home/duf/node_...', 756, Array)
+#2 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(927): call_user_func('ErrorHandler::h...', 4, 'syntax error, u...', '/home/duf/node_...', 756, Array)
+#3 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(900): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2013-09-13 14:55:32 Error: Fatal Error (4): syntax error, unexpected '%' in [/home/duf/node_workspace/fantasy/demo/app/View/Pages/matchdetails.ctp, line 756]
+2013-09-13 14:55:32 Error: [FatalErrorException] syntax error, unexpected '%'
+Request URL: /ss_demo/pages/matchdetails/?game_id=f694904&team_id=t14
+Stack Trace:
+#0 /home/duf/node_workspace/fantasy/demo/lib/Cake/Error/ErrorHandler.php(184): ErrorHandler::handleFatalError(4, 'syntax error, u...', '/home/duf/node_...', 756)
+#1 [internal function]: ErrorHandler::handleError(4, 'syntax error, u...', '/home/duf/node_...', 756, Array)
+#2 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(927): call_user_func('ErrorHandler::h...', 4, 'syntax error, u...', '/home/duf/node_...', 756, Array)
+#3 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(900): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2013-09-13 14:55:33 Error: Fatal Error (4): syntax error, unexpected '%' in [/home/duf/node_workspace/fantasy/demo/app/View/Pages/matchdetails.ctp, line 756]
+2013-09-13 14:55:33 Error: [FatalErrorException] syntax error, unexpected '%'
+Request URL: /ss_demo/pages/matchdetails/?game_id=f694904&team_id=t14
+Stack Trace:
+#0 /home/duf/node_workspace/fantasy/demo/lib/Cake/Error/ErrorHandler.php(184): ErrorHandler::handleFatalError(4, 'syntax error, u...', '/home/duf/node_...', 756)
+#1 [internal function]: ErrorHandler::handleError(4, 'syntax error, u...', '/home/duf/node_...', 756, Array)
+#2 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(927): call_user_func('ErrorHandler::h...', 4, 'syntax error, u...', '/home/duf/node_...', 756, Array)
+#3 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(900): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2013-09-13 14:55:33 Error: Fatal Error (4): syntax error, unexpected '%' in [/home/duf/node_workspace/fantasy/demo/app/View/Pages/matchdetails.ctp, line 756]
+2013-09-13 14:55:33 Error: [FatalErrorException] syntax error, unexpected '%'
+Request URL: /ss_demo/pages/matchdetails/?game_id=f694904&team_id=t14
+Stack Trace:
+#0 /home/duf/node_workspace/fantasy/demo/lib/Cake/Error/ErrorHandler.php(184): ErrorHandler::handleFatalError(4, 'syntax error, u...', '/home/duf/node_...', 756)
+#1 [internal function]: ErrorHandler::handleError(4, 'syntax error, u...', '/home/duf/node_...', 756, Array)
+#2 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(927): call_user_func('ErrorHandler::h...', 4, 'syntax error, u...', '/home/duf/node_...', 756, Array)
+#3 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(900): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2013-09-13 15:42:05 Error: Fatal Error (4): syntax error, unexpected ';' in [/home/duf/node_workspace/fantasy/demo/app/View/Pages/matchdetails.ctp, line 356]
+2013-09-13 15:42:05 Error: [FatalErrorException] syntax error, unexpected ';'
+Request URL: /ss_demo/pages/matchdetails/?game_id=f694904&team_id=t14
+Stack Trace:
+#0 /home/duf/node_workspace/fantasy/demo/lib/Cake/Error/ErrorHandler.php(184): ErrorHandler::handleFatalError(4, 'syntax error, u...', '/home/duf/node_...', 356)
+#1 [internal function]: ErrorHandler::handleError(4, 'syntax error, u...', '/home/duf/node_...', 356, Array)
+#2 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(927): call_user_func('ErrorHandler::h...', 4, 'syntax error, u...', '/home/duf/node_...', 356, Array)
+#3 /home/duf/node_workspace/fantasy/demo/lib/Cake/Core/App.php(900): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}

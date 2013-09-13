@@ -140,7 +140,11 @@ class PagesController extends AppController {
 		$game_id = $this->request->query['game_id'];
 		$team_id = $this->request->query['team_id'];
 		$rs = $this->Service->request('stats/report/8?game_id='.$game_id);
-
+		
+		/*
+		$rs2 = $this->Service->request('stats/report/9?game_id='.$game_id.'&team_id='.$team_id);
+		$rs3 = $this->Service->request('stats/report/9?game_id='.$game_id.'&team_id='.$team_id);
+		*/
 		if($rs['status']==1){
 			$this->set('report',$rs['data']);	
 		}

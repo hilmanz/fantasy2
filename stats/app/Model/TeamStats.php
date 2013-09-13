@@ -330,13 +330,13 @@ class TeamStats extends Stats {
 		
 		$shots_from_obox = intval(@$stats['att_obox_blocked']) + intval(@$stats['att_obox_goal']) + intval(@$stats['att_obox_miss']) + intval(@$stats['att_obox_target']);
 		
-		$shots_from_ibox_avg = $shots_from_ibox / ($chances_from_crosses + $shots_from_ibox + $shots_from_obox);
-		$shots_from_obox_avg = $shots_from_obox / ($chances_from_crosses + $shots_from_ibox + $shots_from_obox);
-		$chances_from_crosses_avg = $chances_from_crosses / ($chances_from_crosses + $shots_from_ibox + $shots_from_obox);
+		$shots_from_ibox_avg = $shots_from_ibox / ($shots_from_ibox + $shots_from_obox);
+		$shots_from_obox_avg = $shots_from_obox / ($shots_from_ibox + $shots_from_obox);
+		$chances_from_crosses_avg = ($chances_from_crosses / intval(@$stats['total_scoring_att']));
 
 		$goals_from_shot_ibox = intval(@$stats['att_ibox_goal']);
 		$goals_from_shot_obox = intval(@$stats['att_obox_goal']);
-		$goals_from_crosses = intval(@$stats['att_obox_goal']);
+		$goals_from_crosses = intval(@$stats['att_hd_goal']);
 		$goals_from_shot_ibox_avg = $goals_from_shot_ibox / ($goals_from_shot_ibox+$goals_from_shot_obox+$goals_from_crosses);
 		$goals_from_shot_obox_avg = $goals_from_shot_obox / ($goals_from_shot_ibox+$goals_from_shot_obox+$goals_from_crosses);
 		$goals_from_crosses_avg = $goals_from_crosses / ($goals_from_shot_ibox+$goals_from_shot_obox+$goals_from_crosses);
@@ -387,15 +387,15 @@ class TeamStats extends Stats {
 	}
 	private function passing_style($team_id,$game_ids,$stats,$teamB){
 		$long_ball = intval(@$stats['total_long_balls']);
-		$short_passes = intval(@$stats['total_pass']) - intval(@$stats['total_long_balls']);
+		$short_passes = intval(@$stats['total_pass']) - intval(@$stats['total_long_balls']) - intval(@$stats['total_launches']);
 		$launches = intval(@$stats['total_launches']);
 		$through_balls = intval(@$stats['total_through_ball']);
 		$chipped_passes = intval(@$stats['total_chipped_pass']);
 		$forward_passes = intval(@$stats['total_fwd_zone_pass']);
-		$total_pass = $long_ball + $short_passes + $launches + $through_balls 
-						+ $chipped_passes + $forward_passes;
+		$total_pass = $long_ball + $short_passes + $launches + $through_balls + $chipped_passes ;
 		$leftside_pass = intval(@$stats['leftside_pass']);
 		$rightside_pass = intval(@$stats['rightside_pass']);
+		$accurate_pass = intval(@$stats['accurate_pass']);
 
 		//average
 		$long_ball_avg = $long_ball / $total_pass;
@@ -403,11 +403,11 @@ class TeamStats extends Stats {
 		$launches_avg = $launches / $total_pass;
 		$through_balls_avg = $through_balls / $total_pass;
 		$chipped_passes_avg = $chipped_passes / $total_pass;
-		$forward_passes_avg = $forward_passes / $total_pass;
+		$forward_passes_avg = $forward_passes / intval(@$stats['total_pass']);
 		
 		$leftside_pass_avg = $leftside_pass / ($leftside_pass+$rightside_pass);
 		$rightside_pass_avg = $rightside_pass / ($leftside_pass+$rightside_pass);
-
+		$accurate_pass_avg = $accurate_pass / intval(@$stats['total_pass']);
 		//accuracy
 
 		$long_ball_acc = ($long_ball > 0) ? intval(@$stats['accurate_long_balls']) / $long_ball : 0;
@@ -417,30 +417,49 @@ class TeamStats extends Stats {
 		$chipped_passes_acc =  intval(@$stats['accurate_chipped_pass']) / $chipped_passes;
 		$forward_passes_acc =  intval(@$stats['accurate_fwd_zone_pass']) / $forward_passes;
 
+		//accurates
+		$accurate_long_balls = intval(@$stats['accurate_long_balls']);
+		$accurate_short_pass = intval(0);
+		$accurate_launches = intval(@$stats['accurate_launches']);
+		$accurate_through_ball = intval(@$stats['accurate_through_ball']);
+		$accurate_chipped_pass = intval(@$stats['accurate_chipped_pass']);
+		$accurate_fwd_zone_pass = intval(@$stats['accurate_fwd_zone_pass']);
+
+
+		
+		//$accurate_pass_acc =  $accurate_pass / intval(@$stats['total_pass']);
+
+
 		return array('long_ball'=>array('total'=>$long_ball,
+										 'accurate'=>$accurate_long_balls,
 										 'average'=>$long_ball_avg,
 										 'accuracy'=>$long_ball_acc),
 
 					'short_passes'=>array('total'=>$short_passes,
+										'accurate'=>$accurate_short_pass,
 										 'average'=>$short_passes_avg,
 										 'accuracy'=>$short_passes_acc),
 
 
 					'launches'=>array('total'=>$launches,
+											'accurate'=>$accurate_launches,
 										 'average'=>$launches_avg,
 										 'accuracy'=>$launches_acc),
 
 					'through_balls'=>array('total'=>$through_balls,
+										 'accurate'=>$accurate_through_ball,
 										 'average'=>$through_balls_avg,
 										 'accuracy'=>$through_balls_acc),
 
 					'chipped_passes'=>array('total'=>$chipped_passes,
+										 'accurate'=>$accurate_chipped_pass,
 										 'average'=>$chipped_passes_avg,
 										 'accuracy'=>$chipped_passes_acc),
 
 					'forward_passes'=>array('total'=>$forward_passes,
+										'accurate'=>$accurate_fwd_zone_pass,
 										 'average'=>$forward_passes_avg,
-										 'accuracy'=>$chipped_passes_acc),
+										 'accuracy'=>$forward_passes_acc),
 
 
 					'leftside_pass'=>array('total'=>$leftside_pass,
@@ -448,10 +467,15 @@ class TeamStats extends Stats {
 										 'accuracy'=>0),
 
 					'rightside_pass'=>array('total'=>$rightside_pass,
+
 										 'average'=>$rightside_pass_avg,
 										 'accuracy'=>0),
 
-
+					'accurate_passes'=>array('total'=>$total_pass,
+										  'accurate'=>$accurate_pass,
+										 'average'=>$accurate_pass_avg,
+										 'accuracy'=>$accurate_pass_avg),
+					'total_pass'=>array('total'=>intval(@$total_pass),'average'=>0,accuracy=>0)
 				);
 
 
@@ -474,8 +498,8 @@ class TeamStats extends Stats {
 		//chance ratio
 		$corners_won_ratio = 0;
 		$freekicks_won_ratio = 0;
-		$corner_delivery_ratio = intval(@$stats['att_corner']) / (intval(@$stats['accurate_cross']) - intval(@$stats['accurate_cross_nocorner']));
-		$freekick_delivery_ratio = (intval(@$stats['att_setpiece']) - intval(@$stats['att_corner']))/ intval(@$stats['accurate_freekick_cross']);
+		$corner_delivery_ratio = intval(@$stats['att_corner']) / (intval(@$stats['total_cross']) - intval(@$stats['total_cross_nocorner']));
+		$freekick_delivery_ratio = (intval(@$stats['att_setpiece']) - intval(@$stats['att_corner']))/ intval(@$stats['freekick_cross']);
 		$direct_freekicks_ratio = intval(@$stats['att_freekick_goal']) / intval(@$stats['att_freekick_total']);
 
 		return array('corners_won'=>array('total'=>$corners_won,
@@ -489,15 +513,18 @@ class TeamStats extends Stats {
 
 						'corner_delivery'=>array('total'=>$corner_delivery,
 										 'accuracy'=>$corner_delivery_acc,
-										  'chance_ratio'=>$corner_delivery_ratio),
+										  'chance_ratio'=>$corner_delivery_ratio,
+										  'total2'=>intval(@$stats['total_corners_intobox'])),
 
 						'freekick_delivery'=>array('total'=>$freekick_delivery,
 										 'accuracy'=>$freekick_delivery_acc,
-										  'chance_ratio'=>$freekick_delivery_ratio),
+										  'chance_ratio'=>$freekick_delivery_ratio,
+										  'total2'=>intval(@$stats['freekick_cross'])),
 
 						'direct_freekicks'=>array('total'=>$direct_freekicks,
 										 'accuracy'=>$direct_freekicks_acc,
-										  'chance_ratio'=>$direct_freekicks_ratio),
+										  'chance_ratio'=>$direct_freekicks_ratio,
+										  'total2'=>intval(@$stats['att_freekick_total'])),
 
 					
 					
@@ -517,27 +544,33 @@ class TeamStats extends Stats {
 		$header_at_goals_avg = intval(@$stats['att_hd_target']) / intval(@$stats['att_hd_total']);
 		$effective_clearance_avg = intval(@$stats['effective_head_clearance']) / intval(@$stats['head_clearance']);
 		$flick_ons_avg = intval(@$stats['accurate_flick_on']) / intval(@$stats['total_flick_on']);
-		$gk_highclaims_avg = intval(@$stats['good_high_claim']) / intval(@$stats['total_high_claim']);
-		$gk_crosses_not_claimed_avg = (intval(@$stats['total_claim']) > 0) ? intval(@$stats['cross_not_claimed']) / intval(@$stats['total_claim']) : 0;
+		$gk_highclaims_avg = intval(@$stats['good_high_claim']) / ($gk_highclaims + intval(@$stats['cross_not_claimed']));
+		$gk_crosses_not_claimed_avg = intval(@$stats['cross_not_claimed']) / ($gk_highclaims + intval(@$stats['cross_not_claimed']));
 
 
 		return array('aerial_duels_won'=>array('total'=>$aerial_duels_won,
-										 'average'=>$aerial_duels_won_avg),
+										 'average'=>$aerial_duels_won_avg,
+										 'total2'=>(intval(@$stats['aerial_won']) + intval(@$stats['aerial_lost']))),
 
 					'header_at_goals'=>array('total'=>$header_at_goals,
-										 'average'=>$header_at_goals_avg),
+										 'average'=>$header_at_goals_avg,
+										 'total2'=>intval(@$stats['att_hd_total'])),
 
 					'effective_clearance'=>array('total'=>$effective_clearance,
-										 'average'=>$effective_clearance_avg),
+										 'average'=>$effective_clearance_avg,
+										 'total2'=>intval(@$stats['head_clearance'])),
 
 					'flick_ons'=>array('total'=>$flick_ons,
-										 'average'=>$flick_ons_avg),
+										 'average'=>$flick_ons_avg,
+										 'total2'=>intval(@$stats['total_flick_on'])),
 
 					'gk_highclaims'=>array('total'=>$gk_highclaims,
-										 'average'=>$gk_highclaims_avg),
+										 'average'=>$gk_highclaims_avg,
+										 'total2'=>($gk_highclaims + intval(@$stats['cross_not_claimed']))),
 
 					'gk_crosses_not_claimed'=>array('total'=>$gk_crosses_not_claimed,
-										 'average'=>$gk_crosses_not_claimed_avg),
+										 'average'=>$gk_crosses_not_claimed_avg,
+										 'total2'=>($gk_highclaims + intval(@$stats['cross_not_claimed']))),
 					
 				);
 	}
@@ -571,31 +604,42 @@ class TeamStats extends Stats {
 		$gk_crosses_not_claimed = intval(@$stats['cross_not_claimed']);
 		
 
-		$shot_saved_avg = intval(@$stats['saves']) /  intval(@$stats['ontarget_scoring_att']);
+		$shot_saved_avg = intval(@$stats['saves']) /  intval(@$teamB['ontarget_scoring_att']);
 		$one_on_one_avg = (intval(@$stats['total_one_on_one']) > 0 ) ? intval(@$stats['good_one_on_one']) /  intval(@$stats['total_one_on_one']) : 0;
 		$keeper_sweeper_avg = intval(@$stats['accurate_keeper_sweeper']) /  intval(@$stats['total_keeper_sweeper']);
 		$gk_smother_avg = 0;
-		$gk_highclaims_avg = (intval(@$stats['total_high_claim']) > 0) ? intval(@$stats['good_high_claim']) /  intval(@$stats['total_high_claim']) : 0;
-		$gk_crosses_not_claimed_avg = (intval(@$stats['total_claim']) > 0) ? intval(@$stats['cross_not_claimed']) /  intval(@$stats['total_claim']) : 0;
+		$gk_highclaims_avg = intval(@$stats['good_high_claim']) /  ($gk_highclaims + intval(@$stats['cross_not_claimed']));
+		$gk_crosses_not_claimed_avg = intval(@$stats['cross_not_claimed']) /  ($gk_highclaims + intval(@$stats['cross_not_claimed']));
 
+		$penalty_saved = intval(@$stats['penalty_save']);
+		$penalty_saved_avg = intval(@$stats['penalty_save']) / intval(@$stats['penalty_conceded']);
 
 		return array('shot_saved'=>array('total'=>$shot_saved,
-										 'average'=>$shot_saved_avg),
+										 'average'=>$shot_saved_avg,
+										 'total2'=>intval(@$teamB['ontarget_scoring_att'])),
 
 					  'one_on_one'=>array('total'=>$one_on_one,
-										 'average'=>$one_on_one_avg),
+										 'average'=>$one_on_one_avg,
+										 'total2'=>intval(@$stats['total_one_on_one'])),
 
 					  'keeper_sweeper'=>array('total'=>$keeper_sweeper,
-										 'average'=>$keeper_sweeper_avg),
+										 'average'=>$keeper_sweeper_avg,
+										 'total2'=>intval(@$stats['total_keeper_sweeper'])),
 
 					  'gk_smother'=>array('total'=>$gk_smother,
 										 'average'=>$gk_smother_avg),
 
 					  'gk_highclaims'=>array('total'=>$gk_highclaims,
-										 'average'=>$gk_highclaims_avg),
+										 'average'=>$gk_highclaims_avg,
+										 'total2'=>($gk_highclaims + intval(@$stats['cross_not_claimed']))),
 
 					  'gk_crosses_not_claimed'=>array('total'=>$gk_crosses_not_claimed,
-										 'average'=>$gk_crosses_not_claimed_avg),
+										 'average'=>$gk_crosses_not_claimed_avg,
+										 'total2'=>$gk_highclaims + intval(@$stats['cross_not_claimed'])),
+
+					  'penalty_saved'=>array('total'=>$penalty_saved,
+										 'average'=>$penalty_saved_avg,
+										 'total2'=> intval(@$stats['penalty_conceded'])),
 					 
 				);
 	}
@@ -606,7 +650,7 @@ class TeamStats extends Stats {
 		$head_clearance = intval(@$stats['effective_head_clearance']);
 		$attempts_conceded_inbox = intval(@$stats['attempts_conceded_ibox']);
 		$attempts_conceded_outside_box = intval(@$stats['attempts_conceded_obox']);
-		$attempts_conceded_from_fastbreak = intval(@$teamB['shot_fastbreak']);
+		$attempts_conceded_from_fastbreak = intval(@$teamB['shot_fastbreak']) + intval(@$teamB['att_fastbreak']);
 		$attempts_conceded_from_setpieces = intval(@$teamB['att_setpiece']);
 		
 		$duels_won_avg = intval(@$stats['duel_won']) / (intval(@$stats['duel_won'])+intval(@$stats['duel_lost']));
@@ -629,31 +673,39 @@ class TeamStats extends Stats {
 		$fouls_conceded_in_attacking_3rd = intval(@$teamB['fouled_final_third']);
 		
 		return array('duels_won'=>array('total'=>$duels_won,
-										 'average'=>$duels_won_avg),
+										 'average'=>$duels_won_avg,
+										 'total2'=>(intval(@$stats['duel_won'])+intval(@$stats['duel_lost']))),
 
 						'tackling_won'=>array('total'=>$tackling_won,
-										 'average'=>$tackling_won_avg),
+										 'average'=>$tackling_won_avg,
+										 'total2'=>intval(@$stats['total_tackle'])),
 
 						'challenge_lost'=>array('total'=>$challenge_lost,
 										 'average'=>$challenge_lost_avg),
 
 						'head_clearance'=>array('total'=>$head_clearance,
-										 'average'=>$head_clearance_avg),
+										 'average'=>$head_clearance_avg,
+										 'total2'=>intval(@$stats['head_clearance'])),
 
 						'attempts_conceded_inbox'=>array('total'=>$attempts_conceded_inbox,
-										 'average'=>$attempts_conceded_inbox_avg),
+										 'average'=>$attempts_conceded_inbox_avg,
+										 ),
 
 						'attempts_conceded_outside_box'=>array('total'=>$attempts_conceded_outside_box,
-										 'average'=>$attempts_conceded_outside_box_avg),
+										 'average'=>$attempts_conceded_outside_box_avg,
+										 ),
 
 						'attempts_conceded_from_fastbreak'=>array('total'=>$attempts_conceded_from_fastbreak,
-										 'average'=>$attempts_conceded_from_fastbreak_avg),
+										 'average'=>$attempts_conceded_from_fastbreak_avg,
+										 ),
 
 						'attempts_conceded_from_setpieces'=>array('total'=>$attempts_conceded_from_setpieces,
-										 'average'=>$attempts_conceded_from_setpieces_avg),
+										 'average'=>$attempts_conceded_from_setpieces_avg,
+										 ),
 
 						'error_lead_to_shot'=>array('total'=>$error_lead_to_shot,
-										 'average'=>0),
+										 'average'=>0,
+										 ),
 
 						'error_lead_to_goal'=>array('total'=>$error_lead_to_goal,
 										 'average'=>0),
@@ -717,14 +769,19 @@ class TeamStats extends Stats {
 		return intval(@$stats['goal_fastbreak'])/intval(@$stats['att_fastbreak']);
 	}
 	private function counter_chances($stats){
-		return intval(@$stats['shot_fastbreak']);
+		return intval(@$stats['shot_fastbreak']+$stats['att_fastbreak']);
 	}
 	private function counter_efficiency($stats){
-		return (intval(@$stats['goal_fastbreak']) + intval(@$stats['shot_fastbreak']) + intval(@$stats['att_fastbreak'])) / (intval(@$stats['goals']) + intval(@$stats['total_scoring_att']));
+		
+		$s = (intval(@$stats['total_fastbreak'])/intval(@$stats['att_openplay']));
+		return $s;
+		//return (intval(@$stats['goal_fastbreak']) + intval(@$stats['shot_fastbreak']) + intval(@$stats['att_fastbreak'])) / (intval(@$stats['goals']) + intval(@$stats['total_scoring_att']));
 
 	}
 	private function counter_frequency($stats){
 		return intval(@$stats['total_fastbreak']);
+		//$s = (intval(@$stats['att_fastbreak'])/intval(@$stats['att_openplay']));
+		//return $s;
 		//return (intval(@$stats['goal_fastbreak']) + intval(@$stats['shot_fastbreak']) +intval(@$stats['att_fastbreak']))/ ((intval(@$stats['goals_openplay']) + intval(@$stats['att_openplay'])) + ((intval(@$stats['goals']) - intval(@$stats['goals_openplay'])) +(intval(@$stats['total_scoring_att']) - intval(@$stats['att_openplay'])) )+(intval(@$stats['goal_fastbreak']) + intval(@$stats['shot_fastbreak']) +intval(@$stats['att_fastbreak'])));
 		//return (intval(@$stats['goal_fastbreak']) + intval(@$stats['shot_fastbreak']) +intval(@$stats['att_fastbreak']));
 	}
