@@ -42,11 +42,15 @@ $data = $report['home'];
                             <td>Top Assist</td>
                             <td class="tright">
                               <?php
-                                $top_assist = $data['top_assist'][0]['name']."({$data['top_assist'][0]['total']})";
-                                for($i=1;$i<sizeof($data['top_assist']);$i++){
-                                    if($data['top_assist'][$i]['total']==$data['top_assist'][$i-1]['total']){
-                                      $top_assist.=','.$data['top_assist'][$i]['name']."({$data['top_assist'][$i]['total']})";
-                                    }
+                                if(sizeof($data['top_assist'])>0){
+                                  $top_assist = $data['top_assist'][0]['name']."({$data['top_assist'][0]['total']})";
+                                  for($i=1;$i<sizeof($data['top_assist']);$i++){
+                                      if($data['top_assist'][$i]['total']==$data['top_assist'][$i-1]['total']){
+                                        $top_assist.=','.$data['top_assist'][$i]['name']."({$data['top_assist'][$i]['total']})";
+                                      }
+                                  }
+                                }else{
+                                  $top_assist = '';
                                 }
                               ?>
                               <?=@$top_assist?>
@@ -56,12 +60,16 @@ $data = $report['home'];
                             <td>Top Scorer</td>
                             <td class="tright">
                               <?php
+                               if(sizeof($data['top_scorer'])>0){
                                 $top_scorer = $data['top_scorer'][0]['name']."({$data['top_scorer'][0]['total']})";
                                 for($i=1;$i<sizeof($data['top_scorer']);$i++){
                                     if($data['top_scorer'][$i]['total']==$data['top_scorer'][$i-1]['total']){
                                       $top_scorer.=','.$data['top_scorer'][$i]['name']."({$data['top_scorer'][$i]['total']})";
                                     }
                                 }
+                              }else{
+                                $top_scorer = '';
+                              }
                               ?>
                               <?=@$top_scorer?>
                               
@@ -168,7 +176,11 @@ $data = $report['home'];
                              <?=round($st['average']*100,1)?> %
                           </td>
                           <td class="">
-                             <?=round($st['total']/$data['total_games'],1)?>
+                             <?php
+                              $overall = $home_overall['attacking_style'][$stats];
+
+                             ?>
+                             <?=round($overall['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -205,7 +217,11 @@ $data = $report['home'];
                           </td>
                          
                           <td class="">
-                             <?=round($st/$data['total_games'],1)?>
+                            <?php
+                              $overall = $home_overall['dribbling'][$stats];
+                             ?>
+                             <?=round($overall/$data['total_games'],1)?>
+                             
                           </td>
                          
                         </tr>
@@ -278,7 +294,12 @@ $data = $report['home'];
                               <?php endif;?>
                           </td>
                           <td class="">
-                             <?=round($st['total']/$data['total_games'],1)?>
+                            <?php
+                              $overall = $home_overall['passing_style'][$stats];
+
+                             ?>
+                             <?=round($overall['total']/$data['total_games'],1)?>
+                             
                           </td>
                          
                         </tr>
@@ -318,7 +339,12 @@ $data = $report['home'];
                              <?=round($st['average']*100,1)?> %
                           </td>
                           <td class="">
-                             <?=round($st['total']/$data['total_games'],1)?>
+                            <?php
+                              $overall = $home_overall['defending_style'][$stats];
+
+                             ?>
+                             <?=round($overall['total']/$data['total_games'],1)?>
+                             
                           </td>
                          
                         </tr>
@@ -364,7 +390,12 @@ $data = $report['home'];
                              <?=round($st['average']*100,1)?> %
                           </td>
                           <td class="">
-                             <?=round($st['total']/$data['total_games'],1)?>
+                            <?php
+                              $overall = $home_overall['goalkeeping'][$stats];
+
+                             ?>
+                             <?=round($overall['total']/$data['total_games'],1)?>
+                             
                           </td>
                          
                         </tr>
@@ -413,7 +444,10 @@ $data = $report['home'];
                               <?php endif;?>
                           </td>
                           <td class="">
-                             <?=round($st['total']/$data['total_games'],1)?>
+                             <?php
+                              $overall = $home_overall['defending_strength_and_weakness'][$stats];
+                             ?>
+                             <?=round($overall['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -454,7 +488,11 @@ $data = $report['home'];
                              <?=round($st['average']*100,1)?> %
                           </td>
                           <td class="">
-                             <?=round($st['total']/$data['total_games'],1)?>
+                             <?php
+                              $overall = $home_overall['aerial_strength'][$stats];
+                             ?>
+                             <?=round($overall['total']/$data['total_games'],1)?>
+                             
                           </td>
                          
                         </tr>
@@ -502,7 +540,10 @@ $data = $report['home'];
                            <?php endif;?>
                           </td>
                           <td class="">
-                             <?=round($st['total']/$data['total_games'],1)?>
+                             <?php
+                              $overall = $home_overall['setplays'][$stats];
+                             ?>
+                             <?=round($overall['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -673,7 +714,11 @@ $data = $report['away'];
                              <?=round($st['average']*100,1)?> %
                           </td>
                           <td class="">
-                             <?=round($st['total']/$data['total_games'],1)?>
+                            <?php
+                              $overall = $away_overall['attacking_style'][$stats];
+                             ?>
+                             <?=round($overall['total']/$data['total_games'],1)?>
+                             
                           </td>
                          
                         </tr>
@@ -711,6 +756,10 @@ $data = $report['away'];
                          
                           <td class="">
                              <?=round($st/$data['total_games'],1)?>
+                             <?php
+                              $overall = $away_overall['dribbling'][$stats];
+                             ?>
+                             <?=round($overall/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -782,7 +831,10 @@ $data = $report['away'];
                               <?php endif;?>
                           </td>
                           <td class="">
-                             <?=round($st['total']/$data['total_games'],1)?>
+                             <?php
+                              $overall = $away_overall['passing_style'][$stats];
+                             ?>
+                             <?=round($overall['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -822,7 +874,10 @@ $data = $report['away'];
                              <?=round($st['average']*100,1)?> %
                           </td>
                           <td class="">
-                             <?=round($st['total']/$data['total_games'],1)?>
+                             <?php
+                              $overall = $away_overall['defending_style'][$stats];
+                             ?>
+                             <?=round($overall['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -867,7 +922,10 @@ $data = $report['away'];
                              <?=round($st['average']*100,1)?> %
                           </td>
                           <td class="">
-                             <?=round($st['total']/$data['total_games'],1)?>
+                              <?php
+                              $overall = $away_overall['goalkeeping'][$stats];
+                             ?>
+                             <?=round($overall['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -916,7 +974,10 @@ $data = $report['away'];
                               <?php endif;?>
                           </td>
                           <td class="">
-                             <?=round($st['total']/$data['total_games'],1)?>
+                             <?php
+                              $overall = $away_overall['defending_strength_and_weakness'][$stats];
+                             ?>
+                             <?=round($overall['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -957,7 +1018,10 @@ $data = $report['away'];
                              <?=round($st['average']*100,1)?> %
                           </td>
                           <td class="">
-                             <?=round($st['total']/$data['total_games'],1)?>
+                              <?php
+                              $overall = $away_overall['aerial_strength'][$stats];
+                             ?>
+                             <?=round($overall['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -1005,7 +1069,10 @@ $data = $report['away'];
                            <?php endif;?>
                           </td>
                           <td class="">
-                             <?=round($st['total']/$data['total_games'],1)?>
+                              <?php
+                              $overall = $away_overall['setplays'][$stats];
+                             ?>
+                             <?=round($overall['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>

@@ -793,7 +793,7 @@ class StatsUpdateShell extends AppShell{
     return $this->getTotalValuesFromAttributes($str,$stats); 
   }
   function liable($game_id,$team_id,$player_id,$stats){
-    $str = "dangerous_play,red_card,second_yellow,yellow_card,penalty_conceded,fk_foul_lost,error_lead_to_goal,error_lead_to_shot,error_lead_to_shot,dispossessed,unsuccessful_touch";
+    $str = "dangerous_play,red_card,second_yellow,yellow_card,penalty_conceded,fk_foul_lost,error_lead_to_goal,error_lead_to_shot,dispossessed,unsuccessful_touch";
     return $this->getTotalValuesFromAttributes($str,$stats); 
   }
   function gk_score($game_id,$team_id,$player_id,$stats,$teamB){
