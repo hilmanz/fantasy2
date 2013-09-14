@@ -195,7 +195,7 @@
                              <?=round($st['conversion_rate']*100,1)?> %
                           </td>
                           <td class="">
-                             <?=round($st['average'],1)?> 
+                             <?=round($st['frequency']/$data['total_games'],1)?>
                           </td>
                         </tr>
                       <?php endforeach;?>

@@ -161,7 +161,10 @@
                              <?=round($st['conversion_rate']*100,1)?> %
                           </td>
                           <td class="">
-                             <?=round($st['average'],1)?> 
+                             <?php
+                              $overall = $overall_stats['attacking_play'][$stats];
+                             ?>
+                              <?=round($overall['frequency']/$data['total_games'],1)?>
                           </td>
                         </tr>
                       <?php endforeach;?>
