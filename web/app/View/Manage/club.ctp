@@ -14,6 +14,7 @@ $total_expenses+= intval(@$finance['general_scout']);
 $total_expenses+= intval(@$finance['finance_director']);
 $total_expenses+= intval(@$finance['tax_consultant']);
 $total_expenses+= intval(@$finance['accountant']);
+$total_expenses+= intval(@$finance['buy_player']);
 
 $starting_balance = intval(@$finance['budget']) 
                     - intval(@$finance['total_earnings']) 
@@ -145,6 +146,21 @@ function isStaffExist($staff_token,$name){
                         <td align="right">SS$ <?=number_format(abs(@$finance['sponsorship']))?></td>
                         <td>&nbsp;</td>
                       </tr>
+                      <?php
+                        if(isset($finance['player_sold'])):
+                      ?>
+
+                      <tr>
+                        <td>Penjualan Pemain</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td align="right">SS$ <?=number_format(abs(@$finance['player_sold']))?></td>
+                        <td>&nbsp;</td>
+                      </tr>
+                      <?php
+                      endif;
+                      ?>
                       <tr>
                         <td>Bonus</td>
                         <td>&nbsp;</td>
@@ -341,6 +357,22 @@ function isStaffExist($staff_token,$name){
                       </tr>
                         
                        <?php endif;?>
+                       <?php
+                        if(isset($finance['buy_player'])):
+                      ?>
+
+                      <tr>
+                        <td>Pembelian Pemain</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td align="right">SS$ <?=number_format(abs(@$finance['buy_player']))?></td>
+                        <td>&nbsp;</td>
+                      </tr>
+                      <?php
+                      endif;
+                      ?>
+
                       <tr class="head">
                         <td colspan="4">Total Pengeluaran</td>
                         <td><td align="right">SS$ <?=number_format(@$total_expenses)?></td></td>

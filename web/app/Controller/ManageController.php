@@ -106,7 +106,9 @@ class ManageController extends AppController {
 										intval(@$report['commercial_director_bonus'])+
 										intval(@$report['marketing_manager_bonus'])+
 										intval(@$report['public_relation_officer_bonus'])+
-										intval(@$report['win_bonus']);
+										intval(@$report['win_bonus'])+
+										intval(@$report['player_sold'])
+										;
 			return $report;
 		}
 	}
