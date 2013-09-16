@@ -67,13 +67,14 @@ function generateReports(games){
 @todo generate master player performance summary ( ffgame_stats.master_player_performance)
 */
 function process_report(game_id,done){
-
+	console.log('process report #',game_id);
 	async.waterfall([
 		//1st step - get master reports for recent matches.
 		function(callback){
 			match_results.getReports(game_id,function(err,rs){
 				callback(err,rs);
 			});
+			//callback(null,null);
 		},
 		function(result,callback){
 			
@@ -93,12 +94,13 @@ function process_report(game_id,done){
 					});
 				}
 			});
+			
 			/*
 			business_stats.update(game_id,0,function(err){
-						console.log('business stats update completed');
-						console.log('all batches has been processed');
-						callback(err,'done');
-					});*/
+				console.log('business stats update completed');
+				console.log('all batches has been processed');
+				callback(err,'done');
+			});*/
 		}
 	],
 	function(err,result){

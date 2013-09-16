@@ -21,19 +21,19 @@
                       <tbody>
                         <tr>
                             <td>League Position</td>
-                            <td>
+                            <td class="tright">
                               N/A
                             </td>
                           </tr>
                           <tr>
                             <td>Most Influencal Player</td>
-                            <td>
+                            <td class="tright">
                               <?=@$data['most_influential_player'][0]['name']?>
                             </td>
                           </tr>
                           <tr>
                             <td>Top Assist</td>
-                            <td>
+                            <td class="tright">
                               <?php
                                 if(sizeof($data['top_assist'])>0){
                                   $top_assist = $data['top_assist'][0]['name']."({$data['top_assist'][0]['total']})";
@@ -51,7 +51,7 @@
                           </tr>
                           <tr>
                             <td>Top Scorer</td>
-                            <td>
+                            <td class="tright">
                               <?php
                                if(sizeof($data['top_scorer'])>0){
                                 $top_scorer = $data['top_scorer'][0]['name']."({$data['top_scorer'][0]['total']})";
@@ -70,7 +70,7 @@
                           </tr>
                           <tr>
                             <td>Dangerous Passer</td>
-                            <td>
+                            <td class="tright">
                              
                               <?php
                                 if(sizeof($data['dangerous_passer'])>0){
@@ -89,7 +89,7 @@
                           </tr>
                           <tr>
                             <td>Greatest Liability</td>
-                            <td>
+                            <td class="tright">
                               
                               <?php
                                 if(sizeof($data['greatest_liability'])>0){

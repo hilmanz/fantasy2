@@ -471,7 +471,7 @@ function calculatePlayerPoints(conn,points,game_id,player,done){
 						last_update = VALUES(last_update);";
 
 			conn.query(sql,data,function(err,rs){
-				console.log('inserting player stats -> ',this.sql);
+				//console.log('inserting player stats -> ',this.sql);
 				if(err){
 					console.log(err.message);
 				}
@@ -532,7 +532,7 @@ function savePlayerStats(game_id,team_id,data,callback){
 								[game_id,team_id,data.PlayerRef,item.Type,item.$t],
 								function(err,rs){
 									if(err) console.log(err.message);
-									console.log(this.sql);
+									//console.log(this.sql);
 									onDone();	
 								});
 

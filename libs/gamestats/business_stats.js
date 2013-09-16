@@ -197,7 +197,9 @@ function calculate_home_revenue_stats(team,game_id,game,rank,away_rank,done){
 	console.log(game);
 	console.log('-----');
 	var cashflow = [];
+	console.log('match real attendance :',game[0].attendance);
 	var attendance = game[0].attendance;
+
 	if(team.rank==null){
 		team.rank = 0;
 	}
@@ -218,6 +220,20 @@ function calculate_home_revenue_stats(team,game_id,game,rank,away_rank,done){
 		async.waterfall(
 			[
 				function(callback){
+					//get the home stadium capacity
+					conn.query("SELECT stadium_capacity FROM ffgame.master_team WHERE uid = ? LIMIT 1;",
+							[team.team_id],
+							function(err,rs){
+								//console.log(this.sql);
+								//console.log('rs',rs);
+								try{
+									attendance = rs[0].stadium_capacity;
+								}catch(e){}
+								console.log('the attendance : ',attendance);
+								callback(err);
+							});
+				},
+				function(callback){
 					//get team's officials
 					conn.query(
 						"SELECT b.* FROM ffgame.game_team_officials a\
@@ -226,6 +242,7 @@ function calculate_home_revenue_stats(team,game_id,game,rank,away_rank,done){
 						LIMIT 20;",
 						[team.id],
 						function(err,officials){
+
 							callback(null,officials);
 					});
 				},
@@ -245,7 +262,7 @@ function calculate_home_revenue_stats(team,game_id,game,rank,away_rank,done){
 					});
 				},
 				function(player_salaries,officials,callback){
-					console.log(officials);
+					console.log('officials',officials);
 					//get 100% ticket guarantee from head of security.
 					var official = getOfficial('Head of Security',officials);
 
@@ -285,7 +302,7 @@ function calculate_home_revenue_stats(team,game_id,game,rank,away_rank,done){
 						console.log(ticket_earnings,'*',official.attendance_bonus);	
 						earnings.push({name:'public_relation_officer_bonus',value:ticket_earnings*official.attendance_bonus});
 					}
-					console.log(earnings);
+					console.log('earnings : ',earnings);
 					
 
 					//5. operating costs
