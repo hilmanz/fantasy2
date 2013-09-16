@@ -65,7 +65,7 @@ class ServiceController extends AppController {
 			$this->Pushlogs->create();
 			if($this->Pushlogs->save($posts)){
 				if($posts['feedType']=='F9'){
-					curlGet(Configure::read('worker_api'),array('file'=>$filename));
+					@curlGet(Configure::read('worker_api'),array('file'=>$filename));
 				}
 				return true;
 			}

@@ -247,7 +247,7 @@ class TeamStats extends Stats {
 		return $players;
 	}
 	private function dangerous_passer($team_id,$game_ids){
-		$sql = "SELECT player_id,(SUM(dangerous_pass)/COUNT(a.id)) AS total,b.name,
+		$sql = "SELECT player_id,SUM(dangerous_pass) AS total,b.name,
 				b.position,b.jersey_num,b.team_id,
 				c.name AS team_name
 				FROM master_player_summary a

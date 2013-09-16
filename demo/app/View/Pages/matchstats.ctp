@@ -71,13 +71,39 @@
                           <tr>
                             <td>Dangerous Passer</td>
                             <td class="tright">
-                              <?=@$data['dangerous_passer'][0]['name']?>
+                             
+                              <?php
+                                if(sizeof($data['dangerous_passer'])>0){
+                                  $dangerous_passer = $data['dangerous_passer'][0]['name'];
+                                  for($i=1;$i<sizeof($data['dangerous_passer']);$i++){
+                                      if($data['dangerous_passer'][$i]['total']==$data['dangerous_passer'][$i-1]['total']){
+                                        $dangerous_passer.=','.$data['dangerous_passer'][$i]['name'];
+                                      }
+                                  }
+                                }else{
+                                  $dangerous_passer = '';
+                                }
+                              ?>
+                              <?=@$dangerous_passer?>
                             </td>
                           </tr>
                           <tr>
                             <td>Greatest Liability</td>
                             <td class="tright">
-                              <?=@$data['greatest_liability'][0]['name']?>
+                              
+                              <?php
+                                if(sizeof($data['greatest_liability'])>0){
+                                  $liable = $data['greatest_liability'][0]['name'];
+                                  for($i=1;$i<sizeof($data['greatest_liability']);$i++){
+                                      if($data['greatest_liability'][$i]['total']==$data['greatest_liability'][$i-1]['total']){
+                                        $liable.=','.$data['greatest_liability'][$i]['name'];
+                                      }
+                                  }
+                                }else{
+                                  $liable = '';
+                                }
+                              ?>
+                              <?=@$liable?>
                             </td>
                           </tr>
                       </tbody>

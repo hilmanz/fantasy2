@@ -789,34 +789,38 @@ class StatsUpdateShell extends AppShell{
     return $this->getTotalValuesFromAttributes($str,$stats);
   }
   function def_fails($game_id,$team_id,$player_id,$stats){
-    $str="duel_lost,challenge_lost";
+    $str="duel_lost,challenge_lost,fouls,dangerous_play,fk_foul_lost";
     return $this->getTotalValuesFromAttributes($str,$stats); 
   }
   function liable($game_id,$team_id,$player_id,$stats){
-    $str = "dangerous_play,red_card,second_yellow,yellow_card,penalty_conceded,fk_foul_lost,error_lead_to_goal,error_lead_to_shot,dispossessed,unsuccessful_touch";
+    $str = "dangerous_play,red_card,second_yellow,yellow_card,penalty_conceded,fk_foul_lost,error_lead_to_goal,error_lead_to_shot";
     return $this->getTotalValuesFromAttributes($str,$stats); 
   }
   function gk_score($game_id,$team_id,$player_id,$stats,$teamB){
     //p1 / (p3 + p2)
+    /*
     $p1 = "good_high_claim,good_one_on_one,accurate_keeper_sweeper,saves";
-    $p2 = "total_one_on_one,total_high_claim";
+    $p2 = "total_one_on_one";
     $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
     $score2 = $this->getTotalValuesFromAttributes($p2,$stats);
     $score3 = $this->getOtherTeamStats($game_id,$teamB,"ontarget_scoring_att");
     $this->out('punches,good_high_claim,good_one_on_one,accurate_keeper_sweeper,saves,gk_smother');
     $this->out('score1 / (score2+score3) -> '.$score1.'/('.$score2.'+'.$score3.')');
     $sum = $score2 + $score3;
-    if($sum>0){
-      return $score1 / $sum;
-    }else{
-      return 0;
-    }
+    */
+    $p1 = "good_high_claim,good_one_on_one,saves,diving_save,dive_catch,gk_smother,punches";
+    $p2 = "cross_not_claimed";
+    $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
+    $score2 = $this->getTotalValuesFromAttributes($p2,$stats);
+   
+    return $score1 - $score2;
+   
   }
   function shot_stopping_percentage($game_id,$team_id,$player_id,$stats,$teamB){
     $p1 = "saves";
     $score1 = $this->getTotalValuesFromAttributes($p1,$stats);
-    $score2 = $this->getOtherTeamStats($game_id,$teamB,"total_scoring_att");
-    $this->out('#'.$game_id.'->'.$team_id.'#saves('.$score1.') vs '.$teamB.'#total_scoring_att('.$score2.')');
+    $score2 = $this->getOtherTeamStats($game_id,$teamB,"ontarget_scoring_att");
+    $this->out('#'.$game_id.'->'.$team_id.'#saves('.$score1.') vs '.$teamB.'#ontarget_scoring_att('.$score2.')');
     $this->out('score1 / (score2) -> '.$score1.'/('.$score2.')');
     if($score2>0){
       return $score1 / $score2;
