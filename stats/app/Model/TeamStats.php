@@ -22,8 +22,67 @@ class TeamStats extends Stats {
 				FROM player_stats a
 				INNER JOIN master_player b
 				ON a.player_id = b.uid
-				WHERE a.team_id='{$team_id}' 
+				WHERE a.team_id='{$team_id}'
 				AND game_id IN (".$this->arrayToSql($game_ids).")
+				AND a.stats_name IN (
+					'goals',
+					'goal_assist',
+					'big_chance_created',
+					'penalty_won',
+					'total_att_assist',
+					'ontarget_scoring_att',
+					'att_obox_target',
+					'accurate_flick_on',
+					'accurate_passes',
+					'accurate_chipped_pass',
+					'accurate_launches',
+					'accurate_layoffs',
+					'accurate_long_balls',
+					'accurate_through_ball',
+					'long_pass_own_to_opp_success',
+					'accurate_cross',
+					'accurate_fwd_zone_pass',
+					'accurate_freekick_cross',
+					'accurate_cross_nocorner',
+					'total_attacking_pass',
+					'ball_recovery',
+					'duel_won',
+					'aerial_won',
+					'won_tackle',
+					'last_man_contest',
+					'interceptions_in_box',
+					'effective_clearance',
+					'effective_blocked_cross',
+					'blocked_scoring_att',
+					'six_yard_block',
+					'offside_provoked',
+					'interception_won',
+					'won_contest',
+					'last_man_tackle',
+					'last_man_contest',
+					'penalty_save',
+					'dive_save',
+					'dive_catch',
+					'stand_save',
+					'stand_catch',
+					'good_claim',
+					'good_high_claim',
+					'punches',
+					'good_one_on_one',
+					'gk_smother',
+					'accurate_keeper_sweeper',
+					'penalty_conceded',
+					'dispossessed',
+					'error_lead_to_goal',
+					'error_lead_to_shot',
+					'poss_lost_ctrl',
+					'unsuccessful_touch',
+					'challenge_lost',
+					'cross_not_claimed',
+					'total_offside',
+					'yellow_card',
+					'red_card'
+					)
 				GROUP BY player_id;";
 		$rs = $this->query($sql);
 		

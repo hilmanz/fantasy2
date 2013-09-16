@@ -21,19 +21,19 @@
                       <tbody>
                         <tr>
                             <td>League Position</td>
-                            <td class="tright">
+                            <td>
                               N/A
                             </td>
                           </tr>
                           <tr>
                             <td>Most Influencal Player</td>
-                            <td class="tright">
+                            <td>
                               <?=@$data['most_influential_player'][0]['name']?>
                             </td>
                           </tr>
                           <tr>
                             <td>Top Assist</td>
-                            <td class="tright">
+                            <td>
                               <?php
                                 if(sizeof($data['top_assist'])>0){
                                   $top_assist = $data['top_assist'][0]['name']."({$data['top_assist'][0]['total']})";
@@ -51,7 +51,7 @@
                           </tr>
                           <tr>
                             <td>Top Scorer</td>
-                            <td class="tright">
+                            <td>
                               <?php
                                if(sizeof($data['top_scorer'])>0){
                                 $top_scorer = $data['top_scorer'][0]['name']."({$data['top_scorer'][0]['total']})";
@@ -70,7 +70,7 @@
                           </tr>
                           <tr>
                             <td>Dangerous Passer</td>
-                            <td class="tright">
+                            <td>
                              
                               <?php
                                 if(sizeof($data['dangerous_passer'])>0){
@@ -89,7 +89,7 @@
                           </tr>
                           <tr>
                             <td>Greatest Liability</td>
-                            <td class="tright">
+                            <td>
                               
                               <?php
                                 if(sizeof($data['greatest_liability'])>0){
@@ -124,10 +124,10 @@
                     <thead>
                           <tr>
                             <th><h4>Name</h4></th>
-                            <th class="tright"><h5>Position</h5></th>
-                            <th class="tright"><h5>Shirt No.</h5></th>
-                            <th class="tright"><h5>Score</h5></th>
-                            <th class="tright"></th>
+                            <th><h5>Position</h5></th>
+                            <th><h5>Shirt No.</h5></th>
+                            <th><h5>Score</h5></th>
+                            <th></th>
                           </tr>
                       </thead>
                       <tbody>
