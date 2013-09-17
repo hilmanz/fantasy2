@@ -33,7 +33,7 @@ class TeamStats extends Stats {
 					'ontarget_scoring_att',
 					'att_obox_target',
 					'accurate_flick_on',
-					'accurate_passes',
+					'accurate_pass',
 					'accurate_chipped_pass',
 					'accurate_launches',
 					'accurate_layoffs',

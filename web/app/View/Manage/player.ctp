@@ -41,7 +41,7 @@ $map = array(
 
     'passing'=>array(
                 'accurate_flick_on'=>'accurate_flick_on',
-                'accurate_pass'=>'accurate_passes',
+                'accurate_pass'=>'accurate_pass',
                 'accurate_chipped_pass'=>'accurate_chipped_pass',
                 'accurate_launches'=>'accurate_launches',
                 'accurate_layoffs'=>'accurate_layoffs',
