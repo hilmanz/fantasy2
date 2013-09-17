@@ -25,6 +25,7 @@ class TeamStats extends Stats {
 				WHERE a.team_id='{$team_id}'
 				AND game_id IN (".$this->arrayToSql($game_ids).")
 				AND a.stats_name IN (
+					'att_freekick_target',
 					'goals',
 					'goal_assist',
 					'big_chance_created',

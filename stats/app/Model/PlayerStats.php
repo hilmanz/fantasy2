@@ -581,11 +581,11 @@ class PlayerStats extends Stats {
 		$mistakes_and_errors = $this->getStats('mistakes_and_errors',$map,$player_stats);
 
 		$shooting = array(
-			 'shoot_on_target'=>array('total'=>$player_stats['ontarget_scoring_att'],
-			 						   'overall'=>$player_stats['total_scoring_att']),
+			 'shoot_on_target'=>array('total'=>intval(@$player_stats['ontarget_scoring_att']),
+			 						   'overall'=>intval(@$player_stats['total_scoring_att'])),
 			 'on_target_shot_from_outside_the_box'=>array(
-			 							'total'=>$player_stats['att_obox_target'],
-			 							'overall'=>($player_stats['att_obox_target']+$player_stats['att_obox_miss'])
+			 							'total'=>intval(@$player_stats['att_obox_target']),
+			 							'overall'=>(intval(@$player_stats['att_obox_target'])+intval(@$player_stats['att_obox_miss']))
 			 							)
 		);
 
@@ -646,7 +646,7 @@ class PlayerStats extends Stats {
 			$total_points+=intval($v['total']);
 		}
 		foreach($defending as $n=>$v){
-			$total_points+=intval($v);
+			$total_points+=intval($v['total']);
 		}
 		foreach($dribbling as $n=>$v){
 			$total_points+=intval($v);

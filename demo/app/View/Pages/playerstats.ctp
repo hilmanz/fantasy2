@@ -109,20 +109,25 @@
                           <tr>
                             <th><h4>Stats</h4></th>
                             <th><h5>#</h5></th>
+                            <th><h5>%</h5></th>
+                            <th><h5>AVG/Game</h5></th>
                           </tr>
                       </thead>
                       <tbody>
                         <?php
-
                         foreach($data['shooting'] as $stats=>$st):
                         ?>
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
                           <td class="">
-                           
-                             <?=$st['total']?>
+                              <?=$st['total']?>/<?=$st['overall']?> 
                           </td>
-                          
+                          <td class="">
+                              <?=round(@($st['total']/$st['overall'])*100,1)?>%
+                          </td>
+                          <td class="">
+                              <?=$st['total']?>
+                          </td>
                         </tr>
                       <?php endforeach;?>
                       </tbody>
@@ -143,6 +148,8 @@
                           <tr>
                             <th><h4>Stats</h4></th>
                             <th><h5>#</h5></th>
+                            <th><h5>%</h5></th>
+                            <th><h5>AVG/Game</h5></th>
                           </tr>
                       </thead>
                       <tbody>
@@ -151,9 +158,22 @@
                         ?>
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
-                          <td class="">
-                             <?=$st?>
+                           <td class="">
+                            <?php if(isset($st['overall'])):?>
+                            <?=$st['total']?>/<?=$st['overall']?>
+                            <?php else:?>
+                            <?=$st['total']?>
+                            <?php endif;?>
                           </td>
+                          <td class="">
+                            <?php if(isset($st['overall'])):?>
+                              <?=round(@($st['total']/$st['overall'])*100,1)?>%
+                            <?php endif;?>
+                          </td>
+                          <td class="">
+                              <?=$st['total']?>
+                          </td>
+                          
                           
                         </tr>
                       <?php endforeach;?>
@@ -175,6 +195,8 @@
                           <tr>
                             <th><h4>Stats</h4></th>
                             <th><h5>#</h5></th>
+                            <th><h5>%</h5></th>
+                            <th><h5>AVG/Game</h5></th>
                           </tr>
                       </thead>
                       <tbody>
@@ -183,9 +205,22 @@
                         ?>
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
-                          <td class="">
-                             <?=$st?>
+                           <td class="">
+                            <?php if(isset($st['overall'])):?>
+                            <?=$st['total']?>/<?=$st['overall']?>
+                            <?php else:?>
+                            <?=$st['total']?>
+                            <?php endif;?>
                           </td>
+                          <td class="">
+                            <?php if(isset($st['overall'])):?>
+                              <?=round(@($st['total']/$st['overall'])*100,1)?>%
+                            <?php endif;?>
+                          </td>
+                          <td class="">
+                              <?=$st['total']?>
+                          </td>
+                          
                           
                         </tr>
                       <?php endforeach;?>
