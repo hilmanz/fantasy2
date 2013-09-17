@@ -160,7 +160,7 @@ class PagesController extends AppController {
 		
 		$player_id = $this->request->query['player_id'];
 		$rs = $this->Service->request('stats/report/6?player_id='.$player_id);
-
+		
 		if($rs['status']==1){
 			$this->set('data',$rs['data']);	
 		}

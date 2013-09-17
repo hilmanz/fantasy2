@@ -465,25 +465,25 @@ class PlayerStats extends Stats {
 		return $players;
 	}
 	public function individual_report($player_id){
-		$game_ids = $this->getGameIds(Configure::read('competition_id'),
+		$game_ids = $this->getPlayerOnlyGameIds($player_id,Configure::read('competition_id'),
 												Configure::read('season_id'));
 
 		return $this->getPlayerStatsPerCategory($player_id,$game_ids);
 	}
 	public function individual_report_per_match($game_id,$player_id){
-		$game_ids = $this->getGameIds(Configure::read('competition_id'),
-												Configure::read('season_id'));
+		
 		
 		return $this->getPlayerStatsPerCategory($player_id,array($game_id));
 	}
 	private function getPlayerStatsPerCategory($player_id,$game_ids){
 		$player_stats = $this->getPlayerStats($player_id,$game_ids);
-		
+		$player_info = $this->getPlayerInfo($player_id);
+		$teamB_stats = $this->teamBPlayerStats($player_info['team_id'],$game_ids);
 		//the maps
 		$map = array(
 			    'goals_and_assists'=>array(
 			                            'goals'=>'goals',
-			                            'assist'=>'goal_assist',
+			                            'goal_assists'=>'goal_assist',
 			                            'clear_cut_chance_created'=>'big_chance_created',
 			                            'penalty_won'=>'penalty_won',
 			                            'Assisted_A_Shot'=>'total_att_assist'
@@ -573,22 +573,77 @@ class PlayerStats extends Stats {
 
 		//distribute the points accordingly
 		$goals_and_assists = $this->getStats('goals_and_assists',$map,$player_stats);
-		$shooting = $this->getStats('shooting',$map,$player_stats);
-		$passing = $this->getStats('passing',$map,$player_stats);
-		$defending = $this->getStats('defending',$map,$player_stats);
+		//$shooting = $this->getStats('shooting',$map,$player_stats);
+		//$passing = $this->getStats('passing',$map,$player_stats);
+		//$defending = $this->getStats('defending',$map,$player_stats);
 		$dribbling = $this->getStats('dribbling',$map,$player_stats);
 		$goalkeeping = $this->getStats('goalkeeping',$map,$player_stats);
 		$mistakes_and_errors = $this->getStats('mistakes_and_errors',$map,$player_stats);
 
+		$shooting = array(
+			 'shoot_on_target'=>array('total'=>$player_stats['ontarget_scoring_att'],
+			 						   'overall'=>$player_stats['total_scoring_att']),
+			 'on_target_shot_from_outside_the_box'=>array(
+			 							'total'=>$player_stats['att_obox_target'],
+			 							'overall'=>($player_stats['att_obox_target']+$player_stats['att_obox_miss'])
+			 							)
+		);
+
+		$passing = array(
+			                'accurate_flick_on'=>array('total'=>intval(@$player_stats['accurate_flick_on']),
+			                							'overall'=>intval(@$player_stats['total_flick_on'])),
+			                'accurate_pass'=>array('total'=>intval(@$player_stats['accurate_pass']),
+			                						'overall'=>intval(@$player_stats['total_pass'])),
+			                'accurate_chipped_pass'=>array('total'=>intval(@$player_stats['accurate_chipped_pass']),
+			                							'overall'=>intval(@$player_stats['total_chipped_pass'])),
+			                'accurate_launches'=>array('total'=>intval(@$player_stats['accurate_launches']),
+			                							'overall'=>intval(@$player_stats['total_launches'])),
+			                'accurate_layoffs'=>array('total'=>intval(@$player_stats['accurate_layoffs']),
+			                							'overall'=>intval(@$player_stats['total_layoffs'])),
+			                'accurate_long_balls'=>array('total'=>intval(@$player_stats['accurate_long_balls']),
+			                							'overall'=>intval(@$player_stats['total_long_balls'])),
+			                'accurate_through_balls'=>array('total'=>intval(@$player_stats['accurate_through_ball']),
+			                							'overall'=>intval(@$player_stats['total_through_ball'])),
+			                'long_pass_to_opponents_half'=>array('total'=>intval(@$player_stats['long_pass_own_to_opp_success'])),
+			                'accurate_crossing'=>array('total'=>intval(@$player_stats['accurate_cross']),
+			                							'overall'=>intval(@$player_stats['total_cross'])),
+			                'accurate_attacking_pass'=>array('total'=>intval(@$player_stats['accurate_fwd_zone_pass']),
+			                							'overall'=>intval(@$player_stats['total_fwd_zone_pass'])),
+			                'accurate_free_kick_delivery'=>array('total'=>intval(@$player_stats['att_freekick_target']),
+			                							'overall'=>intval(@$player_stats['att_freekick_total']))
+			    		);
+		 $defending = array(
+			                'Ball_recovery'=>array('total'=>intval(@$player_stats['ball_recovery'])),
+			                'Duel_Won'=>array('total'=>intval(@$player_stats['duel_won']),
+			                				 'overall'=>intval(@$player_stats['duel_won']) + intval(@$player_stats['duel_lost'])),
+			                'Aerial_Duel_Won'=>array('total'=>intval(@$player_stats['aerial_won']),
+			                							'overall'=>intval(@$player_stats['aerial_won']) + intval(@$player_stats['aerial_lost'])),
+			                'Tackle_won'=>array('total'=>intval(@$player_stats['won_tackle']),
+			                							'overall'=>intval(@$player_stats['total_tackle'])),
+			                'Tackle_won_as_a_last_man'=>array('total'=>intval(@$player_stats['last_man_contest'])),
+			                'Intercepted_a_pass_inside_the_box'=>array('total'=>intval(@$player_stats['interceptions_in_box'])),
+			                'Effective_clearance'=>array('total'=>intval(@$player_stats['effective_clearance']),
+			                							'overall'=>intval(@$player_stats['total_clearance'])),
+			                'Blocked_a_cross'=>array('total'=>intval(@$player_stats['blocked_cross']),
+			                							'overall'=>intval(@$player_stats['total_cross'])),
+			                'Blocked_a_shot'=>array('total'=>intval(@$player_stats['blocked_scoring_att']),
+			                							'overall'=>intval(@$player_stats['ontarget_scoring_att'])),
+			                'Blocked_a_shot_from_within_6_yards_box'=>array('total'=>intval(@$player_stats['six_yard_block'])),
+			                'offsides_provoked'=>array('total'=>intval(@$player_stats['offside_provoked']),
+			                							'overall'=>intval(@$teamB_stats['total_offside'])),
+			                'Intercepted_Passes'=>array('total'=>intval(@$player_stats['interception_won'])),
+			                
+
+			        );
 		$total_points = 0;
 		foreach($goals_and_assists as $n=>$v){
 			$total_points+=intval($v);
 		}
 		foreach($shooting as $n=>$v){
-			$total_points+=intval($v);
+			$total_points+=intval($v['total']);
 		}
 		foreach($passing as $n=>$v){
-			$total_points+=intval($v);
+			$total_points+=intval($v['total']);
 		}
 		foreach($defending as $n=>$v){
 			$total_points+=intval($v);
@@ -602,7 +657,7 @@ class PlayerStats extends Stats {
 		foreach($mistakes_and_errors as $n=>$v){
 			$total_points+=intval($v);
 		}
-		return array('player'=>$this->getPlayerInfo($player_id),
+		return array('player'=>$player_info,
 					 'goals_and_assists'=>$goals_and_assists,
 					 'shooting'=>$shooting,
 					 'passing'=>$passing,
@@ -649,6 +704,24 @@ class PlayerStats extends Stats {
 				AND game_id IN (".$this->arrayToSql($game_ids).")
 				GROUP BY stats_name
 				LIMIT 1000;";
+
+		$rs = $this->query($sql);
+		$stats = array();
+		while(sizeof($rs)>0){
+			$st = array_shift($rs);
+			$stats[$st['player_stats']['stats_name']] = $st[0]['total'];
+		}
+		return $stats;
+	}
+	private function teamBPlayerStats($team_id,$game_ids){
+		$sql = "SELECT stats_name,SUM(stats_value) AS total 
+				FROM player_stats 
+				WHERE game_id IN (".$this->arrayToSql($game_ids).")
+				AND team_id NOT IN ('{$team_id}')
+				GROUP BY stats_name
+				LIMIT 1000;";
+
+
 		$rs = $this->query($sql);
 		$stats = array();
 		while(sizeof($rs)>0){

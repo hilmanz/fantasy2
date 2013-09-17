@@ -113,12 +113,14 @@
                       </thead>
                       <tbody>
                         <?php
+
                         foreach($data['shooting'] as $stats=>$st):
                         ?>
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
                           <td class="">
-                             <?=$st?>
+                           
+                             <?=$st['total']?>
                           </td>
                           
                         </tr>

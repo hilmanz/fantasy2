@@ -166,6 +166,25 @@ class Stats extends AppModel {
 		}
 		return $game_ids;
 	}
+	public function getPlayerOnlyGameIds($player_id,$competition_id,$season_id){
+		$sql = "SELECT game_id
+				FROM optadb.matchinfo a
+				WHERE competition_id = '{$competition_id}' AND season_id={$season_id}
+				AND EXISTS (SELECT 1 FROM optadb.player_stats b 
+							WHERE b.game_id = a.game_id AND player_id='{$player_id}')
+				AND period='FullTime' LIMIT 400";
+
+		$rs = $this->query($sql);
+
+		$game_ids = array();
+
+		while(sizeof($rs)>0){
+			$a = array_shift($rs);
+			$game_ids[] = $a['a']['game_id'];
+		}
+		
+		return $game_ids;
+	}
 	public function getLastWeekMatches($competition_id,$season_id){
 		$sql = "SELECT MAX(matchday) AS latest_week 
 				FROM matchinfo 
