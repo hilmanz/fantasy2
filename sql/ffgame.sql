@@ -613,3 +613,36 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2013-07-13 19:21:22
+
+CREATE TABLE ffgame.master_standings (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `team_id` varchar(32) DEFAULT NULL,
+  `t_against` int(5) DEFAULT '0',
+  `away_against` int(5) DEFAULT '0',
+  `away_drawn` int(5) DEFAULT '0',
+  `away_for` int(5) DEFAULT '0',
+  `away_lost` int(5) DEFAULT '0',
+  `away_played` int(5) DEFAULT '0',
+  `away_points` int(5) DEFAULT '0',
+  `away_position` int(5) DEFAULT '0',
+  `away_won` int(5) DEFAULT '0',
+  `drawn` int(5) DEFAULT '0',
+  `t_for` int(5) DEFAULT '0',
+  `home_against` int(5) DEFAULT '0',
+  `home_drawn` int(5) DEFAULT '0',
+  `home_for` int(5) DEFAULT '0',
+  `home_lost` int(5) DEFAULT '0',
+  `home_played` int(5) DEFAULT '0',
+  `home_points` int(5) DEFAULT '0',
+  `home_position` int(5) DEFAULT '0',
+  `home_won` int(5) DEFAULT '0',
+  `lost` int(5) DEFAULT '0',
+  `played` int(5) DEFAULT '0',
+  `points` int(5) DEFAULT '0',
+  `t_position` int(5) DEFAULT '0',
+  `startday_position` int(5) DEFAULT '0',
+  `won` int(5) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE_TEAM` (`team_id`),
+  KEY `t_position` (`t_position`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
