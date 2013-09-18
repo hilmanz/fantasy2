@@ -175,3 +175,14 @@ AND stats_name IN
 
 )
 GROUP BY game_id,a.team_id,player_id,a.stats_name LIMIT 10000;
+
+
+## player stats per team per game_id
+SELECT game_id,player_id,b.name,stats_name,SUM(stats_value) AS total 
+FROM optadb.player_stats a
+INNER JOIN optadb.master_player b
+ON a.player_id = b.uid AND a.team_id = b.team_id
+WHERE 
+game_id IN (SELECT game_id FROM matchinfo WHERE competition_id='c8' AND season_id='2013')
+AND
+player_id='p1814' GROUP BY game_id,a.team_id,player_id,stats_name;

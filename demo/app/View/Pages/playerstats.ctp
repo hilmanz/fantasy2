@@ -55,6 +55,18 @@
                               <?=$data['total_points']?>
                             </td>
                           </tr>
+                          <tr>
+                            <td>Games Played</td>
+                            <td class="tright">
+                              <?=intval($data['player']['games_played'])?>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Minutes Played</td>
+                            <td class="tright">
+                              <?=intval($data['player']['mins_played'])?>
+                            </td>
+                          </tr>
                       </tbody>
                     </table>
                   </div>

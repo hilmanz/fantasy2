@@ -79,7 +79,8 @@ class GameController extends AppController {
 		if(date_default_timezone_get()=='Asia/Jakarta'){
 		    $this->nextMatch['match']['match_date_ts'] += 6*60*60;
 		}
-		$time_limit = $this->nextMatch['match']['match_date_ts']-(24*60*60);
+		$time_limit = $this->nextMatch['match']['match_date_ts']-(4*60*60);
+		
 		if(time() < $time_limit || Configure::read('debug') > 0){
 			$userData = $this->getUserData();
 			$formation = $this->request->data['formation'];

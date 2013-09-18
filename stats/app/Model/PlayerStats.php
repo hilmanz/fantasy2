@@ -624,13 +624,10 @@ class PlayerStats extends Stats {
 			                'Intercepted_a_pass_inside_the_box'=>array('total'=>intval(@$player_stats['interceptions_in_box'])),
 			                'Effective_clearance'=>array('total'=>intval(@$player_stats['effective_clearance']),
 			                							'overall'=>intval(@$player_stats['total_clearance'])),
-			                'Blocked_a_cross'=>array('total'=>intval(@$player_stats['blocked_cross']),
-			                							'overall'=>intval(@$player_stats['total_cross'])),
-			                'Blocked_a_shot'=>array('total'=>intval(@$player_stats['blocked_scoring_att']),
-			                							'overall'=>intval(@$player_stats['ontarget_scoring_att'])),
+			                'Blocked_a_cross'=>array('total'=>intval(@$player_stats['blocked_cross'])),
+			                'Blocked_a_shot'=>array('total'=>intval(@$player_stats['blocked_scoring_att'])),
 			                'Blocked_a_shot_from_within_6_yards_box'=>array('total'=>intval(@$player_stats['six_yard_block'])),
-			                'offsides_provoked'=>array('total'=>intval(@$player_stats['offside_provoked']),
-			                							'overall'=>intval(@$teamB_stats['total_offside'])),
+			                'offsides_provoked'=>array('total'=>intval(@$player_stats['offside_provoked'])),
 			                'Intercepted_Passes'=>array('total'=>intval(@$player_stats['interception_won'])),
 			                
 
@@ -657,6 +654,11 @@ class PlayerStats extends Stats {
 		foreach($mistakes_and_errors as $n=>$v){
 			$total_points+=intval($v);
 		}
+		
+		//games played
+		$player_info['games_played'] = intval(@$player_stats['game_started']) + intval(@$player_stats['total_sub_on']);
+		$player_info['mins_played'] = intval(@$player_stats['mins_played']);
+		//minutes played
 		return array('player'=>$player_info,
 					 'goals_and_assists'=>$goals_and_assists,
 					 'shooting'=>$shooting,
