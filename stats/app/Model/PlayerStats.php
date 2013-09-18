@@ -293,7 +293,8 @@ class PlayerStats extends Stats {
 		return $players;
 	}
 	public function lastWeekBestCrossers($game_ids){
-		$sql = "SELECT player_id,((SUM(best_cross_percentage)/COUNT(a.id))*100) AS total,b.name,b.position,b.jersey_num,b.team_id,
+		$sql = "SELECT player_id,SUM(accurate_cross) AS total,SUM(total_cross) as overall,
+				b.name,b.position,b.jersey_num,b.team_id,
 				c.name AS team_name
 				FROM master_player_summary a
 				INNER JOIN master_player b
@@ -301,7 +302,7 @@ class PlayerStats extends Stats {
 				INNER JOIN master_team c
 				ON b.team_id = c.uid
 				WHERE game_id IN (".$this->arrayToSql($game_ids).")
-				AND best_cross_percentage > 0
+				AND accurate_cross > 0
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;";
 
@@ -313,14 +314,18 @@ class PlayerStats extends Stats {
 			$player = $a['b'];
 			$player['team_name'] = $a['c']['team_name'];
 			$player['total'] = $a[0]['total'];
+			$player['overall'] = $a[0]['overall'];
+			$player['percent'] = round(($a[0]['total'] / $a[0]['overall'])*100,1);
 			$player['player_id'] = $a['a']['player_id'];
 			$players[] = $player;
 		}
-		
+		$players = $this->SortEqualValuesDESC($players,'total','percent');
 		return $players;
 	}
 	public function SharpestShooters($game_ids){
-		$sql = "SELECT player_id,((SUM(shoot_accuracy)/COUNT(a.id))*100) AS total,b.name,b.position,b.jersey_num,b.team_id,
+		$sql = "SELECT player_id,SUM(ontarget_scoring_att) AS total,
+				SUM(total_scoring_att) AS overall,
+				b.name,b.position,b.jersey_num,b.team_id,
 				c.name AS team_name
 				FROM master_player_summary a
 				INNER JOIN master_player b
@@ -328,7 +333,7 @@ class PlayerStats extends Stats {
 				INNER JOIN master_team c
 				ON b.team_id = c.uid
 				WHERE game_id IN (".$this->arrayToSql($game_ids).")
-				AND shoot_accuracy > 0
+				AND ontarget_scoring_att > 0
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;";
 		$rs = $this->query($sql);
@@ -338,11 +343,45 @@ class PlayerStats extends Stats {
 			$player = $a['b'];
 			$player['team_name'] = $a['c']['team_name'];
 			$player['total'] = $a[0]['total'];
+			$player['overall'] = $a[0]['overall'];
+			$player['percent'] = round(($a[0]['total'] / $a[0]['overall'])*100,1);
 			$player['player_id'] = $a['a']['player_id'];
 			$players[] = $player;
 		}
+		$players = $this->SortEqualValuesDESC($players,'total','percent');
+
 		return $players;
 	}
+	private function SortEqualValuesDESC($data,$check_field,$sort_field){
+		$changes = false;
+		for($i=1;$i<sizeof($data);$i++){
+			$swap = false;
+			$a = $data[$i-1];
+			$b = $data[$i];
+			$p = $a[$check_field];
+			$q = $b[$check_field];
+			$p1 = $a[$sort_field];
+			$q1 = $b[$sort_field];
+
+			if($p==$q){
+				if($p1<$q1){
+					$swap = true;
+				}
+			}
+			if($swap){
+				$data[$i-1] = $b;
+				$data[$i] = $a;
+				$changes = true;
+			}
+		}
+
+		if($changes){
+			return $this->SortEqualValuesDESC($data,$check_field,$sort_field);
+		}else{
+			return $data;
+		}
+	}
+
 	public function BestBallWinners($game_ids){
 		$sql = "SELECT player_id,SUM(ball_wins) AS total,b.name,b.position,b.jersey_num,b.team_id,
 				c.name AS team_name

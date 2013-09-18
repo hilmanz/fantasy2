@@ -575,6 +575,8 @@ class StatsUpdateShell extends AppShell{
      $player['deadkick'] = $this->deadkick($game_id,$teamA,$player_id,$player_stats);
      $player['accurate_cross'] = $this->accurate_cross($game_id,$teamA,$player_id,$player_stats);
      $player['total_cross'] = $this->total_cross($game_id,$teamA,$player_id,$player_stats);
+     $player['ontarget_scoring_att'] = $this->getTotalValuesFromAttributes('ontarget_scoring_att',$player_stats);
+     $player['total_scoring_att'] = $this->getTotalValuesFromAttributes('total_scoring_att',$player_stats);
      
      $this->Matchinfo->query(
       "INSERT INTO master_player_summary
@@ -603,7 +605,10 @@ class StatsUpdateShell extends AppShell{
         one_v_one,
         deadkick,
         accurate_cross,
-        total_cross)
+        total_cross,
+        ontarget_scoring_att,
+        total_scoring_att
+        )
        VALUES
        ('{$game_id}','{$teamA}','{$player_id}',
         '{$player['most_influence']}',
@@ -630,7 +635,9 @@ class StatsUpdateShell extends AppShell{
         '{$player['one_v_one']}',
         '{$player['deadkick']}',
         '{$player['accurate_cross']}',
-        '{$player['total_cross']}')
+        '{$player['total_cross']}',
+        '{$player['ontarget_scoring_att']}',
+        '{$player['total_scoring_att']}')
         ON DUPLICATE KEY UPDATE
         most_influence = VALUES(most_influence),
         def_influence = VALUES(def_influence),
@@ -656,7 +663,9 @@ class StatsUpdateShell extends AppShell{
         one_v_one = VALUES(one_v_one),
         deadkick = VALUES(deadkick),
         accurate_cross = VALUES(accurate_cross),
-        total_cross = VALUES(total_cross)
+        total_cross = VALUES(total_cross),
+        ontarget_scoring_att = VALUES(ontarget_scoring_att),
+        total_scoring_att = VALUES(total_scoring_att)
         ;"
      );  
   }

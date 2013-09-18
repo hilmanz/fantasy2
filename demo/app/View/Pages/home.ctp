@@ -510,6 +510,7 @@
                           </td>
                           <td class="">
                              <?=round($st['total'])?>
+                             (<?=round(($st['total']/$st['overall'])*100,1)?>%)
                           </td>
                           
                         </tr>
@@ -550,6 +551,7 @@
                           </td>
                           <td class="">
                              <?=round($st['total'])?>
+                             (<?=round(($st['total']/$st['overall'])*100,1)?>%)
                           </td>
                           
                         </tr>

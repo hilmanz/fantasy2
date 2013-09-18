@@ -78,3 +78,6 @@ CREATE TABLE optadb.statsjob_queue (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQUE_GAME_ID` (`game_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `optadb`.`master_player_summary`     ADD COLUMN `accurate_cross` INT(11) DEFAULT '0' NULL AFTER `deadkick`,     ADD COLUMN `total_cross` INT(11) DEFAULT '0' NULL AFTER `accurate_cross`;
+ALTER TABLE `optadb`.`master_player_summary`     ADD COLUMN `ontarget_scoring_att` INT(11) DEFAULT '0' NULL AFTER `total_cross`,     ADD COLUMN `total_scoring_att` INT(11) DEFAULT '0' NULL AFTER `ontarget_scoring_att`;
