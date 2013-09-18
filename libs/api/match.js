@@ -36,7 +36,7 @@ function fixtures(done){
 				INNER JOIN ffgame.master_team c\
 				ON a.away_id = c.uid\
 				ORDER BY a.matchday\
-				LIMIT 100;",
+				LIMIT 1000;",
 				[],
 				function(err,match){
 					conn.end(function(e){

@@ -44,8 +44,8 @@ class MatchController extends AppController {
 
 	public function index(){
 		$rs = $this->Game->getMatches();
+		
 		if(sizeof($rs['matches'])>0){
-			
 			foreach($rs['matches'] as $n=>$v){
 				if($v['home_id']==$this->userData['team']['team_id']){
 					$rs['matches'][$n]['my_match'] = true;
@@ -58,12 +58,14 @@ class MatchController extends AppController {
 				}
 			}
 		}
+		$this->set('current_week',intval($this->nextMatch['match']['matchday']));
 		$this->set('matches',$rs['matches']);
 	}
 	public function details($game_id){
 		$game_id = Sanitize::paranoid($game_id);
 		$rs = $this->Game->getMatchDetails($game_id);
-		$modifier = $this->Team->query("SELECT name FROM ffgame.game_matchstats_modifier as stats;");
+		$modifier = $this->Team->query("SELECT name 
+										FROM ffgame.game_matchstats_modifier as stats;");
 		$stats = array();
 		foreach($modifier as $mod){
 			$stats[] = $mod['stats']['name'];
