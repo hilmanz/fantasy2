@@ -104,14 +104,58 @@ function calculateIncomeForAllHomeTeams(game_id,game,home_team,away_team,done){
 	var limit = 100;
 	var start = 0;
 	var team_id = home_team[0].uid;
-	processHomeTeams(start,limit,team_id,game_id,0,0,game,done);
-	
+	var away_team_id = away_team[0].uid;
+	var home_rank = 0;
+	var away_rank = 0;
+	pool.getConnection(function(err,conn){
+		console.log('getting the team\'s rank');
+		async.waterfall(
+		[
+			function(callback){
+				//getting home rank
+				conn.query("SELECT t_position AS rank FROM ffgame.master_standings WHERE team_id=? LIMIT 1;",
+						   	[team_id],
+							   function(err,rs){
+							   		if(!err){
+							   			home_rank = rs[0].rank;
+							   		}else{
+							   			home_rank = 0;
+							   		}
+							   		callback(err,rs);
+							   }
+						   );
+			},
+			function(rs,callback){
+				//getting away rank
+				conn.query("SELECT t_position AS rank FROM ffgame.master_standings WHERE team_id=? LIMIT 1;",
+						   	[away_team_id],
+							   function(err,rs){
+							   		if(!err){
+							   			away_rank = rs[0].rank;
+							   		}else{
+							   			away_rank = 0;
+							   		}
+							   		callback(err,rs);
+							   }
+						   );
+			}
+			
+		],
+		function(err,result){
+			conn.end(function(err){
+				console.log('home_rank',home_rank);
+				console.log('AWAY RANK',away_rank);
+				processHomeTeams(start,limit,team_id,game_id,home_rank,away_rank,game,done);
+			});
+		});
+	});
 }
 function calculateIncomeForAllAwayTeams(game_id,game,home_team,away_team,done){
 	console.log('calculate all away teams');
 	var limit = 100;
 	var start = 0;
 	var team_id = away_team[0].uid;
+	
 	processAwayTeams(start,limit,team_id,game_id,0,0,game,done);
 	
 }
@@ -192,7 +236,8 @@ function processAwayTeams(start,limit,team_id,game_id,rank,away_rank,game,done){
 * 4. calculate winning bonuses and user points bonuses (ini blm ada datanya)
 */
 function calculate_home_revenue_stats(team,game_id,game,rank,away_rank,done){
-	console.log(team,rank);
+	console.log(team);
+	console.log('away rank',away_rank);
 	console.log('game:');
 	console.log(game);
 	console.log('-----');
