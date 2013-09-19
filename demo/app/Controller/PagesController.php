@@ -159,7 +159,8 @@ class PagesController extends AppController {
 	private function player(){
 		
 		$player_id = $this->request->query['player_id'];
-		$rs = $this->Service->request('stats/report/6?player_id='.$player_id);
+		$team_id = $this->request->query['team_id'];
+		$rs = $this->Service->request('stats/report/6?player_id='.$player_id.'&team_id='.$team_id);
 		
 		if($rs['status']==1){
 			$this->set('data',$rs['data']);	
@@ -169,7 +170,8 @@ class PagesController extends AppController {
 	private function playerstats(){
 		$game_id = $this->request->query['game_id'];
 		$player_id = $this->request->query['player_id'];
-		$rs = $this->Service->request('stats/report/10?game_id='.$game_id.'&player_id='.$player_id);
+		$team_id = $this->request->query['team_id'];
+		$rs = $this->Service->request('stats/report/10?game_id='.$game_id.'&player_id='.$player_id.'&team_id='.$team_id);
 
 		if($rs['status']==1){
 			$this->set('data',$rs['data']);	

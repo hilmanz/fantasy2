@@ -361,3 +361,7 @@ Configure::write('API_SALT',md5("hello world"));
 Configure::write('INITIAL_BUDGET','100000000');
 Configure::write('DB','ffg');
 Configure::write('AVATAR_URL','http://localhost/fantasy/files/');
+Configure::write('optadb','optadb');
+Configure::write('season_id','2013');
+Configure::write('competition_id','c8');
+Configure::write('stats_service_url','http://localhost/fantasy_stats/');

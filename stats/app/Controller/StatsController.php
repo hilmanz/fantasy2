@@ -36,8 +36,14 @@ class StatsController extends AppController {
 			case 5:
 				$response = $this->team_stats_cummulative();
 			break;
+			case 55:
+				$response = $this->team_stats_cummulative_raw();
+			break;
 			case 6:
 				$response = $this->player_stats_cummulative();
+			break;
+			case 56:
+				$response = $this->player_stats_cummulative_raw();
 			break;
 			case 7:
 				$response = $this->cumulative_best_and_worsts_player();
@@ -45,14 +51,23 @@ class StatsController extends AppController {
 			case 8:
 				$response = $this->individual_match_report();
 			break;
+			case 58:
+				$response = $this->individual_match_report_raw();
+			break;
 			case 9:
 				$response = $this->team_stats_per_game();
+			break;
+			case 59:
+				$response = $this->team_stats_per_game_raw();
 			break;
 			case 13:
 				$response = $this->team_match_results();
 			break;
 			case 10:
 				$response = $this->player_stats_per_match();
+			break;
+			case 510:
+				$response = $this->player_stats_per_match_raw();
 			break;
 			default:
 				$response = array('status'=>1,'data'=>'ready');
@@ -98,12 +113,37 @@ class StatsController extends AppController {
 		}
 		
 	}
+	public function team_stats_cummulative_raw(){
+		$this->loadModel('TeamStats');
+		if(isset($this->request->query['team_id'])){
+			$team_id = Sanitize::clean($this->request->query['team_id']);
+			$result = $this->TeamStats->getRawTeamStats($team_id);
+			
+
+			return array('status'=>'1','data'=>$result);	
+		}else{
+			return array('status'=>'0','data'=>'');
+		}
+		
+	}
 	public function team_stats_per_game(){
 		$this->loadModel('TeamStats');
 		if(isset($this->request->query['team_id'])){
 			$team_id = Sanitize::clean($this->request->query['team_id']);
 			$game_id = Sanitize::clean($this->request->query['game_id']);
 			$result = $this->TeamStats->individualMatchReport($game_id,$team_id);
+			return array('status'=>'1','data'=>$result);	
+		}else{
+			return array('status'=>'0','data'=>'');
+		}
+		
+	}
+	public function team_stats_per_game_raw(){
+		$this->loadModel('TeamStats');
+		if(isset($this->request->query['team_id'])){
+			$team_id = Sanitize::clean($this->request->query['team_id']);
+			$game_id = Sanitize::clean($this->request->query['game_id']);
+			$result = $this->TeamStats->individualMatchReportRaw($game_id,$team_id);
 			return array('status'=>'1','data'=>$result);	
 		}else{
 			return array('status'=>'0','data'=>'');
@@ -125,7 +165,20 @@ class StatsController extends AppController {
 		$this->loadModel('PlayerStats');
 		if(isset($this->request->query['player_id'])){
 			$player_id = Sanitize::clean($this->request->query['player_id']);
-			$result = $this->PlayerStats->individual_report($player_id);
+			$team_id = Sanitize::clean($this->request->query['team_id']);
+			$result = $this->PlayerStats->individual_report($player_id,$team_id);
+			
+			return array('status'=>'1','data'=>$result);	
+		}else{
+			return array('status'=>'0','data'=>'');
+		}
+	}
+	public function player_stats_cummulative_raw(){
+		$this->loadModel('PlayerStats');
+		if(isset($this->request->query['player_id'])){
+			$player_id = Sanitize::clean($this->request->query['player_id']);
+			$team_id = Sanitize::clean($this->request->query['team_id']);
+			$result = $this->PlayerStats->individual_report_raw($player_id,$team_id);
 			
 			return array('status'=>'1','data'=>$result);	
 		}else{
@@ -136,8 +189,22 @@ class StatsController extends AppController {
 		$this->loadModel('PlayerStats');
 		if(isset($this->request->query['player_id'])&&isset($this->request->query['game_id'])){
 			$player_id = Sanitize::clean($this->request->query['player_id']);
+			$team_id = Sanitize::clean($this->request->query['team_id']);
 			$game_id = Sanitize::clean($this->request->query['game_id']);
-			$result = $this->PlayerStats->individual_report_per_match($game_id,$player_id);
+			$result = $this->PlayerStats->individual_report_per_match($game_id,$player_id,$team_id);
+			
+			return array('status'=>'1','data'=>$result);	
+		}else{
+			return array('status'=>'0','data'=>'');
+		}
+	}
+	public function player_stats_per_match_raw(){
+		$this->loadModel('PlayerStats');
+		if(isset($this->request->query['player_id'])&&isset($this->request->query['game_id'])){
+			$player_id = Sanitize::clean($this->request->query['player_id']);
+			$team_id = Sanitize::clean($this->request->query['team_id']);
+			$game_id = Sanitize::clean($this->request->query['game_id']);
+			$result = $this->PlayerStats->individual_report_per_match_raw($game_id,$player_id,$team_id);
 			
 			return array('status'=>'1','data'=>$result);	
 		}else{
@@ -149,6 +216,17 @@ class StatsController extends AppController {
 		if(isset($this->request->query['game_id'])){
 			$game_id = Sanitize::clean($this->request->query['game_id']);
 			$result = $this->TeamStats->all_team_match_report($game_id);
+			
+			return array('status'=>'1','data'=>$result);	
+		}else{
+			return array('status'=>'0','data'=>'');
+		}
+	}
+	public function individual_match_report_raw(){
+		$this->loadModel('TeamStats');
+		if(isset($this->request->query['game_id'])){
+			$game_id = Sanitize::clean($this->request->query['game_id']);
+			$result = $this->TeamStats->all_team_match_report_raw($game_id);
 			
 			return array('status'=>'1','data'=>$result);	
 		}else{

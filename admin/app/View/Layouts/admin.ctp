@@ -33,7 +33,9 @@
                         <li>
                             <a href="<?=$this->Html->url('/matches')?>">Match Results</a>
                         </li>
-                        
+                        <li>
+                            <a href="<?=$this->Html->url('/stats')?>">Statistics</a>
+                        </li>
                     	<li><a href="<?=$this->Html->url('/login/logout')?>">Logout</a></li>
                     </ul>
                 </div>

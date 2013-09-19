@@ -1,13 +1,17 @@
+<?php echo $this->element('stats_navigation'); ?>
 
+<div>
+	<h3>[#5] TEAM STATS (CUMULATIVE)</h3>
+</div>
 <div id="fullcontent">
     <div>
-      <a href="<?=$this->Html->url('/pages/team/?team_id='.$team_id)?>" class="button">Back</a>
+      <a href="<?=$this->Html->url('/stats/teams')?>" class="button">Back</a>
     </div>
     <div class="section">
         <div class="col12">
             <div class="widget">
                 <div class="widget-title">
-                     <h3><?=$data['team']['name']?> (<?=$data['match_results']['home_name']?> vs <?=$data['match_results']['away_name']?>)</h3>
+                    <h3><?=$data['team']['name']?></h3>
                 </div><!-- end .widget-title -->
                 <div class="widget-content">
                   <div style="text-align:center">
@@ -71,7 +75,6 @@
                           <tr>
                             <td>Dangerous Passer</td>
                             <td class="tright">
-                             
                               <?php
                                 if(sizeof($data['dangerous_passer'])>0){
                                   $dangerous_passer = $data['dangerous_passer'][0]['name'];
@@ -90,8 +93,7 @@
                           <tr>
                             <td>Greatest Liability</td>
                             <td class="tright">
-                              
-                              <?php
+                               <?php
                                 if(sizeof($data['greatest_liability'])>0){
                                   $liable = $data['greatest_liability'][0]['name'];
                                   for($i=1;$i<sizeof($data['greatest_liability']);$i++){
@@ -113,6 +115,41 @@
                 
         </div><!-- end .col4 -->
     </div><!-- end .section -->
+    <div class="section">
+        <div class="col12">
+            <div class="widget">
+                <div class="widget-title">
+                    <h3>Match Report</h3>
+                </div><!-- end .widget-title -->
+                <div class="widget-content">
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0" class="blacktable">
+                    <thead>
+                          <tr>
+                            <th><h4>Date</h4></th>
+                            <th><h5>Home</h5></th>
+                            <th><h5>Score</h5></th>
+                            <th><h5>Away</h5></th>
+                            <th></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        <?php
+                          foreach($report as $rs):
+                        ?>
+                          <tr>
+                            <td><?=date("d/m/Y H:i",strtotime($rs['matchdate']))?></td>
+                            <td><?=h($rs['home_name'])?></td>
+                            <td><?=h($rs['home_score'])?> - <?=h($rs['away_score'])?></td>
+                            <td><?=h($rs['away_name'])?></td>
+                            <td><a href="<?=$this->Html->url('/stats/matchdetails/?game_id='.$rs['game_id'].'&team_id='.$team_id)?>" class="button">View</a></td>
+                          </tr>
+                        <?php endforeach;?>
+                      </tbody>                    
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="section">
         <div class="col12">
             <div class="widget">
@@ -139,7 +176,7 @@
                             <td><?=h($rs['position'])?></td>
                             <td><?=h($rs['jersey_num'])?></td>
                             <td><?=h($rs['score'])?></td>
-                            <td><a href="<?=$this->Html->url('/pages/playerstats/?game_id='.$data['match_results']['game_id'].'&player_id='.$rs['player_id'].'&team_id='.$team_id)?>" class="button">View</a></td>
+                            <td><a href="<?=$this->Html->url('/stats/player/?team_id='.$team_id.'&player_id='.$rs['player_id'])?>" class="button">View</a></td>
                           </tr>
                         <?php endforeach;?>
                       </tbody>                    
@@ -187,10 +224,7 @@
                              <?=round($st['conversion_rate']*100,1)?> %
                           </td>
                           <td class="">
-                             <?php
-                              $overall = $overall_stats['attacking_play'][$stats];
-                             ?>
-                              <?=round($overall['frequency']/$data['total_games'],1)?>
+                             <?=round($st['frequency']/$data['total_games'],1)?>
                           </td>
                         </tr>
                       <?php endforeach;?>
@@ -232,11 +266,7 @@
                              <?=round($st['average']*100,1)?> %
                           </td>
                           <td class="">
-                             <?php
-                              $overall = $overall_stats['attacking_style'][$stats];
-
-                             ?>
-                             <?=round($overall['total']/$data['total_games'],1)?>
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -273,11 +303,7 @@
                           </td>
                          
                           <td class="">
-                            <?php
-                              $overall = $overall_stats['dribbling'][$stats];
-                             ?>
-                             <?=round($overall/$data['total_games'],1)?>
-                             
+                             <?=round($st/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -350,12 +376,7 @@
                               <?php endif;?>
                           </td>
                           <td class="">
-                            <?php
-                              $overall = $overall_stats['passing_style'][$stats];
-
-                             ?>
-                             <?=round($overall['total']/$data['total_games'],1)?>
-                             
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -395,12 +416,7 @@
                              <?=round($st['average']*100,1)?> %
                           </td>
                           <td class="">
-                            <?php
-                              $overall = $overall_stats['defending_style'][$stats];
-
-                             ?>
-                             <?=round($overall['total']/$data['total_games'],1)?>
-                             
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -446,12 +462,7 @@
                              <?=round($st['average']*100,1)?> %
                           </td>
                           <td class="">
-                            <?php
-                              $overall = $overall_stats['goalkeeping'][$stats];
-
-                             ?>
-                             <?=round($overall['total']/$data['total_games'],1)?>
-                             
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -500,10 +511,7 @@
                               <?php endif;?>
                           </td>
                           <td class="">
-                             <?php
-                              $overall = $overall_stats['defending_strength_and_weakness'][$stats];
-                             ?>
-                             <?=round($overall['total']/$data['total_games'],1)?>
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -544,11 +552,7 @@
                              <?=round($st['average']*100,1)?> %
                           </td>
                           <td class="">
-                             <?php
-                              $overall = $overall_stats['aerial_strength'][$stats];
-                             ?>
-                             <?=round($overall['total']/$data['total_games'],1)?>
-                             
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -596,10 +600,7 @@
                            <?php endif;?>
                           </td>
                           <td class="">
-                             <?php
-                              $overall = $overall_stats['setplays'][$stats];
-                             ?>
-                             <?=round($overall['total']/$data['total_games'],1)?>
+                             <?=round($st['total']/$data['total_games'],1)?>
                           </td>
                          
                         </tr>
@@ -610,10 +611,75 @@
                 </div><!-- end .widget-content -->
           </div>
         </div><!-- end .col4 -->
-        
-        
     </div><!-- end .section -->
-
-
 </div><!-- end #fullcontent -->
 
+<div class="rawstats">
+	<div class="rows" style="width:350px;height:24px;">
+		<a href="#" id='hiderawstats' class="color:white;">Hide Panel</a>
+	</div>
+	<div class="list">
+		<h3>Raw Team Stats</h3>
+		<table>
+			<tr>
+				<td>Stats Name</td><td>Stats Value</td>
+			</tr>
+			<?php
+			foreach($teamstats as $statsName=>$statsValue):?>
+				<tr>
+					<td><?=$statsName?></td><td><?=$statsValue?></td>
+				</tr>
+			<?php endforeach;?>
+		</table>
+		<h3>Raw TeamB Stats</h3>
+		<table>
+			<tr>
+				<td>Stats Name</td><td>Stats Value</td>
+			</tr>
+			<?php
+			foreach($teamBstats as $statsName=>$statsValue):?>
+				<tr>
+					<td>teamB_<?=$statsName?></td><td><?=$statsValue?></td>
+				</tr>
+			<?php endforeach;?>
+		</table>
+	</div>
+	<h3>Try Formula</h3>
+	<div class="formulaform">
+		<div>
+			<textarea name="formula" cols="50" rows="5"></textarea>
+		</div>
+		<div>
+			<input type="button" name='btnFormula' value="Test"/>
+		</div>
+	</div>
+	<div class="formulaout">0</div>
+</div>
+<div class="rawstatstoggle">OPEN STATS</div>
+<script>
+var rawstats_show = false;
+
+
+/**team_stats**/
+<?php foreach($teamstats as $statsName=>$statsValue):?>
+var <?=$statsName?> = <?=$statsValue?>;
+<?php endforeach;?>
+/**teamB**/
+<?php foreach($teamBstats as $statsName=>$statsValue):?>
+var teamB_<?=$statsName?> = <?=$statsValue?>;
+<?php endforeach;?>
+
+$("input[name='btnFormula']").click(function(e){
+	$('.formulaout').html(eval($('textarea[name=formula]').val()));
+	e.preventDefault();
+});
+$('#hiderawstats').click(function(e){
+	$('.rawstats').animate({"left": '-1200'});
+	$('.rawstatstoggle').fadeIn();
+});
+$('.rawstatstoggle').click(function(e){
+	$('.rawstatstoggle').hide();
+	$('.rawstats').show();
+	$('.rawstats').animate({"left": '10'});
+});
+</script>

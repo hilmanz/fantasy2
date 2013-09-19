@@ -503,20 +503,45 @@ class PlayerStats extends Stats {
 		}
 		return $players;
 	}
-	public function individual_report($player_id){
+	public function individual_report($player_id,$team_id){
 		$game_ids = $this->getPlayerOnlyGameIds($player_id,Configure::read('competition_id'),
 												Configure::read('season_id'));
 
-		return $this->getPlayerStatsPerCategory($player_id,$game_ids);
+		return $this->getPlayerStatsPerCategory($player_id,$game_ids,$team_id);
 	}
-	public function individual_report_per_match($game_id,$player_id){
-		
-		
-		return $this->getPlayerStatsPerCategory($player_id,array($game_id));
-	}
-	private function getPlayerStatsPerCategory($player_id,$game_ids){
+	public function individual_report_raw($player_id){
+		$game_ids = $this->getPlayerOnlyGameIds($player_id,Configure::read('competition_id'),
+												Configure::read('season_id'));
 		$player_stats = $this->getPlayerStats($player_id,$game_ids);
+
 		$player_info = $this->getPlayerInfo($player_id);
+		$teamB_stats = $this->teamBPlayerStats($player_info['team_id'],$game_ids);
+
+		$stats = array('stats'=>$player_stats,
+						'teamB'=>$teamB_stats);
+
+		return $stats;
+	}
+	public function individual_report_per_match($game_id,$player_id,$team_id){
+		
+		
+		return $this->getPlayerStatsPerCategory($player_id,array($game_id),$team_id);
+	}
+	public function individual_report_per_match_raw($game_id,$player_id){
+		$game_ids = array($game_id);
+		$player_stats = $this->getPlayerStats($player_id,$game_ids);
+
+		$player_info = $this->getPlayerInfo($player_id);
+		$teamB_stats = $this->teamBPlayerStats($player_info['team_id'],$game_ids);
+
+		$stats = array('stats'=>$player_stats,
+						'teamB'=>$teamB_stats);
+
+		return $stats;
+	}
+	private function getPlayerStatsPerCategory($player_id,$game_ids,$team_id){
+		$player_stats = $this->getPlayerStats($player_id,$game_ids);
+		$player_info = $this->getPlayerInfo($player_id,$team_id);
 		$teamB_stats = $this->teamBPlayerStats($player_info['team_id'],$game_ids);
 		//the maps
 		$map = array(

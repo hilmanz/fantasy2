@@ -171,7 +171,7 @@
                             <td><?=h($rs['position'])?></td>
                             <td><?=h($rs['jersey_num'])?></td>
                             <td><?=h($rs['score'])?></td>
-                            <td><a href="<?=$this->Html->url('/pages/player/?player_id='.$rs['player_id'])?>" class="button">View</a></td>
+                            <td><a href="<?=$this->Html->url('/pages/player/?player_id='.$rs['player_id'].'&team_id='.$team_id)?>" class="button">View</a></td>
                           </tr>
                         <?php endforeach;?>
                       </tbody>                    

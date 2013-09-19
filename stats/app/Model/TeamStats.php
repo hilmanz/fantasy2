@@ -15,6 +15,16 @@ class TeamStats extends Stats {
 			);
 		return $rs;
 	}
+	public function all_team_match_report_raw($game_id){
+		$match = $this->match_results_per_game($game_id);
+
+		$rs = array(
+				'results'=>$match,
+				'home'=>$this->individualMatchReportRaw($game_id,$match['home_team']),
+				'away'=>$this->individualMatchReportRaw($game_id,$match['away_team'])
+			);
+		return $rs;
+	}
 	public function get_lineups($team_id,$game_ids){
 		$sql = "SELECT 
 				b.uid AS player_id,b.name,b.position,b.first_name,b.last_name,b.known_name,
@@ -97,6 +107,22 @@ class TeamStats extends Stats {
 		}
 
 		return $players;
+	}
+	/**
+	* Raw Cumulative Stats
+	*/
+	public function getRawTeamStats($team_id){
+		$game_ids = $this->getGameIds(Configure::read('competition_id'),
+												Configure::read('season_id'));
+		$stats = $this->getStats($team_id,$game_ids);
+		$teamB = $this->getTeamBStats($team_id,$game_ids);
+		return array('stats'=>$stats,'teamB'=>$teamB);
+	}
+	public function individualMatchReportRaw($game_id,$team_id){
+		$game_ids = array($game_id);
+		$stats = $this->getStats($team_id,$game_ids);
+		$teamB = $this->getTeamBStats($team_id,$game_ids);
+		return array('stats'=>$stats,'teamB'=>$teamB);
 	}
 	/*
 	* individual match report

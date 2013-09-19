@@ -1,7 +1,7 @@
 
 <div id="fullcontent">
     <div>
-      <a href="<?=$this->Html->url('/pages/team/?team_id='.$team_id)?>" class="button">Back</a>
+      <a href="<?=$this->Html->url('/stats/team/?team_id='.$team_id)?>" class="button">Back</a>
     </div>
     <div class="section">
         <div class="col12">
@@ -139,7 +139,7 @@
                             <td><?=h($rs['position'])?></td>
                             <td><?=h($rs['jersey_num'])?></td>
                             <td><?=h($rs['score'])?></td>
-                            <td><a href="<?=$this->Html->url('/pages/playerstats/?game_id='.$data['match_results']['game_id'].'&player_id='.$rs['player_id'].'&team_id='.$team_id)?>" class="button">View</a></td>
+                            <td><a href="<?=$this->Html->url('/stats/playerstats/?game_id='.$data['match_results']['game_id'].'&player_id='.$rs['player_id'].'&team_id='.$team_id)?>" class="button">View</a></td>
                           </tr>
                         <?php endforeach;?>
                       </tbody>                    
@@ -617,3 +617,72 @@
 
 </div><!-- end #fullcontent -->
 
+<div class="rawstats">
+  <div class="rows" style="width:350px;height:24px;">
+    <a href="#" id='hiderawstats' class="color:white;">Hide Panel</a>
+  </div>
+  <div class="list">
+    <h3>Raw Team Stats</h3>
+    <table>
+      <tr>
+        <td>Stats Name</td><td>Stats Value</td>
+      </tr>
+      <?php
+      foreach($teamstats as $statsName=>$statsValue):?>
+        <tr>
+          <td><?=$statsName?></td><td><?=$statsValue?></td>
+        </tr>
+      <?php endforeach;?>
+    </table>
+    <h3>Raw TeamB Stats</h3>
+    <table>
+      <tr>
+        <td>Stats Name</td><td>Stats Value</td>
+      </tr>
+      <?php
+      foreach($teamBstats as $statsName=>$statsValue):?>
+        <tr>
+          <td>teamB_<?=$statsName?></td><td><?=$statsValue?></td>
+        </tr>
+      <?php endforeach;?>
+    </table>
+  </div>
+  <h3>Try Formula</h3>
+  <div class="formulaform">
+    <div>
+      <textarea name="formula" cols="50" rows="5"></textarea>
+    </div>
+    <div>
+      <input type="button" name='btnFormula' value="Test"/>
+    </div>
+  </div>
+  <div class="formulaout">0</div>
+</div>
+<div class="rawstatstoggle">OPEN STATS</div>
+<script>
+var rawstats_show = false;
+
+
+/**team_stats**/
+<?php foreach($teamstats as $statsName=>$statsValue):?>
+var <?=$statsName?> = <?=$statsValue?>;
+<?php endforeach;?>
+/**teamB**/
+<?php foreach($teamBstats as $statsName=>$statsValue):?>
+var teamB_<?=$statsName?> = <?=$statsValue?>;
+<?php endforeach;?>
+
+$("input[name='btnFormula']").click(function(e){
+  $('.formulaout').html(eval($('textarea[name=formula]').val()));
+  e.preventDefault();
+});
+$('#hiderawstats').click(function(e){
+  $('.rawstats').animate({"left": '-1200'});
+  $('.rawstatstoggle').fadeIn();
+});
+$('.rawstatstoggle').click(function(e){
+  $('.rawstatstoggle').hide();
+  $('.rawstats').show();
+  $('.rawstats').animate({"left": '10'});
+});
+</script>
