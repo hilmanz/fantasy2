@@ -32,7 +32,7 @@ class Stats extends AppModel {
 				WHERE a.team_id='{$team_id}' AND stats_name='goals'
 				AND a.game_id IN (".$this->arrayToSql($game_ids).")
 				GROUP BY player_id ORDER BY total DESC LIMIT 1;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$player = @$rs[0]['b'];
 		$player['player_id'] = @$rs[0]['a']['player_id'];
 		$player['goals'] = @$rs[0][0]['goals'];
@@ -51,7 +51,7 @@ class Stats extends AppModel {
 				AND a.game_id IN (".$this->arrayToSql($game_ids).")
 				GROUP BY player_id ORDER BY total DESC LIMIT 1;";
 
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$player = @$rs[0]['b'];
 		$player['player_id'] = @$rs[0]['a']['player_id'];
 		$player['goals'] = @$rs[0][0]['goals'];
@@ -141,8 +141,8 @@ class Stats extends AppModel {
 				FROM optadb.matchinfo 
 				WHERE competition_id = '{$competition_id}' AND season_id={$season_id} 
 				AND (home_team='{$team_id}' OR away_team='{$team_id}') 
-				AND period='FullTime' LIMIT 50";
-		return $this->query($sql);
+				LIMIT 50";
+		return $this->query($sql,false);
 	}
 	public function getTeams(){
 		$teams = $this->query("SELECT uid as team_id,name FROM ".Configure::read('optadb').".master_team LIMIT 20");
@@ -157,8 +157,8 @@ class Stats extends AppModel {
 		$sql = "SELECT game_id
 				FROM optadb.matchinfo 
 				WHERE competition_id = '{$competition_id}' AND season_id={$season_id}
-				AND period='FullTime' LIMIT 400";
-		$rs = $this->query($sql);
+				LIMIT 400";
+		$rs = $this->query($sql,false);
 		$game_ids = array();
 		while(sizeof($rs)>0){
 			$a = array_shift($rs);
@@ -174,7 +174,7 @@ class Stats extends AppModel {
 							WHERE b.game_id = a.game_id AND player_id='{$player_id}')
 				AND period='FullTime' LIMIT 400";
 
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 
 		$game_ids = array();
 
@@ -203,7 +203,7 @@ class Stats extends AppModel {
 				AND period = 'FullTime'
 				AND matchday = {$matchday};";
 
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		while(sizeof($rs)>0){
 			$a = array_shift($rs);
 			$game_ids[] = $a['matchinfo']['game_id'];

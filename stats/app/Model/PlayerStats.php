@@ -80,7 +80,7 @@ class PlayerStats extends Stats {
 				WHERE game_id IN (".$this->arrayToSql($game_ids).")
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$players  = array();
 		while(sizeof($rs)>0){
 			$a = array_shift($rs);
@@ -105,7 +105,7 @@ class PlayerStats extends Stats {
 				AND def_influence > 0
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$players  = array();
 		while(sizeof($rs)>0){
 			$a = array_shift($rs);
@@ -130,7 +130,7 @@ class PlayerStats extends Stats {
 				AND mid_influence > 0
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$players  = array();
 		while(sizeof($rs)>0){
 			$a = array_shift($rs);
@@ -155,7 +155,7 @@ class PlayerStats extends Stats {
 				AND fw_influence > 0
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$players  = array();
 		while(sizeof($rs)>0){
 			$a = array_shift($rs);
@@ -180,7 +180,7 @@ class PlayerStats extends Stats {
 				AND def_influence > 0
 				GROUP BY player_id 
 				ORDER BY total ASC LIMIT 5;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$players  = array();
 		while(sizeof($rs)>0){
 			$a = array_shift($rs);
@@ -205,7 +205,7 @@ class PlayerStats extends Stats {
 				AND mid_influence > 0
 				GROUP BY player_id 
 				ORDER BY total ASC LIMIT 5;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$players  = array();
 		while(sizeof($rs)>0){
 			$a = array_shift($rs);
@@ -230,7 +230,7 @@ class PlayerStats extends Stats {
 				AND fw_influence > 0
 				GROUP BY player_id 
 				ORDER BY total ASC LIMIT 5;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$players  = array();
 		while(sizeof($rs)>0){
 			$a = array_shift($rs);
@@ -255,7 +255,7 @@ class PlayerStats extends Stats {
 				AND most_influence > 0
 				GROUP BY player_id 
 				ORDER BY total ASC LIMIT 5;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$players  = array();
 		while(sizeof($rs)>0){
 			$a = array_shift($rs);
@@ -280,7 +280,7 @@ class PlayerStats extends Stats {
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;";
 		
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$players  = array();
 		while(sizeof($rs)>0){
 			$a = array_shift($rs);
@@ -336,7 +336,7 @@ class PlayerStats extends Stats {
 				AND ontarget_scoring_att > 0
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$players  = array();
 		while(sizeof($rs)>0){
 			$a = array_shift($rs);
@@ -394,7 +394,7 @@ class PlayerStats extends Stats {
 				AND ball_wins > 0
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$players  = array();
 		while(sizeof($rs)>0){
 			$a = array_shift($rs);
@@ -419,7 +419,7 @@ class PlayerStats extends Stats {
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;
 				";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$players  = array();
 		while(sizeof($rs)>0){
 			$a = array_shift($rs);
@@ -467,7 +467,7 @@ class PlayerStats extends Stats {
 				AND def_fails > 0
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$players  = array();
 		while(sizeof($rs)>0){
 			$a = array_shift($rs);
@@ -491,7 +491,7 @@ class PlayerStats extends Stats {
 				AND liable > 0
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$players  = array();
 		while(sizeof($rs)>0){
 			$a = array_shift($rs);
@@ -743,7 +743,7 @@ class PlayerStats extends Stats {
 				ON a.team_id = b.uid
 				WHERE a.uid = '{$player_id}';";
 
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$player = $rs[0]['a'];
 		$player['team_name'] = $rs[0]['b']['team_name'];
 		return $player;
@@ -771,7 +771,7 @@ class PlayerStats extends Stats {
 				GROUP BY stats_name
 				LIMIT 1000;";
 
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$stats = array();
 		while(sizeof($rs)>0){
 			$st = array_shift($rs);
@@ -788,7 +788,7 @@ class PlayerStats extends Stats {
 				LIMIT 1000;";
 
 
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$stats = array();
 		while(sizeof($rs)>0){
 			$st = array_shift($rs);

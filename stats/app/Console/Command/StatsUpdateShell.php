@@ -3,26 +3,37 @@ class StatsUpdateShell extends AppShell{
 	var $uses = array('Matchinfo');
 
 	public function main() {
-       $this->dummy(); //disable these on production
+       //$this->dummy(); //disable these on production
        $this->process_queue();
   }
   private function process_queue(){
     $queue = $this->getNewQueue();
-   
+    CakeLog::write('stats_update', 'processing queue : '.sizeof($queue));
+
     if(sizeof($queue)>0){
-      $this->addToQueue($queue[0]['a']);
-      $this->generateStats($queue[0]['a']);
-      $this->flagDone($queue[0]['a']['game_id']);
-      $this->process_queue();
+      for($i=0;$i<sizeof($queue);$i++){
+        CakeLog::write('stats_update','updating stats #'.$queue[$i]['a']['game_id']);
+        $this->addToQueue($queue[$i]['a']);
+        $this->generateStats($queue[$i]['a']);
+        if($queue[$i]['a']['period']=='FullTime'){
+          CakeLog::write('stats_update','Flag stats #'.$queue[$i]['a']['game_id']);
+          $this->flagDone($queue[$i]['a']['game_id']);
+        }else{
+          CakeLog::write('stats_update','this is ongoing stats #'.$queue[$i]['a']['game_id']);
+        }
+      }
+      //$this->process_queue();
     }
   }
   private function getNewQueue(){
-    $sql = "SELECT game_id,home_team,away_team 
+    $sql = "SELECT game_id,home_team,away_team,period 
             FROM ".Configure::read('optadb').".matchinfo a 
-            WHERE period = 'FullTime' 
-            AND  NOT EXISTS
+            WHERE competition_id = '".Configure::read('competition_id')."' 
+            AND season_id = '".Configure::read('season_id')."' 
+            AND NOT EXISTS
             (SELECT 1 FROM statsjob_queue b 
-            WHERE b.game_id = a.game_id LIMIT 1) LIMIT 1";
+            WHERE b.game_id = a.game_id AND n_status = 1 LIMIT 1) LIMIT 20";
+    print $sql;
     
    
     $rs = $this->Matchinfo->query($sql,false);

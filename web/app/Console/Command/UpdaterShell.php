@@ -18,9 +18,11 @@ class UpdaterShell extends AppShell{
        	}while(sizeof($user)>0);
        
        $this->out('recalculate ranks');
+       CakeLog::write('updater', 'recalculate ranks');
        $this->recalculate_ranks();
        
        $this->out('done');
+       CakeLog::write('updater', 'done');
     }
     private function get_points($users){
     	foreach($users as $user){
@@ -42,7 +44,7 @@ class UpdaterShell extends AppShell{
             $this->out('Error : '.$e->getMessage());
           }
       		$this->out("Updating #".$user['Team']['id']." -> ".$response['points']);
-
+          CakeLog::write('updater',"Updating #".$user['Team']['id']." -> ".$response['points']);
           if(is_array($response['game_points'])){
             $this->updating_weekly_stats($user['Team']['id'],
                                       $response['game_points']);
@@ -67,6 +69,9 @@ class UpdaterShell extends AppShell{
                   $this->out('Error : '.$e->getMessage());
                 }
                 $this->out("Updating #".$team_id." week #".$weekly['matchday'].
+                                        "-> ".$weekly['total_points']);
+
+                CakeLog::write('updater',"Updating #".$team_id." week #".$weekly['matchday'].
                                         "-> ".$weekly['total_points']);
        
       }

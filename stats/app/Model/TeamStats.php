@@ -95,7 +95,7 @@ class TeamStats extends Stats {
 					'red_card'
 					)
 				GROUP BY player_id;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		
 
 		$players = array();
@@ -210,9 +210,8 @@ class TeamStats extends Stats {
 				WHERE 
 				game_id IN (".$this->arrayToSql($game_ids).")
 				AND (home_team = '{$team_id}' OR away_team = '{$team_id}')
-				AND period='FullTime'
 				LIMIT 380;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$matches = array();
 		while(sizeof($rs)>0){
 			$r = array_shift($rs);
@@ -238,9 +237,9 @@ class TeamStats extends Stats {
 				ON a.away_team = c.uid
 				WHERE 
 				game_id = '{$game_id}'
-				AND period='FullTime'
+				
 				LIMIT 380;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$matches = array();
 		while(sizeof($rs)>0){
 			$r = array_shift($rs);
@@ -257,11 +256,11 @@ class TeamStats extends Stats {
 		$sql = "SELECT COUNT(game_id) AS total FROM matchinfo 
 				WHERE game_id IN (".$this->arrayToSql($game_ids).") 
 				AND (home_team = '{$team_id}' OR away_team = '{$team_id}');";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		return $rs[0][0]['total'];
 	}
 	private function getTeam($team_id){
-		$rs = $this->query("SELECT * FROM master_team WHERE uid='{$team_id}' LIMIT 1");
+		$rs = $this->query("SELECT * FROM master_team WHERE uid='{$team_id}' LIMIT 1",false);
 		return $rs[0]['master_team'];
 	}
 	private function getMostInfluencePlayer($team_id,$game_ids){
@@ -277,7 +276,7 @@ class TeamStats extends Stats {
 				AND a.team_id='{$team_id}'
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$players  = array();
 		while(sizeof($rs)>0){
 			$a = array_shift($rs);
@@ -319,7 +318,7 @@ class TeamStats extends Stats {
 				WHERE a.team_id='{$team_id}' AND stats_name='goals' 
 				AND game_id IN (".$this->arrayToSql($game_ids).")
 				GROUP BY player_id ORDER BY total DESC LIMIT 5";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		
 		$players  = array();
 		while(sizeof($rs)>0){
@@ -346,7 +345,7 @@ class TeamStats extends Stats {
 				AND a.team_id='{$team_id}'
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		
 		$players  = array();
 		while(sizeof($rs)>0){
@@ -372,7 +371,7 @@ class TeamStats extends Stats {
 				AND a.team_id='{$team_id}'
 				GROUP BY player_id 
 				ORDER BY total DESC LIMIT 5;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		
 		$players  = array();
 		while(sizeof($rs)>0){
@@ -818,7 +817,7 @@ class TeamStats extends Stats {
 		$rs = $this->query("SELECT COUNT(*) AS total FROM (SELECT game_id 
 							FROM team_stats 
 							WHERE game_id IN (".$this->arrayToSql($game_ids).")
-							AND team_id='{$team_id}' GROUP BY game_id) a;");
+							AND team_id='{$team_id}' GROUP BY game_id) a;",false);
 		$total_games = $rs[0][0]['total'];
 		//openplay
 		$openplay['frequency'] = $this->openplay_frequency($stats);
@@ -989,7 +988,7 @@ class TeamStats extends Stats {
 				GROUP BY stats_name;";
 
 
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$stats = array();
 		while(sizeof($rs)>0){
 			$st = array_shift($rs);
@@ -1005,7 +1004,7 @@ class TeamStats extends Stats {
 				WHERE (home_team = '{$team_id}' OR away_team='{$team_id}') 
 				AND game_id IN (".$this->arrayToSql($game_ids).")
 				";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		
 		$teamB_game_ids = array();
 		while(sizeof($rs)>0){
@@ -1016,7 +1015,7 @@ class TeamStats extends Stats {
 		$sql = "SELECT team_id FROM team_stats 
 				WHERE game_id IN (".$this->arrayToSql($teamB_game_ids).") 
 				AND team_id <> '{$team_id}' GROUP BY team_id;";
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		
 		$teamBIds = array();
 		while(sizeof($rs)>0){
@@ -1031,7 +1030,7 @@ class TeamStats extends Stats {
 				AND team_id IN (".$this->arrayToSql($teamBIds).")
 				GROUP BY stats_name;";
 
-		$rs = $this->query($sql);
+		$rs = $this->query($sql,false);
 		$stats = array();
 		while(sizeof($rs)>0){
 			$st = array_shift($rs);
