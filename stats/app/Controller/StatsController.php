@@ -73,7 +73,7 @@ class StatsController extends AppController {
 				$response = array('status'=>1,'data'=>'ready');
 			break;
 		}
-		$this->output($response['status'],$response['data']);
+		$this->output($response['status'],$response['data'],@$this->request->query['callback']);
 	}
 	public function bpl_leaderboard(){
 		$result = $this->Stats->getLeaderboard();
@@ -233,9 +233,10 @@ class StatsController extends AppController {
 			return array('status'=>'0','data'=>'');
 		}
 	}
-	private function output($status,$data){
+	private function output($status,$data,$callbackFunction=null){
 		$this->layout='ajax';
 		$this->set('response',array('status'=>$status,'data'=>$data));
+		$this->set('callbackFunction',$callbackFunction);
 		$this->render('json/index');
 	}
 }

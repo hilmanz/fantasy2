@@ -1205,8 +1205,16 @@ var home = function(input){
   <?php foreach($teamBstats as $statsName=>$statsValue):?>
   var teamB_<?=$statsName?> = <?=$statsValue?>;
   <?php endforeach;?>
-
-  return eval(input);
+  function evalFormula(input){
+    var a = input.match(/[a-zA-Z0-9\_]+/g);
+    for(var i in a){
+        if(typeof this[a[i]] === 'undefined'){
+            this[a[i]] = 0;
+        }
+    }
+    return eval(input);
+  }
+  return evalFormula(input);
 }
 
 
@@ -1285,8 +1293,16 @@ var away = function(input){
   <?php foreach($teamBstats as $statsName=>$statsValue):?>
   var teamB_<?=$statsName?> = <?=$statsValue?>;
   <?php endforeach;?>
-
-  return eval(input);
+  function evalFormula(input){
+    var a = input.match(/[a-zA-Z0-9\_]+/g);
+    for(var i in a){
+        if(typeof this[a[i]] === 'undefined'){
+            this[a[i]] = 0;
+        }
+    }
+    return eval(input);
+  }
+  return evalFormula(input);
 }
 
 

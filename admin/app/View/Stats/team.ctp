@@ -668,9 +668,17 @@ var <?=$statsName?> = <?=$statsValue?>;
 <?php foreach($teamBstats as $statsName=>$statsValue):?>
 var teamB_<?=$statsName?> = <?=$statsValue?>;
 <?php endforeach;?>
-
+function evalFormula(input){
+  var a = input.match(/[a-zA-Z0-9\_]+/g);
+  for(var i in a){
+      if(typeof this[a[i]] === 'undefined'){
+          this[a[i]] = 0;
+      }
+  }
+  return eval(input);
+}
 $("input[name='btnFormula']").click(function(e){
-	$('.formulaout').html(eval($('textarea[name=formula]').val()));
+	$('.formulaout').html(evalFormula($('textarea[name=formula]').val()));
 	e.preventDefault();
 });
 $('#hiderawstats').click(function(e){

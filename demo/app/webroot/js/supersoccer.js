@@ -49,3 +49,77 @@ $(window).load(function(){
 $(function() {
 $( "#clubtabs" ).tabs();
 });
+
+
+
+function api_call(u,c){
+	$.ajax({
+		  url: u,
+		  dataType: 'json',
+		  success: c
+		}
+	);
+}
+function api_post(u,d,c){
+	$.ajax({
+	  url: u,
+	  dataType: 'json',
+	  type:'POST',
+	  data:d,
+	  success: c});	
+}
+function render_view(tpl_source,target,data){
+	try{
+		var View = Backbone.View.extend({
+	        initialize: function(){
+	            this.render();
+	        },
+	        render: function(){
+	            var variables = data;
+	            var template = _.template($(tpl_source).html(),variables);
+	            this.$el.html(template);
+	        }
+	    });
+	    var view = new View({el:$(target)});
+	    
+   }catch(error){
+   		console.log(error.message);
+   }
+}
+function prepend_view(tpl_source,target,data){
+	try{
+		var View = Backbone.View.extend({
+	        initialize: function(){
+	            this.render();
+	        },
+	        render: function(){
+	            var variables = data;
+	            var template = _.template($(tpl_source).html(),variables);
+	            this.$el.prepend(template);
+	        }
+	    });
+	    var view = new View({el:$(target)});
+   }catch(error){
+   	 	
+   }
+}
+function append_view(tpl_source,target,data){
+	try{
+		var View = Backbone.View.extend({
+	        initialize: function(){
+	            this.render();
+	        },
+	        render: function(){
+	            var variables = data;
+	            var template = _.template($(tpl_source).html(),variables);
+	            this.$el.append(template);
+	            this.$el.css('display','none');
+	            this.$el.fadeIn();
+	        }
+	    });
+	    var view = new View({el:$(target)});
+	    
+   }catch(error){
+   	 
+   }
+}
