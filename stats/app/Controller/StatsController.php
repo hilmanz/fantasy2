@@ -16,6 +16,9 @@ class StatsController extends AppController {
 	public function index($type=null){
 		$this->report($type);
 	}
+	public function test(){
+		
+	}
 	public function report($type){
 		$this->loadModel('Stats');
 		$this->loadModel('BestAndWorstStats');

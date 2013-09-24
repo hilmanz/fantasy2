@@ -142,8 +142,12 @@ class TeamStats extends Stats {
 					'top_scorer'=>$this->top_scorer($team_id,$game_ids),
 					'dangerous_passer'=>$this->dangerous_passer($team_id,$game_ids),
 					'greatest_liability'=>$this->greatest_liability($team_id,$game_ids),
+
 					'attacking_play'=>$this->attacking_play($team_id,$game_ids,$stats),
 					'attacking_style'=>$this->attacking_style($team_id,$game_ids,$stats,$teamBStats),
+					'goals'=>$this->goals($team_id,$game_ids,$stats,$teamBStats),
+					'shooting'=>$this->shooting($team_id,$game_ids,$stats,$teamBStats),
+					'ball_movement'=>$this->ball_movement($team_id,$game_ids,$stats,$teamBStats),
 					'dribbling'=>$this->dribbling($team_id,$game_ids,$stats,$teamBStats),
 					'passing_style'=>$this->passing_style($team_id,$game_ids,$stats,$teamBStats),
 					'defending_style'=>$this->defending_style($team_id,$game_ids,$stats,$teamBStats),
@@ -176,6 +180,9 @@ class TeamStats extends Stats {
 					'top_scorer'=>$this->top_scorer($team_id,$game_ids),
 					'dangerous_passer'=>$this->dangerous_passer($team_id,$game_ids),
 					'greatest_liability'=>$this->greatest_liability($team_id,$game_ids),
+					'goals'=>$this->goals($team_id,$game_ids,$stats,$teamBStats),
+					'shooting'=>$this->shooting($team_id,$game_ids,$stats,$teamBStats),
+					'ball_movement'=>$this->ball_movement($team_id,$game_ids,$stats,$teamBStats),
 					'attacking_play'=>$this->attacking_play($team_id,$game_ids,$stats),
 					'attacking_style'=>$this->attacking_style($team_id,$game_ids,$stats,$teamBStats),
 					'dribbling'=>$this->dribbling($team_id,$game_ids,$stats,$teamBStats),
@@ -384,21 +391,73 @@ class TeamStats extends Stats {
 		}
 		return $players;
 	}
+	private function goals($team_id,$game_ids,$stats,$teamB){
+		$first_half = $this->fromFormula('first_half_goals',$stats);
+		$second_half = $this->fromFormula('goals - first_half_goals',
+									 		$stats);
+
+		
+		return array('first_half'=>array('total'=>$first_half,
+										 'average'=>0),
+					  'second_half'=>array('total'=>$second_half,
+					  							'average'=>0),
+					);
+	}
+	private function ball_movement($team_id,$game_ids,$stats,$teamB){
+
+		$final_3rd_entries = $this->fromFormula('final_third_entries',$stats);
+		$penalty_area_entries = $this->fromFormula('pen_area_entries',$stats);
+		$chances_created = $this->fromFormula('big_chance_created',$stats);
+		$chances_missed = $this->fromFormula('big_chance_missed',$stats);
+		$chances_scored = $this->fromFormula('big_chance_scored',$stats);
+		$chances_conversion = floatval($this->fromFormula('(big_chance_scored/big_chance_created)',$stats)) * 100;
+
+		
+		return array('final_3rd_entries'=>array('total'=>$final_3rd_entries),
+						'penalty_area_entries'=>array('total'=>$penalty_area_entries),
+						'chances_created'=>array('total'=>$chances_created),
+						'chances_missed'=>array('total'=>$chances_missed),
+						'chances_scored'=>array('total'=>$chances_scored),
+						'chances_conversion'=>array('total'=>$chances_conversion),
+					);
+	}
+	private function shooting($team_id,$game_ids,$stats,$teamB){
+		$shots_from_inside_the_box = $this->fromFormula('(att_ibox_blocked + att_ibox_goal + att_ibox_miss + att_ibox_target)',
+									 $stats);
+
+		$ibox_accuracy = $this->fromFormula('att_ibox_goal / (att_ibox_blocked + att_ibox_goal + att_ibox_miss + att_ibox_target)',
+									 $stats);
+		$ibox_goal = $this->fromFormula('att_ibox_goal',$stats);
+
+
+		$shots_from_outside_the_box = $this->fromFormula('(att_obox_blocked + att_obox_goal + att_obox_miss + att_obox_target)',$stats);
+		$obox_accuracy = $this->fromFormula('att_obox_goal / (att_obox_blocked + att_obox_goal + att_obox_miss + att_obox_target)',$stats);
+		$obox_goal = $this->fromFormula('att_obox_goal',$stats);
+
+		return array('shots_from_inside_the_box'=>array('total'=>$shots_from_inside_the_box,
+										 				'accuracy'=>$ibox_accuracy,
+										 				'goals'=>$ibox_goal),
+
+					  'shots_from_outside_the_box'=>array('total'=>$shots_from_outside_the_box,
+										 				'accuracy'=>$obox_accuracy,
+										 				'goals'=>$obox_goal),
+					);
+	}
 	private function attacking_style($team_id,$game_ids,$stats,$teamB){
-		$deep_cross = intval(@$teamB['crosses_18yardplus']);
-		$deep_cross_avg = intval(@$teamB['crosses_18yardplus']) / (intval(@$teamB['crosses_18yardplus']) + intval(@$teamB['crosses_18yard']) +intval(@$stats['total_pull_back']) + intval(@$stats['total_through_ball']));
-		$cross_from_18yd = intval(@$teamB['crosses_18yard']);
-		$cross_from_18yd_avg = intval(@$teamB['crosses_18yard']) / (intval(@$teamB['crosses_18yardplus']) + intval(@$teamB['crosses_18yard']) +intval(@$stats['total_pull_back']) + intval(@$stats['total_through_ball']));
+		$deep_cross = intval(@$stats['crosses_18yardplus']);
+		$deep_cross_avg = intval(@$stats['crosses_18yardplus']) / (intval(@$stats['crosses_18yardplus']) + intval(@$stats['crosses_18yard']) +intval(@$stats['total_pull_back']) + intval(@$stats['total_through_ball']));
+		$cross_from_18yd = intval(@$stats['crosses_18yard']);
+		$cross_from_18yd_avg = intval(@$stats['crosses_18yard']) / (intval(@$stats['crosses_18yardplus']) + intval(@$stats['crosses_18yard']) +intval(@$stats['total_pull_back']) + intval(@$stats['total_through_ball']));
 
 		$cutbacks = intval(@$stats['total_pull_back']);
-		$cutbacks_avg = intval(@$stats['total_pull_back']) / (intval(@$teamB['crosses_18yardplus']) + intval(@$teamB['crosses_18yard']) +intval(@$stats['total_pull_back']) + intval(@$stats['total_through_ball']));
+		$cutbacks_avg = intval(@$stats['total_pull_back']) / (intval(@$stats['crosses_18yardplus']) + intval(@$stats['crosses_18yard']) +intval(@$stats['total_pull_back']) + intval(@$stats['total_through_ball']));
 		
 		$through_ball = intval(@$stats['total_through_ball']);
-		$through_ball_avg = intval(@$stats['total_through_ball']) / (intval(@$teamB['crosses_18yardplus']) + intval(@$teamB['crosses_18yard']) +intval(@$stats['total_pull_back']) + intval(@$stats['total_through_ball']));
+		$through_ball_avg = intval(@$stats['total_through_ball']) / (intval(@$stats['crosses_18yardplus']) + intval(@$stats['crosses_18yard']) +intval(@$stats['total_pull_back']) + intval(@$stats['total_through_ball']));
 		
 
 		$through_ball = intval(@$stats['total_through_ball']);
-		$through_ball_avg = intval(@$stats['total_through_ball']) / (intval(@$teamB['crosses_18yardplus']) + intval(@$teamB['crosses_18yard']) +intval(@$stats['total_pull_back']) + intval(@$stats['total_through_ball']));
+		$through_ball_avg = intval(@$stats['total_through_ball']) / (intval(@$stats['crosses_18yardplus']) + intval(@$stats['crosses_18yard']) +intval(@$stats['total_pull_back']) + intval(@$stats['total_through_ball']));
 		
 		$accurate_cutbacks = intval(@$stats['accurate_pull_back']);
 		$accurate_cutbacks_avg = floatval(@(intval(@$stats['accurate_pull_back']) / intval(@$stats['total_pull_back'])));
@@ -410,7 +469,7 @@ class TeamStats extends Stats {
 		$accurate_through_ball_avg = floatval(@(intval(@$stats['accurate_through_ball']) / intval(@$stats['total_through_ball'])));
 
 		$chances_from_crosses = intval(@$stats['att_hd_total']);
-
+						//att_bx_centre + att_ibox_blocked + att_ibox_miss + att_ibox_post + att_ibox_target
 		$shots_from_ibox = intval(@$stats['att_ibox_blocked']) + intval(@$stats['att_ibox_goal']) + intval(@$stats['att_ibox_miss']) + intval(@$stats['att_ibox_target']);
 		
 		$shots_from_obox = intval(@$stats['att_obox_blocked']) + intval(@$stats['att_obox_goal']) + intval(@$stats['att_obox_miss']) + intval(@$stats['att_obox_target']);
@@ -458,8 +517,6 @@ class TeamStats extends Stats {
 					   'goals_from_shot_outside_the_box'=>array("total"=>$goals_from_shot_obox,
 					  								"average"=>$goals_from_shot_obox_avg),
 
-					   'goals_from_crosses'=>array("total"=>$goals_from_crosses,
-					  								"average"=>$goals_from_crosses_avg),
 
 					);
 	}
@@ -476,8 +533,9 @@ class TeamStats extends Stats {
 		$launches = intval(@$stats['total_launches']);
 		$through_balls = intval(@$stats['total_through_ball']);
 		$chipped_passes = intval(@$stats['total_chipped_pass']);
-		$forward_passes = intval(@$stats['total_fwd_zone_pass']);
-		$total_pass = $long_ball + $short_passes + $launches + $through_balls + $chipped_passes ;
+		$forward_passes = intval(@$stats['total_final_third_passes']);
+		//$total_pass = $long_ball + $short_passes + $launches + $through_balls + $chipped_passes ;
+		$total_pass = intval(@$stats['total_pass']);
 		$leftside_pass = intval(@$stats['leftside_pass']);
 		$rightside_pass = intval(@$stats['rightside_pass']);
 		$accurate_pass = intval(@$stats['accurate_pass']);
@@ -500,7 +558,7 @@ class TeamStats extends Stats {
 		$launches_acc = intval(@$stats['accurate_launches']) / $launches;
 		$through_balls_acc =  intval(@$stats['accurate_through_ball']) / $through_balls;
 		$chipped_passes_acc =  intval(@$stats['accurate_chipped_pass']) / $chipped_passes;
-		$forward_passes_acc =  intval(@$stats['accurate_fwd_zone_pass']) / $forward_passes;
+		$forward_passes_acc =  intval(@$stats['successful_final_third_passes']) / $forward_passes;
 
 		//accurates
 		$accurate_long_balls = intval(@$stats['accurate_long_balls']);
@@ -508,7 +566,7 @@ class TeamStats extends Stats {
 		$accurate_launches = intval(@$stats['accurate_launches']);
 		$accurate_through_ball = intval(@$stats['accurate_through_ball']);
 		$accurate_chipped_pass = intval(@$stats['accurate_chipped_pass']);
-		$accurate_fwd_zone_pass = intval(@$stats['accurate_fwd_zone_pass']);
+		$accurate_fwd_zone_pass = intval(@$stats['successful_final_third_passes']);
 
 
 		
@@ -569,9 +627,9 @@ class TeamStats extends Stats {
 	private function setplays($team_id,$game_ids,$stats,$teamB){
 		$corners_won = intval(@$stats['won_corners']);
 		$freekicks_won = intval(@$stats['fk_foul_won']);
-		$corner_delivery = intval(@$stats['accurate_cross']) - intval(@$stats['accurate_cross_nocorner']);
+		$corner_delivery = intval(@$stats['accurate_corners_intobox']);
 		$freekick_delivery = intval(@$stats['accurate_freekick_cross']);
-		$direct_freekicks = intval(@$stats['att_freekick_target']);
+		$direct_freekicks = intval(@$stats['att_freekick_goal']) + intval(@$stats['att_freekick_target']);
 		
 		//accuracy
 		$corners_won_acc = 0;
@@ -599,7 +657,7 @@ class TeamStats extends Stats {
 						'corner_delivery'=>array('total'=>$corner_delivery,
 										 'accuracy'=>$corner_delivery_acc,
 										  'chance_ratio'=>$corner_delivery_ratio,
-										  'total2'=>intval(@$stats['total_corners_intobox'])),
+										  'total2'=>intval(@$stats['corner_taken'])),
 
 						'freekick_delivery'=>array('total'=>$freekick_delivery,
 										 'accuracy'=>$freekick_delivery_acc,
@@ -736,7 +794,7 @@ class TeamStats extends Stats {
 		$attempts_conceded_inbox = intval(@$stats['attempts_conceded_ibox']);
 		$attempts_conceded_outside_box = intval(@$stats['attempts_conceded_obox']);
 		$attempts_conceded_from_fastbreak = intval(@$teamB['shot_fastbreak']) + intval(@$teamB['att_fastbreak']);
-		$attempts_conceded_from_setpieces = intval(@$teamB['att_setpiece']);
+		$attempts_conceded_from_setpieces = intval(@$teamB['att_assits_setplay']);
 		
 		$duels_won_avg = intval(@$stats['duel_won']) / (intval(@$stats['duel_won'])+intval(@$stats['duel_lost']));
 		$tackling_won_avg = intval(@$stats['won_tackle']) / intval(@$stats['total_tackle']);
@@ -749,7 +807,7 @@ class TeamStats extends Stats {
 
 
 		$attempts_conceded_from_fastbreak_avg = (intval(@$teamB['shot_fastbreak']) + intval(@$stats['att_fastbreak'])) / intval(@$teamB['total_scoring_att']);
-		$attempts_conceded_from_setpieces_avg = intval(@$teamB['att_setpiece']) / intval(@$teamB['total_scoring_att']);
+		$attempts_conceded_from_setpieces_avg = intval(@$teamB['att_assits_setplay']) / intval(@$teamB['total_scoring_att']);
 
 		$error_lead_to_shot = intval(@$stats['error_lead_to_shot']);
 		$error_lead_to_goal = intval(@$stats['error_lead_to_goal']);
@@ -841,6 +899,9 @@ class TeamStats extends Stats {
 		$counter['conversion_rate'] = @floatval($this->counter_conversion($stats));
 		$counter['average'] = $this->counter_average_per_game($stats,$total_games);
 
+		$openplay['efficiency'] = $openplay['chances'] / ($openplay['chances']+$setpieces['chances']+$counter['chances']);
+		$setpieces['efficiency'] = $setpieces['chances'] / ($openplay['chances']+$setpieces['chances']+$counter['chances']);
+		$counter['efficiency'] = $counter['chances'] / ($openplay['chances']+$setpieces['chances']+$counter['chances']);
 		return array('openplay'=>$openplay,
 					 'setpieces'=>$setpieces,
 					 'counter_attack'=>$counter);
@@ -851,10 +912,11 @@ class TeamStats extends Stats {
 
 	}
 	private function counter_conversion($stats){
-		return intval(@$stats['goal_fastbreak'])/intval(@$stats['att_fastbreak']);
+		return intval(@$stats['goal_fastbreak'])/intval(@$stats['total_fastbreak']);
 	}
 	private function counter_chances($stats){
-		return intval(@$stats['shot_fastbreak']+$stats['att_fastbreak']);
+		return intval(@$stats['total_fastbreak']);
+		
 	}
 	private function counter_efficiency($stats){
 		
@@ -881,6 +943,8 @@ class TeamStats extends Stats {
 		//sementara jika angkanya minus, kita set jadi 0 aja. sampai ada rumus baru.
 		if($s<0){ $s = 0;}
 		return $s;
+		
+		//return ($stats['goals'] - ($stats['goals_openplay']+$stats['goal_fastbreak']))/ intval(@$stats['att_assist_setplay']);
 	}
 	private function setpieces_goals($stats){
 		$s = ($stats['goals'] - ($stats['goals_openplay']+$stats['goal_fastbreak']));
@@ -914,7 +978,7 @@ class TeamStats extends Stats {
 		
 	}
 	private function setpieces_chances($stats){
-		return $stats['total_scoring_att'] - $stats['att_openplay'];
+		return intval(@$stats['att_assist_setplay']);
 	}
 	private function openplay_average_per_game($stats,$total_games){
 		$goals = $this->getTotalValuesFromAttributes('goals_openplay',$stats);

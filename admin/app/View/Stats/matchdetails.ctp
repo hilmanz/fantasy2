@@ -135,7 +135,7 @@ $data = $report['home'];
                     <thead>
                           <tr>
                             <th><h4>Stats</h4></th>
-                            <th><h5>Frequency</h5></th>
+                          
                             <th><h5>Chances</h5></th>
                             <th><h5>Goals</h5></th>
                             <th><h5>Conversion Rate</h5></th>
@@ -149,11 +149,9 @@ $data = $report['home'];
                         ?>
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
+                       
                           <td class="">
-                             <?=round($st['frequency'])?> (<?=round($st['efficiency']*100,1)?> %)
-                          </td>
-                          <td class="">
-                             <?=$st['chances']?>
+                             <?=$st['chances']?> (<?=round($st['efficiency']*100,1)?> %)
                           </td>
                           <td class="">
                              <?=$st['goals']?>
@@ -178,6 +176,125 @@ $data = $report['home'];
     </div><!-- end .section -->
 
     <div class="section">
+        <div class="col4">
+            <div class="widget">
+                <div class="widget-title">
+                    <h3>Goals</h3>
+                </div><!-- end .widget-title -->
+                <div class="widget-content">
+                  <div style="text-align:center">
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0" class="blacktable">
+                    <thead>
+                          <tr>
+                            <th><h4>Stats</h4></th>
+                            <th><h5>#</h5></th>
+                           
+                            <th><h5>Avg/Game</h5></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        <?php
+                        foreach($data['goals'] as $stats=>$st):
+                        ?>
+                        <tr>
+                          <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
+                          <td class="">
+                             <?=$st['total']?>
+                          </td>
+                          <td class="">
+                             <?=round($st['total']/$data['total_games'],1)?>
+                          </td>
+                         
+                        </tr>
+                      <?php endforeach;?>
+                      </tbody>
+                    </table>
+                  </div>
+                </div><!-- end .widget-content -->
+              </div>  
+        </div><!-- end .col4 -->
+        <div class="col4">
+            <div class="widget">
+                <div class="widget-title">
+                    <h3>Shootings</h3>
+                </div><!-- end .widget-title -->
+                <div class="widget-content">
+                  <div style="text-align:center">
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0" class="blacktable">
+                    <thead>
+                          <tr>
+                            <th><h4>Stats</h4></th>
+                            <th><h5>#</h5></th>
+                            <th><h5>Accuracy</h5></th>
+                            <th><h5>Avg/Game</h5></th>
+                            <th><h5>Goals</h5></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        <?php
+                        foreach($data['shooting'] as $stats=>$st):
+                        ?>
+                        <tr>
+                          <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
+                          <td class="">
+                             <?=$st['total']?>
+                          </td>
+                          <td class="">
+                             <?=round($st['accuracy']*100,1)?>%
+                          </td>
+                          <td class="">
+                             <?=round($st['total']/$data['total_games'],1)?>
+                          </td>
+                          <td class="">
+                             <?=$st['goals']?>
+                          </td>
+                        </tr>
+                      <?php endforeach;?>
+                      </tbody>
+                    </table>
+                  </div>
+                </div><!-- end .widget-content -->
+              </div>  
+        </div><!-- end .col4 -->
+        <div class="col4">
+            <div class="widget">
+                <div class="widget-title">
+                    <h3>Ball Movement</h3>
+                </div><!-- end .widget-title -->
+                <div class="widget-content">
+                  <div style="text-align:center">
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0" class="blacktable">
+                    <thead>
+                          <tr>
+                            <th><h4>Stats</h4></th>
+                            <th><h5>#</h5></th>
+                            <th><h5>Avg/Game</h5></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        <?php
+                        foreach($data['ball_movement'] as $stats=>$st):
+                        ?>
+                        <tr>
+                          <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
+                          <td class="">
+                             <?=round($st['total'],1)?>
+                             <?php if($stats=='chances_conversion'): echo "%";endif;?>
+                          </td>
+                          <td class="">
+                            <?php if($stats!='chances_conversion'):?>
+                             <?=round($st['total']/$data['total_games'],1)?>
+                           <?php endif;?>
+                          </td>
+                         
+                        </tr>
+                      <?php endforeach;?>
+                      </tbody>
+                    </table>
+                  </div>
+                </div><!-- end .widget-content -->
+              </div>  
+        </div><!-- end .col4 -->
         <div class="col4">
             <div class="widget">
                 <div class="widget-title">
@@ -699,7 +816,7 @@ $data = $report['away'];
                     <thead>
                           <tr>
                             <th><h4>Stats</h4></th>
-                            <th><h5>Frequency</h5></th>
+                       
                             <th><h5>Chances</h5></th>
                             <th><h5>Goals</h5></th>
                             <th><h5>Conversion Rate</h5></th>
@@ -713,12 +830,9 @@ $data = $report['away'];
                         ?>
                         <tr>
                           <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
-                          <td class="">
-                             <?=round($st['frequency'])?> (<?=round($st['efficiency']*100,1)?> %)
-                          </td>
                          
                           <td class="">
-                             <?=$st['chances']?>
+                             <?=$st['chances']?> (<?=round($st['efficiency']*100,1)?> %)
                           </td>
                           <td class="">
                              <?=$st['goals']?>
@@ -743,6 +857,125 @@ $data = $report['away'];
     </div><!-- end .section -->
 
     <div class="section">
+        <div class="col4">
+            <div class="widget">
+                <div class="widget-title">
+                    <h3>Goals</h3>
+                </div><!-- end .widget-title -->
+                <div class="widget-content">
+                  <div style="text-align:center">
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0" class="blacktable">
+                    <thead>
+                          <tr>
+                            <th><h4>Stats</h4></th>
+                            <th><h5>#</h5></th>
+                           
+                            <th><h5>Avg/Game</h5></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        <?php
+                        foreach($data['goals'] as $stats=>$st):
+                        ?>
+                        <tr>
+                          <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
+                          <td class="">
+                             <?=$st['total']?>
+                          </td>
+                          <td class="">
+                             <?=round($st['total']/$data['total_games'],1)?>
+                          </td>
+                         
+                        </tr>
+                      <?php endforeach;?>
+                      </tbody>
+                    </table>
+                  </div>
+                </div><!-- end .widget-content -->
+              </div>  
+        </div><!-- end .col4 -->
+        <div class="col4">
+            <div class="widget">
+                <div class="widget-title">
+                    <h3>Shootings</h3>
+                </div><!-- end .widget-title -->
+                <div class="widget-content">
+                  <div style="text-align:center">
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0" class="blacktable">
+                    <thead>
+                          <tr>
+                            <th><h4>Stats</h4></th>
+                            <th><h5>#</h5></th>
+                            <th><h5>Accuracy</h5></th>
+                            <th><h5>Avg/Game</h5></th>
+                            <th><h5>Goals</h5></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        <?php
+                        foreach($data['shooting'] as $stats=>$st):
+                        ?>
+                        <tr>
+                          <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
+                          <td class="">
+                             <?=$st['total']?>
+                          </td>
+                          <td class="">
+                             <?=round($st['accuracy']*100,1)?>%
+                          </td>
+                          <td class="">
+                             <?=round($st['total']/$data['total_games'],1)?>
+                          </td>
+                          <td class="">
+                             <?=$st['goals']?>
+                          </td>
+                        </tr>
+                      <?php endforeach;?>
+                      </tbody>
+                    </table>
+                  </div>
+                </div><!-- end .widget-content -->
+              </div>  
+        </div><!-- end .col4 -->
+        <div class="col4">
+            <div class="widget">
+                <div class="widget-title">
+                    <h3>Ball Movement</h3>
+                </div><!-- end .widget-title -->
+                <div class="widget-content">
+                  <div style="text-align:center">
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0" class="blacktable">
+                    <thead>
+                          <tr>
+                            <th><h4>Stats</h4></th>
+                            <th><h5>#</h5></th>
+                            <th><h5>Avg/Game</h5></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        <?php
+                        foreach($data['ball_movement'] as $stats=>$st):
+                        ?>
+                        <tr>
+                          <td><?=ucfirst(str_replace('_',' ',$stats))?></td>
+                          <td class="">
+                             <?=round($st['total'],1)?>
+                             <?php if($stats=='chances_conversion'): echo "%";endif;?>
+                          </td>
+                          <td class="">
+                            <?php if($stats!='chances_conversion'):?>
+                             <?=round($st['total']/$data['total_games'],1)?>
+                           <?php endif;?>
+                          </td>
+                         
+                        </tr>
+                      <?php endforeach;?>
+                      </tbody>
+                    </table>
+                  </div>
+                </div><!-- end .widget-content -->
+              </div>  
+        </div><!-- end .col4 -->
         <div class="col4">
             <div class="widget">
                 <div class="widget-title">

@@ -23,5 +23,6 @@
     {name:'foo'},
     {name:'bar'}
   ];
+  
   model.set({data:data});
 </script>

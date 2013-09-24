@@ -220,4 +220,25 @@ class Stats extends AppModel {
 		}
 		return $str;
 	}
+	public function fromFormula($str,$stats){
+		try{
+		$out = preg_replace_callback('/([a-zA-Z0-9\_]+)/',
+									function($matches) use($stats){
+		                                return intval(@$stats[$matches[0]]); 
+		                            },
+									$str);
+			
+			$m = new EvalMath();
+			$m->suppress_errors = false;
+			$output =  $m->evaluate($out);
+			
+		}catch(Exception $e){
+			
+			$output = 0;
+		}
+		$m = null;
+		unset($m);
+		
+		return $output;
+	}
 }
