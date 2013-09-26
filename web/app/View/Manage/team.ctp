@@ -123,7 +123,7 @@ endif;
             </div><!-- end .widget -->
             <div id="rooster" class="widget tr squad-team">
             	<div class="starters">
-                    <h4>Pemain Starters</h4>
+                    <h4>Daftar Pemain</h4>
                     <div id="jp-container" class="jp-container">
                     <?php
                     foreach($players as $n=>$player):
