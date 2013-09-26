@@ -12,12 +12,13 @@ DECLARE a BIGINT(11);
 DECLARE b INT(11);
 DECLARE c VARCHAR(20);
 DECLARE curs CURSOR FOR 
-	SELECT a.team_id,a.points,a.matchday
+	SELECT a.team_id,SUM(a.points) AS points,a.matchday
 	FROM weekly_points a
 	INNER JOIN teams b
 	ON a.team_id = b.id 
 	WHERE a.matchday=matchday
-	ORDER BY a.points DESC;
+	GROUP BY a.team_id
+	ORDER BY points DESC;
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET isDone = TRUE;
 OPEN curs;
 	SET isDone = FALSE;

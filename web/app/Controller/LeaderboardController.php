@@ -77,11 +77,18 @@ class LeaderboardController extends AppController {
 		}else{
 			$matchday = intval($this->request->query['week']);
 		}
+		$this->Weekly_point->virtualFields['TotalPoints'] = 'SUM(Weekly_point.points)';
+
 		$this->paginate = array(
+			'fields'=>array('Weekly_point.id', 'Weekly_point.team_id', 
+							'Weekly_point.game_id', 'Weekly_point.matchday', 'Weekly_point.matchdate', 
+							'SUM(Weekly_point.points) AS TotalPoints', 'Team.id', 'Team.user_id', 
+							'Team.team_id','Team.team_name'),
 			'conditions'=>array('matchday'=>$matchday),
 	        'limit' => 100,
+	        'group' => 'Weekly_point.team_id',
 	        'order' => array(
-	            'Weekly_point.points' => 'desc'
+	            'TotalPoints' => 'desc'
 	        )
 	    );
 
@@ -91,7 +98,9 @@ class LeaderboardController extends AppController {
 
 
 	    $game_id = '';
+	  
 	    foreach($rs as $n=>$r){
+	    	$rs[$n]['Weekly_point']['points'] = $rs[$n][0]['TotalPoints'];
 	    	$rs[$n]['Point'] = $rs[$n]['Weekly_point'];
 	    	//get manager's name
 	    	$manager = $this->User->findById($r['Team']['user_id']);
@@ -105,8 +114,8 @@ class LeaderboardController extends AppController {
 
 	    $myRank = $this->Weekly_rank->find('first',
 	    									array('conditions'=>
-	    											array('team_id'=>$this->userDetail['Team']['id'],
-	    												'matchday'=>$matchday)));
+											array('team_id'=>$this->userDetail['Team']['id'],
+												'matchday'=>$matchday)));
 	    
 	    $this->set('matchday',$matchday);
 	    $this->set('rank',$myRank['Weekly_rank']['rank']);
