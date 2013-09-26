@@ -413,7 +413,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                             </dd>
                           </dl>
                         <?php 
-                            $profileStats = getStats('goalkeeping',$pos,$modifiers,$map,$data['overall_stats']);
+                            $profileStats = getStats('goalkeeper',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
                                 foreach($profileStats as $statsName=>$statsVal):
                                     $statsName = ucfirst(str_replace('_',' ',$statsName));
