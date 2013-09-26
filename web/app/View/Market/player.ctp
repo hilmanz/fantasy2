@@ -525,7 +525,7 @@ $.each(stats,function(k,v){
   passing_and_attacking.push(parseFloat(v.passing_and_attacking));
   defending.push(parseFloat(v.defending));
   goalkeeping.push(parseFloat(v.goalkeeping));
-  mistakes.push(parseFloat(v.mistakes));
+  mistakes.push(parseFloat(v.mistakes) * -1);
 });
 $('.stats').highcharts({
     chart: {
