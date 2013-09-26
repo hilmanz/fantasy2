@@ -209,7 +209,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
             </div>
         </div>
         <div class="club-info fl">
-            <p>Gaji</p>
+            <p>Gaji Mingguan</p>
             <h4><?=number_format($data['player']['salary'])?></h4>
         </div>
         <div class="club-info fl">
