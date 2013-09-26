@@ -9,7 +9,7 @@
     "express": "3.1.1",
     "jade": "*",
     "xml2json": "*",
-    "mysql": "*",
+    "mysql": "2.0.0-alpha8",
     "mu2": "*",
     "handlebars": "*",
     "async": "*",
@@ -21,6 +21,7 @@
     "connect-redis": "*",
     "redis": "*",
     "optimist": "0.5.2",
-    "winston": "*"
+    "winston": "*",
+    "string":"latest"
   }
 }

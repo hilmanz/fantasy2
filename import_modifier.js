@@ -27,7 +27,7 @@ function getRandomInt(min, max) {
 }
 async.waterfall([
 	function(callback){
-		open_file('modifier.csv',function(err,content){
+		open_file('modifier2.csv',function(err,content){
 			callback(err,content.toString());
 		});
 	},

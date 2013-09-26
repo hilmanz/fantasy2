@@ -459,13 +459,11 @@ function getPlayerDailyTeamStats(game_team_id,player_id,player_pos,done){
 				for(var i in result){
 					if(typeof daily[result[i].game_id] === 'undefined'){
 						daily[result[i].game_id] = {
-							goals_and_assists:0,
-							shooting:0,
+							games:0,
+							passing_and_attacking:0,
 							defending:0,
-							passing:0,
-							goalkeeping:0,
-							discipline:0,
-							mistakes:0
+							goalkeeper:0,
+							mistakes_and_errors:0
 						};
 					}
 					//distributed the counts for each categories
@@ -483,6 +481,7 @@ function getPlayerDailyTeamStats(game_team_id,player_id,player_pos,done){
 					}
 				}
 			}
+			console.log(daily);
 			callback(null,daily);
 		}
 	],

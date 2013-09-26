@@ -24,90 +24,96 @@ var daily_stats = {};
 </script>
 <?php
 //mapping statistics
-$map = array(
-    'goals_and_assists'=>array(
-                            'goals'=>'goals',
-                            'assist'=>'goal_assist',
-                            'clear_cut_chance_created'=>'big_chance_created',
-                            'penalty_won'=>'penalty_won',
-                            'Assisted_A_Shot'=>'total_att_assist'
+$games = array(
+        'game_started'=>'game_started',
+        'sub_on'=>'total_sub_on'
+    );
 
-                        ),
-
-    'shooting'=>array(
-                    'shoot_on_target'=>'ontarget_scoring_att',
-                    'on_target_shot_from_outside_the_box'=>'att_obox_target'
-                ),
-
-    'passing'=>array(
-                'accurate_flick_on'=>'accurate_flick_on',
-                'accurate_pass'=>'accurate_pass',
-                'accurate_chipped_pass'=>'accurate_chipped_pass',
-                'accurate_launches'=>'accurate_launches',
-                'accurate_layoffs'=>'accurate_layoffs',
-                'accurate_long_balls'=>'accurate_long_balls',
-                'accurate_through_balls'=>'accurate_through_ball',
-                'long_pass_to_opponents_half'=>'long_pass_own_to_opp_success',
-                'accurate_crossing'=>'accurate_cross',
-                'accurate_attacking_pass'=>'accurate_fwd_zone_pass',
-                'accurate_free_kick_delivery'=>'accurate_freekick_cross',
-                'Accurate_Crossing'=>'accurate_cross_nocorner',
-                'Accurate_Attacking_pass'=>'total_attacking_pass',
-
-
-            ),
-    'defending'=>array(
-                'Ball_recovery'=>'ball_recovery',
-                'Duel_Won'=>'duel_won',
-                'Aerial_Duel_Won'=>'aerial_won',
-                'Tackle_won'=>'won_tackle',
-                'Tackle_won_as_a_last_man'=>'last_man_contest',
-                'Intercepted_a_pass_inside_the_box'=>'interceptions_in_box',
-                'Effective_clearance'=>'effective_clearance',
-                'Blocked_a_cross'=>'effective_blocked_cross',
-                'Blocked_a_shot'=>'blocked_scoring_att',
-                'Blocked_a_shot_from_within_6_yards_box'=>'six_yard_block',
-                'offsides_provoked'=>'offside_provoked',
-                'Intercepted_Passes'=>'interception_won',
-                
-
-        ),
-    'dribbling'=>array(
-        'contests_won'=>'won_contest',
-        'Tackles_Won_Against_Last_Man'=>'last_man_tackle',
-        'Last_man_contest'=>'last_man_contest'
-    ),
-
-    'goalkeeping'=>array(
-                'Penalty_Save'=>'penalty_save',
-                'Diving_Save'=>'dive_save',
-                'Diving_Save_and_Caught_the_ball'=>'dive_catch',
-                'Standing_save'=>'stand_save',
-                'Standing_save_and_Caught_the_ball'=>'stand_catch',
-                'Claimed_a_cross'=>'good_claim',
-                'Claimed_a_high_cross_into_the_box'=>'good_high_claim',
-                'Punched_the_ball_away'=>'punches',
-                'Won_a_1v1_challenge'=>'good_one_on_one',
-                'Smothered_an_attack'=>'gk_smother',
-                'Successfull_Sweeps'=>'accurate_keeper_sweeper'
-        ),
+$passing_and_attacking = array(
+        'Freekick Goal'=>'att_freekick_goal',
+        'Goal inside the box'=>'att_ibox_goal',
+        'Goal Outside the Box'=>'att_obox_goal',
+        'Penalty Goal'=>'att_pen_goal',
+        'Freekick Shots'=>'att_freekick_post',
+        'On Target Scoring Attempt'=>'ontarget_scoring_att',
+        'Shot From Outside the Box'=>'att_obox_target',
+        'big_chance_created'=>'big_chance_created',
+        'big_chance_scored'=>'big_chance_scored',
+        'goal_assist'=>'goal_assist',
+        'total_assist_attempt'=>'total_att_assist',
+        'Second Goal Assist'=>'second_goal_assist',
+        'final_third_entries'=>'final_third_entries',
+        'fouled_final_third'=>'fouled_final_third',
+        'pen_area_entries'=>'pen_area_entries',
+        'won_contest'=>'won_contest',
+        'won_corners'=>'won_corners',
+        'penalty_won'=>'penalty_won',
+        'last_man_contest'=>'last_man_contest',
+        'accurate_corners_intobox'=>'accurate_corners_intobox',
+        'accurate_cross_nocorner'=>'accurate_cross_nocorner',
+        'accurate_freekick_cross'=>'accurate_freekick_cross',
+        'accurate_launches'=>'accurate_launches',
+        'long_pass_own_to_opp_success'=>'long_pass_own_to_opp_success',
+        'successful_final_third_passes'=>'successful_final_third_passes',
+        'accurate_flick_on'=>'accurate_flick_on'
+    );
 
 
+$defending = array(
+        'aerial_won'=>'aerial_won',
+        'ball_recovery'=>'ball_recovery',
+        'duel_won'=>'duel_won',
+        'effective_blocked_cross'=>'effective_blocked_cross',
+        'effective_clearance'=>'effective_clearance',
+        'effective_head_clearance'=>'effective_head_clearance',
+        'interceptions_in_box'=>'interceptions_in_box',
+        'interception_won' => 'interception_won',
+        'possession_won_def_3rd' => 'poss_won_def_3rd',
+        'possession_won_mid_3rd' => 'poss_won_mid_3rd',
+        'possession_won_att_3rd' => 'poss_won_att_3rd',
+        'won_tackle' => 'won_tackle',
+        'offside_provoked' => 'offside_provoked',
+        'last_man_tackle' => 'last_man_tackle',
+        'outfielder_block' => 'outfielder_block'
+    );
 
-    'mistakes_and_errors'=>array(
-        'Penalty_Conceded'=>'penalty_conceded',
-        'Dispossessed'=>'dispossessed',
-        'Error_that_led_to_a_goal'=>'error_lead_to_goal',
-        'Error_that_lead_to_a_shot'=>'error_lead_to_shot',
-        'Poor_pass'=>'poss_lost_ctrl',
-        'Poor_touch'=>'unsuccessful_touch',
-        'challenge_lost'=>'challenge_lost',
-        'Cross_not_claimed'=>'cross_not_claimed',
-        'Offsides'=>'total_offside',
-        'Yellow_Card'=>'yellow_card',
-        'Red_Card'=>'red_card'
-    )
-);
+$goalkeeper = array(
+                'dive_catch'=> 'dive_catch',
+                'dive_save'=> 'dive_save',
+                'stand_catch'=> 'stand_catch',
+                'stand_save'=> 'stand_save',
+                'cross_not_claimed'=> 'cross_not_claimed',
+                'good_high_claim'=> 'good_high_claim',
+                'punches'=> 'punches',
+                'good_one_on_one'=> 'good_one_on_one',
+                'accurate_keeper_sweeper'=> 'accurate_keeper_sweeper',
+                'gk_smother'=> 'gk_smother',
+                'saves'=> 'saves',
+                'goals_conceded'=>'goals_conceded'
+                    );
+
+
+$mistakes_and_errors = array(
+            'penalty_conceded'=>'penalty_conceded',
+            'red_card'=>'red_card',
+            'yellow_card'=>'yellow_card',
+            'challenge_lost'=>'challenge_lost',
+            'dispossessed'=>'dispossessed',
+            'fouls'=>'fouls',
+            'overrun'=>'overrun',
+            'total_offside'=>'total_offside',
+            'unsuccessful_touch'=>'unsuccessful_touch',
+            'error_lead_to_shot'=>'error_lead_to_shot',
+            'error_lead_to_goal'=>'error_lead_to_goal'
+            );
+$map = array('games'=>$games,
+              'passing_and_attacking'=>$passing_and_attacking,
+              'defending'=>$defending,
+              'goalkeeper'=>$goalkeeper,
+              'mistakes_and_errors'=>$mistakes_and_errors
+             );
+
+
 switch($data['player']['position']){
     case 'Forward':
         $pos = "f";
@@ -123,13 +129,15 @@ switch($data['player']['position']){
     break;
 }
 $total_points = 0;
-$main_stats_vals = array('goals_and_assists'=>0,
+$main_stats_vals = array('games'=>0,
+                            'goals'=>0,
                             'shooting'=>0,
-                            'defending'=>0,
+                            'chances_creation'=>0,
+                            'attacking_action'=>0,
                             'passing'=>0,
-                            'dribbling'=>0,
-                            'goalkeeping'=>0,
-                            'mistakes_and_errors'=>0,
+                            'defending'=>0,
+                            'goalkeeper'=>0,
+                            'mistakes_and_errors'=>0
                          );
 
 
@@ -248,43 +256,28 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                   <div class="profileStatsContainer">
                     <div class="profileStats" style="overflow:hidden;">
                         <a href="#/stats_detail/0" class="statsbox">
-                            <h4>Goals &amp; Assists</h4>
-                            <p><?=number_format($main_stats_vals['goals_and_assists'])?></p>
+                            <h4>Games</h4>
+                            <p><?=number_format($main_stats_vals['games'])?></p>
                         </a>
                         <a href="#/stats_detail/1" class="statsbox">
-                            <h4>Shooting</h4>
-                            <p><?=number_format($main_stats_vals['shooting'])?></p>
+                            <h4>Passing and Attacking</h4>
+                            <p><?=number_format($main_stats_vals['passing_and_attacking'])?></p>
                         </a>
                         <a href="#/stats_detail/2" class="statsbox">
-                            <h4>Passing</h4>
-                            <p><?=number_format($main_stats_vals['passing'])?></p>
-                        </a>
-                        <?php 
-                        if($data['player']['position']!='Goalkeeper'):
-                        ?>
-                        <a href="#/stats_detail/3" class="statsbox">
                             <h4>Defending</h4>
                             <p><?=number_format($main_stats_vals['defending'])?></p>
                         </a>
-                        <?php
-                        endif;
-                        ?>
-                        <?php 
-                        if($data['player']['position']=='Goalkeeper'):
-                        ?>
+                       
                         <a href="#/stats_detail/3" class="statsbox">
                             <h4>Goalkeeping</h4>
-                            <p><?=number_format($main_stats_vals['goalkeeping'])?></p>
+                            <p><?=number_format($main_stats_vals['goalkeeper'])?></p>
                         </a>
-                        <?php endif;?>
+                       
                         <a href="#/stats_detail/4" class="statsbox">
-                            <h4>Dribbling</h4>
-                            <p><?=number_format($main_stats_vals['dribbling'])?></p>
-                        </a>
-                        <a href="#/stats_detail/5" class="statsbox">
-                            <h4>Mistakes &amp; Errors</h4>
+                            <h4>Mistakes and Errors</h4>
                             <p><?=number_format($main_stats_vals['mistakes_and_errors'])?></p>
                         </a>
+                       
                     </div><!-- end .profileStats -->
                   </div><!-- end .profileStats-container -->
                 </div><!-- end .profileStats-container -->     
@@ -298,19 +291,13 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                 <a href="#/close_detail" class="button">KEMBALI</a>
                 </div>
               <ul>
-                <li><a href="#tabs-Goals">Goals and Assists</a></li>
-                <li><a href="#tabs-Shooting">Shooting</a></li>
-                <li><a href="#tabs-Passing">Passing</a></li>
-                <?php if($data['player']['position']=='Goalkeeper'):?>
-                <li><a href="#tabs-Goalkeeping">Goalkeeping</a></li>
-                <?php else: ?>
+                <li><a href="#tabs-Games">Games</a></li>
+                <li><a href="#tabs-Passing">Passing &amp; Attacking</a></li>
                 <li><a href="#tabs-Defending">Defending</a></li>
-                <?php endif;?>
-                <li><a href="#tabs-Dribbling">Dribbling</a></li>
-
+                <li><a href="#tabs-Goalkeeping">Goalkeeping</a></li>
                 <li><a href="#tabs-Mistakes">Mistakes &amp; Errors</a></li>
               </ul>
-              <div id="tabs-Goals">
+              <div id="tabs-Games">
                 <div class="profileStatsContainer">
                     <div class="profileStats">
                         <dl>
@@ -323,7 +310,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                             </dd>
                           </dl>
                         <?php 
-                            $profileStats = getStats('goals_and_assists',$pos,$modifiers,$map,$data['overall_stats']);
+                            $profileStats = getStats('games',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
                                 foreach($profileStats as $statsName=>$statsVal):
                                     $statsName = ucfirst(str_replace('_',' ',$statsName));
@@ -344,7 +331,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                     </div><!-- end .profileStats -->
                 </div><!-- end .profileStats-container -->
               </div><!-- end #Info -->
-              <div id="tabs-Shooting">
+              <div id="tabs-Passing">
                   <div class="profileStatsContainer">
                     <div class="profileStats">
                         <dl>
@@ -357,7 +344,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                             </dd>
                           </dl>
                         <?php 
-                            $profileStats = getStats('shooting',$pos,$modifiers,$map,$data['overall_stats']);
+                            $profileStats = getStats('passing_and_attacking',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
                                 foreach($profileStats as $statsName=>$statsVal):
                                     $statsName = ucfirst(str_replace('_',' ',$statsName));
@@ -378,7 +365,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                     </div><!-- end .profileStats -->
                 </div><!-- end .profileStats-container -->
               </div><!-- end #tabs-Keuagan -->
-              <div id="tabs-Passing">
+              <div id="tabs-Defending">
                <div class="profileStatsContainer">
                     <div class="profileStats">
                         <dl>
@@ -391,7 +378,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                             </dd>
                           </dl>
                         <?php 
-                            $profileStats = getStats('passing',$pos,$modifiers,$map,$data['overall_stats']);
+                            $profileStats = getStats('defending',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
                                 foreach($profileStats as $statsName=>$statsVal):
                                     $statsName = ucfirst(str_replace('_',' ',$statsName));
@@ -412,7 +399,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                     </div><!-- end .profileStats -->
                 </div><!-- end .profileStats-container -->
               </div><!-- end #tabs-Squad -->
-              <?php if($data['player']['position']=='Goalkeeper'):?>
+             
               <div id="tabs-Goalkeeping">
                    <div class="profileStatsContainer">
                     <div class="profileStats">
@@ -447,76 +434,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                     </div><!-- end .profileStats -->
                 </div><!-- end .profileStats-container -->
               </div><!-- end #tabs-Staff -->
-              <?php else:?>
-              <div id="tabs-Defending">
-                  <div class="profileStatsContainer">
-                    <div class="profileStats">
-                        <dl>
-                            <dt><p class="s-title">Aksi</p></dt>
-                            <dd class="tcenter">
-                                Frequency
-                            </dd>
-                            <dd class="tcenter">
-                                Poin
-                            </dd>
-                          </dl>
-                        <?php 
-                            $profileStats = getStats('defending',$pos,$modifiers,$map,$data['overall_stats']);
-                            if(isset($profileStats)):
-                                foreach($profileStats as $statsName=>$statsVal):
-                                    $statsName = ucfirst(str_replace('_',' ',$statsName));
-                        ?>
-                          <dl>
-                            <dt><p class="s-title"><?=$statsName?></p></dt>
-                            <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal['total'])?></a>
-                            </dd>
-                            <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal['points'])?></a>
-                            </dd>
-                          </dl>
-                        <?php
-                            endforeach;
-                            endif;
-                        ?>
-                    </div><!-- end .profileStats -->
-                </div><!-- end .profileStats-container -->
-              </div><!-- end #tabs-Staff -->
-              <?php endif;?>
-              <div id="tabs-Dribbling">
-                   <div class="profileStatsContainer">
-                    <div class="profileStats">
-                        <dl>
-                            <dt><p class="s-title">Aksi</p></dt>
-                            <dd class="tcenter">
-                                Frequency
-                            </dd>
-                            <dd class="tcenter">
-                                Poin
-                            </dd>
-                          </dl>
-                        <?php 
-                            $profileStats = getStats('dribbling',$pos,$modifiers,$map,$data['overall_stats']);
-                            if(isset($profileStats)):
-                                foreach($profileStats as $statsName=>$statsVal):
-                                    $statsName = ucfirst(str_replace('_',' ',$statsName));
-                        ?>
-                          <dl>
-                            <dt><p class="s-title"><?=$statsName?></p></dt>
-                            <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal['total'])?></a>
-                            </dd>
-                            <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal['points'])?></a>
-                            </dd>
-                          </dl>
-                        <?php
-                            endforeach;
-                            endif;
-                        ?>
-                    </div><!-- end .profileStats -->
-                </div><!-- end .profileStats-container -->
-              </div><!-- end #tabs-Staff -->
+             
               <div id="tabs-Mistakes">
                    <div class="profileStatsContainer">
                     <div class="profileStats">
@@ -591,34 +509,30 @@ var stats  = [];
 for(var i in daily_stats){
     stats.push({
         ts:daily_stats[i].fixture.ts*1000,
-        goals_and_assists:daily_stats[i].goals_and_assists,
-        shooting:daily_stats[i].shooting,
-        passing:daily_stats[i].passing,
+        games:daily_stats[i].games,
+        passing_and_attacking:daily_stats[i].passing_and_attacking,
+       
         defending:daily_stats[i].defending,
-        goalkeeping:daily_stats[i].goalkeeping,
-        discipline:daily_stats[i].discipline,
-        mistakes:daily_stats[i].mistakes
+        goalkeeping:daily_stats[i].goalkeeper,
+        mistakes:daily_stats[i].mistakes_and_errors
     });
 }
 var categories = [];
-var goals_and_assists = [];
-var shooting = [];
-var passing = [];
+var games = [];
+var passing_and_attacking = [];
 var defending = [];
 var goalkeeping = [];
-var discipline = [];
 var mistakes = [];
 
 $.each(stats,function(k,v){
   categories.push(v.ts);
-  goals_and_assists.push(parseFloat(v.goals_and_assists));
-  shooting.push(parseFloat(v.shooting));
-  passing.push(parseFloat(v.passing));
+  games.push(parseFloat(v.games));
+  passing_and_attacking.push(parseFloat(v.passing_and_attacking));
   defending.push(parseFloat(v.defending));
   goalkeeping.push(parseFloat(v.goalkeeping));
-  discipline.push(parseFloat(v.discipline));
   mistakes.push(parseFloat(v.mistakes));
 });
+
 $('.stats').highcharts({
     chart: {
         type: 'area',
@@ -682,29 +596,23 @@ $('.stats').highcharts({
     credits:false,
     series: [
         {
-            name: 'Goals and Assists',
-            data: goals_and_assists
+            name: 'Games',
+            data: games
         },
         {
-            name: 'Shooting',
-            data: shooting
+            name: 'Passing & Attacking',
+            data: passing_and_attacking
         },
         {
             name: 'Defending',
             data: defending
         },
-        {
-            name: 'Passing',
-            data: passing
-        },
+       
         {
             name: 'Goalkeeping',
             data: goalkeeping
         },
-        {
-            name: 'Discipline',
-            data: discipline
-        },
+       
         {
             name: 'Mistakes and Errors',
             data: mistakes
