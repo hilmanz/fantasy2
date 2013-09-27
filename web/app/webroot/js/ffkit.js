@@ -36,7 +36,9 @@ function buy_player(player_id,option){
 				if(typeof response.status!=='undefined' && response.status == 1){
 					$('.success').show();
 					if(typeof club_url !== 'undefined'){
-						document.location = club_url;
+						setTimeout(function(){
+							document.location = club_url;
+						},5000);
 					}
 				}else{
 					$('.failure').show();
@@ -65,7 +67,9 @@ function sale_player(player_id,option){
 					$('.success').show();
 					if(option==1){
 						if(typeof club_url !== 'undefined'){
-							document.location = club_url;
+							setTimeout(function(){
+								document.location = club_url;
+							},3000);
 						}
 					}else{
 						$("tr#"+player_id).remove();
