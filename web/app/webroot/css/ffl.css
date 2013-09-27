@@ -1720,3 +1720,17 @@ h3.tabtitle{
 	position:relative;
 	width:225px !important;
 }
+.thumbPlayers{
+	display:block;
+	width:100px; height:100px;
+	border:solid 1px #fff;
+	overflow:hidden;
+	position:relative;
+}
+.thumbPlayers img{
+	position:absolute;
+	top:-20px;
+}
+.opta-widget-container .profile .team-logo img{
+	border:solid 1px #fff;
+}

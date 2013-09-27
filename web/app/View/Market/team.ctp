@@ -33,7 +33,7 @@
                         $urlto = $this->Html->url('/market/player/'.$player['uid']);
                 ?>
                   <tr>
-                        <td><a href="<?=$urlto?>"><img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$club['uid'])?>&dimensions=103x155&id=<?=str_replace('p','',$player['uid'])?>"/></a></td>
+                        <td><a class="thumbPlayers" href="<?=$urlto?>"><img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$club['uid'])?>&dimensions=103x155&id=<?=str_replace('p','',$player['uid'])?>"/></a></td>
                         <td><a href="<?=$urlto?>" class="yellow"><?=h($player['name'])?></a></td>
                         <td><?=h($player['position'])?></td>
                         <td>SS$ <?=number_format($player['salary'])?></td>
