@@ -21,7 +21,8 @@ class DashboardController extends AppController {
 		$this->loadModel('Ticker');
 		$this->Ticker->create();
 		$rs = $this->Ticker->save(array(
-			'content'=>$this->request->data['content']
+			'content'=>$this->request->data['content'],
+			'url'=>$this->request->data['url']
 		));
 		if($rs) $this->Session->setFlash("Ticker added !");
 		else $this->Session->setFlash("Cannot add news, please try again later !");

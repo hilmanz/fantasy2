@@ -124,3 +124,7 @@ CREATE TABLE `weekly_ranks` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_team_game` (`team_id`,`matchday`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+
+
+
+ALTER TABLE `ffg`.`tickers`     ADD COLUMN `url` TEXT NULL AFTER `content`;
