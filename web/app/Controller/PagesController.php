@@ -84,6 +84,12 @@ class PagesController extends AppController {
 		$this->set('info',$info);
 		//-->
 		
+		//Banner nih
+		$this->loadModel('Banners');
+		$banners = $this->Banners->find('all');
+		$this->set('banners',$banners);
+		//-->
+
 		if($path[0]=='home'&&$this->userDetail['Team']['id']>0){
 			$this->redirect('/manage/team');
 		}

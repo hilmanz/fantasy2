@@ -4,21 +4,17 @@
 	    <div id="banner">
 	      <div class="bannerslider">
 	          <ul class="slides">
+              <?php 
+              foreach($banners as $banner):
+              ?>
 	            <li class="theSlide">
 	                <div class="imgSlide">
-	                    <a href="#"><img src="content/slider/1.jpg" /></a>
+	                    <a href="<?=$this->Html->url($banner['Banners']['url'])?>">
+                        <img src="<?=$this->Html->url(Configure::read('avatar_web_url').$banner['Banners']['banner_file'])?>" border="0"/>
+                      </a>
 	                </div>
 	            </li>
-	            <li class="theSlide">
-	                <div class="imgSlide">
-	                    <a href="#"><img src="content/slider/2.jpg" /></a>
-	                </div>
-	            </li>
-	            <li class="theSlide">
-	                <div class="imgSlide">
-	                    <a href="#"><img src="content/slider/3.jpg" /></a>
-	                </div>
-	            </li>
+            <?php endforeach;?>
 	          </ul>
 	      </div><!-- end .slider -->
 	    </div><!-- end #banner -->
