@@ -17,6 +17,7 @@ $(document).ready(function() {
         dropShadows: false
     });
 });
+
 // SLIDER
 $(window).load(function(){
   $('.bannerslider').flexslider({
@@ -36,6 +37,15 @@ $(window).load(function(){
 	start: function(slider){
 	  $('body').removeClass('loading');
 	}
+  });
+  $('#starterTeam').flexslider({
+		animation: "slide",
+		animationLoop: false,
+		itemWidth: 210,
+		itemMargin: 5,
+		minItems: 6,       
+		move: 5,   
+		direction: "vertical",
   });
 });
 

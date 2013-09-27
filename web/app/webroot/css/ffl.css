@@ -1694,3 +1694,29 @@ h3.tabtitle{
 	font-size:30px;
 	color:#fdcb02;
 }
+#starterTeam .flex-viewport{
+	height:335px !important;
+	top:12px;
+	padding:10px;
+	left:-10px;
+}
+#starterTeam .flex-direction-nav a{
+	opacity:1;
+}
+#starterTeam .flex-direction-nav .flex-prev{
+	background:url(../images/arrow_top.png) no-repeat;
+	top:85px;
+	left:122px;
+}
+#starterTeam .flex-direction-nav .flex-next{
+	background:url(../images/arrow_bottom.png) no-repeat;
+	top:auto;
+	left:122px;
+	right:auto;
+	bottom:210px;
+}
+#starterTeam .slides li{
+	clear:both;
+	position:relative;
+	width:225px !important;
+}

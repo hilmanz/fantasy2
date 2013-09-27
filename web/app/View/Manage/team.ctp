@@ -124,45 +124,58 @@ endif;
             <div id="rooster" class="widget tr squad-team">
             	<div class="starters">
                     <h4>Daftar Pemain</h4>
-                    <div id="jp-container" class="jp-container">
-                    <?php
-                    foreach($players as $n=>$player):
-                        switch($player['position']){
-                          case 'Goalkeeper':
-                            $player_pos = "G";
-                            $color = "grey";
-                          break;
-                          case 'Midfielder':
-                            $player_pos = "M";
-                            $color = "yellow";
-                          break;
-                          case 'Forward':
-                            $player_pos = "F";
-                            $color  = "red";
-                          break;
-                          default:
-                            $player_pos = "D";
-                            $color = "blue";
-                          break;
-                        }
-                        $last_page = floor($n/16);
-                       // $page = 'page-'.$last_page;
-                        $page = 'page-0';
-                        if($player['known_name']!=null){
-                            $player['name'] = $player['known_name'];
-                        }
-                    ?>
-                    <div class="bench jersey-player <?=$page?>">
-                        <a href="javascript:void(0);" no="<?=h($player['uid'])?>">
-                            <div class="jersey num j-<?=$color?>"><?=$player_pos?></div>
-                            <div class="player-info">
-                                <span class="player-name"><?=h($player['name'])?></span>
-                                <span class="player-status">Playable</span>       
-                            </div><!-- end .player-info -->
-                        </a>
-                    </div><!-- end .jersey-player -->
-                    <?php endforeach;?>
-                    </div><!-- end #jp-container -->
+                    <div id="starterTeam">
+                          <ul class="slides">
+							<?php
+                            foreach($players as $n=>$player):
+                                switch($player['position']){
+                                  case 'Goalkeeper':
+                                    $player_pos = "G";
+                                    $color = "grey";
+                                  break;
+                                  case 'Midfielder':
+                                    $player_pos = "M";
+                                    $color = "yellow";
+                                  break;
+                                  case 'Forward':
+                                    $player_pos = "F";
+                                    $color  = "red";
+                                  break;
+                                  default:
+                                    $player_pos = "D";
+                                    $color = "blue";
+                                  break;
+                                }
+                                $last_page = floor($n/16);
+                               // $page = 'page-'.$last_page;
+                                $page = 'page-0';
+                                if($player['known_name']!=null){
+                                    $player['name'] = $player['known_name'];
+                                }
+                            ?>
+                            <li>
+                                <div class="bench jersey-player <?=$page?>">
+                                    <a href="javascript:void(0);" no="<?=h($player['uid'])?>">
+                                        <div class="jersey num j-<?=$color?>"><?=$player_pos?></div>
+                                        <div class="player-info">
+                                            <span class="player-name"><?=h($player['name'])?></span>
+                                            <span class="player-status">Playable</span>       
+                                        </div><!-- end .player-info -->
+                                    </a>
+                                </div><!-- end .jersey-player -->
+                                <div class="bench jersey-player <?=$page?>">
+                                    <a href="javascript:void(0);" no="<?=h($player['uid'])?>">
+                                        <div class="jersey num j-<?=$color?>"><?=$player_pos?></div>
+                                        <div class="player-info">
+                                            <span class="player-name"><?=h($player['name'])?></span>
+                                            <span class="player-status">Playable</span>       
+                                        </div><!-- end .player-info -->
+                                    </a>
+                                </div><!-- end .jersey-player -->
+                            </li>
+                            <?php endforeach;?>
+                          </ul><!-- end #newsticker -->
+                    </div>
                 </div><!-- end .starter -->
             	<div class="substitutions drop">
                     <h4>Pemain Cadangan</h4>
