@@ -128,3 +128,5 @@ CREATE TABLE `weekly_ranks` (
 
 
 ALTER TABLE `ffg`.`tickers`     ADD COLUMN `url` TEXT NULL AFTER `content`;
+
+CREATE TABLE `ffg`.`banners`(     `id` BIGINT(21) NOT NULL AUTO_INCREMENT ,     `banner_name` VARCHAR(140) ,     `banner_file` VARCHAR(140) ,     `url` VARCHAR(255) DEFAULT '#' ,     `upload_date` DATETIME ,     PRIMARY KEY (`id`)  );

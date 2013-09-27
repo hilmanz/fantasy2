@@ -36,6 +36,9 @@
                         <li>
                             <a href="<?=$this->Html->url('/stats')?>">Statistics</a>
                         </li>
+                        <li>
+                            <a href="<?=$this->Html->url('/banners')?>">Banners</a>
+                        </li>
                     	<li><a href="<?=$this->Html->url('/login/logout')?>">Logout</a></li>
                     </ul>
                 </div>
