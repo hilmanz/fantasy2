@@ -129,12 +129,10 @@ switch($data['player']['position']){
     break;
 }
 $total_points = 0;
-$main_stats_vals = array('goals_and_assists'=>0,
-                            'shooting'=>0,
+$main_stats_vals = array('games'=>0,
+                            'passing_and_attacking'=>0,
                             'defending'=>0,
-                            'passing'=>0,
-                            'dribbling'=>0,
-                            'goalkeeping'=>0,
+                            'goalkeeper'=>0,
                             'mistakes_and_errors'=>0,
                          );
 
@@ -314,10 +312,10 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                           <dl>
                             <dt><p class="s-title"><?=$statsName?></p></dt>
                             <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal['total'])?></a>
+                               <?=number_format($statsVal['total'])?>
                             </dd>
                             <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal['points'])?></a>
+                                <?=number_format($statsVal['points'])?>
                             </dd>
                           </dl>
                         <?php
@@ -348,10 +346,10 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                           <dl>
                             <dt><p class="s-title"><?=$statsName?></p></dt>
                             <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal['total'])?></a>
+                                <?=number_format($statsVal['total'])?>
                             </dd>
                             <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal['points'])?></a>
+                                <?=number_format($statsVal['points'])?>
                             </dd>
                           </dl>
                         <?php
@@ -382,10 +380,10 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                           <dl>
                             <dt><p class="s-title"><?=$statsName?></p></dt>
                             <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal['total'])?></a>
+                                <?=number_format($statsVal['total'])?>
                             </dd>
                             <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal['points'])?></a>
+                                <?=number_format($statsVal['points'])?>
                             </dd>
                           </dl>
                         <?php
@@ -417,10 +415,10 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                           <dl>
                             <dt><p class="s-title"><?=$statsName?></p></dt>
                             <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal['total'])?></a>
+                                <?=number_format($statsVal['total'])?>
                             </dd>
                             <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal['points'])?></a>
+                                <?=number_format($statsVal['points'])?>
                             </dd>
                           </dl>
                         <?php
@@ -451,10 +449,10 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                           <dl>
                             <dt><p class="s-title"><?=$statsName?></p></dt>
                             <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal['total'])?></a>
+                                <?=number_format($statsVal['total'])?>
                             </dd>
                             <dd class="tcenter">
-                                <a class="red-arrow"><?=number_format($statsVal['points'])?></a>
+                                <?=number_format($statsVal['points'])?>
                             </dd>
                           </dl>
                         <?php
