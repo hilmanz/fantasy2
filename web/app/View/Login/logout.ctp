@@ -3,4 +3,5 @@
 	<h2>Download Mobile App Supersoccer Football Manager Sekarang.</h2>
 	<a class="download-android" href="#">&nbsp;</a>
 	<a class="download-apple" href="#">&nbsp;</a>
+	<a class="backtohome button" href="<?=$this->Html->url('/')?>">Kembali Ke Halaman Depan</a>
 </div><!-- end #logoutpage -->

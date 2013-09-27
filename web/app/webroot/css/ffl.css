@@ -1512,7 +1512,7 @@ td,th{
 #logoutpage{
 	background:url(../images/bg_logout.png) no-repeat;
 	position:relative;
-	width:876px; height:615px;
+	width:876px; height:655px;
 	margin:0 auto;
 	text-align:center;
 }
@@ -1540,6 +1540,13 @@ td,th{
 	opacity:0.5;
 	bottom:75px;
 	text-decoration:none;
+}
+#logoutpage a.backtohome{
+	height:30px;
+	width:200px;
+	left:310px;
+	bottom:0;
+	opacity:0.8;
 }
 #logoutpage a:hover{
 	opacity:1;
