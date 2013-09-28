@@ -153,29 +153,25 @@ endif;
                                     $player['name'] = $player['known_name'];
                                 }
                             ?>
+                            <?php if($n==0||$n%2==0):?>
                             <li>
+                            <?php endif;?>
                                 <div class="bench jersey-player <?=$page?>">
                                     <a href="javascript:void(0);" no="<?=h($player['uid'])?>">
                                         <div class="jersey num j-<?=$color?>"><?=$player_pos?></div>
                                         <div class="player-info">
                                             <span class="player-name"><?=h($player['name'])?></span>
-                                            <span class="player-status">Playable</span>       
+                                            <!--<span class="player-status">Playable</span>-->
                                         </div><!-- end .player-info -->
                                     </a>
                                 </div><!-- end .jersey-player -->
-                                <div class="bench jersey-player <?=$page?>">
-                                    <a href="javascript:void(0);" no="<?=h($player['uid'])?>">
-                                        <div class="jersey num j-<?=$color?>"><?=$player_pos?></div>
-                                        <div class="player-info">
-                                            <span class="player-name"><?=h($player['name'])?></span>
-                                            <span class="player-status">Playable</span>       
-                                        </div><!-- end .player-info -->
-                                    </a>
-                                </div><!-- end .jersey-player -->
+                            <?php if($n!=0 && $n%2!=0):?>
                             </li>
+                            <?php endif;?>
                             <?php endforeach;?>
                           </ul><!-- end #newsticker -->
                     </div>
+                    <div class="coverlayer" style="width:100%;height:100px;position:absolute;top:-27px;"></div>
                 </div><!-- end .starter -->
             	<div class="substitutions drop">
                     <h4>Pemain Cadangan</h4>
@@ -248,7 +244,7 @@ $(document).ready(function(){
         $("#rooster").scroll(function(e){
             $("#draggable").hide();
         });
-
+        
         createPaging();
         $("#draggable").draggable({
             drag:function( event, ui ) {

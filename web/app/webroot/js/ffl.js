@@ -41,12 +41,22 @@ $(window).load(function(){
   $('#starterTeam').flexslider({
 		animation: "slide",
 		animationLoop: false,
+		slideshow: false,
 		itemWidth: 210,
-		itemMargin: 5,
-		minItems: 6,       
-		move: 5,   
+		itemMargin: 0,
+		minItems: 2,
+		move: 40,   
 		direction: "vertical",
+		pauseOnHover: true
   });
+
+			$(".flex-prev").mouseover(function(e){
+			   	$("#draggable").hide(); 
+			});
+			$(".flex-next").mouseover(function(e){
+				$("#draggable").hide(); 
+			});
+ 
 });
 
   $(function() {
