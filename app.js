@@ -7,7 +7,7 @@ var express = require('express')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path');
-
+var mysql = require('mysql');
 var redis = require('redis');
 var dummy_api_key = '1234567890';
 var auth = require('./libs/api/auth');
@@ -18,7 +18,15 @@ var team = require('./libs/services/team'); // soccer team
 //var player = require('./libs/services/player'); //soccer player 
 var gameplay = require('./libs/services/gameplay'); // gameplay service
 
+//mysql pool
+var pool  = mysql.createPool({
+   host     : config.database.host,
+   user     : config.database.username,
+   password : config.database.password,
+});
 
+team.setPool(pool);
+gameplay.setPool(pool);
 var app = express();
 var RedisStore = require('connect-redis')(express);
 

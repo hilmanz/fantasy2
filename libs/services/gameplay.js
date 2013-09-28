@@ -2,6 +2,10 @@ var path = require('path');
 var gameplay = require(path.resolve('./libs/api/gameplay'));
 
 
+exports.setPool = function(pool){
+	gameplay.setPool(pool);
+}
+
 exports.getLineup = function(req,res){
 	gameplay.getLineup(req.params.id,
 		function(err,rs){
