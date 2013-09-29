@@ -21,13 +21,6 @@
 	</div><!-- end #slider -->
 
 	<div id="listBox">
-        <div class="box tr">
-            <h3>Cara Bermain</h3>
-            <div class="entry">
-                <p>Selamat datang di SuperSoccer Football Manager, ajang unjuk gigi kemampuan kamu sebagai manager klab liga utama inggris.</p>
-                <a class="readmore" href="<?=$this->Html->url('/pages/cara')?>">Selengkapnya </a>
-            </div><!-- end .entry -->
-        </div><!-- end .box -->
         <div class="box tr last">
             <h3>Daftar Sekarang!</h3>
             <div class="entry">
@@ -37,35 +30,26 @@
                 </p>
             </div><!-- end .entry -->
         </div><!-- end .box -->
+		<div class="bannerBox">
+				<a href="#"><img src="content/slider/1.jpg" /></a>
+		</div>
     </div><!-- end #listBox -->
 </div><!-- end #content -->
 
-<div id="sidebar" class="tr latestActivity">
-    <div id="latestActivity">
-    	<h1>Aktivitas Terbaru</h1>
-        <div id="jp-container" class="jp-container">
-            <?php
-            foreach($info as $activity):
-              if(isset($activity['Player1'])):
-            ?>
-            <div class="row">
-                <a href="#" class="thumb40 fl">
-                  <?php if($activity['Player1']['avatar_img']==null||$activity['Player1']['avatar_img']=='0'):?>
-                  <img src="http://graph.facebook.com/<?=$activity['Player1']['fb_id']?>/picture" /></a>
-                <?php else:?>
-                  <img src="<?=$this->Html->url('/files/120x120_'.$activity['Player1']['avatar_img'])?>"/></a>
-                <?php endif;?>
-                <div class="entry fl">
-                    <h3 class="username"><a href="#"><?=h($activity['Player1']['name'])?></a></h3>
-                    <p><?=h($activity['Info']['content'])?></p>
-                </div><!-- end .entry -->
-            </div><!-- end .row -->
-            <?php
-            endif;
-            endforeach;
-            ?>
-        </div><!-- end #jp-container -->
-    </div><!-- end #latestActivity -->
+<div id="sidebar" class="latestActivity">
+	<div id="videoIntro">
+    	<iframe width="100%" height="200" src="//www.youtube.com/embed/ccQjUK2rlRE" frameborder="0" allowfullscreen></iframe>
+    </div>
+	<div id="caramain" class="tr sidebox">
+        <h3>Cara Bermain</h3>
+        <div class="entry">
+            <p>Selamat datang di SuperSoccer Football Manager, ajang unjuk gigi kemampuan kamu sebagai manager klab liga utama inggris.</p>
+            <a class="readmore" href="<?=$this->Html->url('/pages/cara')?>">Selengkapnya </a>
+        </div><!-- end .entry -->
+    </div>
+        <div class="bannerBox">
+	                    <a href="#"><img src="content/slider/1.jpg" /></a>
+        </div>
 </div><!-- end #sidebar -->
 
 

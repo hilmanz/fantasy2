@@ -1,5 +1,4 @@
 <div id="faqPage">
-	
     <div id="thecontent">
         <div class="content">
         	<div class="titlePage">
