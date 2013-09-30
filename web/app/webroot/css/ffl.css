@@ -624,7 +624,7 @@ a.download-appstore{
 	background:url(../images/tr2.png) repeat;
 }
 #thecontent{
-	padding:20px 0;
+	padding:0px 0;
 }
 #content{
 	clear:both;
@@ -940,7 +940,7 @@ input[type=text]{
 	color:#000 !important; 
 }
 #clubtabs{
-	padding:20px 0;
+	padding:0 0;
 	clear:both;
 }
 #clubtabs ul li{
