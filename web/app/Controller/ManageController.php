@@ -98,7 +98,7 @@ class ManageController extends AppController {
 		
 
 		//financial statements & cache it when necessary.  these are a hell of heavy queries.
-		//if(!is_array($this->Session->read('FinancialStatement'))){
+		if(!is_array($this->Session->read('FinancialStatement'))){
 
 		
 			$financial_statement['finance'] = $this->getFinancialStatements($userData['fb_id']);
@@ -123,7 +123,7 @@ class ManageController extends AppController {
 			$financial_statement['starting_budget'] = $this->starting_budget;
 
 			$this->Session->write('FinancialStatement',$financial_statement);
-		//}
+		}
 
 		$financial_statement = $this->Session->read('FinancialStatement');
 		

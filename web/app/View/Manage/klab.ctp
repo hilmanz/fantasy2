@@ -32,161 +32,7 @@ function isStaffExist($staff_token,$name){
 ?>
 <div id="klabPage">
     <div id="thecontent">
-		<div class="row">
-			<div class="col3 fl">
-				<div class="widget RingkasanKlab">
-					<h3>Ringkasan Klab</h3>
-					<div class="entry tr">
-						<table width="100%" border="0" cellspacing="0" cellpadding="0">
-						  <tr>
-							<td align="center"><a href="#"><img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/1.png"/></a></td>
-							<td>
-								<span>Rank: <strong><?=number_format($USER_RANK)?></strong></span>
-								<span>Uang: <strong>SS$ <?=number_format($team_bugdet)?></strong></span>
-								<span>Point: <strong><?=number_format($USER_POINTS)?></strong></span>
-								<span>Gaji Mingguan: <strong>SS$ <?=number_format($weekly_salaries)?></strong></span>
-								<span>Pendapatan Minggu lalu: <strong>SS$ <?=number_format($last_earning)?></strong></span>
-								<span>Pengeluaran Minggu lalu: <strong>SS$ <?=number_format($last_expenses)?></strong></span>
-							</td>
-						  </tr>
-						</table>
-					</div><!-- end .entry -->
-				</div><!-- end .widget -->
-			</div><!-- end .col3 -->
-			<div class="col3 fl">
-				<div class="widget PergerakanRanking">
-					<h3>Pergerakan Poin</h3>
-					<div class="entry tr">
-						<div id="chart_ranking" class="chartbox">
-							
-						</div>
-					</div><!-- end .entry -->
-				</div><!-- end .widget -->
-			</div><!-- end .col3 -->
-			<div class="col3 fl">
-				<div class="widget PergerakanKeuangan">
-					<h3>Pergerakan Keuangan</h3>
-					<div class="entry tr">
-						<div id="chart_keuangan" class="chartbox">
-							
-						</div>
-					</div><!-- end .entry -->
-				</div><!-- end .widget -->
-			</div><!-- end .col3 -->
-		</div><!-- end .row -->
-		<div class="row">
-			<div class="col3 fl">
-				<div class="widget PertandinganLalu">
-					<h3>Pertandingan Lalu</h3>
-					<div class="entry tr">
-							<table width="100%" border="0" cellspacing="0" cellpadding="0">
-						  <thead>
-							<tr>
-							  <th width="150">Game</th>
-							  <th width="50">Points</th>
-							  <th>Pendapatan</th>
-							</tr>
-						  </thead>
-						  <tbody id="myplayerlist">
-						  	<?php if(isset($matches)):foreach($matches as $m):?>
-						  	<?php
-
-						  		extract($m);
-						  		if($home_id==$club['team_id']){
-						  			$versus = $away_name;
-						  		}else{
-						  			$versus = $home_name;
-						  		}
-						  	?>
-							<tr id="p50004" class="odd">
-							  <td>Vs. <?=h($versus)?></td>
-							  <td><?=number_format($points)?></td>
-							  <td>SS$ <?=number_format($income)?></td>
-							</tr>
-							<?php endforeach;endif;?>
-                          </tbody>
-                       	</table>
-					</div><!-- end .entry -->
-				</div><!-- end .widget -->
-			</div><!-- end .col3 -->
-			<div class="col-content fl">
-				<div class="widget PemainTerbaik">
-					<h3>Pemain Terbaik</h3>
-					<div class="entry tr">
-						<table width="100%" border="0" cellspacing="0" cellpadding="0">
-						  <thead>
-							<tr>
-							  <th width="50"></th>
-							  <th width="210">Nama</th>
-							  <th width="50">Umur</th>
-							  <th width="70">Posisi</th>
-							 
-							  <th width="120">Poin</th>
-							  <th width="120">Nilai</th>
-							 
-							</tr>
-						  </thead>
-						  <tbody id="myplayerlist">
-							
-							 <?php $n_best = 0;?>				  	
-							  <?php foreach($best_players as $player):?>
-			                  <?php
-			                    switch($player['position']){
-			                      case 'Goalkeeper':
-			                        $player_pos = "Goalkeeper";
-			                        $color = "grey";
-			                      break;
-			                      case 'Midfielder':
-			                        $player_pos = "Midfielder";
-			                        $color = "yellow";
-			                      break;
-			                      case 'Forward':
-			                        $player_pos = "Forward";
-			                        $color  = "red";
-			                      break;
-			                      default:
-			                        $player_pos = "Defender";
-			                        $color = "blue";
-			                      break;
-			                    }
-			                    
-			                   
-			                  ?>
-			                  <tr id="<?=$player['uid']?>">
-			                    <td>
-			                     <a class="thumbPlayers" href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"> <img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$player['team_id'])?>&dimensions=103x155&id=<?=str_replace('p','',$player['uid'])?>"/></a>
-			                    </td>
-			                    <td>
-			                      <a class="yellow" href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"><?=h($player['name'])?></a></td>
-			                    
-			                    <td><?=round((time()-strtotime($player['birth_date']))/(24*60*60*365))?></td>
-			                   
-			                    <td><?=$player_pos?></td>
-			                   
-			                    
-			                    <?php
-			                      if($player['points']>0){
-			                        $performance_bonus = round(floatval($player['last_performance']/100) * 
-			                                            intval($player['transfer_value']));
-			                      }else{
-			                        $performance_bonus = 0;
-			                      }
-			                    ?>
-			                    <td><?=number_format(intval($player['points']))?></td>
-			                    <td><?=number_format(intval($player['transfer_value'])+$performance_bonus)?></td>
-			                    
-			                  </tr>
-			                  <?php if($n_best==4){break;}else{$n_best++;}?>
-			                  <?php endforeach;?>
-						  </tbody>
-						</table>
-
-
-					</div><!-- end .entry -->
-				</div><!-- end .widget -->
-			</div><!-- end .col-content -->
-		</div><!-- end .row -->
-		<div class="row">
+    	<div class="row">
 			<div id="clubtabs">
               <ul>
                 <li><a href="#tabs-Info">Info</a></li>
@@ -195,19 +41,175 @@ function isStaffExist($staff_token,$name){
                 <li><a href="#tabs-Staff">Staff</a></li>
               </ul>
               <div id="tabs-Info">
-                <div class="avatar-big fl">
-                   
-                     <?php if(strlen($user['avatar_img'])==0 || $user['avatar_img']=='0'):?>
-                      <img src="http://graph.facebook.com/<?=$USER_DATA['fb_id']?>/picture" />
-                      <?php else:?>
-                      <img src="<?=$this->Html->url('/files/120x120_'.$user['avatar_img'])?>" />
-                      <?php endif;?>
-                </div>
-                <div class="user-details fl">
-                    <h3 class="username"><?=h($user['name'])?></h3>
-                    <h3 class="useremail"><?=h($user['email'])?></h3>
-                    <h3 class="usercity"><?=h($user['location'])?></h3>
-                </div><!-- end .row -->
+              	<div class="row">
+	                <div class="avatar-big fl">
+	                   
+	                     <?php if(strlen($user['avatar_img'])==0 || $user['avatar_img']=='0'):?>
+	                      <img src="http://graph.facebook.com/<?=$USER_DATA['fb_id']?>/picture" />
+	                      <?php else:?>
+	                      <img src="<?=$this->Html->url('/files/120x120_'.$user['avatar_img'])?>" />
+	                      <?php endif;?>
+	                </div>
+	                <div class="user-details fl">
+	                    <h3 class="username"><?=h($user['name'])?></h3>
+	                    <h3 class="useremail"><?=h($user['email'])?></h3>
+	                    <h3 class="usercity"><?=h($user['location'])?></h3>
+	                </div>
+	             </div><!-- end .row -->
+                <div class="row">
+					<div class="col3 fl">
+						<div class="widget RingkasanKlab">
+							<h3>Ringkasan Klab</h3>
+							<div class="entry tr">
+								<table width="100%" border="0" cellspacing="0" cellpadding="0">
+								  <tr>
+									<td align="center"><a href="#"><img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/1.png"/></a></td>
+									<td>
+										<span>Rank: <strong><?=number_format($USER_RANK)?></strong></span>
+										<span>Uang: <strong>SS$ <?=number_format($team_bugdet)?></strong></span>
+										<span>Point: <strong><?=number_format($USER_POINTS)?></strong></span>
+										<span>Gaji Mingguan: <strong>SS$ <?=number_format($weekly_salaries)?></strong></span>
+										<span>Pendapatan Minggu lalu: <strong>SS$ <?=number_format($last_earning)?></strong></span>
+										<span>Pengeluaran Minggu lalu: <strong>SS$ <?=number_format($last_expenses)?></strong></span>
+									</td>
+								  </tr>
+								</table>
+							</div><!-- end .entry -->
+						</div><!-- end .widget -->
+					</div><!-- end .col3 -->
+					<div class="col3 fl">
+						<div class="widget PergerakanRanking">
+							<h3>Pergerakan Poin</h3>
+							<div class="entry tr">
+								<div id="chart_ranking" class="chartbox">
+									
+								</div>
+							</div><!-- end .entry -->
+						</div><!-- end .widget -->
+					</div><!-- end .col3 -->
+					<div class="col3 fl">
+						<div class="widget PergerakanKeuangan">
+							<h3>Pergerakan Keuangan</h3>
+							<div class="entry tr">
+								<div id="chart_keuangan" class="chartbox">
+									
+								</div>
+							</div><!-- end .entry -->
+						</div><!-- end .widget -->
+					</div><!-- end .col3 -->
+				</div><!-- end .row -->
+				<div class="row">
+					<div class="col3 fl">
+						<div class="widget PertandinganLalu">
+							<h3>Pertandingan Lalu</h3>
+							<div class="entry tr">
+									<table width="100%" border="0" cellspacing="0" cellpadding="0">
+								  <thead>
+									<tr>
+									  <th width="150">Game</th>
+									  <th width="50">Points</th>
+									  <th>Pendapatan</th>
+									</tr>
+								  </thead>
+								  <tbody id="myplayerlist">
+								  	<?php if(isset($matches)):foreach($matches as $m):?>
+								  	<?php
+
+								  		extract($m);
+								  		if($home_id==$club['team_id']){
+								  			$versus = $away_name;
+								  		}else{
+								  			$versus = $home_name;
+								  		}
+								  	?>
+									<tr id="p50004" class="odd">
+									  <td>Vs. <?=h($versus)?></td>
+									  <td><?=number_format($points)?></td>
+									  <td>SS$ <?=number_format($income)?></td>
+									</tr>
+									<?php endforeach;endif;?>
+		                          </tbody>
+		                       	</table>
+							</div><!-- end .entry -->
+						</div><!-- end .widget -->
+					</div><!-- end .col3 -->
+					<div class="col-content fl">
+						<div class="widget PemainTerbaik">
+							<h3>Pemain Terbaik</h3>
+							<div class="entry tr">
+								<table width="100%" border="0" cellspacing="0" cellpadding="0">
+								  <thead>
+									<tr>
+									  <th width="50"></th>
+									  <th width="210">Nama</th>
+									  <th width="50">Umur</th>
+									  <th width="70">Posisi</th>
+									 
+									  <th width="120">Poin</th>
+									  <th width="120">Nilai</th>
+									 
+									</tr>
+								  </thead>
+								  <tbody id="myplayerlist">
+									
+									 <?php $n_best = 0;?>				  	
+									  <?php foreach($best_players as $player):?>
+					                  <?php
+					                    switch($player['position']){
+					                      case 'Goalkeeper':
+					                        $player_pos = "Goalkeeper";
+					                        $color = "grey";
+					                      break;
+					                      case 'Midfielder':
+					                        $player_pos = "Midfielder";
+					                        $color = "yellow";
+					                      break;
+					                      case 'Forward':
+					                        $player_pos = "Forward";
+					                        $color  = "red";
+					                      break;
+					                      default:
+					                        $player_pos = "Defender";
+					                        $color = "blue";
+					                      break;
+					                    }
+					                    
+					                   
+					                  ?>
+					                  <tr id="<?=$player['uid']?>">
+					                    <td>
+					                     <a class="thumbPlayers" href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"> <img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$player['team_id'])?>&dimensions=103x155&id=<?=str_replace('p','',$player['uid'])?>"/></a>
+					                    </td>
+					                    <td>
+					                      <a class="yellow" href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"><?=h($player['name'])?></a></td>
+					                    
+					                    <td><?=round((time()-strtotime($player['birth_date']))/(24*60*60*365))?></td>
+					                   
+					                    <td><?=$player_pos?></td>
+					                   
+					                    
+					                    <?php
+					                      if($player['points']>0){
+					                        $performance_bonus = round(floatval($player['last_performance']/100) * 
+					                                            intval($player['transfer_value']));
+					                      }else{
+					                        $performance_bonus = 0;
+					                      }
+					                    ?>
+					                    <td><?=number_format(intval($player['points']))?></td>
+					                    <td><?=number_format(intval($player['transfer_value'])+$performance_bonus)?></td>
+					                    
+					                  </tr>
+					                  <?php if($n_best==4){break;}else{$n_best++;}?>
+					                  <?php endforeach;?>
+								  </tbody>
+								</table>
+
+
+							</div><!-- end .entry -->
+						</div><!-- end .widget -->
+					</div><!-- end .col-content -->
+				</div><!-- end .row -->
               </div><!-- end #Info -->
               <div id="tabs-Money">
                     <table cellspacing="0" cellpadding="0" width="100%">
@@ -618,6 +620,8 @@ function isStaffExist($staff_token,$name){
               </div><!-- end #tabs-Staff -->
             </div><!-- end #clubtabs -->
 		</div>
+		
+		
     </div><!-- end #thecontent -->
 </div><!-- end #faqPage -->
 
