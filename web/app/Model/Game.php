@@ -170,7 +170,7 @@ class Game extends AppModel {
 		$team = $this->api_call('/team/get/'.$fb_id);
 		if(isset($team['id'])){
 			$response = $this->api_call('/finance/'.$team['id']);
-		}			
+		}		
 		return $response;
 	}
 
@@ -179,6 +179,13 @@ class Game extends AppModel {
 	*/
 	function getLastEarnings($game_team_id){
 		$response = $this->api_call('/last_earning/'.$game_team_id);
+		return $response;	
+	}
+	/**
+	*	get team's last expenses from previous match.
+	*/
+	function getLastExpenses($game_team_id){
+		$response = $this->api_call('/last_expenses/'.$game_team_id);
 		return $response;	
 	}
 	/**

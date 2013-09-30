@@ -21,7 +21,9 @@ class ManageController extends AppController {
  * @var array
  */
 	public $uses = array();
-	
+	private $weekly_balances = null;
+	private $expenditures = null;
+	private $starting_budget = 0;
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->loadModel('Team');
@@ -42,7 +44,9 @@ class ManageController extends AppController {
 		$this->redirect('/manage/club');
 	}
 	public function club(){
-		
+		$this->loadModel('Weekly_point');
+		$this->loadModel('Weekly_rank');
+
 		$userData = $this->userData;
 		//user data
 		$user = $this->userDetail;
@@ -63,8 +67,18 @@ class ManageController extends AppController {
 		
 		//list of players
 		$players = $this->Game->get_team_players($userData['fb_id']);
+		
 		$this->set('players',$players);
 
+		$best_players = subval_rsort($players,'points');
+		$this->set('best_players',$best_players);
+
+		//weekly salaries
+		$weekly_salaries = 0;
+		foreach($players as $p){
+			$weekly_salaries += intval(@$p['salary']);
+		}
+		//-->
 		//list of staffs
 		//get officials
 		$officials = $this->Game->getAvailableOfficials($userData['team']['id']);
@@ -76,11 +90,79 @@ class ManageController extends AppController {
 		}
 		$this->set('staffs',$staffs);
 
-		//financial statements
-		$finance = $this->getFinancialStatements($userData['fb_id']);
+		foreach($staffs as $p){
+			$weekly_salaries += intval(@$p['salary']);
+		}
 		
-		$this->set('finance',$finance);
+		$this->set('weekly_salaries',$weekly_salaries);
+		
 
+		//financial statements & cache it when necessary.  these are a hell of heavy queries.
+		//if(!is_array($this->Session->read('FinancialStatement'))){
+
+		
+			$financial_statement['finance'] = $this->getFinancialStatements($userData['fb_id']);
+			$financial_statement['weekly_balances'] = $this->weekly_balances;
+			
+			//last earnings
+			$rs = $this->Game->getLastEarnings($userData['team']['id']);
+			if($rs['status']==1){
+				$financial_statement['last_earning'] = $rs['data']['total_earnings'];
+			}else{
+				$financial_statement['last_earning'] = 0;
+			}
+
+			//last expenses
+			$rs = $this->Game->getLastExpenses($userData['team']['id']);
+			if($rs['status']==1){
+				$financial_statement['last_expenses'] = $rs['data']['total_expenses'];
+			}else{
+				$financial_statement['last_expenses'] = 0;
+			}
+			$financial_statement['expenditures'] = $this->expenditures;
+			$financial_statement['starting_budget'] = $this->starting_budget;
+
+			$this->Session->write('FinancialStatement',$financial_statement);
+		//}
+
+		$financial_statement = $this->Session->read('FinancialStatement');
+		
+		$this->set('finance',$financial_statement['finance']);
+		$this->set('weekly_balances',$financial_statement['weekly_balances']);
+		$this->set('last_earning',$financial_statement['last_earning']);
+		$this->set('last_expenses',$financial_statement['last_expenses']);
+		//--> 
+
+		//weekly points and weekly ranks
+		//for weekly points, make sure the points from other player are included
+		$this->Weekly_point->virtualFields['TotalPoints'] = 'SUM(Weekly_point.points)';
+		$options = array('fields'=>array('Weekly_point.id', 'Weekly_point.team_id', 
+							'Weekly_point.game_id', 'Weekly_point.matchday', 'Weekly_point.matchdate', 
+							'SUM(Weekly_point.points) AS TotalPoints', 'Team.id', 'Team.user_id', 
+							'Team.team_id','Team.team_name'),
+			'conditions'=>array('Weekly_point.team_id'=>$user['Team']['id']),
+	        'limit' => 100,
+	        'group' => 'Weekly_point.matchday',
+	        'order' => array(
+	            'matchday' => 'asc'
+	        ));
+		$weekly_points = $this->Weekly_point->find('all',$options);
+		$weekly_team_points = array();
+		while(sizeof($weekly_points) > 0){
+			$p = array_shift($weekly_points);
+			$weekly_team_points[] = array(
+					'game_id'=>$p['Weekly_point']['game_id'],
+					'matchday'=>$p['Weekly_point']['matchday'],
+					'matchdate'=>$p['Weekly_point']['matchdate'],
+					'points'=>$p[0]['TotalPoints']
+				);
+		}
+		unset($weekly_points);
+		$this->set('weekly_points',$weekly_team_points);
+
+		//matches
+		$matches = $this->getMatches($weekly_team_points,$financial_statement['expenditures']);
+		$this->set('matches',$matches);
 
 		//enable OPTA Widget
 		$this->set('ENABLE_OPTA',true);
@@ -90,10 +172,61 @@ class ManageController extends AppController {
 		if(isset($this->request->query['tab'])){
 			$this->set('tab',$this->request->query['tab']);
 		}
+
+		$this->render('klab');
+	}
+	private function getMatches($arr,$expenditures){
+		$game_ids = array();
+		foreach($arr as $a){
+			$game_ids[] = "'".$a['game_id']."'";
+		}
+		$a_game_ids = implode(',',$game_ids);
+		$sql = "SELECT game_id,home_id,away_id,b.name AS home_name,c.name AS away_name,
+				a.matchday,a.match_date 
+				FROM ffgame.game_fixtures a
+				INNER JOIN ffgame.master_team b
+				ON a.home_id = b.uid
+				INNER JOIN ffgame.master_team c
+				ON a.away_id = c.uid
+				WHERE a.game_id IN ({$a_game_ids});";
+		$rs = $this->Game->query($sql);
+		$matches = array();
+
+		foreach($rs as $n=>$r){
+			$points = 0;
+			$balance = 0;
+			foreach($arr as $a){
+				if($r['a']['game_id']==$a['game_id']){
+					$points = $a['points'];
+					break;
+				}
+			}
+			foreach($expenditures as $b){
+				if($r['a']['game_id']==$b['game_id']){
+					$income = $b['total_income'];
+					break;
+				}
+			}
+			$match = $r['a'];
+			$match['home_name'] = $r['b']['home_name'];
+			$match['away_name'] = $r['c']['away_name'];
+			$match['points'] = $points;
+			$match['income'] = $income;
+			$matches[] = $match;
+		}
+
+		//clean memory
+		$rs = null;
+		unset($rs);
+		return $matches;
 	}
 	private function getFinancialStatements($fb_id){
 		$finance = $this->Game->financial_statements($fb_id);
 		
+		$this->weekly_balances = @$finance['data']['weekly_balances'];
+		$this->expenditures = @$finance['data']['expenditures'];
+		$this->starting_budget = @intval($finance['data']['starting_budget']);
+
 		if($finance['status']==1){
 
 			$report = array('total_matches' => $finance['data']['total_matches'],

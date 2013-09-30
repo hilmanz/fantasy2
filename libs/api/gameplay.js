@@ -528,21 +528,60 @@ function getFinancialStatement(game_team_id,done){
 		async.waterfall(
 			[
 				function(callback){
+					//starting budget
+					conn.query("SELECT budget FROM ffgame.game_team_purse WHERE game_team_id = ?;",
+							[game_team_id],function(err,rs){
+								if(!err){
+									callback(err,rs[0].budget);
+								}else{
+									callback(err,null);
+								}
+							});
+				},
+				function(starting_budget,callback){
 					//get the total matches by these team
-					
 					conn.query("SELECT COUNT(*) AS total_matches FROM (SELECT game_id\
 								FROM ffgame.game_team_expenditures WHERE game_team_id = ?\
 								GROUP BY game_id) a;",
 						[game_team_id],
 						function(err,result){
 						if(typeof result !== 'undefined'){
-							callback(err,result[0]);
+							callback(err,starting_budget,result[0]);
 						}else{
-							callback(err,null);
+							callback(err,starting_budget,null);
 						}
 					});
 				},
-				function(matches,callback){
+				function(starting_budget,matches,callback){
+					//weekly balance
+					conn.query("SELECT game_id,SUM(amount) AS total_income,match_day\
+								FROM ffgame.game_team_expenditures \
+								WHERE game_team_id=?\
+								GROUP BY game_id \
+								ORDER BY match_day LIMIT 100;",
+								[game_team_id],
+								function(err,rs){
+									if(!err){
+										callback(err,starting_budget,matches,rs);
+									}else{
+										callback(err,null,null,null);
+									}
+								});
+				},
+				function(starting_budget,matches,rs,callback){
+					var weekly_balance = [];
+					var current_balance = starting_budget;
+					if(rs.length>0){
+						for(var i in rs){
+							current_balance += parseInt(rs[i].total_income);
+							weekly_balance.push({week:rs[i].match_day,balance:current_balance});
+						}
+					}else{
+						weekly_balance.push({week:1,balance:starting_budget});
+					}
+					callback(null,starting_budget,weekly_balance,matches,rs);
+				},
+				function(starting_budget,weekly_balance,matches,expenditures,callback){
 					if(matches!=null){
 						conn.query("SELECT item_name,item_type,SUM(amount) AS total\
 									FROM ffgame.game_team_expenditures\
@@ -550,8 +589,11 @@ function getFinancialStatement(game_team_id,done){
 									GROUP BY item_name;",
 							[game_team_id],
 							function(err,result){
-								callback(err,{total_matches:matches.total_matches,
-											  report:result});
+								callback(err,{starting_budget:starting_budget,
+											  weekly_balances:weekly_balance,
+											  total_matches:matches.total_matches,
+											  report:result,
+											  expenditures:expenditures});
 						});
 					}else{	
 						callback(null,null);
@@ -1304,6 +1346,7 @@ function getTeamResultStats(conn,team_id,callback){
 exports.leaderboard = leaderboard;
 exports.best_player = best_player;
 exports.last_earning = last_earning;
+exports.last_expenses = last_expenses;
 exports.best_match = best_match;
 exports.getVenue = getVenue;
 exports.next_match = next_match;
