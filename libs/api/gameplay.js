@@ -1343,6 +1343,9 @@ function getTeamResultStats(conn,team_id,callback){
 		}
 	);
 }
+
+var match = require(path.resolve('./libs/api/match'));
+
 exports.leaderboard = leaderboard;
 exports.best_player = best_player;
 exports.last_earning = last_earning;
@@ -1358,7 +1361,7 @@ exports.getLineup = getLineup;
 exports.setLineup = setLineup;
 exports.getPlayers = getPlayers;
 exports.getBudget = getBudget;
-exports.match = require(path.resolve('./libs/api/match'));
+exports.match = match;
 exports.officials = require(path.resolve('./libs/api/officials'));
 exports.sponsorship = require(path.resolve('./libs/api/sponsorship'));
 exports.getPlayerOverallStats = getPlayerOverallStats;
@@ -1368,4 +1371,5 @@ exports.sale = sale;
 exports.buy = buy;
 exports.setPool = function(p){
 	pool = p;
+	match.setPool(pool);
 }

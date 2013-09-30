@@ -148,6 +148,10 @@ class Game extends AppModel {
 		$response = $this->api_call('/match/results/'.$game_id);
 		return $response;
 	}
+	public function getMatchDetailsByGameTeamId($game_team_id,$game_id){
+		$response = $this->api_call('/match/user_match_results/'.$game_team_id.'/'.$game_id);
+		return $response;
+	}
 	public function getNextMatch($team_id){
 		$response = $this->api_call('/next_match/'.$team_id);
 		return $response;

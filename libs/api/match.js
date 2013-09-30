@@ -14,20 +14,20 @@ var redis = require('redis');
 var formations = require(path.resolve('./libs/game_config')).formations;
 var stats_map = require(path.resolve('./libs/stats_map')).stats_map;
 
+var pool = {};
 
-function prepareDb(){
-	var connection = mysql.createConnection({
-  		host     : config.database.host,
-	   	user     : config.database.username,
-	   	password : config.database.password,
+exports.setPool = function(p){
+	pool = p;
+}
+function prepareDb(callback){
+	pool.getConnection(function(err,conn){
+		callback(conn);
 	});
-	
-	return connection;
 }
 
 function fixtures(done){
-	var conn = prepareDb();
-	conn.query("SELECT a.id,\
+	prepareDb(function(conn){
+		conn.query("SELECT a.id,\
 				a.game_id,a.home_id,b.name as home_name,a.away_id,c.name as away_name,a.home_score,a.away_score,\
 				a.matchday,a.period,a.session_id,a.attendance\
 				FROM ffgame.game_fixtures a\
@@ -43,20 +43,86 @@ function fixtures(done){
 						done(err,match);						
 					});
 				});
+	});
+	
 }
 function next_match(team_id,done){
-	var conn = prepareDb();
-	conn.query("",
+	var conn = prepareDb(function(conn){
+		conn.query("",
 				[],
 				function(err,match){
 					conn.end(function(e){
 						done(err,match);						
 					});
 				});
+	});
+	
+}
+function getMatchResultForUserTeam(game_team_id,game_id,done){
+	prepareDb(function(conn){
+		async.waterfall([
+			function(callback){
+				//get matchday first
+				conn.query("SELECT matchday FROM ffgame.game_fixtures WHERE game_id=?;",[game_id],
+							function(err,rs){
+								callback(err,rs[0].matchday);
+							});
+			},
+			function(matchday,callback){
+				//get all the user's lineups who playes in matchday 1
+				conn.query("SELECT a.game_id,a.player_id,a.points,c.team_id as original_team_id,c.name,c.position\
+				FROM ffgame_stats.game_match_player_points a\
+				INNER JOIN ffgame.master_player c\
+				ON a.player_id = c.uid\
+				WHERE game_team_id = ?\
+				AND EXISTS (SELECT 1 FROM ffgame.game_fixtures b \
+					WHERE a.game_id = b.game_id AND b.matchday = ? LIMIT 1);",
+				[game_team_id,matchday],
+				function(err,rs){
+					callback(err,rs);
+				});
+			},
+			function(players,callback){
+				var p = {}
+				//get each players stats
+				async.eachSeries(players,function(player,next){
+					conn.query("SELECT stats_name,stats_value FROM ffgame_stats.master_player_stats \
+								WHERE game_id = ? AND player_id = ?",[player.game_id,player.player_id],
+								function(err,rs){
+									if(!err){
+										if(rs.length>0 || (!p[player.player_id])){
+											var stats = {};
+											for(var i in rs){
+												stats[rs[i].stats_name] = rs[i].stats_value;
+											}
+											p[player.player_id] = {
+												name:player.name,
+												position:player.position,
+												points:player.points,
+												original_team_id : player.original_team_id,
+												stats:stats
+											};	
+										}
+									}
+									next();
+								});
+				},function(err){
+					callback(err,p);
+				});
+			}
+		],
+
+		function(err,result){
+			conn.end(function(err){
+				done(err,result);
+			});
+		});
+
+	});
 }
 function results(game_id,done){
-	var conn = prepareDb();
-	async.waterfall([
+	prepareDb(function(conn){
+		async.waterfall([
 				function(callback){
 					//get game details
 					conn.query("SELECT a.id,\
@@ -117,6 +183,8 @@ function results(game_id,done){
 				});
 			}
 		);
+	});
+	
 }
 function getMatchResultData(game,stats,player_stats,callback){
 	var result = [];
@@ -208,3 +276,4 @@ function getMatchResultData(game,stats,player_stats,callback){
 }
 exports.fixtures = fixtures;
 exports.results = results;
+exports.getMatchResultForUserTeam = getMatchResultForUserTeam;

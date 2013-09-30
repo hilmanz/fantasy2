@@ -71,6 +71,7 @@ app.get('/team/get/:fb_id',[auth.canAccess],team.getUserTeam);
 app.get('/points/:fb_id',[auth.canAccess],team.getUserTeamPoints);
 app.get('/teams/:id',[auth.canAccess],team.getTeamById);
 app.get('/match/results/:game_id',[auth.canAccess],gameplay.match_results);
+app.get('/match/user_match_results/:game_team_id/:game_id',[auth.canAccess],gameplay.match_results_for_user_team);
 app.get('/next_match/:team_id',[auth.canAccess],gameplay.next_match);
 app.get('/best_match/:game_team_id',[auth.canAccess],gameplay.best_match);
 app.get('/best_player/:game_team_id',[auth.canAccess],gameplay.best_player);

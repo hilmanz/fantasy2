@@ -100,7 +100,8 @@ function isStaffExist($staff_token,$name){
 								  <tbody id="myplayerlist">
 								  	<?php if(isset($matches)):foreach($matches as $m):?>
 								  	<?php
-
+								  	
+								  		$hidden_params = encrypt_param(serialize($m));
 								  		extract($m);
 								  		if($home_id==$club['team_id']){
 								  			$versus = $away_name;
@@ -109,7 +110,7 @@ function isStaffExist($staff_token,$name){
 								  		}
 								  	?>
 									<tr id="p50004" class="odd">
-									  <td>Vs. <?=h($versus)?></td>
+									  <td><a href="<?=$this->Html->url('/manage/matchinfo?game_id='.$game_id).'&r='.$hidden_params?>">Vs. <?=h($versus)?></a></td>
 									  <td><?=number_format($points)?></td>
 									  <td>SS$ <?=number_format($income)?></td>
 									</tr>

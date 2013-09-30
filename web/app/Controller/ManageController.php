@@ -71,8 +71,11 @@ class ManageController extends AppController {
 		$this->set('players',$players);
 
 		$best_players = subval_rsort($players,'points');
-		$this->set('best_players',$best_players);
 
+		if($best_players[0]['points'] == 0){
+			$best_players = array();
+		}
+		$this->set('best_players',$best_players);
 		//weekly salaries
 		$weekly_salaries = 0;
 		foreach($players as $p){
@@ -176,48 +179,53 @@ class ManageController extends AppController {
 		$this->render('klab');
 	}
 	private function getMatches($arr,$expenditures){
-		$game_ids = array();
-		foreach($arr as $a){
-			$game_ids[] = "'".$a['game_id']."'";
-		}
-		$a_game_ids = implode(',',$game_ids);
-		$sql = "SELECT game_id,home_id,away_id,b.name AS home_name,c.name AS away_name,
-				a.matchday,a.match_date 
-				FROM ffgame.game_fixtures a
-				INNER JOIN ffgame.master_team b
-				ON a.home_id = b.uid
-				INNER JOIN ffgame.master_team c
-				ON a.away_id = c.uid
-				WHERE a.game_id IN ({$a_game_ids});";
-		$rs = $this->Game->query($sql);
 		$matches = array();
+		if(sizeof($arr)>0){
+			$game_ids = array();
 
-		foreach($rs as $n=>$r){
-			$points = 0;
-			$balance = 0;
 			foreach($arr as $a){
-				if($r['a']['game_id']==$a['game_id']){
-					$points = $a['points'];
-					break;
-				}
+				$game_ids[] = "'".$a['game_id']."'";
 			}
-			foreach($expenditures as $b){
-				if($r['a']['game_id']==$b['game_id']){
-					$income = $b['total_income'];
-					break;
-				}
-			}
-			$match = $r['a'];
-			$match['home_name'] = $r['b']['home_name'];
-			$match['away_name'] = $r['c']['away_name'];
-			$match['points'] = $points;
-			$match['income'] = $income;
-			$matches[] = $match;
-		}
 
-		//clean memory
-		$rs = null;
-		unset($rs);
+			$a_game_ids = implode(',',$game_ids);
+			$sql = "SELECT game_id,home_id,away_id,b.name AS home_name,c.name AS away_name,
+					a.matchday,a.match_date,a.home_score,a.away_score
+					FROM ffgame.game_fixtures a
+					INNER JOIN ffgame.master_team b
+					ON a.home_id = b.uid
+					INNER JOIN ffgame.master_team c
+					ON a.away_id = c.uid
+					WHERE a.game_id IN ({$a_game_ids});";
+			$rs = $this->Game->query($sql);
+			
+
+			foreach($rs as $n=>$r){
+				$points = 0;
+				$balance = 0;
+				foreach($arr as $a){
+					if($r['a']['game_id']==$a['game_id']){
+						$points = $a['points'];
+						break;
+					}
+				}
+				foreach($expenditures as $b){
+					if($r['a']['game_id']==$b['game_id']){
+						$income = $b['total_income'];
+						break;
+					}
+				}
+				$match = $r['a'];
+				$match['home_name'] = $r['b']['home_name'];
+				$match['away_name'] = $r['c']['away_name'];
+				$match['points'] = $points;
+				$match['income'] = $income;
+				$matches[] = $match;
+			}
+
+			//clean memory
+			$rs = null;
+			unset($rs);
+		}
 		return $matches;
 	}
 	private function getFinancialStatements($fb_id){
@@ -398,6 +406,48 @@ class ManageController extends AppController {
 		//-->
 
 		//$this->set('tab',@$this->request->query['tab']);
+	}
+	public function matchinfo(){
+		$game_id = $this->request->query('game_id');
+		$game_id = Sanitize::paranoid($game_id);
+
+		$match = unserialize(decrypt_param($this->request->query['r']));
+
+		$userData = $this->userData;
+		//user data
+		$user = $this->User->findByFb_id($userData['fb_id']);
+		$this->set('user',$user['User']);
+
+		//club
+		$club = $this->Team->findByUser_id($user['User']['id']);
+		$this->set('club',$club['Team']);
+
+		//match details
+
+		
+		$players = $this->Game->getMatchDetailsByGameTeamId($userData['team']['id'],$game_id);
+
+		
+		$this->set('players',$players['data']);
+
+
+		//poin modifiers
+		$rs = $this->Team->query("SELECT name,
+										g as Goalkeeper,
+										d as Defender,
+										m as Midfielder,
+										f as Forward
+										FROM ffgame.game_matchstats_modifier as stats;");
+
+		$modifier = array();
+		foreach($rs as $r){
+			$modifier[$r['stats']['name']] = $r['stats'];
+		}
+		$rs = null;
+		unset($rs);
+
+		$this->set('modifier',$modifier);
+		$this->set('match',$match);
 	}
 	public function error(){
 		$this->render('error');
