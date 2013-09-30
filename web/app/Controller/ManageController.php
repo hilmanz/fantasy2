@@ -179,6 +179,7 @@ class ManageController extends AppController {
 		$this->render('klab');
 	}
 	private function getMatches($arr,$expenditures){
+		
 		$matches = array();
 		if(sizeof($arr)>0){
 			$game_ids = array();
@@ -195,7 +196,12 @@ class ManageController extends AppController {
 					ON a.home_id = b.uid
 					INNER JOIN ffgame.master_team c
 					ON a.away_id = c.uid
-					WHERE a.game_id IN ({$a_game_ids});";
+					WHERE (a.home_id = '{$this->userData['team']['team_id']}' 
+							OR a.away_id = '{$this->userData['team']['team_id']}')
+					AND EXISTS (SELECT 1 FROM ffgame_stats.game_match_player_points d
+								WHERE d.game_id = a.game_id 
+								AND d.game_team_id = {$this->userData['team']['id']} LIMIT 1)
+					ORDER BY a.game_id";
 			$rs = $this->Game->query($sql);
 			
 
@@ -203,7 +209,7 @@ class ManageController extends AppController {
 				$points = 0;
 				$balance = 0;
 				foreach($arr as $a){
-					if($r['a']['game_id']==$a['game_id']){
+					if($r['a']['matchday']==$a['matchday']){
 						$points = $a['points'];
 						break;
 					}
@@ -380,14 +386,16 @@ class ManageController extends AppController {
 		$rs = $this->Game->get_team_player_info($userData['fb_id'],$player_id);
 		
 		if($rs['status']==1){
+
 			if(isset($rs['data']['daily_stats'])&&sizeof($rs['data']['daily_stats'])>0){
+				
 				foreach($rs['data']['daily_stats'] as $n=>$v){
 					$fixture = $this->Team->query("SELECT matchday,match_date,
 										UNIX_TIMESTAMP(match_date) as ts
 										FROM ffgame.game_fixtures 
 										WHERE game_id='{$n}' 
 										LIMIT 1");
-					
+
 					$rs['data']['daily_stats'][$n]['fixture'] = $fixture[0]['game_fixtures'];
 					$rs['data']['daily_stats'][$n]['fixture']['ts'] = $fixture[0][0]['ts'];
 				}

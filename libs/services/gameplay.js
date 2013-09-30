@@ -273,6 +273,7 @@ exports.player_team_data = function(req,res){
 							req.params.game_team_id,
 							req.params.id,
 							function(err,rs){
+
 								callback(err,{player:player,stats:rs});	
 							});
 			},
@@ -308,7 +309,7 @@ exports.player_team_data = function(req,res){
 			}
 		],
 		function(err,result){
-			
+			console.log(result);
 			if(err){
 				handleError(res);
 			}else{

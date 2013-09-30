@@ -31,7 +31,7 @@ function getTotalPoints($str,$stats){
             <div><?=h($home)?> vs <?=h($away)?></div>
             <div><?=intval($match['home_score'])?>   -  <?=intval($match['away_score'])?></div>
             <div>Total Poin</div>
-            <div><?=number_format($match['points'])?></div>
+            <div class="totalpoin">0</div>
         </div>
         <table>
             <tr>
@@ -69,7 +69,7 @@ function getTotalPoints($str,$stats){
                                   $goalkeeping + $mistakes_and_errors;
 
                     $overall_points += $total_poin;
-                   
+                    
             ?>
             <tr>
                 <td>
@@ -88,3 +88,6 @@ function getTotalPoints($str,$stats){
         </table>
     </div>
 </div>
+<script>
+$(".totalpoin").html(<?=number_format($overall_points)?>);
+</script>

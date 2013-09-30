@@ -352,12 +352,13 @@ function getPlayerOverallStats(game_team_id,player_id,callback){
 				ON a.game_id = b.game_id\
 				WHERE a.player_id=?\
 				AND EXISTS(\
-					SELECT 1 \
-					FROM ffgame.game_team_lineups_history c\
-					WHERE c.game_team_id=? \
-					AND c.player_id = a.player_id \
-					AND c.game_id = a.game_id\
-					LIMIT 1\
+				SELECT 1 FROM ffgame.game_team_players c\
+				WHERE c.game_team_id=?\
+				AND c.player_id = a.player_id\
+				LIMIT 1)\
+				AND EXISTS(\
+				SELECT 1 FROM ffgame_stats.game_match_player_points d\
+				WHERE d.game_team_id=? AND d.game_id = a.game_id AND d.player_id = a.player_id LIMIT 1\
 				)\
 				GROUP BY stats_name;";
 	}else{
@@ -370,9 +371,9 @@ function getPlayerOverallStats(game_team_id,player_id,callback){
 	}
 	prepareDb(function(conn){
 		conn.query(sql,
-				[player_id,game_team_id],
+				[player_id,game_team_id,game_team_id],
 				function(err,rs){
-					console.log(this.sql);
+					
 					conn.end(function(e){
 						callback(err,rs);	
 					});
@@ -395,7 +396,7 @@ function getPlayerTeamStats(game_team_id,player_id,callback){
 		conn.query(sql,
 				[game_team_id,player_id],
 				function(err,rs){
-
+					console.log(this.sql);
 					conn.end(function(e){
 						callback(err,rs);	
 					});
@@ -429,11 +430,15 @@ function getPlayerDailyTeamStats(game_team_id,player_id,player_pos,done){
 				WHERE a.player_id=?\
 				AND EXISTS(\
 					SELECT 1\
-					FROM ffgame.game_team_lineups_history c\
+					FROM ffgame.game_team_players c\
 					WHERE c.game_team_id=?\
 					AND c.player_id = a.player_id\
-					AND c.game_id = a.game_id\
 					LIMIT 1\
+				)\
+				AND EXISTS(\
+					SELECT 1 FROM ffgame_stats.game_match_player_points d\
+					WHERE d.game_team_id=? AND d.game_id = a.game_id \
+					AND d.player_id = a.player_id LIMIT 1\
 				)\
 				GROUP BY a.game_id,stats_name \
 				ORDER BY game_id ASC LIMIT 20000;";
@@ -450,7 +455,7 @@ function getPlayerDailyTeamStats(game_team_id,player_id,player_pos,done){
 		async.waterfall([
 			function(callback){
 				conn.query(sql,
-					[player_id,game_team_id],
+					[player_id,game_team_id,game_team_id],
 					function(err,rs){
 						console.log(this.sql);			
 						callback(err,rs);	
