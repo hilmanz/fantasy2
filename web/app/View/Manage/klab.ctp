@@ -41,7 +41,7 @@ function isStaffExist($staff_token,$name){
                 <li><a href="#tabs-Staff">Staff</a></li>
               </ul>
               <div id="tabs-Info">
-              	
+
                 <div class="row">
 					<div class="col3 fl">
 						<div class="widget RingkasanKlab">
@@ -49,7 +49,7 @@ function isStaffExist($staff_token,$name){
 							<div class="entry tr">
 								<table width="100%" border="0" cellspacing="0" cellpadding="0">
 								  <tr>
-									<td align="center"><a href="#"><img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/1.png"/></a></td>
+									<td align="center"><a href="#"><img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/></a></td>
 									<td>
 										<span>Rank: <strong><?=number_format($USER_RANK)?></strong></span>
 										<span>Uang: <strong>SS$ <?=number_format($team_bugdet)?></strong></span>
