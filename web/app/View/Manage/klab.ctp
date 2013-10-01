@@ -743,6 +743,9 @@ $('#chart_ranking').highcharts({
             }
         }
     },
+    legend: {
+      enabled: false
+    },
     credits:false,
     series: [
         {
@@ -794,6 +797,9 @@ $('#chart_keuangan').highcharts({
             }
         },
 
+    },
+    legend: {
+      enabled: false
     },
     tooltip: {
         enabled: true,
