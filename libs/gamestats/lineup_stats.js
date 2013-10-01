@@ -104,7 +104,7 @@ function get_master_match_summary(game_id,done){
 			if(err){console.log(err.message);}
 			conn.end(function(err){
 				for(var i in rs){
-					rs[i].avg_points = rs[i].overall_points / 16;
+					rs[i].avg_points = rs[i].overall_points / 11;
 				}
 				done(err,rs);	
 			});
