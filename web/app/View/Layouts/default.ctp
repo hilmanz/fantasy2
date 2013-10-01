@@ -58,7 +58,7 @@
                         	<a href="<?=$this->Html->url('/profile')?>">Profil Saya</a>
                         </li>
                     	<li>
-                        	<a href="<?=$this->Html->url('/leaderboard')?>">Papan Peringkat</a>
+                        	<a href="<?=$this->Html->url('/leaderboard/overall')?>">Papan Peringkat</a>
                         </li>
                     	<li>
                         	<a href="<?=$this->Html->url('/market')?>">Bursa Transfer</a>
