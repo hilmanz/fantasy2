@@ -54,9 +54,13 @@ function isStaffExist($staff_token,$name){
 										<span>Rank: <strong><?=number_format($USER_RANK)?></strong></span>
 										<span>Uang: <strong>SS$ <?=number_format($team_bugdet)?></strong></span>
 										<span>Point: <strong><?=number_format($USER_POINTS)?></strong></span>
-										<span>Gaji Mingguan: <strong>SS$ <?=number_format($weekly_salaries)?></strong></span>
-										<span>Pendapatan Minggu lalu: <strong>SS$ <?=number_format($last_earning)?></strong></span>
-										<span>Pengeluaran Minggu lalu: <strong>SS$ <?=number_format($last_expenses)?></strong></span>
+									</td>
+								  </tr>
+								  <tr>
+									<td colspan="2" class="pendapatan">
+										<span class="fl">Gaji Mingguan:</span><strong class="fr">SS$ <?=number_format($weekly_salaries)?></strong>
+										<span class="fl">Pendapatan Minggu lalu:</span> <strong class="fr">SS$ <?=number_format($last_earning)?></strong>
+										<span class="fl">Pengeluaran Minggu lalu:</span><strong class="fr">SS$ <?=number_format($last_expenses)?></strong>
 									</td>
 								  </tr>
 								</table>
@@ -92,8 +96,8 @@ function isStaffExist($staff_token,$name){
 									<table width="100%" border="0" cellspacing="0" cellpadding="0">
 								  <thead>
 									<tr>
-									  <th width="150">Game</th>
-									  <th width="50">Points</th>
+									  <th width="50">Game</th>
+									  <th width="10">Points</th>
 									  <th>Pendapatan</th>
 									</tr>
 								  </thead>
@@ -518,7 +522,7 @@ function isStaffExist($staff_token,$name){
                     <th width="210">Nama</th>
                     <th width="50">Umur</th>
                     <th width="64">Tgl.Lahir</th>
-                    <th width="64">Negara Asal</th>
+                    <th width="64">Negara</th>
                     <th width="70">Posisi</th>
                    
                     <th width="120">Gaji*</th>
@@ -691,7 +695,9 @@ $.each(stats,function(k,v){
   data.push(parseFloat(v.points));
 });
 
+
 $('#chart_ranking').highcharts({
+	colors: ['#c00', '#e12626', '#999999'],
     chart: {
         type: 'area',
         backgroundColor:'#000',
@@ -765,6 +771,7 @@ $.each(stats,function(k,v){
 });
 
 $('#chart_keuangan').highcharts({
+	colors: ['#c00', '#e12626', '#999999'],
     chart: {
         type: 'area',
         backgroundColor:'#000',

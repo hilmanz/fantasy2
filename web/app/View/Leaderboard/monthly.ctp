@@ -23,8 +23,19 @@ function isMonthAvailable($available,$m,$y){
 ?>
 <div id="leaderboardPage">
     <div class="headbar tr"> 
+        
+      <div class="fl">
+        <form action="<?=$this->Html->url('/leaderboard')?>" 
+          method="get" enctype="application/x-www-form-urlencoded">
+          <select name="period"  class="styled">
+              <option value="weekly" <?=$weekly?>>Mingguan</option>
+              <option value="monthly" <?=$monthly?>>Bulanan</option>
+              <option value="overall" <?=$overall?>>Keseluruhan</option>
+          </select>
+        </form>
+      </div>
        <?php if(isMonthAvailable($available_months,$previous_month,$previous_year)):?>
-        <div class="fl">
+        <div class="fr">
           <a href="<?=$this->Html->url('/leaderboard/monthly?m='.
                                         ($previous_month).'&y='.$previous_year)?>" 
             class="button"><?=$months[$previous_month]?> <?=$previous_year?></a>
@@ -32,23 +43,12 @@ function isMonthAvailable($available,$m,$y){
         <?php endif;?>
 
         <?php if(isMonthAvailable($available_months,$next_month,$next_year)):?>
-        <div class="fl">
+        <div class="fr">
           <a href="<?=$this->Html->url('/leaderboard/monthly?m='.
                                         ($next_month).'&y='.$next_year)?>" 
             class="button"><?=$months[$next_month]?> <?=$next_year?></a>
         </div>
         <?php endif;?>
-        
-      <div class="fr">
-        <form action="<?=$this->Html->url('/leaderboard')?>" 
-          method="get" enctype="application/x-www-form-urlencoded">
-          <select name="period">
-              <option value="weekly" <?=$weekly?>>Mingguan</option>
-              <option value="monthly" <?=$monthly?>>Bulanan</option>
-              <option value="overall" <?=$overall?>>Keseluruhan</option>
-          </select>
-        </form>
-      </div>
     </div>
     <div class="headbar tr">
         <div class="leaderboard-head fl">

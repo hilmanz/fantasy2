@@ -54,8 +54,6 @@ endif;
             <div class="widget tr match-place">
                 <p class="stadion"><?=h($venue['name'])?></p>
                 <p class="attendance">Kapasitas : <?=number_format($venue['capacity'])?></p>
-              
-                <a class="view-more" href="<?=$this->Html->url('/match')?>">Lihat Semua Pertandingan</a>
             </div><!-- end .widget -->
             <div class="widget tr perform-team">
                 <h2>Performa Anda</h2>

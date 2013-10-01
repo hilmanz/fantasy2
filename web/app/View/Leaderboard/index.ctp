@@ -5,30 +5,30 @@ $overall = isset($overall) ? "selected='selected'":"";
 ?>
 <div id="leaderboardPage">
     <div class="headbar tr">
-      
-        <?php if($matchday>1):?>
-        <div class="fl">
-          <a href="<?=$this->Html->url('/leaderboard/?week='.($matchday-1))?>" 
-            class="button">Minggu Lalu</a>
-        </div>
-        <?php endif;?>
-        <?php if(($next_match['match']['matchday']-1) > $matchday):?>
-        <div class="fl">
-          <a href="<?=$this->Html->url('/leaderboard/?week='.($matchday+1))?>" 
-            class="button">Minggu Berikutnya</a>
-        </div>
-        <?php endif;?>
      
-      <div class="fr">
+      <div class="fl">
         <form action="<?=$this->Html->url('/leaderboard')?>" 
           method="get" enctype="application/x-www-form-urlencoded">
-          <select name="period">
+          <select name="period" class="styled">
               <option value="weekly" <?=$weekly?>>Mingguan</option>
               <option value="monthly" <?=$monthly?>>Bulanan</option>
               <option value="overall" <?=$overall?>>Keseluruhan</option>
           </select>
         </form>
       </div>
+      
+        <?php if($matchday>1):?>
+        <div class="fr">
+          <a href="<?=$this->Html->url('/leaderboard/?week='.($matchday-1))?>" 
+            class="button">Minggu Lalu</a>
+        </div>
+        <?php endif;?>
+        <?php if(($next_match['match']['matchday']-1) > $matchday):?>
+        <div class="fr">
+          <a href="<?=$this->Html->url('/leaderboard/?week='.($matchday+1))?>" 
+            class="button">Minggu Berikutnya</a>
+        </div>
+        <?php endif;?>
     </div>
     <div class="headbar tr">
         <div class="leaderboard-head fl">
