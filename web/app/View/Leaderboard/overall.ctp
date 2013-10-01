@@ -6,10 +6,10 @@ $overall = isset($overall) ? "selected='selected'":"";
 ?>
 <div id="leaderboardPage">
     <div class="headbar tr">  
-      <div class="fr">
+      <div class="fl">
         <form action="<?=$this->Html->url('/leaderboard')?>" 
           method="get" enctype="application/x-www-form-urlencoded">
-          <select name="period">
+          <select name="period" class="styled">
               <option value="weekly" <?=$weekly?>>Mingguan</option>
               <option value="monthly" <?=$monthly?>>Bulanan</option>
               <option value="overall" <?=$overall?>>Keseluruhan</option>
@@ -19,7 +19,6 @@ $overall = isset($overall) ? "selected='selected'":"";
     </div>
     <div class="headbar tr">
         <div class="leaderboard-head fl">
-         
         	<h3>Papan Peringkat Keseluruhan</h3>
             <p>Daftar urutan manajer berdasarkan poin tertinggi secara keseluruhan.<br />Diperbaharui secara mingguan. </p>
         </div>

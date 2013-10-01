@@ -23,27 +23,35 @@ function getTotalPoints($str,$stats){
 ?>
 <div id="myClubPage">
     <?php echo $this->element('infobar'); ?>
-    <div class="row">
-        <a href="<?=$this->Html->url('/manage/club')?>" class="button">Kembali</a>
-    </div>
-    <div id="thecontent">
-        <div class="row">
+    <div class="headbar tr">
+        <div class="club-info fl">
             <div><?=h($home)?> vs <?=h($away)?></div>
-            <div><?=intval($match['home_score'])?>   -  <?=intval($match['away_score'])?></div>
-            <div>Total Poin</div>
-            <div class="totalpoin">0</div>
+            <h4><?=intval($match['home_score'])?>   -  <?=intval($match['away_score'])?></h4>
         </div>
-        <table>
+        <div class="club-info fl">
+            <div>Total Poin</div>
+            <h4 class="totalpoin">0</h4>
+        </div>
+        <div class="fr">
+      		  <a href="<?=$this->Html->url('/manage/club')?>" class="button">Kembali</a>
+        </div>
+    </div><!-- end .headbar -->
+	
+    <div id="thecontent">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<thead>
             <tr>
-                <td colspan="2">Player</td>
-                <td>Posisi</td>
-                <td>Play</td>
-                <td>Attacking &amp; Passing</td>
-                <td>Defending</td>
-                <td>Goalkeeping</td>
-                <td>Mistakes and Errors</td>
-                <td>Poin</td>
+                <th colspan="2">Player</th>
+                <th>Posisi</th>
+                <th>Play</th>
+                <th>Attacking &amp; Passing</th>
+                <th>Defending</th>
+                <th>Goalkeeping</th>
+                <th>Mistakes and Errors</th>
+                <th>Poin</th>
             </tr>
+		 </thead>
+		 <tbody>
             <?php
                 $overall_points = 0;
 
@@ -85,6 +93,7 @@ function getTotalPoints($str,$stats){
                 <td><?=$total_poin?></td>
             </tr>
             <?php endforeach;?>
+			</tbody>
         </table>
     </div>
 </div>

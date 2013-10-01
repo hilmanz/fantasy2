@@ -1022,7 +1022,7 @@ input[type=text]{
 	padding:15px;
 	overflow:hidden;
 	border-radius:5px;
-	margin:20px 0 0 0;
+	margin:20px 0;
 }
 .headbars{
 	padding:10px 15px;
@@ -1796,7 +1796,7 @@ h3.tabtitle{
 }
 #klabPage .widget .entry{
 	padding:15px;
-	min-height:170px;
+	min-height:176px;
 }
 #klabPage .RingkasanKlab table,#klabPage .RingkasanKlab td{
 	border:none;
@@ -1815,6 +1815,10 @@ h3.tabtitle{
 }
 .RingkasanKlab strong{
 	font-weight:bold;
+	color:#fdcb02;
+}
+.PertandinganLalu td a{
+	color:#fdcb02;
 }
 .chartbox{
 	height:170px;

@@ -248,7 +248,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                 </div>
                 
                 <div class="profileStats-container" style="display: block;">
-                  <h2><span>Weekly Performance</span></h2>
+                  <h2><span>Season Performance</span></h2>
                   <div class="profileStatsContainer">
                     <div class="profileStats" style="overflow:hidden;">
                         <a href="#/stats_detail/0" class="statsbox">
@@ -540,7 +540,7 @@ $('.stats').highcharts({
         },
     },
     title: {
-        text: 'Performance Valuation',
+        text: 'Weekly Valuation',
         style: {
           color: '#fff'
         }

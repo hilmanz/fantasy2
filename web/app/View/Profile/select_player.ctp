@@ -150,7 +150,7 @@ $(document).ready(function(){
     %>
 	
   <tr id="<%=uid%>">
-    <td><img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<%=n_team_id%>&dimensions=103x155&id=<%=custId%>"/></td>
+    <td><a href="" class="thumbPlayers"><img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<%=n_team_id%>&dimensions=103x155&id=<%=custId%>"/></a></td>
     <td><%=name%></td>
     <td><%=pos_code%></td>
     <td><%=birthday%></td>
