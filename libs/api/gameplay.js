@@ -490,7 +490,12 @@ function getPlayerDailyTeamStats(game_team_id,player_id,player_pos,done){
 							for(var j in player_stats_category[category]){
 
 								if(player_stats_category[category][j] == result[i].stats_name){
-									
+									if(category=='goalkeeper'){
+										console.log(result[i].game_id,category,result[i].stats_name,(parseInt(result[i].total) 
+																		  * getModifierValue(modifiers,
+																		  					result[i].stats_name,
+																		  					pos)));
+									}
 									daily[result[i].game_id][category] += (parseInt(result[i].total) 
 																		  * getModifierValue(modifiers,
 																		  					result[i].stats_name,
@@ -519,7 +524,7 @@ function getModifierValue(modifiers,stats_name,position){
 	
 	for(var i in modifiers){
 		if(modifiers[i].name==stats_name){
-			return Math.abs(parseInt(modifiers[i][position]));
+			return (parseInt(modifiers[i][position]));
 		}
 	}
 	return 0;

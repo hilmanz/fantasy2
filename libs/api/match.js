@@ -76,7 +76,8 @@ function getMatchResultForUserTeam(game_team_id,game_id,done){
 				ON a.player_id = c.uid\
 				WHERE game_team_id = ?\
 				AND EXISTS (SELECT 1 FROM ffgame.game_fixtures b \
-					WHERE a.game_id = b.game_id AND b.matchday = ? LIMIT 1);",
+					WHERE a.game_id = b.game_id AND b.matchday = ? LIMIT 1)\
+				ORDER BY a.points DESC;",
 				[game_team_id,matchday],
 				function(err,rs){
 					callback(err,rs);
