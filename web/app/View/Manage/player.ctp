@@ -213,13 +213,16 @@ function getStats($category,$pos,$modifiers,$map,$stats){
             <p>Nilai Transfer</p>
             <h4>
                 <?php
+                    $performance = 0;
                     if(sizeof($data['stats'])>0){
-                        $performance = $data['stats'][sizeof($data['stats'])-1]['performance'];
-                    }else{
-                        $performance = 0;
+                        if(intval(@$data['stats'][sizeof($data['stats'])-1]['points'])!=0){
+                        $performance = getTransferValueBonus(
+                                            $data['stats'][sizeof($data['stats'])-1]['performance'],
+                                            $data['player']['transfer_value']);
+                        }  
                     }
-                    $bonus = round($data['player']['transfer_value'] * ($performance/100));
-                    $transfer_value = $data['player']['transfer_value'] + $bonus;
+                    
+                    $transfer_value = $data['player']['transfer_value'] + $performance;
                     echo number_format($transfer_value);
                 ?>
             </h4>
@@ -237,7 +240,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
             </h5>
         </div>
         <div class="club-money fr">
-            <a data-team-name="<?=h($club['team_name'])?>" data-player-name="<?=$data['player']['name']?>" data-team="<?=$data['player']['original_team_id']?>" data-player="<?=$data['player']['player_id']?>" id="btnSale" class="icon-cart buttons" href="#popup-messages"><span>JUAL</span></a>
+            <a data-team-name="<?=h($club['team_name'])?>" data-price="<?=number_format($transfer_value)?>" data-player-name="<?=$data['player']['name']?>" data-team="<?=$data['player']['original_team_id']?>" data-player="<?=$data['player']['player_id']?>" id="btnSale" class="icon-cart buttons" href="#popup-messages"><span>JUAL</span></a>
         </div>
     </div><!-- end .headbar -->
     <div id="thecontent">
@@ -648,6 +651,7 @@ $("#btnSale").fancybox({
         team_id:$(this.element).data('team'),
         player_name:$(this.element).data('player-name'),
         team_name:$(this.element).data('team-name'),
+        transfer_value:$(this.element).data('price')
       });
       $jqOpta.widgetStart(_optaParams);
     },
@@ -662,6 +666,7 @@ $("#btnSale").fancybox({
     <div class="confirm">
         <h1>Apakah kamu ingin menjual pemain ini?</h1>
         <h3>Pemain yang sudah dijual akan hilang dari lineup dan tidak dapat di undo</h3>
+        <h4>SS$ <%=transfer_value%></h4>
         <opta widget="playerprofile" sport="football" competition="8" season="2013" team="<%=team%>" 
           player="<%=uid%>" show_image="true" show_nationality="true" opta_logo="false" 
           narrow_limit="400"></opta>

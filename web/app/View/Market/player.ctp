@@ -208,13 +208,19 @@ function getStats($category,$pos,$modifiers,$map,$stats){
             <p>Nilai Transfer</p>
             <h4>
                 <?php
+              
+                    $performance = 0;
                     if(sizeof($data['stats'])>0){
-                        $performance = $data['stats'][sizeof($data['stats'])-1]['performance'];
-                    }else{
-                        $performance = 0;
+                        
+                        if(intval(@$data['stats'][sizeof($data['stats'])-1]['performance'])!=0){
+                            
+                            $performance = getTransferValueBonus(
+                                                            $data['stats'][sizeof($data['stats'])-1]['performance'],
+                                                           $data['player']['transfer_value']);
+                        }
                     }
-                    $bonus = round($data['player']['transfer_value'] * ($performance/100));
-                    $transfer_value = $data['player']['transfer_value'] + $bonus;
+                    
+                    $transfer_value = $data['player']['transfer_value'] + $performance;
                     echo number_format($transfer_value);
                 ?>
             </h4>
@@ -273,7 +279,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
             </div><!-- end #Info -->
 
             <div class="rowBtn">
-                   <a data-team-name="<?=h($data['player']['original_team_name'])?>" data-player-name="<?=$data['player']['name']?>" data-team="<?=$data['player']['original_team_id']?>" data-player="<?=$data['player']['player_id']?>" id="btnBuy" class="icon-cart buttons" href="#popup-messages"><span>SUBMIT BID</span></a>
+                   <a data-team-name="<?=h($data['player']['original_team_name'])?>" data-price="<?=number_format($transfer_value)?>" data-player-name="<?=$data['player']['name']?>" data-team="<?=$data['player']['original_team_id']?>" data-player="<?=$data['player']['player_id']?>" id="btnBuy" class="icon-cart buttons" href="#popup-messages"><span>SUBMIT BID</span></a>
 			</div>
 
             <div id="chartbox" class="row">
@@ -643,6 +649,7 @@ $("#btnBuy").fancybox({
         team_id:$(this.element).data('team'),
         player_name:$(this.element).data('player-name'),
         team_name:$(this.element).data('team-name'),
+        transfer_value:$(this.element).data('price')
       });
       $jqOpta.widgetStart(_optaParams);
     },

@@ -207,20 +207,26 @@ function getPlayers(game_team_id,callback){
 								FROM ffgame_stats.game_match_player_points \
 								WHERE game_team_id = ? AND player_id = ?)\
 								UNION ALL\
-								(SELECT 0,performance FROM ffgame_stats.game_match_player_points \
-								WHERE game_team_id = ? AND player_id=? \
-								ORDER BY id DESC LIMIT 1)\
+								(SELECT 0,performance FROM ffgame_stats.game_match_player_points a\
+									WHERE game_team_id=? AND player_id=?\
+									AND EXISTS (SELECT 1 FROM ffgame.game_fixtures b \
+									WHERE b.game_id = a.game_id AND (b.home_id = ? OR b.away_id=?)\
+									LIMIT 1\
+									)\
+									ORDER BY id DESC LIMIT 1)\
 								)a;\
 								",
-					[game_team_id,player.uid,game_team_id,player.uid],
+					[game_team_id,player.uid,game_team_id,player.uid,player.team_id,player.team_id],
 					function(err,rs){
+						console.log(this.sql);
 						player.points = 0;
 						player.last_performance = 0;
 						if(!err){
 							if(rs!=null){
 								if(rs[0].total_points!=null){
 									player.points = parseInt(rs[0].total_points);
-									player.last_performance = parseFloat(rs[0].performance);	
+									player.overall_performance = parseFloat(rs[0].performance);	
+									player.last_performance = 0;
 								}
 								
 							}
@@ -930,8 +936,8 @@ function sale(game_team_id,player_id,done){
 						if(!err){
 							//@TODO we need to calculate the player's performance value to affect
 							//the latest transfer value
+							transfer_value = transfer_value + ((((rs[0].performance / 10) * 1)/100)*transfer_value);
 							callback(err,name,transfer_value);
-
 						}else{
 							callback(new Error('player_got no performance'),null);
 						}
@@ -1090,17 +1096,19 @@ function buy(game_team_id,player_id,done){
 					//check for player's latest performances
 					var performance_diff = 0;
 					conn.query(
-					"SELECT points,performance FROM ffgame_stats.game_match_player_points \
-					 WHERE game_team_id=? AND player_id=? ORDER BY id DESC;",
+					"SELECT points,performance FROM ffgame_stats.master_player_performance \
+					 WHERE player_id=? ORDER BY id DESC;",
 					[game_team_id,player_id],
 					function(err,rs){
 						if(!err){
+							console.log(this.sql);
 							//@TODO we need to calculate the player's performance value to affect
 							//the latest transfer value
+							transfer_value = transfer_value + ((((rs[0].performance / 10) * 1)/100)*transfer_value);
 							callback(err,name,transfer_value);
 
 						}else{
-							callback(new Error('player_got no performance'),null);
+							callback(new Error('player got no performance'),null);
 						}
 					});
 				},
@@ -1206,6 +1214,9 @@ function buy(game_team_id,player_id,done){
 				}
 			],
 			function(err,result){
+				if(err){
+					console.log(err.message);
+				}
 				conn.end(function(e){
 					done(err,result);
 				});

@@ -278,3 +278,9 @@ function curlPost($url,$params,$cookie_file='',$timeout=15){
   curl_close ($ch);
   return $response;
 }
+
+function getTransferValueBonus($performance,$transfer_value){
+  $performance_bonus = (((($performance / 10) * 1)/100) * 
+                                            intval($transfer_value));
+  return $performance_bonus;
+}

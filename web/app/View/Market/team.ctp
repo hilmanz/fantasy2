@@ -31,6 +31,14 @@
                 if(isset($players)):
                     foreach($players as $player):
                         $urlto = $this->Html->url('/market/player/'.$player['uid']);
+                        
+                        if(intval(@$player['stats']['points'])!=0){
+                            $player['transfer_value'] = $player['transfer_value'] + 
+                                                        getTransferValueBonus(
+                                                            floatval(@$player['stats']['performance']),
+                                                            $player['transfer_value']);
+                        }
+                        
                 ?>
                   <tr>
                         <td><a class="thumbPlayers" href="<?=$urlto?>"><img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$club['uid'])?>&dimensions=103x155&id=<?=str_replace('p','',$player['uid'])?>"/></a></td>

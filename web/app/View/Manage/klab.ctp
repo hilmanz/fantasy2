@@ -563,18 +563,16 @@ function isStaffExist($staff_token,$name){
                    
                     <td><?=number_format($player['salary'])?></td>
                     <?php
-                      if($player['points']>0){
+                      if($player['points']!=0){
                         $last_performance = floatval($player['last_performance']);
-                        
-                        $performance_bonus = (((($last_performance / 10) * 1)/100) * 
-                                            intval($player['transfer_value']));
+                        $performance_bonus = getTransferValueBonus($last_performance,intval($player['transfer_value']));
                       }else{
                         $performance_bonus = 0;
                       }
                     ?>
                     <td><?=number_format(intval($player['points']))?></td>
                     <td><?=number_format(intval($player['transfer_value'])+$performance_bonus)?></td>
-                    <td width="10"><a data-team-name="<?=h($club['team_name'])?>" data-player-name="<?=$player['name']?>" data-team="<?=$player['team_id']?>" data-player="<?=$player['uid']?>" id="btnSale" class="icon-cart buttons" href="#popup-messages"><span>Jual</span></a></td>
+                    <td width="10"><a data-team-name="<?=h($club['team_name'])?>" data-player-name="<?=$player['name']?>" data-price="<?=number_format(intval($player['transfer_value'])+$performance_bonus)?>" data-team="<?=$player['team_id']?>" data-player="<?=$player['uid']?>" id="btnSale" class="icon-cart buttons" href="#popup-messages"><span>Jual</span></a></td>
                   </tr>
                   <?php endforeach;?>
                   <tr>
@@ -641,6 +639,7 @@ $("#btnSale").fancybox({
         team_id:$(this.element).data('team'),
         player_name:$(this.element).data('player-name'),
         team_name:$(this.element).data('team-name'),
+        transfer_value:$(this.element).data('price')
       });
       $jqOpta.widgetStart(_optaParams);
     },
@@ -654,11 +653,12 @@ $("#btnSale").fancybox({
     <div class="confirm">
         <h1>Apakah kamu ingin menjual pemain ini?</h1>
         <h3>Pemain yang sudah dijual akan hilang dari lineup dan tidak dapat di undo</h3>
+        <h4>SS$ <%=transfer_value%></h4>
         <opta widget="playerprofile" sport="football" competition="8" season="2013" team="<%=team%>" 
           player="<%=uid%>" show_image="true" show_nationality="true" opta_logo="false" 
           narrow_limit="400"></opta>
-        <p><a href="#/sale/<%=player_id%>/0" class="button">Jual</a>
-            <a href="#" class="button" onclick="$.fancybox.close();return false;">Batal</a></p>
+        <div><a href="#/sale/<%=player_id%>/0" class="button">Jual</a>
+            <a href="#" class="button" onclick="$.fancybox.close();return false;">Batal</a></div>
     </div>
     <div class="saving" style="display:none;">
         <h1>Menjual Pemain.</h1>

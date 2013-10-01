@@ -57,11 +57,11 @@ function getPlayers(team_uid,callback){
 				function(players,callback){
 					var player_with_stats = [];
 					async.eachSeries(players,function(player,next){
-						conn.query("SELECT SUM(points) AS points,AVG(performance) AS performance \
+						conn.query("SELECT points,performance \
 									FROM ffgame_stats.master_player_performance \
 									WHERE \
 									player_id = ? \
-									AND game_id IS NOT NULL;",
+									ORDER BY id DESC LIMIT 1;",
 									[player.uid],
 									function(err,rs){
 										if(rs!=null){
