@@ -551,7 +551,7 @@ function isStaffExist($staff_token,$name){
                   ?>
                   <tr id="<?=$player['uid']?>">
                     <td>
-                     <a href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"> <img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$player['team_id'])?>&dimensions=103x155&id=<?=str_replace('p','',$player['uid'])?>"/></a>
+                     <a class="thumbPlayers" href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"> <img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$player['team_id'])?>&dimensions=103x155&id=<?=str_replace('p','',$player['uid'])?>"/></a>
                     </td>
                     <td>
                       <a class="yellow" href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"><?=h($player['name'])?></a></td>
@@ -612,7 +612,72 @@ function isStaffExist($staff_token,$name){
     </div><!-- end #thecontent -->
 </div><!-- end #faqPage -->
 
+<!--popups-->
+<div class="popup">
+    <div class="popupContainer popup-small" id="popup-messages">
+        <div class="popupHeader">
+        </div><!-- END .popupHeader -->
+        <div class="popupContent">
+            <div class="entry-popup">
+                yellow
+            </div><!--END .entry-popup-->
+        </div><!-- END .popupContent -->
+    </div><!-- END .popupContainer -->
+</div><!-- END .popup --> 
 
+
+<script>
+$("#btnSale").fancybox({
+    beforeLoad : function(){
+      $("#popup-messages .popupContent .entry-popup").html('');
+      $('.saving').hide();
+      $('.confirm').show();
+      $('.success').hide();
+      $('.failure').hide();
+      render_view(tplsale,"#popup-messages .popupContent .entry-popup",{
+        player_id:$(this.element).data('player'),
+        team_id:$(this.element).data('team'),
+        player_name:$(this.element).data('player-name'),
+        team_name:$(this.element).data('team-name'),
+      });
+      $jqOpta.widgetStart(_optaParams);
+    },
+});
+</script>
+<script type="text/template" id="tplsale">
+    <%
+      var uid = player_id.replace('p','');
+      var team = team_id.replace('t','');
+    %>
+    <div class="confirm">
+        <h1>Apakah kamu ingin menjual pemain ini?</h1>
+        <h3>Pemain yang sudah dijual akan hilang dari lineup dan tidak dapat di undo</h3>
+        <opta widget="playerprofile" sport="football" competition="8" season="2013" team="<%=team%>" 
+          player="<%=uid%>" show_image="true" show_nationality="true" opta_logo="false" 
+          narrow_limit="400"></opta>
+        <p><a href="#/sale/<%=player_id%>/0" class="button">Jual</a>
+            <a href="#" class="button" onclick="$.fancybox.close();return false;">Batal</a></p>
+    </div>
+    <div class="saving" style="display:none;">
+        <h1>Menjual Pemain.</h1>
+        <h3>Harap tunggu sebentar..</h3>
+        <p><img src="<?=$this->Html->url('/css/fancybox/fancybox_loading@2x.gif')?>"/></p>
+    </div>
+    <div class="success" style="display:none;">
+        <h1>Penjualan Berhasil</h1>
+        <h3><%=player_name%> sudah dijual dari <%=team_name%></h3>
+    </div>
+    <div class="failure" style="display:none;">
+        <h1>Penjualan Tidak Berhasil</h1>
+        <h3>Silahkan coba kembali !</h3>
+    </div>
+</script>
+
+<?php if(isset($tab)):?>
+<script>
+$( "#clubtabs" ).tabs({active:<?=intval($tab)?>});
+</script>
+<?php endif;?>
 
 <?=$this->Html->script(array('highcharts'))?>
 

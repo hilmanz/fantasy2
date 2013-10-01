@@ -358,13 +358,11 @@ Configure::write('DOMAIN','localhost/fantasy');
 Configure::write('API_URL','http://localhost:3002');
 Configure::write('API_KEY','1234567890');
 Configure::write('API_SALT',md5("hello world"));
-Configure::write('INITIAL_BUDGET','100000000');
-
+Configure::write('INITIAL_BUDGET','30000000');
 Configure::write('REDIS.Host','127.0.0.1');
 Configure::write('REDIS.Port',6379);
 Configure::write('REDIS.Database','15');
 Configure::write('avatar_img_dir','/home/duf/node_workspace/fantasy_fork/web/app/webroot/files/');
 Configure::write('avatar_web_dir','/files/');
 Configure::write('avatar_web_url','http://localhost/fantasy/files/');
-
 Configure::write('OPTA_CUSTOMER_ID','c8bb60c8f6d0184c33a87e6f3041b9cc');
