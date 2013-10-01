@@ -154,10 +154,7 @@ function onJsonData(data,done){
 	);
 }
 
-/**
-*
-*
-*/
+
 function calculatePlayerPerformance(game_id,done){
 	console.log('match_results - calculatePlayerPerformance game_id #',game_id);
 	pool.getConnection(function(err,conn){
@@ -173,7 +170,7 @@ function calculatePlayerPerformance(game_id,done){
 			function(team_points,callback){
 				console.log(team_points);
 				console.log('calculate player performance summary for team #',team_points[0].team_id);
-				var avg_points = team_points[0]['overall_points'] / 16;
+				var avg_points = team_points[0]['overall_points'] / 11;
 				conn.query("INSERT INTO ffgame_stats.master_player_performance\
 							(game_id,player_id,points,performance)\
 							SELECT game_id,player_id,points,\
@@ -191,7 +188,7 @@ function calculatePlayerPerformance(game_id,done){
 			},
 			function(team_points,callback){
 				console.log('calculate player performance summary for team #',team_points[1].team_id);
-				var avg_points = team_points[1]['overall_points'] / 16;
+				var avg_points = team_points[1]['overall_points'] / 11;
 				conn.query("INSERT INTO ffgame_stats.master_player_performance\
 							(game_id,player_id,points,performance)\
 							SELECT game_id,player_id,points,\

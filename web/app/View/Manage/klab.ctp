@@ -700,7 +700,7 @@ $('#chart_ranking').highcharts({
         },
     },
     title: {
-        text: 'Pergerakan Poin',
+        text: '',
         style: {
           color: '#fff'
         }
@@ -770,7 +770,7 @@ $('#chart_keuangan').highcharts({
         },
     },
     title: {
-        text: 'Pergerakan Keuangan',
+        text: '',
         style: {
           color: '#fff'
         }
