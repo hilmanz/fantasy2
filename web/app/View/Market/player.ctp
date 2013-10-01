@@ -212,14 +212,14 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                     $performance = 0;
                     if(sizeof($data['stats'])>0){
                         
-                        if(intval(@$data['stats'][sizeof($data['stats'])-1]['performance'])!=0){
+                        if(intval(@$data['stats'][sizeof($data['stats'])-1]['points'])!=0){
                             
                             $performance = getTransferValueBonus(
                                                             $data['stats'][sizeof($data['stats'])-1]['performance'],
                                                            $data['player']['transfer_value']);
                         }
                     }
-                    
+                  
                     $transfer_value = $data['player']['transfer_value'] + $performance;
                     echo number_format($transfer_value);
                 ?>

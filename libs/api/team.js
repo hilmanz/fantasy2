@@ -57,13 +57,22 @@ function getPlayers(team_uid,callback){
 				function(players,callback){
 					var player_with_stats = [];
 					async.eachSeries(players,function(player,next){
-						conn.query("SELECT points,performance \
+						
+						conn.query("SELECT SUM(total_points) AS points,\
+									SUM(performance) AS performance\
+									FROM (\
+									(SELECT SUM(points) AS total_points ,0 AS performance\
 									FROM ffgame_stats.master_player_performance \
-									WHERE \
-									player_id = ? \
-									ORDER BY id DESC LIMIT 1;",
-									[player.uid],
+									WHERE player_id = ?)\
+									UNION ALL\
+									(SELECT 0,performance FROM ffgame_stats.master_player_performance a\
+										WHERE player_id=?\
+										ORDER BY id DESC LIMIT 1)\
+									)a;\
+									",
+									[player.uid,player.uid],
 									function(err,rs){
+										console.log('----->',this.sql);
 										if(rs!=null){
 											player.stats = rs[0];	
 										}else{

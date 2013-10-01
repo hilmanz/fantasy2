@@ -180,13 +180,13 @@ function isStaffExist($staff_token,$name){
 					                   
 					                    
 					                    <?php
-					                      if($player['points']>0){
-					                        $performance_bonus = round(floatval($player['last_performance']/100) * 
-					                                            intval($player['transfer_value']));
-					                      }else{
-					                        $performance_bonus = 0;
-					                      }
-					                    ?>
+                                if($player['points']!=0){
+                                  $last_performance = floatval($player['last_performance']);
+                                  $performance_bonus = getTransferValueBonus($last_performance,intval($player['transfer_value']));
+                                }else{
+                                  $performance_bonus = 0;
+                                }
+                              ?>
 					                    <td><?=number_format(intval($player['points']))?></td>
 					                    <td><?=number_format(intval($player['transfer_value'])+$performance_bonus)?></td>
 					                    

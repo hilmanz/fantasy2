@@ -39,7 +39,47 @@ class MarketController extends AppController {
 
 	public function index(){
 		$teams = $this->Game->getMatchResultStats();
-		$this->set('teams',$teams['data']);
+
+		foreach($teams['data'] as $n=>$v){
+			$teams['data'][$n]['stats']['points_earned'] = ($v['stats']['wins'] * 3) + 
+															($v['stats']['draws']);
+		}
+		$this->set('teams',$this->sortTeamByPoints($teams['data']));
+	}
+	private function sortTeamByPoints($teams){
+		
+		$changes = false;
+		$n = sizeof($teams);
+		for($i=1;$i<sizeof($teams);$i++){
+			$swap = false;
+			$p = $teams[$i-1];
+			$q = $teams[$i];
+			
+			if($q['stats']['points_earned'] > $p['stats']['points_earned']){
+				$swap = true;
+			}else if($q['stats']['points_earned'] == $p['stats']['points_earned']){
+				//the most goals wins
+				if(($q['stats']['goals'] - $q['stats']['conceded']) > ($p['stats']['goals'] - $p['stats']['conceded'])){
+					$swap = true;
+				}else if(($q['stats']['goals'] - $q['stats']['conceded']) == ($p['stats']['goals'] - $p['stats']['conceded'])){
+					if($q['stats']['goals'] > $p['stats']['goals']){
+						$swap = true;
+					}
+				}
+			}
+			
+			if($swap){
+				$changes = true;
+				$teams[$i] = $p;
+				$teams[$i-1] = $q;
+			}
+
+		}
+		if($changes){
+			return $this->sortTeamByPoints($teams);
+		}
+		return $teams;
+
 	}
 	public function team($team_id){
 		$userData = $this->getUserData();
@@ -86,7 +126,7 @@ class MarketController extends AppController {
 		//player detail : 
 		$rs = $this->Game->get_player_info($player_id);
 		
-
+		
 		
 
 
