@@ -1110,7 +1110,7 @@ td,th{
 	background:url(../images/tr.png) repeat;
 }
 .head td, th{
-	background:url(../images/bg_grad.png) repeat-x;
+	background:url(../images/bg_titlebar.png) #000 repeat-x;
 	height:22px;
 }
 .l-rank{
@@ -1199,14 +1199,14 @@ td,th{
 }
 .playerBoxSelected .jersey,.ui-draggable .jersey{
 	background-color:rgba(0,0,0,0.02);
-	border-radius:100px;
-	box-shadow:0 0 20px #FDCB02;
+	border-radius:4px;
+	border:solid 1px #FDCB02;
 	text-decoration:none !important; 
 }
 .playerBoxChoosed .jersey{
 	background-color:rgba(0,0,0,0.02);
-	border-radius:100px;
-	box-shadow:0 0 20px #FDCB02;
+	border-radius:4px;
+	border:solid 1px #FDCB02;
 	text-decoration:none !important; 
 }
 .mymatch{
@@ -1432,8 +1432,9 @@ td,th{
     width: 18px;
 }
 .slot{
-	border:2px solid #FDCB02;
+	border:1px solid #FDCB02;
 	box-shadow:0 0 5px #FDCB02;
+	border-radius:4px;
 
 }
 .fbexpired{
@@ -1818,6 +1819,6 @@ h3.tabtitle{
 .chartbox{
 	height:170px;
 	overflow:hidden;
-	background:#fff;
+	background:#000;
 	border-radius:5px;
 }
