@@ -564,7 +564,9 @@ function isStaffExist($staff_token,$name){
                     <td><?=number_format($player['salary'])?></td>
                     <?php
                       if($player['points']>0){
-                        $performance_bonus = round(floatval($player['last_performance']/100) * 
+                        $last_performance = floatval($player['last_performance']);
+                        
+                        $performance_bonus = (((($last_performance / 10) * 1)/100) * 
                                             intval($player['transfer_value']));
                       }else{
                         $performance_bonus = 0;
