@@ -1861,3 +1861,9 @@ h3.tabtitle{
 .aligncenter{
 	text-align:center;
 }
+#profiletabs .ui-tabs-panel{
+	padding:0;
+}
+#profiletabs .ui-tabs-panel table{
+	margin:0;
+}
