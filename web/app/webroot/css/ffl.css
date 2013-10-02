@@ -1827,6 +1827,13 @@ h3.tabtitle{
 	width:50px;
 	top:-10px;
 }
+.thumbClub{
+	display:block;
+	width:52px; height:52px;
+}
+.thumbClub img{
+	height:52px;
+}
 .RingkasanKlab span{
 	display:block;
 	color:#fff;
@@ -1843,4 +1850,10 @@ h3.tabtitle{
 	overflow:hidden;
 	background:#000;
 	border-radius:5px;
+}
+.alignright{
+	text-align:right;
+}
+.aligncenter{
+	text-align:center;
 }
