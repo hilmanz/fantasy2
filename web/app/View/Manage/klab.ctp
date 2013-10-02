@@ -523,7 +523,6 @@ function isStaffExist($staff_token,$name){
                     <th></th>
                     <th width="210">Nama</th>
                     <th width="50">Umur</th>
-                    <th width="64">Tgl.Lahir</th>
                     <th width="64">Negara</th>
                     <th width="70">Posisi</th>
                    
@@ -563,7 +562,6 @@ function isStaffExist($staff_token,$name){
                       <a class="yellow" href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"><?=h($player['name'])?></a></td>
                     
                     <td><?=round((time()-strtotime($player['birth_date']))/(24*60*60*365))?></td>
-                    <td><?=date("d-m-Y",strtotime($player['birth_date']))?></td>
                     <td><?=h($player['country'])?></td>
                     <td><?=$player_pos?></td>
                    
