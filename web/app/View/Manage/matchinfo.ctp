@@ -90,7 +90,11 @@ function getTotalPoints($str,$stats){
                 <td class="aligncenter"><?=$defending?></td>
                 <td class="aligncenter"><?=$goalkeeping?></td>
                 <td class="aligncenter"><?=$mistakes_and_errors?></td>
-                <td class="aligncenter"><?=$total_poin?></td>
+                <?php
+                    $playerstats_url = $this->Html->url('/manage/playerstats/'.
+                                        $player_id.'/?game_id='.$match['game_id'].'&r='.$r);
+                ?>
+                <td><a href="<?=$playerstats_url?>" class="yellow"><?=$total_poin?></a></td>
             </tr>
             <?php endforeach;?>
 			</tbody>

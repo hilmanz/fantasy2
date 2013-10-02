@@ -419,11 +419,55 @@ class ManageController extends AppController {
 		//$this->set('tab',@$this->request->query['tab']);
 	}
 	public function playerstats($player_id){
-		
+		$player_id = Sanitize::paranoid($player_id);
 		$game_id = $this->request->query('game_id');
 		$game_id = Sanitize::paranoid($game_id);
 		$match = unserialize(decrypt_param($this->request->query['r']));
+
+		$userData = $this->userData;
+		//user data
+		$user = $this->User->findByFb_id($userData['fb_id']);
+		$this->set('user',$user['User']);
+
+		//club
+		$club = $this->Team->findByUser_id($user['User']['id']);
+		$this->set('club',$club['Team']);
+
 		$this->set('match',$match);
+		$this->set('r',$this->request->query['r']);
+
+
+		$players = $this->Session->read('PlayerStats_Matchinfo_'.$game_id);
+
+		if(!isset($players)){
+			$players = $this->Game->getMatchDetailsByGameTeamId($userData['team']['id'],$game_id);
+		}
+		$data = $players['data'][$player_id];
+
+		$this->set('data',$data);
+		$this->set('player_id',$player_id);
+
+		//poin modifiers
+		$rs = $this->Team->query("SELECT name,
+										g as Goalkeeper,
+										d as Defender,
+										m as Midfielder,
+										f as Forward
+										FROM ffgame.game_matchstats_modifier as stats;");
+
+		$modifier = array();
+		foreach($rs as $r){
+			$modifier[$r['stats']['name']] = $r['stats'];
+		}
+		$rs = null;
+		unset($rs);
+
+		$this->set('modifier',$modifier);
+		
+		//enable OPTA Widget
+		$this->set('ENABLE_OPTA',true);
+		$this->set('OPTA_CUSTOMER_ID',Configure::read('OPTA_CUSTOMER_ID'));
+		//-->
 	}
 	public function matchinfo(){
 		$game_id = $this->request->query('game_id');
@@ -431,7 +475,7 @@ class ManageController extends AppController {
 
 		$match = unserialize(decrypt_param($this->request->query['r']));
 		$this->set('r',$this->request->query['r']);
-		
+
 		$userData = $this->userData;
 		//user data
 		$user = $this->User->findByFb_id($userData['fb_id']);
@@ -446,6 +490,7 @@ class ManageController extends AppController {
 		
 		$players = $this->Game->getMatchDetailsByGameTeamId($userData['team']['id'],$game_id);
 
+		$this->Session->write('PlayerStats_Matchinfo_'.$game_id,$players);
 		
 		$this->set('players',$players['data']);
 
