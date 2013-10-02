@@ -29,7 +29,7 @@ endif;
         <div class="box4 fl">
             <div class="widget tr match-date">
                 <h2>PERTANDINGAN BERIKUTNYA</h2>
-                <span class="date yellow">
+                <span class="date whites">
                     <?=date("d/m/Y",strtotime($next_match['match_date']))?><br/>
                     Minggu ke: <?=$next_match['matchday']?>
                 </span>
@@ -83,8 +83,8 @@ endif;
                     <?php else:?>
                         <?=$best_match?>
                     <?php endif;?>
-                </span></h4>
-                <a class="view-more" href="<?=$this->Html->url('/leaderboard')?>">Lihat Papan Peringkat</a>
+                </span></h4><br/>
+                <a class="button" href="<?=$this->Html->url('/leaderboard')?>">Lihat Papan Peringkat</a>
             </div><!-- end .widget -->
             <div class="widget tr downloadapp">
                     <a href="#" class="download-googleplay">&nbsp;</a>

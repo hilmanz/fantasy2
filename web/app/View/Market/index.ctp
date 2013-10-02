@@ -18,14 +18,14 @@
                     <tr>
                         <th></th>
                         <th>Team Name</th>
-                        <th>Games Played</th>
-                        <th>Games Won</th>
-                        <th>Games Drawn</th>
-                        <th>Games Lost</th>
-                        <th>Games Scored</th>
-                        <th>Goal Conceded</th>
-                        <th>Top Scorer</th>
-                        <th>Top Assist</th>
+                        <th class="aligncenter">Games Played</th>
+                        <th class="aligncenter">Games Won</th>
+                        <th class="aligncenter">Games Drawn</th>
+                        <th class="aligncenter">Games Lost</th>
+                        <th class="aligncenter">Games Scored</th>
+                        <th class="aligncenter">Goal Conceded</th>
+                        <th class="aligncenter">Top Scorer</th>
+                        <th class="aligncenter">Top Assist</th>
                         <th></th>
                     </tr>
                 </thead>

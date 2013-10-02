@@ -96,9 +96,9 @@ function isStaffExist($staff_token,$name){
 									<table width="100%" border="0" cellspacing="0" cellpadding="0">
 								  <thead>
 									<tr>
-									  <th>Game</th>
-									  <th width="1">Points</th>
-									  <th>Pendapatan</th>
+									  <th width="50" align="center">Game</th>
+									  <th class="aligncenter" width="1" align="center">Points</th>
+									  <th class="alignright">Pendapatan</th>
 									</tr>
 								  </thead>
 								  <tbody id="myplayerlist">
@@ -116,9 +116,9 @@ function isStaffExist($staff_token,$name){
                       }
                     ?>
 									<tr id="p50004" class="odd">
-									  <td><a href="<?=$this->Html->url('/manage/matchinfo?game_id='.$game_id).'&r='.$hidden_params?>" title="<?=h($versus)?>"><img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=$versus_id?>.png"/></a></td>
-									  <td><?=number_format($points)?></td>
-									  <td><?=number_format($income)?></td>
+									  <td><a class="thumbClub" href="<?=$this->Html->url('/manage/matchinfo?game_id='.$game_id).'&r='.$hidden_params?>" title="<?=h($versus)?>"><img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=$versus_id?>.png"/></a></td>
+									  <td class="aligncenter"><?=number_format($points)?></td>
+									  <td class="alignright"><?=number_format($income)?></td>
 									</tr>
 									<?php endforeach;endif;?>
 		                          </tbody>
@@ -135,11 +135,11 @@ function isStaffExist($staff_token,$name){
 									<tr>
 									  <th width="50"></th>
 									  <th width="210">Nama</th>
-									  <th width="50">Umur</th>
+									  <th class="aligncenter" width="5">Umur</th>
 									  <th width="70">Posisi</th>
 									 
-									  <th width="120">Poin</th>
-									  <th width="120">Nilai</th>
+									  <th width="5">Poin</th>
+									  <th class="alignright" width="120">Nilai</th>
 									 
 									</tr>
 								  </thead>
@@ -176,7 +176,7 @@ function isStaffExist($staff_token,$name){
 					                    <td>
 					                      <a class="yellow" href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"><?=h($player['name'])?></a></td>
 					                    
-					                    <td><?=round((time()-strtotime($player['birth_date']))/(24*60*60*365))?></td>
+					                    <td class="aligncenter"><?=round((time()-strtotime($player['birth_date']))/(24*60*60*365))?></td>
 					                   
 					                    <td><?=$player_pos?></td>
 					                   
@@ -189,8 +189,8 @@ function isStaffExist($staff_token,$name){
                                   $performance_bonus = 0;
                                 }
                               ?>
-					                    <td><?=number_format(intval($player['points']))?></td>
-					                    <td><?=number_format(intval($player['transfer_value'])+$performance_bonus)?></td>
+					                    <td class="aligncenter"><?=number_format(intval($player['points']))?></td>
+					                    <td class="alignright"><?=number_format(intval($player['transfer_value'])+$performance_bonus)?></td>
 					                    
 					                  </tr>
 					                  <?php if($n_best==4){break;}else{$n_best++;}?>
@@ -522,13 +522,13 @@ function isStaffExist($staff_token,$name){
                   <tr>
                     <th></th>
                     <th width="210">Nama</th>
-                    <th width="50">Umur</th>
+                    <th class="aligncenter" width="5">Umur</th>
                     <th width="64">Negara</th>
                     <th width="70">Posisi</th>
                    
-                    <th width="120">Gaji*</th>
-                    <th width="120">Poin</th>
-                    <th width="120">Nilai</th>
+                    <th class="alignright" width="120">Gaji*</th>
+                    <th class="aligncenter" width="5">Poin</th>
+                    <th class="alignright" width="120">Nilai</th>
                     <th style="text-align:center;">Tindakan</th>
                   </tr>
                  </thead>
@@ -561,11 +561,11 @@ function isStaffExist($staff_token,$name){
                     <td>
                       <a class="yellow" href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"><?=h($player['name'])?></a></td>
                     
-                    <td><?=round((time()-strtotime($player['birth_date']))/(24*60*60*365))?></td>
+                    <td class="aligncenter"><?=round((time()-strtotime($player['birth_date']))/(24*60*60*365))?></td>
                     <td><?=h($player['country'])?></td>
                     <td><?=$player_pos?></td>
                    
-                    <td><?=number_format($player['salary'])?></td>
+                    <td class="alignright"><?=number_format($player['salary'])?></td>
                     <?php
                       if($player['points']!=0){
                         $last_performance = floatval($player['last_performance']);
@@ -574,8 +574,8 @@ function isStaffExist($staff_token,$name){
                         $performance_bonus = 0;
                       }
                     ?>
-                    <td><?=number_format(intval($player['points']))?></td>
-                    <td><?=number_format(intval($player['transfer_value'])+$performance_bonus)?></td>
+                    <td class="aligncenter"><?=number_format(intval($player['points']))?></td>
+                    <td class="alignright"><?=number_format(intval($player['transfer_value'])+$performance_bonus)?></td>
                     <td width="10"><a data-team-name="<?=h($club['team_name'])?>" data-player-name="<?=$player['name']?>" data-price="<?=number_format(intval($player['transfer_value'])+$performance_bonus)?>" data-team="<?=$player['team_id']?>" data-player="<?=$player['uid']?>" id="btnSale" class="icon-cart buttons" href="#popup-messages"><span>Jual</span></a></td>
                   </tr>
                   <?php endforeach;?>
@@ -718,7 +718,7 @@ $('#chart_ranking').highcharts({
         
         categories: categories,
        	title: {
-            text: 'Minggu',
+            text: '',
             style:{
               color:'#000'
             }
@@ -726,7 +726,7 @@ $('#chart_ranking').highcharts({
     },
     yAxis: {
         title: {
-            text: 'Total',
+            text: '',
             style:{
               color:'#000'
             }
@@ -792,7 +792,7 @@ $('#chart_keuangan').highcharts({
         
         categories: categories,
        	title: {
-            text: 'Minggu',
+            text: '',
             style:{
               color:'#000'
             }
@@ -800,7 +800,7 @@ $('#chart_keuangan').highcharts({
     },
     yAxis: {
         title: {
-            text: 'Saldo',
+            text: '',
             style:{
               color:'#000'
             }
