@@ -339,12 +339,15 @@ class ManageController extends AppController {
 		if($best_match['status']==0){
 			$this->set('best_match','N/A');
 		}else{
+			
 			$best_match['data']['points'] = number_format($best_match['data']['points']);
 			if($best_match['data']['match']['home_id']==$team_id){
 				$against = $best_match['data']['match']['away_name'];
 			}else if($best_match['data']['match']['away_id']==$team_id){
 				$against = $best_match['data']['match']['home_name'];
 			}
+			$this->set('best_match_url','/manage/matchinfo/?game_id='.$best_match['data']['match']['game_id'].'&r='.encrypt_param(serialize($best_match['data']['match'])));
+			$this->set('best_match_id',$best_match['data']['match']['game_id']);
 			$this->set('best_match',"VS. {$against} (+{$best_match['data']['points']})");
 		}
 

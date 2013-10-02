@@ -63,8 +63,10 @@ endif;
                 <h4><span class="span1">Pemain Terbaik</span><span class="span2">
                     <?php
                         if(isset($best_player)):
+
                     ?>
-                    <?=h($best_player['name'])?>
+
+                    <a class="yellow" href="<?=$this->Html->url('/manage/player/'.$best_player['player_id'])?>"><?=h($best_player['name'])?></a>
                     <?php
                         else:
                     ?>
@@ -74,7 +76,14 @@ endif;
                     ?>
                 </span></h4>
                 
-                 <h4><span class="span1">Pertandingan Terbaik</span><span class="span2"><?=$best_match?></span></h4>
+                 <h4><span class="span1">Pertandingan Terbaik</span><span class="span2">
+                    <?php if(isset($best_match_id)):?>
+                        <a href="<?=$this->Html->url($best_match_url)?>" class="yellow"><?=$best_match?>
+                        </a>
+                    <?php else:?>
+                        <?=$best_match?>
+                    <?php endif;?>
+                </span></h4>
                 <a class="view-more" href="<?=$this->Html->url('/leaderboard')?>">Lihat Papan Peringkat</a>
             </div><!-- end .widget -->
             <div class="widget tr downloadapp">

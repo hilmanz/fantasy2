@@ -685,38 +685,47 @@ function best_match(game_team_id,done){
 		async.waterfall(
 			[
 				function(callback){
-					conn.query("SELECT game_team_id,game_id,SUM(points) AS total_points \
-								FROM ffgame_stats.game_match_player_points \
-								WHERE game_team_id = ?\
-								GROUP BY game_id ORDER BY total_points DESC LIMIT 1;\
-							",[game_team_id],function(err,rs){
+					conn.query("SELECT team_id FROM ffgame.game_teams WHERE id = ? LIMIT 1;",
+								[game_team_id],function(err,rs){
+									callback(err,rs[0].team_id);
+								});
+				},
+				function(team_id,callback){
+					conn.query("SELECT game_team_id,b.matchday,SUM(points) AS total_points\
+								FROM ffgame_stats.game_match_player_points a\
+								INNER JOIN ffgame.game_fixtures b\
+								ON a.game_id = b.game_id\
+								WHERE a.game_team_id = ?\
+								GROUP BY matchday ORDER BY total_points DESC LIMIT 1;",
+								[game_team_id],function(err,rs){
 								if(err){
 									callback(new Error('no data'),{});
 								}else{
 									if(typeof rs[0] !== 'undefined'){
 										console.log(rs[0]);
-										callback(err,rs[0]);	
+										callback(err,team_id,rs[0]);	
 									}else{
 										callback(new Error('no data'),{});
 									}
 								}
 							});
 				},
-				function(best_match,callback){
-					conn.query("SELECT a.home_id,a.away_id,b.name AS home_name,c.name AS away_name \
+				function(team_id,best_match,callback){
+					conn.query("SELECT a.game_id,a.home_score,a.away_score,a.home_id,a.away_id,b.name AS home_name,c.name AS away_name\
 								FROM ffgame.game_fixtures a\
 								INNER JOIN ffgame.master_team b\
 								ON a.home_id = b.uid\
 								INNER JOIN ffgame.master_team c\
 								ON a.away_id = c.uid\
-								WHERE \
-								a.game_id=?\
-								LIMIT 1",
-								[best_match.game_id],
+								WHERE (a.home_id = ? OR a.away_id = ?) AND a.matchday=?\
+								AND period='FullTime'\
+								LIMIT 1;",
+								[team_id,team_id,best_match.matchday],
 								function(err,rs){
-									console.log(rs[0]);
+									console.log(this.sql);
 									callback(err,{match:rs[0],points:best_match.total_points});
 								});
+					
 				}
 			],
 			function(err,result){
@@ -847,7 +856,7 @@ function best_player(game_team_id,done){
 		async.waterfall(
 			[
 				function(callback){
-					conn.query("SELECT SUM(a.points) AS total_points,b.first_name,\
+					conn.query("SELECT b.uid as player_id,SUM(a.points) AS total_points,b.first_name,\
 								b.known_name,b.last_name,b.name,b.position \
 								FROM ffgame_stats.game_match_player_points a\
 								INNER JOIN ffgame.master_player b\

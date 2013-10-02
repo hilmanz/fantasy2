@@ -646,3 +646,6 @@ CREATE TABLE ffgame.master_standings (
   UNIQUE KEY `UNIQUE_TEAM` (`team_id`),
   KEY `t_position` (`t_position`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `ffgame`.`game_fixtures` DROP KEY `IDX_TEAM_PERIOD`, ADD INDEX `IDX_TEAM_PERIOD` (`home_id`, `away_id`, `period`, `matchday`);

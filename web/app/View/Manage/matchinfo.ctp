@@ -98,5 +98,5 @@ function getTotalPoints($str,$stats){
     </div>
 </div>
 <script>
-$(".totalpoin").html(<?=number_format($overall_points)?>);
+$(".totalpoin").html(<?=$overall_points?>);
 </script>
