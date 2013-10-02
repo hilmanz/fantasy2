@@ -418,12 +418,20 @@ class ManageController extends AppController {
 
 		//$this->set('tab',@$this->request->query['tab']);
 	}
+	public function playerstats($player_id){
+		
+		$game_id = $this->request->query('game_id');
+		$game_id = Sanitize::paranoid($game_id);
+		$match = unserialize(decrypt_param($this->request->query['r']));
+		$this->set('match',$match);
+	}
 	public function matchinfo(){
 		$game_id = $this->request->query('game_id');
 		$game_id = Sanitize::paranoid($game_id);
 
 		$match = unserialize(decrypt_param($this->request->query['r']));
-
+		$this->set('r',$this->request->query['r']);
+		
 		$userData = $this->userData;
 		//user data
 		$user = $this->User->findByFb_id($userData['fb_id']);
