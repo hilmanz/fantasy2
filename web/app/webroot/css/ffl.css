@@ -1103,15 +1103,29 @@ td,th{
 	border-left:solid 1px #333;
 	border-top:solid 1px #333;
 }
+table td a.yellow{
+	color:#000 !important;
+}
+table td a.yellow:hover{
+	color:#c00 !important;
+}
+table td a.button,table td .buttons{
+	color:#fff !important;
+}
 .odd td{
-	background:url(../images/tr2.png) repeat;
+	background:#ccc;
+	color:#000;
+	/*background:url(../images/tr2.png) repeat;*/
 }
 .even td{
-	background:url(../images/tr.png) repeat;
+	background:#eee;
+	color:#000;
+	/*background:url(../images/tr.png) repeat;*/
 }
 .head td, th{
 	background:url(../images/bg_titlebar.png) #000 repeat-x;
 	height:22px;
+	color:#fff;
 }
 .l-rank{
 	width:30px;
@@ -1798,6 +1812,9 @@ h3.tabtitle{
 	padding:15px;
 	min-height:176px;
 }
+#klabPage .PertandinganLalu .entry{
+	min-height:393px;
+}
 #klabPage .RingkasanKlab table,#klabPage .RingkasanKlab td{
 	border:none;
 	background:none;
@@ -1812,6 +1829,7 @@ h3.tabtitle{
 }
 .RingkasanKlab span{
 	display:block;
+	color:#fff;
 }
 .RingkasanKlab strong{
 	font-weight:bold;

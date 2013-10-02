@@ -91,13 +91,13 @@ function isStaffExist($staff_token,$name){
 				<div class="row">
 					<div class="col3 fl">
 						<div class="widget PertandinganLalu">
-							<h3>Pertandingan Lalu</h3>
+							<h3>Pertandingan Lalu Melawan</h3>
 							<div class="entry tr">
 									<table width="100%" border="0" cellspacing="0" cellpadding="0">
 								  <thead>
 									<tr>
-									  <th width="50">Game</th>
-									  <th width="10">Points</th>
+									  <th>Game</th>
+									  <th width="1">Points</th>
 									  <th>Pendapatan</th>
 									</tr>
 								  </thead>
@@ -114,7 +114,7 @@ function isStaffExist($staff_token,$name){
 								  		}
 								  	?>
 									<tr id="p50004" class="odd">
-									  <td><a href="<?=$this->Html->url('/manage/matchinfo?game_id='.$game_id).'&r='.$hidden_params?>">Vs. <?=h($versus)?></a></td>
+									  <td><a href="<?=$this->Html->url('/manage/matchinfo?game_id='.$game_id).'&r='.$hidden_params?>"><?=h($versus)?></a></td>
 									  <td><?=number_format($points)?></td>
 									  <td>SS$ <?=number_format($income)?></td>
 									</tr>
@@ -702,15 +702,15 @@ $('#chart_ranking').highcharts({
 	colors: ['#c00', '#e12626', '#999999'],
     chart: {
         type: 'area',
-        backgroundColor:'#000',
+        backgroundColor:'#ccc',
         style: {
-            color: "#fff"
+            color: "#000"
         },
     },
     title: {
         text: '',
         style: {
-          color: '#fff'
+          color: '#000'
         }
     },
    
@@ -720,7 +720,7 @@ $('#chart_ranking').highcharts({
        	title: {
             text: 'Minggu',
             style:{
-              color:'#fff'
+              color:'#000'
             }
         },
     },
@@ -728,7 +728,7 @@ $('#chart_ranking').highcharts({
         title: {
             text: 'Total',
             style:{
-              color:'#fff'
+              color:'#000'
             }
         },
 
@@ -776,15 +776,15 @@ $('#chart_keuangan').highcharts({
 	colors: ['#c00', '#e12626', '#999999'],
     chart: {
         type: 'area',
-        backgroundColor:'#000',
+        backgroundColor:'#ccc',
         style: {
-            color: "#fff"
+            color: "#000"
         },
     },
     title: {
         text: '',
         style: {
-          color: '#fff'
+          color: '#000'
         }
     },
    
@@ -794,7 +794,7 @@ $('#chart_keuangan').highcharts({
        	title: {
             text: 'Minggu',
             style:{
-              color:'#fff'
+              color:'#000'
             }
         },
     },
@@ -802,7 +802,7 @@ $('#chart_keuangan').highcharts({
         title: {
             text: 'Saldo',
             style:{
-              color:'#fff'
+              color:'#000'
             }
         },
 
