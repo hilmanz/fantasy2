@@ -42,13 +42,13 @@ function getTotalPoints($str,$stats){
 		<thead>
             <tr>
                 <th colspan="2">Player</th>
-                <th>Posisi</th>
-                <th>Play</th>
-                <th>Attacking &amp; Passing</th>
-                <th>Defending</th>
-                <th>Goalkeeping</th>
-                <th>Mistakes and Errors</th>
-                <th>Poin</th>
+                <th class="aligncenter">Posisi</th>
+                <th class="aligncenter">Play</th>
+                <th class="aligncenter">Attacking &amp; Passing</th>
+                <th class="aligncenter">Defending</th>
+                <th class="aligncenter">Goalkeeping</th>
+                <th class="aligncenter">Mistakes and Errors</th>
+                <th class="aligncenter">Poin</th>
             </tr>
 		 </thead>
 		 <tbody>
@@ -81,16 +81,16 @@ function getTotalPoints($str,$stats){
             ?>
             <tr>
                 <td>
-                    <a class="thumbPlayers" href="<?=$this->Html->url('/manage/player/'.$player_id)?>"> <img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$detail['original_team_id'])?>&dimensions=103x155&id=<?=str_replace('p','',$player_id)?>"/></a>
+                    <a class="thumbPlayersSmall" href="<?=$this->Html->url('/manage/player/'.$player_id)?>"> <img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$detail['original_team_id'])?>&dimensions=103x155&id=<?=str_replace('p','',$player_id)?>"/></a>
                 </td>
-                <td><?=h($detail['name'])?></td>
-                <td><?=h($detail['position'])?></td>
-                <td><?=$games?></td>
-                <td><?=$attacking_and_passing?></td>
-                <td><?=$defending?></td>
-                <td><?=$goalkeeping?></td>
-                <td><?=$mistakes_and_errors?></td>
-                <td><?=$total_poin?></td>
+                <td class="aligncenter"><?=h($detail['name'])?></td>
+                <td class="aligncenter"><?=h($detail['position'])?></td>
+                <td class="aligncenter"><?=$games?></td>
+                <td class="aligncenter"><?=$attacking_and_passing?></td>
+                <td class="aligncenter"><?=$defending?></td>
+                <td class="aligncenter"><?=$goalkeeping?></td>
+                <td class="aligncenter"><?=$mistakes_and_errors?></td>
+                <td class="aligncenter"><?=$total_poin?></td>
             </tr>
             <?php endforeach;?>
 			</tbody>

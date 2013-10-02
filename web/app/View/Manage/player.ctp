@@ -536,15 +536,15 @@ $.each(stats,function(k,v){
 $('.stats').highcharts({
     chart: {
         type: 'area',
-        backgroundColor:'#000',
+        backgroundColor:'#ccc',
         style: {
-            color: "#fff"
+            color: "#000"
         },
     },
     title: {
         text: 'Performance Valuation',
         style: {
-          color: '#fff'
+          color: '#000'
         }
     },
    
@@ -569,7 +569,7 @@ $('.stats').highcharts({
         title: {
             text: 'Total',
             style:{
-              color:'#fff'
+              color:'#000'
             }
         },
 

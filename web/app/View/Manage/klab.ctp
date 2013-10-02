@@ -718,7 +718,7 @@ $('#chart_ranking').highcharts({
         
         categories: categories,
        	title: {
-            text: 'Minggu',
+            text: '',
             style:{
               color:'#000'
             }
@@ -726,7 +726,7 @@ $('#chart_ranking').highcharts({
     },
     yAxis: {
         title: {
-            text: 'Total',
+            text: '',
             style:{
               color:'#000'
             }
@@ -792,7 +792,7 @@ $('#chart_keuangan').highcharts({
         
         categories: categories,
        	title: {
-            text: 'Minggu',
+            text: '',
             style:{
               color:'#000'
             }
@@ -800,7 +800,7 @@ $('#chart_keuangan').highcharts({
     },
     yAxis: {
         title: {
-            text: 'Saldo',
+            text: '',
             style:{
               color:'#000'
             }

@@ -51,7 +51,7 @@ $overall = isset($overall) ? "selected='selected'":"";
                         <th>Peringkat</th>
                         <th>Klab</th>
                         <th>Manajer</th>
-                        <th>Jumlah Poin</th>
+                        <th class="alignright">Jumlah Poin</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,7 +66,7 @@ $overall = isset($overall) ? "selected='selected'":"";
                     <td class="l-rank"><?=number_format($no)?></td>
                     <td class="l-club"><?=h($t['Team']['team_name'])?></td>
                     <td class="l-manager"><?=h($t['Manager']['name'])?></td>
-                    <td class="l-points"><?=number_format($t['Point']['points'])?></td>
+                    <td class="l-points alignright"><?=number_format($t['Point']['points'])?></td>
                   </tr>
                   <?php
                   endforeach;

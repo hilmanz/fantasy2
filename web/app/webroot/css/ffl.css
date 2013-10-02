@@ -371,6 +371,9 @@ a.download-appstore{
 	margin:0 0 20px 0;
 	border-bottom:solid 1px #742d2d;
 }
+.whites{
+	color:#fff;
+}
 /*============= FORMATION ===============*/
 .field-container{
 	padding:10px 0 10px 0;
@@ -393,7 +396,7 @@ a.download-appstore{
 	border-radius:5px;
 }
 .widget h2{
-	font-size:30px;
+	font-size:24px;
 	margin:0;
 }
 .match-team{
@@ -405,7 +408,7 @@ a.download-appstore{
 	margin:5px 0 0 0;
 }
 .home-team,.stadion,.perform-team h3{
-	color:#fdcb02;
+	color:#fff;
 }
 .perform-team h3{
 	font-size:18px;
@@ -1604,11 +1607,12 @@ table td a.button,table td .buttons{
 }
 .opta-widget-container h2 span,.profileStats-container h2 span{
 	padding:0 20px;
+	color:#fff;
 }
 .player-detail .profile,.profileStats-container{
-	background:url(../images/tr.png) repeat !important;
+	background:#ccc;
 	border:solid 1px #000;
-	color:#fff;
+	color:#000;
 	box-shadow:0 0 20px rgba(0,0,0,0.3) inset;
 }
 .player-detail .opta-widget-container .profile dd{
@@ -1746,7 +1750,7 @@ h3.tabtitle{
 	position:relative;
 	width:225px !important;
 }
-.thumbPlayers{
+.thumbPlayers,.thumbPlayersSmall{
 	display:block;
 	width:100px; height:100px;
 	border:solid 1px #fff;
@@ -1820,10 +1824,10 @@ h3.tabtitle{
 	background:none;
 	padding:7px 10px;
 }
-#klabPage .thumbPlayers{
+#klabPage .thumbPlayers,.thumbPlayersSmall{
 	width:50px; height:50px;
 }
-#klabPage .thumbPlayers img{
+#klabPage .thumbPlayers img,.thumbPlayersSmall img{
 	width:50px;
 	top:-10px;
 }
