@@ -104,19 +104,21 @@ function isStaffExist($staff_token,$name){
 								  <tbody id="myplayerlist">
 								  	<?php if(isset($matches)):foreach($matches as $m):?>
 								  	<?php
-								  	
-								  		$hidden_params = encrypt_param(serialize($m));
-								  		extract($m);
-								  		if($home_id==$club['team_id']){
-								  			$versus = $away_name;
-								  		}else{
-								  			$versus = $home_name;
-								  		}
-								  	?>
+                    
+                      $hidden_params = encrypt_param(serialize($m));
+                      extract($m);
+                      if($home_id==$club['team_id']){
+                        $versus = $away_name;
+                        $versus_id = str_replace("t","",$away_id);
+                      }else{
+                        $versus = $home_name;
+                        $versus_id = str_replace("t","",$home_id);
+                      }
+                    ?>
 									<tr id="p50004" class="odd">
-									  <td><a href="<?=$this->Html->url('/manage/matchinfo?game_id='.$game_id).'&r='.$hidden_params?>"><?=h($versus)?></a></td>
+									  <td><a href="<?=$this->Html->url('/manage/matchinfo?game_id='.$game_id).'&r='.$hidden_params?>" title="<?=h($versus)?>"><img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=$versus_id?>.png"/></a></td>
 									  <td><?=number_format($points)?></td>
-									  <td>SS$ <?=number_format($income)?></td>
+									  <td><?=number_format($income)?></td>
 									</tr>
 									<?php endforeach;endif;?>
 		                          </tbody>
