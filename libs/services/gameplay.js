@@ -351,6 +351,35 @@ exports.financial_statements = function(req,res){
 	});
 	
 }
+exports.weekly_finance = function(req,res){
+	var async = require('async');
+	async.waterfall([
+		function(callback){
+			gameplay.getBudget(req.params.game_team_id,function(err,result){
+				callback(err,result[0]);
+			});
+		},
+		function(budget,callback){
+			gameplay.getWeeklyFinance(req.params.game_team_id,req.params.week,
+				function(err,result){
+					callback(err,{budget:budget.budget,
+								  transactions:result});
+			});
+		}
+	],
+	function(err,result){
+		if(err){
+			handleError(res);
+		}else{
+			if(result){
+				res.json(200,{status:1,data:result});
+			}else{
+				res.send(200,{status:0});
+			}
+		}
+	});
+	
+}
 exports.next_match = function(req,res){
 	gameplay.next_match(req.params.team_id,function(err,match){
 		if(!err){

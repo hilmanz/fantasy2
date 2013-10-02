@@ -177,7 +177,19 @@ class Game extends AppModel {
 		}		
 		return $response;
 	}
-
+	/**
+	* weekly finance
+	*/
+	function weekly_finance($fb_id,$week){
+		$team = $this->api_call('/team/get/'.$fb_id);
+		if(isset($team['id'])){
+			$response = $this->api_call('/weekly_finance/'.$team['id'].'/'.$week);
+		}
+		if($response['status']==1){
+			return $response['data'];
+		}
+		return array();
+	}
 	/**
 	*	get team's last earning from previous match.
 	*/

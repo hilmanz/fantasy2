@@ -130,7 +130,21 @@ class ManageController extends AppController {
 
 		$financial_statement = $this->Session->read('FinancialStatement');
 		
-		$this->set('finance',$financial_statement['finance']);
+		
+		//filter finance by week
+		$week = intval(@$this->request->query['week']);
+		if($week > 0){
+			$this->set('active_tab',1);
+			$weekly_finance = $this->Game->weekly_finance($userData['fb_id'],$week);
+			$weekly_statement = $this->getWeeklyFinancialStatement($weekly_finance);
+			
+			$this->set('finance',$weekly_statement);
+		}else{
+			$this->set('finance',$financial_statement['finance']);
+		}
+		$this->set('week',$week);
+		$this->set('total_matches',$financial_statement['finance']['total_matches']);
+		$this->set('starting_budget',$financial_statement['starting_budget']);
 		$this->set('weekly_balances',$financial_statement['weekly_balances']);
 		$this->set('last_earning',$financial_statement['last_earning']);
 		$this->set('last_expenses',$financial_statement['last_expenses']);
@@ -176,7 +190,24 @@ class ManageController extends AppController {
 			$this->set('tab',$this->request->query['tab']);
 		}
 
+
 		$this->render('klab');
+	}
+	private function getWeeklyFinancialStatement($weekly_finance){
+		$weekly_statement = array();
+
+		while(sizeof($weekly_finance['transactions'])>0){
+			$p = array_shift($weekly_finance['transactions']);
+			$weekly_statement[$p['item_name']] = $p['amount'];
+		}
+		$weekly_statement['total_earnings'] = intval(@$weekly_statement['tickets_sold'])+
+									intval(@$weekly_statement['commercial_director_bonus'])+
+									intval(@$weekly_statement['marketing_manager_bonus'])+
+									intval(@$weekly_statement['public_relation_officer_bonus'])+
+									intval(@$weekly_statement['win_bonus'])+
+									intval(@$weekly_statement['player_sold'])
+									;
+		return $weekly_statement;
 	}
 	private function getMatches($arr,$expenditures){
 		
@@ -463,7 +494,7 @@ class ManageController extends AppController {
 		unset($rs);
 
 		$this->set('modifier',$modifier);
-		
+
 		//enable OPTA Widget
 		$this->set('ENABLE_OPTA',true);
 		$this->set('OPTA_CUSTOMER_ID',Configure::read('OPTA_CUSTOMER_ID'));

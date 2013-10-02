@@ -625,6 +625,27 @@ function getFinancialStatement(game_team_id,done){
 	});
 	
 }
+function getWeeklyFinance(game_team_id,week,done){
+	var async = require('async');
+	prepareDb(function(conn){
+		async.waterfall([
+				function(callback){
+						conn.query("SELECT game_team_id,item_name,item_type,amount,game_id,match_day \
+							FROM ffgame.game_team_expenditures \
+							WHERE game_team_id=? AND match_day = ?;",
+							[game_team_id,week],
+							function(err,rs){
+								callback(err,rs);
+						});
+				}
+			],
+			function(err,result){
+				conn.end(function(e){
+					done(err,result);
+				});
+			});
+	});
+}
 function next_match(team_id,done){
 	var async = require('async');
 	prepareDb(function(conn){
@@ -1410,6 +1431,7 @@ exports.getTeamPlayerDetail = getTeamPlayerDetail;
 exports.getPlayerDailyTeamStats = getPlayerDailyTeamStats;
 exports.sale = sale;
 exports.buy = buy;
+exports.getWeeklyFinance = getWeeklyFinance;
 exports.setPool = function(p){
 	pool = p;
 	match.setPool(pool);

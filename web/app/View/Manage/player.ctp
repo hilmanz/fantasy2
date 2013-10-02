@@ -636,12 +636,12 @@ $( "#profiletabs" ).tabs({
     create:function(event,ui){
         var thisTab = $(ui.tab).find('a').html();
         $("#profiletabs h3").html(thisTab);
-        console.log('create');
+        //console.log('create');
     },
     activate:function(event,ui){
         var thisTab = $(ui.newTab).find('a').html();
         $("#profiletabs h3").html(thisTab);
-        console.log('activate');
+       // console.log('activate');
     }
 });
 

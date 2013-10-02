@@ -58,7 +58,3 @@ $(window).load(function(){
 			});
  
 });
-
-  $(function() {
-    $( "#clubtabs" ).tabs();
-  });

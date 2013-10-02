@@ -16,9 +16,14 @@ $total_expenses+= intval(@$finance['tax_consultant']);
 $total_expenses+= intval(@$finance['accountant']);
 $total_expenses+= intval(@$finance['buy_player']);
 
-$starting_balance = intval(@$finance['budget']) 
-                    - intval(@$finance['total_earnings']) 
-                    + abs(intval(@$total_expenses));
+
+if($week<=1){
+  $starting_balance = intval(@$starting_budget);
+}else{
+  $starting_balance = $weekly_balances[$week-2]['balance'];
+}
+$running_balance = intval(@$weekly_balances[$week-1]['balance']);
+
 foreach($staffs as $staff){
   $staff_token[] = str_replace(" ","_",strtolower($staff['name']));
 }
@@ -205,6 +210,30 @@ function isStaffExist($staff_token,$name){
 				</div><!-- end .row -->
               </div><!-- end #Info -->
               <div id="tabs-Money">
+                    <div class="fr">
+                      <select name="finance_week">
+                        <?php
+                          if($week == 0){
+                            $default_week = "selected='selected'";
+                          }else{
+                            $default_week = "";
+                          }
+                        ?>
+                        <option value='0' <?=$default_week?>>Keseluruhan</option>
+                        <?php
+                          $total_matches = intval($total_matches);
+                        ?>
+                        <?php for($i=0;$i<$total_matches;$i++):?>
+                          <?php
+                            $selected = "";
+                            if($week==($i+1)){
+                              $selected = "selected='selected'";
+                            }
+                          ?>
+                          <option value='<?=($i+1)?>' <?=$selected?>>Minggu <?=($i+1)?></option>
+                        <?php endfor;?>
+                      </select>
+                    </div>
                     <table cellspacing="0" cellpadding="0" width="100%">
                       <tr class="head">
                         <td colspan="5">Neraca Minggu Lalu</td>
@@ -511,7 +540,7 @@ function isStaffExist($staff_token,$name){
                       </tr>
                       <tr class="head">
                         <td colspan="5">Neraca Berjalan</td>
-                        <td align="right">SS$ <?=number_format(@$finance['budget'])?></td>
+                        <td align="right">SS$ <?=number_format(@$running_balance)?></td>
                     </tr>
                    </table>
               </div><!-- end #tabs-Keuagan -->
@@ -837,4 +866,18 @@ $('#chart_keuangan').highcharts({
     ]
 });
 
+</script>
+
+<script>
+$(function() {
+    $( "#clubtabs" ).tabs({
+        active:<?=intval(@$active_tab)?>
+    });
+  });
+</script>
+
+<script>
+$('select[name=finance_week]').change(function(e){
+  document.location = "<?=$this->Html->url('/manage/club?week=')?>"+parseInt($(this).val());
+});
 </script>
