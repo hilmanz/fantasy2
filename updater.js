@@ -7,7 +7,7 @@ var path = require('path');
 var config = require('./config').config;
 var xmlparser = require('xml2json');
 var master = require('./libs/master');
-var S = require('string');
+
 var FILE_PREFIX = config.updater_file_prefix+config.competition.id+'-'+config.competition.year;
 
 
