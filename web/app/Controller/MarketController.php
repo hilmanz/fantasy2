@@ -98,7 +98,7 @@ class MarketController extends AppController {
 				$player_list[] = $p;
 			}
 		}
-
+		
 		$this->set('players',$player_list);
 
 	}

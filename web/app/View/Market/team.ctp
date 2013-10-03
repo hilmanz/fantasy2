@@ -30,6 +30,7 @@
                 <?php 
                 if(isset($players)):
                     foreach($players as $player):
+                        if($player['transfer_value']>0):
                         $urlto = $this->Html->url('/market/player/'.$player['uid']);
                         
                         if(intval(@$player['stats']['points'])!=0){
@@ -52,7 +53,7 @@
                                 class="button">LIHAT</a>
                         </td>
                   </tr>
-                <?php endforeach;endif;?>
+                <?php endif;endforeach;endif;?>
                 </tbody>
             </table>
             
