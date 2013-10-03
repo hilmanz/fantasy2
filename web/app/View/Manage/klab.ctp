@@ -210,8 +210,8 @@ function isStaffExist($staff_token,$name){
 				</div><!-- end .row -->
               </div><!-- end #Info -->
               <div id="tabs-Money">
-                    <div class="fr">
-                      <select name="finance_week">
+                    <div class="fr" style="height:40px;">
+                      <select name="finance_week" class="styled">
                         <?php
                           if($week == 0){
                             $default_week = "selected='selected'";
