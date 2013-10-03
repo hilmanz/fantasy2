@@ -21,9 +21,13 @@ if($week<=1){
   $starting_balance = intval(@$starting_budget);
 }else{
   $starting_balance = $weekly_balances[$week-2]['balance'];
-}
-$running_balance = intval(@$weekly_balances[$week-1]['balance']);
 
+}
+if($week==0){
+  $running_balance = intval(@$weekly_balances[sizeof($weekly_balances)-1]['balance']);
+}else{
+  $running_balance = intval(@$weekly_balances[$week-1]['balance']);  
+}
 foreach($staffs as $staff){
   $staff_token[] = str_replace(" ","_",strtolower($staff['name']));
 }
