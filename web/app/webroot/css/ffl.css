@@ -454,7 +454,7 @@ a.download-appstore{
 	margin:0;
 }
 .squad-team{
-	min-height:480px;
+	min-height:790px;
 	position:relative;
 }
 .squad-team .jersey-player{
@@ -527,7 +527,9 @@ a.download-appstore{
 	margin:0;
 }
 .substitutions{
-	height:195px;
+	bottom:-53px;
+	width:100%;
+	position:absolute;
 }
 /*============= ICON ===============*/
 .jersey-player{
@@ -1726,7 +1728,7 @@ h3.tabtitle{
 	color:#fdcb02;
 }
 #starterTeam .flex-viewport{
-	height:335px !important;
+	height:670px !important;
 	top:12px;
 	padding:10px;
 	left:-10px;
@@ -1744,7 +1746,7 @@ h3.tabtitle{
 	top:auto;
 	left:122px;
 	right:auto;
-	bottom:210px;
+	bottom:10px;
 }
 #starterTeam .slides li{
 	clear:both;
@@ -1918,4 +1920,26 @@ h3.tabtitle{
 }
 .totalpoin{
 	padding:0 10px;
+}
+.instrution{
+	top:0;
+	left:0;
+	background:#000;
+	width:100%;
+	padding:5px 0;
+	text-align:center;
+	position:absolute;
+}
+.instrution h3{
+	font-size:16px;
+	margin:0;
+}
+.inboxNotification h3{
+	background:url(../images/icon_mail.png) left no-repeat;
+	padding:0 0 0 40px;
+	font-size:30px;
+	margin:18px 0;
+}
+.inboxNotification h3 a{
+	color:#fff;
 }

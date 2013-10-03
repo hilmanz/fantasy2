@@ -90,9 +90,15 @@ endif;
                     <a href="#" class="download-googleplay">&nbsp;</a>
                     <a href="#" class="download-appstore">&nbsp;</a>
             </div><!-- end .widget -->
+            <div class="widget tr inboxNotification">
+            	<h3><a href="#">Inbox (3)</a></h3>
+            </div><!-- end .widget -->
+            <div class="smallBanner">
+				<a href="#"><img src="<?=$this->Html->url('/')?>content/thumb/small_banner.png" /></a>
+            </div><!-- end .smallBanner -->
            
         </div><!-- end .box4 -->
-        <div class="box3 tr fl drop">
+        <div class="box3 tr fl drop" style="height:885px;">
             <div class="field-container">
                 <div class="selectFormation">
                 <select name="formations" id="formation-select" class="styled">
@@ -113,13 +119,17 @@ endif;
                     <option>3-4-2-1</option>
                 </select>
                 <?php if($can_update_formation):?>
-                <a id="btn_save" class="showPopup button" href="#popup-messages">Simpan Formasi</a>
+                <a id="btn_save" class="showPopup button" href="#popup-messages">SIMPAN LINE-UP</a>
                 <?php endif;?>
                 </div>
                 <div id="droppable" class="field-formation">
+                	<div class="instrution"><h3>PILIH 11 STARTER & 5 PEMAIN CADANGAN</h3></div>
                     <div id="the-formation">
                         
                     </div><!-- end .my-formation -->
+                    <div class="substitutions drop">
+                        <h4>Pemain Cadangan</h4>
+                    </div><!-- end .substitutions -->
                 </div><!-- end .field-formation -->
             </div><!-- end .field-container -->
         </div><!-- end .box3 -->
@@ -180,9 +190,6 @@ endif;
                     </div>
                     <div class="coverlayer" style="width:100%;height:100px;position:absolute;top:-27px;"></div>
                 </div><!-- end .starter -->
-            	<div class="substitutions drop">
-                    <h4>Pemain Cadangan</h4>
-                </div><!-- end .substitutions -->
             </div><!-- end .widget -->
             <!--
             <div class="widget tr action-button">
