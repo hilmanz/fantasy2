@@ -25,7 +25,7 @@ var conn = mysql.createConnection({
 
 async.waterfall([
 	function(callback){
-		open_file('transfer_value_v2.csv',function(err,content){
+		open_file('transfer_value_v3.csv',function(err,content){
 			callback(err,content.toString());
 		});
 	},

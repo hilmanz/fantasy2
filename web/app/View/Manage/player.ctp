@@ -252,28 +252,28 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                 </div>
                 
             	<div class="profileStats-container" style="display: block;">
-                  <h2><span>Weekly Performance</span></h2>
+                  <h2><span>Overall Performance</span></h2>
                   <div class="profileStatsContainer">
                     <div class="profileStats" style="overflow:hidden;">
-                        <a href="#/stats_detail/0" class="statsbox">
+                        <a href="#" class="statsbox">
                             <h4>Games</h4>
                             <p><?=number_format($main_stats_vals['games'])?></p>
                         </a>
-                        <a href="#/stats_detail/1" class="statsbox">
+                        <a href="#" class="statsbox">
                             <h4>Passing and Attacking</h4>
                             <p><?=number_format($main_stats_vals['passing_and_attacking'])?></p>
                         </a>
-                        <a href="#/stats_detail/2" class="statsbox">
+                        <a href="#" class="statsbox">
                             <h4>Defending</h4>
                             <p><?=number_format($main_stats_vals['defending'])?></p>
                         </a>
                        
-                        <a href="#/stats_detail/3" class="statsbox">
+                        <a href="#" class="statsbox">
                             <h4>Goalkeeping</h4>
                             <p><?=number_format($main_stats_vals['goalkeeper'])?></p>
                         </a>
                        
-                        <a href="#/stats_detail/4" class="statsbox">
+                        <a href="#" class="statsbox">
                             <h4>Mistakes and Errors</h4>
                             <p><?=number_format($main_stats_vals['mistakes_and_errors'])?></p>
                         </a>
@@ -285,9 +285,10 @@ function getStats($category,$pos,$modifiers,$map,$stats){
             <div id="chartbox" class="row">
                 <div class="stats"></div>
             </div>
-            <div id="profiletabs" style="display:none">
+            <div id="profiletabs">
               <div class="rowTItle">
-             	 <h3 class="tabtitle"><span class="fl">WEEKLY PERFORMANCE</span>   <a href="#/close_detail" class="button fr">KEMBALI</a></h3>
+             	 <h3 class="tabtitle"><span class="fl">PERFORMANCE DETAILS</span>   
+                    <a href="<?=$this->Html->url('/manage/club/?rooster=1')?>" class="button fr">KEMBALI</a></h3>
               </div>
               <div class="tabContainer">
               <div class="col2">
@@ -555,7 +556,7 @@ $('.stats').highcharts({
         },
     },
     title: {
-        text: 'Performance Valuation',
+        text: 'Weekly Performance',
         style: {
           color: '#000'
         }

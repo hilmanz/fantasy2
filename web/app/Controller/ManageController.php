@@ -142,6 +142,11 @@ class ManageController extends AppController {
 		}else{
 			$this->set('finance',$financial_statement['finance']);
 		}
+
+		$rooster = intval(@$this->request->query['rooster']);
+		if($rooster==1){
+			$this->set('active_tab',2);
+		}
 		$this->set('week',$week);
 		$this->set('total_matches',$financial_statement['finance']['total_matches']);
 		$this->set('starting_budget',$financial_statement['starting_budget']);

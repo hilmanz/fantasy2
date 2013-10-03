@@ -5,6 +5,7 @@
 */
 var mysql = require('mysql');
 var config = require('../config').config;
+var S = require('string');
 var pool  = mysql.createPool({
    host     : config.database.host,
 			  user     : config.database.username,
@@ -107,10 +108,10 @@ exports.update_team_data = function(data,callback){
 				
 				var params = [
 					player.uID,
-					player.Name,
+					S(player.Name).decodeHTMLEntities().s,
 					player.Position,
-					stat.first_name,
-					stat.last_name,
+					S(stat.first_name).decodeHTMLEntities().s,
+					S(stat.last_name).decodeHTMLEntities().s,
 					stat.known_name,
 					stat.birth_date,
 					stat.weight,
