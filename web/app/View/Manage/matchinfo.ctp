@@ -24,13 +24,12 @@ function getTotalPoints($str,$stats){
 <div id="myClubPage">
     <?php echo $this->element('infobar'); ?>
     <div class="headbar tr">
-        <div class="club-info fl">
-            <div><?=h($home)?> vs <?=h($away)?></div>
-            <h4><?=intval($match['home_score'])?>   -  <?=intval($match['away_score'])?></h4>
+        <div class="match-info fl">
+            <h4><span class="matchClub"><?=h($home)?></span> <span class="matchScore"><?=intval($match['home_score'])?></span>  vs  
+			<span class="matchScore"><?=intval($match['away_score'])?></span> <span class="matchClub"><?=h($away)?></span></h4>
         </div>
-        <div class="club-info fl">
-            <div>Total Poin</div>
-            <h4 class="totalpoin">0</h4>
+        <div class="match-info fl brLeft">
+            <h4><span class="matchClub">Total Poin</span> <span class="totalpoin yellow">0</span></h4>
         </div>
         <div class="fr">
       		  <a href="<?=$this->Html->url('/manage/club')?>" class="button">Kembali</a>

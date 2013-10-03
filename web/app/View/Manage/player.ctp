@@ -286,92 +286,91 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                 <div class="stats"></div>
             </div>
             <div id="profiletabs" style="display:none">
-              <h3 class="tabtitle">Defending</h3>
-              <div class="fr">
-                <a href="#/close_detail" class="button">KEMBALI</a>
-                </div>
-              <ul>
-                <li><a href="#tabs-Games">Games</a></li>
-                <li><a href="#tabs-Passing">Passing &amp; Attacking</a></li>
-                <li><a href="#tabs-Defending">Defending</a></li>
-                <li><a href="#tabs-Goalkeeping">Goalkeeping</a></li>
-                <li><a href="#tabs-Mistakes">Mistakes &amp; Errors</a></li>
-              </ul>
-              <div id="tabs-Games">
-                <div class="profileStatsContainer">
-                    <div class="profileStats">
-        			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
-						<thead>
-							<tr>
-								<th>Aksi</th>
-								<th class="aligncenter" width="1">Frequency</th>
-								<th class="aligncenter" width="1">Poin</th>
-							</tr>
-						</thead>
-						<tbody>
-                        <?php 
-                            $profileStats = getStats('games',$pos,$modifiers,$map,$data['overall_stats']);
-                            if(isset($profileStats)):
-                                foreach($profileStats as $statsName=>$statsVal):
-                                    $statsName = ucfirst(str_replace('_',' ',$statsName));
-                        ?>
-                          <tr>
-                            <td><p class="s-title"><?=$statsName?></p></td>
-                            <td class="aligncenter">
-                                <?=number_format($statsVal['total'])?>
-                            </td>
-                            <td class="aligncenter">
-                               <?=number_format($statsVal['points'])?>
-                            </td>
-                          </tr>
-                        <?php
-                            endforeach;
-                            endif;
-                        ?>
-						</tbody>
-					</table>
-                    </div><!-- end .profileStats -->
-                </div><!-- end .profileStats-container -->
-              </div><!-- end #Info -->
-              <div id="tabs-Passing">
-                  <div class="profileStatsContainer">
-                    <div class="profileStats">
-        			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
-						<thead>
-							<tr>
-								<th>Aksi</th>
-								<th class="aligncenter" width="1">Frequency</th>
-								<th class="aligncenter" width="1">Poin</th>
-							</tr>
-						</thead>
-						<tbody>
-                        <?php 
-                            $profileStats = getStats('passing_and_attacking',$pos,$modifiers,$map,$data['overall_stats']);
-                            if(isset($profileStats)):
-                                foreach($profileStats as $statsName=>$statsVal):
-                                    $statsName = ucfirst(str_replace('_',' ',$statsName));
-                        ?>
-                          <tr>
-                            <td><p class="s-title"><?=$statsName?></p></td>
-                            <td class="aligncenter">
-                               <?=number_format($statsVal['total'])?>
-                            </td>
-                            <td class="aligncenter">
-                                <?=number_format($statsVal['points'])?>
-                            </td>
-                          </tr>
-                        <?php
-                            endforeach;
-                            endif;
-                        ?>
-						</tbody>
-					</table>
-                    </div><!-- end .profileStats -->
-                </div><!-- end .profileStats-container -->
-              </div><!-- end #tabs-Keuagan -->
-              <div id="tabs-Defending">
+              <div class="rowTItle">
+             	 <h3 class="tabtitle"><span class="fl">WEEKLY PERFORMANCE</span>   <a href="#/close_detail" class="button fr">KEMBALI</a></h3>
+              </div>
+              <div class="tabContainer">
+              <div class="col2">
+				  <div id="tabs-Games" class="boxTab">
+					<div class="profileStatsContainer">
+						<div class="profileStats">
+						<div class="titleTab">Games</div>
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
+							<thead>
+								<tr>
+									<th>Aksi</th>
+									<th class="aligncenter" width="1">Frequency</th>
+									<th class="aligncenter" width="1">Poin</th>
+								</tr>
+							</thead>
+							<tbody>
+							<?php 
+								$profileStats = getStats('games',$pos,$modifiers,$map,$data['overall_stats']);
+								if(isset($profileStats)):
+									foreach($profileStats as $statsName=>$statsVal):
+										$statsName = ucfirst(str_replace('_',' ',$statsName));
+							?>
+							  <tr>
+								<td><p class="s-title"><?=$statsName?></p></td>
+								<td class="aligncenter">
+									<?=number_format($statsVal['total'])?>
+								</td>
+								<td class="aligncenter">
+								   <?=number_format($statsVal['points'])?>
+								</td>
+							  </tr>
+							<?php
+								endforeach;
+								endif;
+							?>
+							</tbody>
+						</table>
+						</div><!-- end .profileStats -->
+					</div><!-- end .profileStats-container -->
+				  </div><!-- end #Info -->
+				  <div id="tabs-Passing" class="boxTab">
+					  <div class="profileStatsContainer">
+						<div class="profileStats">
+						<div class="titleTab">Passing &amp; Attacking</div>
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
+							<thead>
+								<tr>
+									<th>Aksi</th>
+									<th class="aligncenter" width="1">Frequency</th>
+									<th class="aligncenter" width="1">Poin</th>
+								</tr>
+							</thead>
+							<tbody>
+							<?php 
+								$profileStats = getStats('passing_and_attacking',$pos,$modifiers,$map,$data['overall_stats']);
+								if(isset($profileStats)):
+									foreach($profileStats as $statsName=>$statsVal):
+										$statsName = ucfirst(str_replace('_',' ',$statsName));
+							?>
+							  <tr>
+								<td><p class="s-title"><?=$statsName?></p></td>
+								<td class="aligncenter">
+								   <?=number_format($statsVal['total'])?>
+								</td>
+								<td class="aligncenter">
+									<?=number_format($statsVal['points'])?>
+								</td>
+							  </tr>
+							<?php
+								endforeach;
+								endif;
+							?>
+							</tbody>
+						</table>
+						</div><!-- end .profileStats -->
+					</div><!-- end .profileStats-container -->
+				  </div><!-- end #tabs-Keuagan -->
+			  </div>
+              <div class="col2 col2Right">
+              <div id="tabs-Defending" class="boxTab">
                <div class="profileStatsContainer">
                     <div class="profileStats">
+					<div class="titleTab">Defending</div>
         			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
 						<thead>
 							<tr>
@@ -406,9 +405,10 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                 </div><!-- end .profileStats-container -->
               </div><!-- end #tabs-Squad -->
              
-              <div id="tabs-Goalkeeping">
+              <div id="tabs-Goalkeeping" class="boxTab">
                    <div class="profileStatsContainer">
                     <div class="profileStats">
+					<div class="titleTab">Goalkeeping</div>
         			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
 						<thead>
 							<tr>
@@ -443,9 +443,10 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                 </div><!-- end .profileStats-container -->
               </div><!-- end #tabs-Staff -->
              
-              <div id="tabs-Mistakes">
+              <div id="tabs-Mistakes" class="boxTab">
                    <div class="profileStatsContainer">
                     <div class="profileStats">
+					<div class="titleTab">Mistakes &amp; Errors</div>
         			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
 						<thead>
 							<tr>
@@ -479,6 +480,8 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                     </div><!-- end .profileStats -->
                 </div><!-- end .profileStats-container -->
               </div><!-- end #tabs-Staff -->
+              </div><!-- end #tabcontainer -->
+			  </div>
             </div><!-- end #clubtabs -->
         </div><!-- end .content -->
 

@@ -84,9 +84,12 @@ _optaParams.callbacks = [profileLoaded];
 <div id="myClubPage">
     <?php echo $this->element('infobar'); ?>
     <div class="headbar tr">
-        <div class="club-info fl">
-            <div><?=h($home)?> vs <?=h($away)?></div>
-            <h4><?=intval($match['home_score'])?>   -  <?=intval($match['away_score'])?></h4>
+        <div class="match-info fl">
+            <h4 class="playerName">FRANK LAMPARD</h4>
+        </div>
+        <div class="match-info fl">
+            <h4><span class="matchClub"><?=h($home)?></span> <span class="matchScore"><?=intval($match['home_score'])?></span>  vs  
+			<span class="matchScore"><?=intval($match['away_score'])?></span> <span class="matchClub"><?=h($away)?></span></h4>
         </div>
        
         <div class="fr">
@@ -94,139 +97,173 @@ _optaParams.callbacks = [profileLoaded];
         </div>
     </div><!-- end .headbar -->
 	
-    <div id="thecontent">
-        <div class="player-detail">
-            <opta widget="playerprofile" sport="football" competition="8" season="2013" 
-                team="<?=str_replace('t','',$data['original_team_id'])?>" player="<?=str_replace("p","",$player_id)?>" show_image="true" show_nationality="true" opta_logo="false" narrow_limit="400"></opta>
-        </div>
+    <div id="thecontent" class="playerStatsPage">
+      <div id="tabs-Info">
+			<div class="player-detail">
+				<opta widget="playerprofile" sport="football" competition="8" season="2013" 
+					team="<?=str_replace('t','',$data['original_team_id'])?>" player="<?=str_replace("p","",$player_id)?>" show_image="true" show_nationality="true" opta_logo="false" narrow_limit="400"></opta>
+			</div>
+			<div class="profileStats-container" style="display: block;">
+			  <h2><span>Weekly Performance</span></h2>
+			  <div class="profileStatsContainer">
+				<div class="profileStats" style="overflow:hidden;">
+					<a href="#/stats_detail/0" class="statsbox">
+						<h4>Games</h4>
+						<p><?=number_format($main_stats_vals['games'])?></p>
+					</a>
+					<a href="#/stats_detail/1" class="statsbox">
+						<h4>Passing and Attacking</h4>
+						<p><?=number_format($main_stats_vals['passing_and_attacking'])?></p>
+					</a>
+					<a href="#/stats_detail/2" class="statsbox">
+						<h4>Defending</h4>
+						<p><?=number_format($main_stats_vals['defending'])?></p>
+					</a>
+				   
+					<a href="#/stats_detail/3" class="statsbox">
+						<h4>Goalkeeping</h4>
+						<p><?=number_format($main_stats_vals['goalkeeper'])?></p>
+					</a>
+				   
+					<a href="#/stats_detail/4" class="statsbox">
+						<h4>Mistakes and Errors</h4>
+						<p><?=number_format($main_stats_vals['mistakes_and_errors'])?></p>
+					</a>
+				   
+				</div><!-- end .profileStats -->
+			  </div><!-- end .profileStats-container -->
+			</div><!-- end .profileStats-container -->  
+		</div>
         <div class="row">
-    		<table width="100%" border="0" cellspacing="0" cellpadding="0">
-    		    <thead>
-                    <th>Aksi</th><th>Frekuensi</th><th>Poin</th>
-                </thead>
-                <tbody>
-                <tr>
-                    <td colspan="2">
-                         <h4>Games</h4>
-                    </td>
-                    <td>
-                        <h4><?=number_format($games_total);?></h4>
-                    </td>
-                </tr>
-                <?php foreach($games as $statsName=>$val):?>
-                <tr>
-                    <td>
-                        <?=ucfirst(str_replace("_"," ",$statsName))?>
-                    </td>
-                    <td>
-                        <?=number_format($val['frequency'])?>
-                    </td>
-                    <td>
-                        <?=number_format($val['point'])?>
-                    </td>
-                </tr>
-               <?php
-                endforeach;
-                ?>
-
-                <tr>
-                    <td colspan="2">
-                         <h4>Attacking and Passing</h4>
-                    </td>
-                    <td>
-                        <h4><?=number_format($attacking_and_passing_total);?></h4>
-                    </td>
-                </tr>
-                <?php foreach($attacking_and_passing as $statsName=>$val):?>
-                <tr>
-                    <td>
-                        <?=ucfirst(str_replace("_"," ",$statsName))?>
-                    </td>
-                    <td>
-                        <?=number_format($val['frequency'])?>
-                    </td>
-                    <td>
-                        <?=number_format($val['point'])?>
-                    </td>
-                </tr>
-               <?php
-                endforeach;
-                ?>
-
-
-                <tr>
-                    <td colspan="2">
-                         <h4>Defending</h4>
-                    </td>
-                    <td>
-                        <h4><?=number_format($defending_total);?></h4>
-                    </td>
-                </tr>
-                <?php foreach($defending as $statsName=>$val):?>
-                <tr>
-                    <td>
-                        <?=ucfirst(str_replace("_"," ",$statsName))?>
-                    </td>
-                    <td>
-                        <?=number_format($val['frequency'])?>
-                    </td>
-                    <td>
-                        <?=number_format($val['point'])?>
-                    </td>
-                </tr>
-               <?php
-                endforeach;
-                ?>
-
-                 <tr>
-                    <td colspan="2">
-                         <h4>Goalkeeping</h4>
-                    </td>
-                    <td>
-                        <h4><?=number_format($goalkeeping_total);?></h4>
-                    </td>
-                </tr>
-                <?php foreach($goalkeeping as $statsName=>$val):?>
-                <tr>
-                    <td>
-                        <?=ucfirst(str_replace("_"," ",$statsName))?>
-                    </td>
-                    <td>
-                        <?=number_format($val['frequency'])?>
-                    </td>
-                    <td>
-                        <?=number_format($val['point'])?>
-                    </td>
-                </tr>
-               <?php
-                endforeach;
-                ?>
-
-                 <tr>
-                    <td colspan="2">
-                         <h4>Mistakes and Errors</h4>
-                    </td>
-                    <td>
-                        <h4><?=number_format($mistakes_and_errors_total);?></h4>
-                    </td>
-                </tr>
-                <?php foreach($mistakes_and_errors as $statsName=>$val):?>
-                <tr>
-                    <td>
-                        <?=ucfirst(str_replace("_"," ",$statsName))?>
-                    </td>
-                    <td>
-                        <?=number_format($val['frequency'])?>
-                    </td>
-                    <td>
-                        <?=number_format($val['point'])?>
-                    </td>
-                </tr>
-               <?php
-                endforeach;
-                ?>
-    			</tbody>
-            </table>
+              <div class="col2">
+				  <div  class="boxTab">
+					<div class="titleTab"><span class="fl">Games</span><span class="fr yellow">Total Poin  <?=number_format($games_total);?></span></div>
+					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+						<thead>
+							<th>Aksi</th><th>Frekuensi</th><th>Poin</th>
+						</thead>
+						<tbody>
+						<?php foreach($games as $statsName=>$val):?>
+						<tr>
+							<td>
+								<?=ucfirst(str_replace("_"," ",$statsName))?>
+							</td>
+							<td>
+								<?=number_format($val['frequency'])?>
+							</td>
+							<td>
+								<?=number_format($val['point'])?>
+							</td>
+						</tr>
+					   <?php
+						endforeach;
+						?>
+						</tbody>
+					</table>
+				  </div><!-- end .boxTab -->
+				  <div  class="boxTab">
+						<div class="titleTab"><span class="fl">Attacking and Passing</span><span class="fr yellow">Total Poin  <?=number_format($attacking_and_passing_total);?></span></div>
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<thead>
+								<th>Aksi</th><th>Frekuensi</th><th>Poin</th>
+							</thead>
+							<tbody>
+							<?php foreach($attacking_and_passing as $statsName=>$val):?>
+							<tr>
+								<td>
+									<?=ucfirst(str_replace("_"," ",$statsName))?>
+								</td>
+								<td>
+									<?=number_format($val['frequency'])?>
+								</td>
+								<td>
+									<?=number_format($val['point'])?>
+								</td>
+							</tr>
+						   <?php
+							endforeach;
+							?>
+						</tbody>
+					</table>
+				  </div><!-- end .boxTab -->
+				</div><!-- end .col2 -->
+              <div class="col2 col2Right">
+				  <div  class="boxTab">
+					    <div class="titleTab"><span class="fl">Defending</span><span class="fr yellow">Total Poin  <?=number_format($defending_total);?></span></div>
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<thead>
+								<th>Aksi</th><th>Frekuensi</th><th>Poin</th>
+							</thead>
+							<tbody>
+							<?php foreach($defending as $statsName=>$val):?>
+							<tr>
+								<td>
+									<?=ucfirst(str_replace("_"," ",$statsName))?>
+								</td>
+								<td>
+									<?=number_format($val['frequency'])?>
+								</td>
+								<td>
+									<?=number_format($val['point'])?>
+								</td>
+							</tr>
+						   <?php
+							endforeach;
+							?>
+						</tbody>
+					</table>
+				  </div><!-- end .boxTab -->
+				  <div  class="boxTab">
+					    <div class="titleTab"><span class="fl">Goalkeeping</span><span class="fr yellow">Total Poin  <?=number_format($goalkeeping_total);?></span></div>
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<thead>
+								<th>Aksi</th><th>Frekuensi</th><th>Poin</th>
+							</thead>
+							<tbody>
+							<?php foreach($goalkeeping as $statsName=>$val):?>
+							<tr>
+								<td>
+									<?=ucfirst(str_replace("_"," ",$statsName))?>
+								</td>
+								<td>
+									<?=number_format($val['frequency'])?>
+								</td>
+								<td>
+									<?=number_format($val['point'])?>
+								</td>
+							</tr>
+						   <?php
+							endforeach;
+							?>
+						</tbody>
+					</table>
+				  </div><!-- end .boxTab -->
+				  <div  class="boxTab">
+					    <div class="titleTab"><span class="fl">Mistakes and Errors</span><span class="fr yellow">Total Poin  <?=number_format($mistakes_and_errors_total);?></span></div>
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<thead>
+								<th>Aksi</th><th>Frekuensi</th><th>Poin</th>
+							</thead>
+							<tbody>
+							<?php foreach($mistakes_and_errors as $statsName=>$val):?>
+							<tr>
+								<td>
+									<?=ucfirst(str_replace("_"," ",$statsName))?>
+								</td>
+								<td>
+									<?=number_format($val['frequency'])?>
+								</td>
+								<td>
+									<?=number_format($val['point'])?>
+								</td>
+							</tr>
+						   <?php
+							endforeach;
+							?>
+						</tbody>
+					</table>
+				  </div><!-- end .boxTab -->
+			</div><!-- end .col2 -->
         </div>
     </div>
 </div>
