@@ -104,30 +104,30 @@ _optaParams.callbacks = [profileLoaded];
 					team="<?=str_replace('t','',$data['original_team_id'])?>" player="<?=str_replace("p","",$player_id)?>" show_image="true" show_nationality="true" opta_logo="false" narrow_limit="400"></opta>
 			</div>
 			<div class="profileStats-container" style="display: block;">
-			  <h2><span>Weekly Performance</span></h2>
+			  <h2><span>Performance Summary</span></h2>
 			  <div class="profileStatsContainer">
 				<div class="profileStats" style="overflow:hidden;">
-					<a href="#/stats_detail/0" class="statsbox">
+					<a href="#" class="statsbox">
 						<h4>Games</h4>
-						<p><?=number_format($main_stats_vals['games'])?></p>
+						<p><?=number_format($games_total)?></p>
 					</a>
-					<a href="#/stats_detail/1" class="statsbox">
+					<a href="" class="statsbox">
 						<h4>Passing and Attacking</h4>
-						<p><?=number_format($main_stats_vals['passing_and_attacking'])?></p>
+						<p><?=number_format($attacking_and_passing_total)?></p>
 					</a>
-					<a href="#/stats_detail/2" class="statsbox">
+					<a href="#" class="statsbox">
 						<h4>Defending</h4>
-						<p><?=number_format($main_stats_vals['defending'])?></p>
+						<p><?=number_format($defending_total)?></p>
 					</a>
 				   
 					<a href="#/stats_detail/3" class="statsbox">
 						<h4>Goalkeeping</h4>
-						<p><?=number_format($main_stats_vals['goalkeeper'])?></p>
+						<p><?=number_format($goalkeeping_total)?></p>
 					</a>
 				   
 					<a href="#/stats_detail/4" class="statsbox">
 						<h4>Mistakes and Errors</h4>
-						<p><?=number_format($main_stats_vals['mistakes_and_errors'])?></p>
+						<p><?=number_format($mistakes_and_errors_total)?></p>
 					</a>
 				   
 				</div><!-- end .profileStats -->
