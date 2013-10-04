@@ -158,7 +158,8 @@ a.download-appstore{
 #user-info span{
 	display:block;
 	float:left;
-	color:#fdcb02 !important; 
+	color:#fdcb02 !important;
+	padding:0 5px 0 0;
 }
 #user-info .entry{
 	float:left;
@@ -1829,7 +1830,10 @@ h3.tabtitle{
 	min-height:176px;
 }
 #klabPage .PertandinganLalu .entry{
-	min-height:393px;
+	min-height:400px;
+}
+#klabPage .PemainTerbaik .entry{
+	min-height:400px;
 }
 #klabPage .RingkasanKlab table,#klabPage .RingkasanKlab td{
 	border:none;
@@ -1999,4 +2003,55 @@ h3.tabtitle{
 }
 .mediumBanner a img{
 	width:100%;
+}
+#shorTable_length,.dataTables_filter,#shorTable2_length{
+	display:none;
+}
+table.dataTable{
+	margin:0 0 10px 0;
+}
+.dataTables_wrapper .span6{
+	width:50%;
+	float:left;
+}
+.dataTables_wrapper .next,.dataTables_wrapper .prev{
+	background:none;
+	padding:0;
+}
+.dataTables_wrapper .pagination{
+	float:right;
+}
+.dataTables_wrapper .pagination li{
+	width:auto !important;
+	margin:0 !important;
+}
+.dataTables_wrapper .pagination a{
+	background:url(../images/prev_btn.png) #000 no-repeat !important;
+	padding:0 !important;
+	display:block;
+	width:25px;
+	height:17px;
+	line-height:18px;
+	float:left;
+	color:#999;
+	text-indent:-5000px;
+	box-shadow:none  !important;
+	border:none  !important;
+}
+.dataTables_wrapper .pagination .next a{
+	background:url(../images/next_btn.png) #000 no-repeat right 0  !important;
+	padding:0 50px 0 0;
+}
+.dataTables_wrapper .pagination .prev:hover a{
+	background:url(../images/prev_btn.png) #000 no-repeat 0 -17px  !important;
+	text-decoration:none;
+	color:#fff;
+}
+.dataTables_wrapper .pagination .next:hover a{
+	background:url(../images/next_btn.png) #000 no-repeat right -17px  !important;
+	text-decoration:none;
+	color:#fff;
+}
+.dataTables_info{
+	font-size:12px !important; 
 }

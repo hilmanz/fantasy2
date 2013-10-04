@@ -112,7 +112,7 @@ function isStaffExist($staff_token,$name){
 						<div class="widget PertandinganLalu">
 							<h3>Hasil Pertandingan Lalu</h3>
 							<div class="entry tr">
-									<table width="100%" border="0" cellspacing="0" cellpadding="0">
+									<table width="100%" border="0" cellspacing="0" cellpadding="0" id="shorTable">
 								  <thead>
 									<tr>
 									  <th width="50" align="center">Game</th>
@@ -149,7 +149,7 @@ function isStaffExist($staff_token,$name){
 						<div class="widget PemainTerbaik">
 							<h3>Pemain Terbaik</h3>
 							<div class="entry tr">
-								<table width="100%" border="0" cellspacing="0" cellpadding="0">
+								<table width="100%" border="0" cellspacing="0" cellpadding="0" id="shorTable2">
 								  <thead>
 									<tr>
 									  <th width="50"></th>

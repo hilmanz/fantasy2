@@ -37,7 +37,7 @@
 	<?php endif;?>
 	<!-- Le styles -->
 	<?php echo $this->Html->css(
-			  array('ffl','superfish','fancybox/jquery.fancybox.css?v=2.1.5'),
+			  array('datatables/tables','ffl','superfish','fancybox/jquery.fancybox.css?v=2.1.5'),
 		null,array('media'=>'all')); 
 	?>
 	<?php echo $this->Html->script(
@@ -46,6 +46,9 @@
 			'hoverIntent',
 			'superfish',
 			'fancybox/jquery.fancybox.js?v=2.1.5',
+			'datatables/jquery.dataTables',
+			'datatables/DT_bootstrap',
+			'datatables/tables',
 	  ));
 ?>
 	<!--[if IE 6]>
