@@ -285,7 +285,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
             <div id="chartbox" class="row">
                 <div class="stats"></div>
             </div>
-            <div id="profiletabs" style="display:none">
+            <div id="profiletabs">
               <div class="rowTItle">
              	 <h3 class="tabtitle"><span class="fl">PERFORMANCE DETAILS</span>   
                     <a href="#/close_detail" class="button fr">KEMBALI</a></h3>
@@ -549,15 +549,15 @@ $.each(stats,function(k,v){
 $('.stats').highcharts({
     chart: {
         type: 'area',
-        backgroundColor:'#000',
+        backgroundColor:'#ccc',
         style: {
-            color: "#fff"
+            color: "#000"
         },
     },
     title: {
         text: 'Weekly Valuation',
         style: {
-          color: '#fff'
+          color: '#000'
         }
     },
    
@@ -582,7 +582,7 @@ $('.stats').highcharts({
         title: {
             text: 'Total',
             style:{
-              color:'#fff'
+              color:'#000'
             }
         },
 
