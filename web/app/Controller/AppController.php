@@ -225,5 +225,19 @@ class AppController extends Controller {
 	public function salt(){
 		return Configure::read('API_SALT');
 	}
+
+	public function getBanners($slot,$total=10,$random=false){
+		$this->loadModel('Banners');
+		if($random){
+			$banners = $this->Banners->find('all',array('conditions'=>array('slot'=>$slot),
+													'limit'=>$total,
+													'order' => 'rand()'));
+		}else{
+			$banners = $this->Banners->find('all',array('conditions'=>array('slot'=>$slot),
+													'limit'=>$total));	
+		}
+		
+		return $banners;
+	}
 }
 

@@ -31,7 +31,8 @@
             </div><!-- end .entry -->
         </div><!-- end .box -->
 		<div class="bannerBox">
-				<a href="#"><img src="content/slider/1.jpg" /></a>
+
+				<a href="<?=$small_banner[0]['Banners']['url']?>"><img src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner[0]['Banners']['banner_file'])?>" /></a>
 		</div>
     </div><!-- end #listBox -->
 </div><!-- end #content -->
@@ -48,7 +49,7 @@
         </div><!-- end .entry -->
     </div>
         <div class="bannerBox">
-	                    <a href="#"><img src="content/slider/1.jpg" /></a>
+	                    <a href="<?=$small_banner[1]['Banners']['url']?>"><img src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner[0]['Banners']['banner_file'])?>" /></a>
         </div>
 </div><!-- end #sidebar -->
 

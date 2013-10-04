@@ -109,7 +109,7 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
             	<h3><a id="btn_inbox" href="#popup-notifications">Inbox</a></h3>
             </div><!-- end .widget -->
             <div class="smallBanner">
-				<a href="#"><img src="<?=$this->Html->url('/')?>content/thumb/small_banner.png" /></a>
+				<a href="<?=$small_banner[0]['Banners']['url']?>"><img width="270" src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner[0]['Banners']['banner_file'])?>" /></a>
             </div><!-- end .smallBanner -->
            
         </div><!-- end .box4 -->

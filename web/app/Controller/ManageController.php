@@ -195,7 +195,14 @@ class ManageController extends AppController {
 			$this->set('tab',$this->request->query['tab']);
 		}
 
+		//banners
+		$long_banner = $this->getBanners('MY_CLUB_LONG',2,true);
+		if(sizeof($long_banner)==1){
+			$long_banner[1] = $long_banner[0];
+		}
+		$this->set('long_banner',$long_banner);
 
+		//render time !
 		$this->render('klab');
 	}
 	private function getWeeklyFinancialStatement($weekly_finance){
@@ -405,6 +412,13 @@ class ManageController extends AppController {
 		$this->set('first_time',$this->Session->read('first_time'));
 		$this->Session->write('first_time',false);
 
+
+		//banners
+		$small_banners = $this->getBanners('TEAM_SMALL',2,true);
+		if(sizeof($small_banners)==1){
+			$small_banners[1] = $small_banners[0];
+		}
+		$this->set('small_banner',$small_banners);
 	}
 	public function player($player_id){
 		

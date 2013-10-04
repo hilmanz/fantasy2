@@ -1,7 +1,7 @@
-<h3>Ads Banners</h3>
+<h3>FRONTPAGE BANNERS</h3>
 <table width="100%">
 <tr>
-<td>ID</td><td>Name</td><td>File</td><td>URL</td><td>Action</td>
+<td>ID</td><td>SLOT</td><td>Name</td><td>File</td><td>URL</td><td>Action</td>
 </tr>
 <?php
 if(isset($results)):
@@ -9,6 +9,7 @@ if(isset($results)):
 ?>
 <tr>
 <td>ID</td>
+<td><?=h($rs['Banners']['slot'])?></td>
 <td><?=h($rs['Banners']['banner_name'])?></td>
 <td><img src='<?=$this->Html->url(Configure::read('avatar_web_url').$rs['Banners']['banner_file'])?>' width="400"/></td>
 <td><?=h($rs['Banners']['url'])?></td>
@@ -16,6 +17,10 @@ if(isset($results)):
 </tr>
 <?php endforeach;endif;?>
 </table>
+
+
+
+
 
 
 <h3>Upload new Banner</h3>
@@ -31,8 +36,21 @@ if(isset($results)):
 		<td>URL</td><td><input type="text" name="url" placeholder="http://"/></td>
 	</tr>
 	<tr>
+		<td>SLOT</td>
+		<td>
+			<select name="slot">
+				<option value="FRONTPAGE">Frontpage Landing (740x350 pixels)</option>
+				<option value="MY_CLUB_LONG">Klub Saya (bottom-right) (674x100 pixels)</option>
+				<option value="TEAM_SMALL">Mengelola Tim (bottom-left) (270x100 pixels)</option>
+				<option value="FRONTPAGE_SMALL">Frontpage (bottom-right) (300x175 pixels)</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
 		<td colspan="2">
-			<span style="float:left;width:300px;">File Max : 1 MB</span><input type="submit" name="btn" value="Upload" style="float:right"/></td>
+			<span style="float:left;width:300px;">File Max : 1 MB</span>
+			<input type="submit" name="btn" value="Upload" style="float:right"/>
+		</td>
 	</tr>
 </table>
 </form>

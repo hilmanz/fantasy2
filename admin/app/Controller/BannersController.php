@@ -14,7 +14,7 @@ class BannersController extends AppController {
 	public $name = 'Banners';
 	public function index(){
 		$this->loadModel('Banners');
-		$result = $this->Banners->find('all');
+		$result = $this->Banners->find('all',array('limit'=>200));
 		$this->set('results',$result);
 	}
 	public function upload(){
@@ -27,7 +27,8 @@ class BannersController extends AppController {
 			$data = array(
 				'banner_name'=>$this->request->data['name'],
 				'url'=>$this->request->data['url'],
-				'banner_file'=>$_FILES['file']['name']
+				'banner_file'=>$_FILES['file']['name'],
+				'slot'=>$this->request->data['slot']
 			);
 			
 			$this->loadModel('Banners');
