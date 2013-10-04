@@ -1963,3 +1963,12 @@ h3.tabtitle{
 .opta-widget-container .profile.narrow dd.player-height{
 	float:none;
 }
+.inbox table th,.inbox h1{
+	text-align:left !important;
+}
+.inbox table td{
+	text-align:left !important;
+	background:#fff;
+	border-bottom:solid 1px #ccc;
+	color:#000;
+}

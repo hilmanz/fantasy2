@@ -635,17 +635,22 @@ $(document).ready(function(){
         <p><img src="<?=$this->Html->url('/css/fancybox/fancybox_loading@2x.gif')?>"/></p>
     </div>
     <div class="inbox" style="display:none;">
-        <h1>NOTIFIKASI</h1>
-        <table width="100%">
-            <tr>
-                <td>Tgl</td><td>Pesan</td>
-            </tr>
+        <h1 style="margin:0;">NOTIFIKASI</h1>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
+			<thead>
+				<tr>
+					<th>Tgl</th>
+					<th>Pesan</th>
+				</tr>
+			</thead>
+			<tbody>
             <%for(var i in messages){%>
                 <tr>
                     <td><%=messages[i].dt%></td><td><%=messages[i].content%></td>
                 </tr>
             <%}%>
-        </table>
+			</tbody>
+		</table>
     </div>
 </script>
 <script type="text/template" id="tplsave">
