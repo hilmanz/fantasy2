@@ -104,7 +104,27 @@ class GameController extends AppController {
 		print json_encode($lineup);
 		die();
 	}
-
+	public function get_notification(){
+		$this->loadModel('Team');
+		$this->loadModel('User');
+		$this->loadModel('Notification');
+		$notifications = $this->Notification->find('all',array('order'=>array("Notification.id" => "DESC"),
+											  'limit 25'));
+		$messages = array();
+		$new_messages = 0;
+		if(sizeof($notifications)>0){
+			foreach($notifications as $notif){
+				if((time() - strtotime($notif['Notification']['dt']))<=(24*60*60)){
+					$new_messages++;
+				}
+				$messages[] = $notif['Notification'];
+			}
+		}
+		header('Content-type: application/json');
+		print json_encode(array('status'=>'1',
+								'data'=>array('messages'=>$messages,'total_new'=>$new_messages)));
+		die();
+	}	
 	public function hire_staff(){
 		$this->loadModel('Team');
 		$this->loadModel('User');

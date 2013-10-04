@@ -60,10 +60,10 @@ function isStaffExist($staff_token,$name){
 								  <tr>
 									<td align="center"><a href="#">
                     <?php if(strlen(@$user['avatar_img'])==0 || @$user['avatar_img']=='0'):?>
-                            <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
-                            <?php else:?>
-                            <img width="65" src="<?=$this->Html->url('/files/120x120_'.@$user['avatar_img'])?>" />
-                            <?php endif;?>
+                    <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
+                    <?php else:?>
+                    <img width="65" src="<?=$this->Html->url('/files/120x120_'.@$user['avatar_img'])?>" />
+                    <?php endif;?>
                     
 
                     </a>

@@ -24,6 +24,14 @@ var App = Backbone.Router.extend({
   player_stats_tab:player_stats_tab,
   hide_player_stats:hide_player_stats
 });
+
+function get_notification(player_id,callback){
+	api_post(api_url+'game/get_notification',
+			{player_id:player_id},
+			function(response){
+				callback(response.data);
+			});
+}
 function buy_player(player_id,option){
 	document.location = "#";
 	$('.saving').show();

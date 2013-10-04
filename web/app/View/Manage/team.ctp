@@ -106,7 +106,7 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
                     <a href="#" class="download-appstore">&nbsp;</a>
             </div><!-- end .widget -->
             <div class="widget tr inboxNotification">
-            	<h3><a href="#">Inbox (3)</a></h3>
+            	<h3><a id="btn_inbox" href="#popup-notifications">Inbox</a></h3>
             </div><!-- end .widget -->
             <div class="smallBanner">
 				<a href="#"><img src="<?=$this->Html->url('/')?>content/thumb/small_banner.png" /></a>
@@ -229,6 +229,18 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
         </div><!-- END .popupContent -->
     </div><!-- END .popupContainer -->
 </div><!-- END .popup --> 
+<div class="popup">
+    <div class="popupContainer popup-small" id="popup-notifications">
+        <div class="popupHeader">
+        </div><!-- END .popupHeader -->
+        <div class="popupContent">
+            <div class="entry-popup">
+                
+            </div><!--END .entry-popup-->
+        </div><!-- END .popupContent -->
+    </div><!-- END .popupContainer -->
+</div><!-- END .popup --> 
+<!-- end of popups-->
 <script>
 var selected = null;
 var page = 0;
@@ -251,7 +263,17 @@ var formation = {
     '3-4-3' : ['','G','D','D','D','M','M','M','M','F','F','F'],
     '3-4-2-1' : ['','G','D','D','D','M','M','M','M','M/F','M/F','F']
 };
+var notifications = {};
 $(document).ready(function(){
+        get_notification(0,function(data){
+            console.log(data);
+            notifications = data;
+            if(data.total_new>0){
+                $("#btn_inbox").html('INBOX ('+data.total_new+')');
+            }else{
+                $("#btn_inbox").html('INBOX');
+            }
+        });
 		$("a.closebtn").click(function(){
 			$("#bgPopup").fadeOut();
 			$("#popupWelcome").fadeOut();
@@ -259,6 +281,14 @@ $(document).ready(function(){
         $("#btn_save").fancybox({
             beforeLoad : function(){
                 render_view(tplsave,"#popup-messages .popupContent .entry-popup",[]);
+            },
+           
+        });
+        $("#btn_inbox").fancybox({
+            beforeLoad : function(){
+                render_view(tplinbox,"#popup-notifications .popupContent .entry-popup",notifications);
+                $('.loading').hide();
+                $('.inbox').show();
             },
            
         });
@@ -597,6 +627,26 @@ $(document).ready(function(){
 
 
 });
+</script>
+<script type="text/template" id="tplinbox">
+    <div class="loading">
+        <h1>Memuat notifikasi</h1>
+        <h3>Harap tunggu sebentar..</h3>
+        <p><img src="<?=$this->Html->url('/css/fancybox/fancybox_loading@2x.gif')?>"/></p>
+    </div>
+    <div class="inbox" style="display:none;">
+        <h1>NOTIFIKASI</h1>
+        <table width="100%">
+            <tr>
+                <td>Tgl</td><td>Pesan</td>
+            </tr>
+            <%for(var i in messages){%>
+                <tr>
+                    <td><%=messages[i].dt%></td><td><%=messages[i].content%></td>
+                </tr>
+            <%}%>
+        </table>
+    </div>
 </script>
 <script type="text/template" id="tplsave">
     <div class="confirm">
