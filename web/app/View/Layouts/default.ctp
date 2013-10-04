@@ -171,6 +171,9 @@
     
 	<?php echo $this->element('sql_dump'); ?>
 
+
+ <?php if($USER_IS_LOGIN):?>
+
 <div class="popup">
 	<div class="popupContainer popup-small" id="popup-notifications">
 		<div class="popupHeader">
@@ -183,29 +186,6 @@
 	</div><!-- END .popupContainer -->
 </div><!-- END .popup --> 
 <!-- end of popups-->	
-<script>
-var notifications = {};
-$(document).ready(function(){
-        get_notification(0,function(data){
-            console.log(data);
-            notifications = data;
-            if(data.total_new>0){
-                $("#btn_inbox").html('INBOX ('+data.total_new+')');
-            }else{
-                $("#btn_inbox").html('INBOX');
-            }
-        });
-        $("#btn_inbox").fancybox({
-            beforeLoad : function(){
-                render_view(tplinbox,"#popup-notifications .popupContent .entry-popup",notifications);
-                $('.loading').hide();
-                $('.inbox').show();
-            },
-           
-        });
-
-});
-</script>
 <script type="text/template" id="tplinbox">
     <div class="loading">
         <h1>Memuat notifikasi</h1>
@@ -224,12 +204,35 @@ $(document).ready(function(){
 			<tbody>
             <%for(var i in messages){%>
                 <tr>
-                    <td><%=messages[i].dt%></td><td><%=messages[i].content%></td>
+                    <td style="width:125px;"><%=messages[i].dt%></td><td><%=messages[i].content%></td>
                 </tr>
             <%}%>
 			</tbody>
 		</table>
     </div>
 </script>
+
+<script>
+var notifications = {};
+ get_notification(0,function(data){
+            console.log(data);
+            notifications = data;
+            if(data.total_new>0){
+                $("#btn_inbox").html('INBOX ('+data.total_new+')');
+            }else{
+                $("#btn_inbox").html('INBOX');
+            }
+        });
+        $("#btn_inbox").fancybox({
+            beforeLoad : function(){
+                render_view(tplinbox,"#popup-notifications .popupContent .entry-popup",notifications);
+                $('.loading').hide();
+                $('.inbox').show();
+            },
+           
+        });
+</script>
+ <?php endif;?>
+
 </body>
 </html>

@@ -250,15 +250,7 @@ var formation = {
 };
 var notifications = {};
 $(document).ready(function(){
-        get_notification(0,function(data){
-            console.log(data);
-            notifications = data;
-            if(data.total_new>0){
-                $("#btn_inbox").html('INBOX ('+data.total_new+')');
-            }else{
-                $("#btn_inbox").html('INBOX');
-            }
-        });
+        
 		$("a.closebtn").click(function(){
 			$("#bgPopup").fadeOut();
 			$("#popupWelcome").fadeOut();
@@ -269,14 +261,7 @@ $(document).ready(function(){
             },
            
         });
-        $("#btn_inbox").fancybox({
-            beforeLoad : function(){
-                render_view(tplinbox,"#popup-notifications .popupContent .entry-popup",notifications);
-                $('.loading').hide();
-                $('.inbox').show();
-            },
-           
-        });
+       
 
         $('.prev').hide();
         if(last_page==0){
@@ -613,31 +598,7 @@ $(document).ready(function(){
 
 });
 </script>
-<script type="text/template" id="tplinbox">
-    <div class="loading">
-        <h1>Memuat notifikasi</h1>
-        <h3>Harap tunggu sebentar..</h3>
-        <p><img src="<?=$this->Html->url('/css/fancybox/fancybox_loading@2x.gif')?>"/></p>
-    </div>
-    <div class="inbox" style="display:none;">
-        <h1 style="margin:0;">NOTIFIKASI</h1>
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
-			<thead>
-				<tr>
-					<th>Tgl</th>
-					<th>Pesan</th>
-				</tr>
-			</thead>
-			<tbody>
-            <%for(var i in messages){%>
-                <tr>
-                    <td><%=messages[i].dt%></td><td><%=messages[i].content%></td>
-                </tr>
-            <%}%>
-			</tbody>
-		</table>
-    </div>
-</script>
+
 <script type="text/template" id="tplsave">
     <div class="confirm">
         <h1>Konfirmasi</h1>
