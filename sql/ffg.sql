@@ -130,3 +130,15 @@ CREATE TABLE `weekly_ranks` (
 ALTER TABLE `ffg`.`tickers`     ADD COLUMN `url` TEXT NULL AFTER `content`;
 
 CREATE TABLE `ffg`.`banners`(     `id` BIGINT(21) NOT NULL AUTO_INCREMENT ,     `banner_name` VARCHAR(140) ,     `banner_file` VARCHAR(140) ,     `url` VARCHAR(255) DEFAULT '#' ,     `upload_date` DATETIME ,     PRIMARY KEY (`id`)  );
+
+
+
+
+
+CREATE TABLE ffg.notifications (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `content` text,
+  `url` text,
+  `dt` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
