@@ -512,7 +512,7 @@ function isStaffExist($staff_token,$name){
                     ?>
                     <td class="aligncenter"><?=number_format(intval($player['points']))?></td>
                     <td class="alignright">ss$ <?=number_format(intval($player['transfer_value'])+$performance_bonus)?></td>
-                    <td width="10"><a data-team-name="<?=h($club['team_name'])?>" data-player-name="<?=$player['name']?>" data-price="<?=number_format(intval($player['transfer_value'])+$performance_bonus)?>" data-team="<?=$player['team_id']?>" data-player="<?=$player['uid']?>" id="btnSale" class="buttons" href="#popup-messages"><span>LIHAT</span></a></td>
+                    <td width="10"><a data-team-name="<?=h($club['team_name'])?>" data-player-name="<?=$player['name']?>" data-price="<?=number_format(intval($player['transfer_value'])+$performance_bonus)?>" data-team="<?=$player['team_id']?>" data-player="<?=$player['uid']?>" id="btnSale" class="buttons" href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"><span>LIHAT</span></a></td>
                   </tr>
                   <?php endforeach;?>
                   <tr>
