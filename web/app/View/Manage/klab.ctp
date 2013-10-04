@@ -58,7 +58,17 @@ function isStaffExist($staff_token,$name){
 							<div class="entry tr">
 								<table width="100%" border="0" cellspacing="0" cellpadding="0">
 								  <tr>
-									<td align="center"><a href="#"><img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/></a></td>
+									<td align="center"><a href="#">
+                    <?php if(strlen(@$user['avatar_img'])==0 || @$user['avatar_img']=='0'):?>
+                            <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
+                            <?php else:?>
+                            <img width="65" src="<?=$this->Html->url('/files/120x120_'.@$user['avatar_img'])?>" />
+                            <?php endif;?>
+                    
+
+                    </a>
+
+                  </td>
 									<td>
 										<span>Rank: <strong><?=number_format($USER_RANK)?></strong></span>
 										<span>Uang: <strong>ss$ <?=number_format($team_bugdet)?></strong></span>

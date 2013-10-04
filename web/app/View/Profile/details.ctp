@@ -20,7 +20,7 @@
                             <?php endif;?>
                         </div>
 
-                        <a href="#popup-upload" class="button" id="btn_upload">Ganti Avatar</a>
+                        <a href="#popup-upload" class="button" id="btn_upload">Ganti Logo Klab</a>
                     </div>
                     <div class="row">
                         <label>Nama</label>

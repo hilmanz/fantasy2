@@ -23,6 +23,20 @@ if(isset($first_time) && $first_time==true):
 <?php
 endif;
 ?>
+
+
+<?php
+ $home_logo = "http://widgets-images.s3.amazonaws.com/football/team/badges_65/".str_replace('t','',$next_match['home_id']).".png";
+  $away_logo = "http://widgets-images.s3.amazonaws.com/football/team/badges_65/".str_replace('t','',$next_match['away_id']).".png";
+
+if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
+    if($next_match['home_id']==$club['team_id']){
+        $home_logo = $this->Html->url('/files/120x120_'.@$user['avatar_img']);
+    }else{
+       $away_logo = $this->Html->url('/files/120x120_'.@$user['avatar_img']);
+    }
+}
+?>
 <div id="fillDetailsPage">
     <?php echo $this->element('infobar'); ?>
     <div id="thecontent">
@@ -37,7 +51,8 @@ endif;
             <div class="widget tr match-team">
                 <div class="col3 home-team">
                     <a href="#" class="team-logo">
-                        <img style="height:46px;" src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$next_match['home_id'])?>.png"/>
+
+                        <img style="height:46px;" src="<?=$home_logo?>"/>
                     </a>
                     <h3><?=h($next_match['home_name'])?></h3>
                 </div><!-- end .col3 -->
@@ -46,7 +61,7 @@ endif;
                 </div><!-- end .col3 -->
                 <div class="col3 away-team">
                     <a href="#" class="team-logo">
-                         <img style="height:46px;" src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$next_match['away_id'])?>.png"/>
+                         <img style="height:46px;" src="<?=$away_logo?>"/>
                     </a>
                     <h3><?=h($next_match['away_name'])?></h3>
                 </div><!-- end .col3 -->
