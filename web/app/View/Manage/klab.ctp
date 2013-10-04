@@ -220,12 +220,12 @@ function isStaffExist($staff_token,$name){
 
 							</div><!-- end .entry -->
 						</div><!-- end .widget -->
-                        <div class="mediumBanner">
-                            <a href="<?=$long_banner[0]['Banners']['url']?>">
-                              <img width="674" src="<?=$this->Html->url(Configure::read('avatar_web_url').$long_banner[0]['Banners']['banner_file'])?>" /></a>
-                        </div><!-- end .mediumBanner -->
 					</div><!-- end .col-content -->
 				</div><!-- end .row -->
+				<div class="mediumBanner">
+					<a href="<?=$long_banner[0]['Banners']['url']?>">
+					  <img width="674" src="<?=$this->Html->url(Configure::read('avatar_web_url').$long_banner[0]['Banners']['banner_file'])?>" /></a>
+				</div><!-- end .mediumBanner -->
               </div><!-- end #Info -->
               <div id="tabs-Money">
                     <div class="fr" style="height:40px;">

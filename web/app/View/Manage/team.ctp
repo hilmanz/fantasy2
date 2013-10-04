@@ -105,15 +105,12 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
                     <a href="#" class="download-googleplay">&nbsp;</a>
                     <a href="#" class="download-appstore">&nbsp;</a>
             </div><!-- end .widget -->
-            <div class="widget tr inboxNotification">
-            	<h3><a id="btn_inbox" href="#popup-notifications">Inbox</a></h3>
-            </div><!-- end .widget -->
             <div class="smallBanner">
 				<a href="<?=$small_banner[0]['Banners']['url']?>"><img width="270" src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner[0]['Banners']['banner_file'])?>" /></a>
             </div><!-- end .smallBanner -->
            
         </div><!-- end .box4 -->
-        <div class="box3 tr fl drop" style="height:885px;">
+        <div class="box3 tr fl drop" style="height:906px;">
             <div class="field-container">
                 <div class="selectFormation">
                 <select name="formations" id="formation-select" class="styled">
@@ -229,18 +226,6 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
         </div><!-- END .popupContent -->
     </div><!-- END .popupContainer -->
 </div><!-- END .popup --> 
-<div class="popup">
-    <div class="popupContainer popup-small" id="popup-notifications">
-        <div class="popupHeader">
-        </div><!-- END .popupHeader -->
-        <div class="popupContent">
-            <div class="entry-popup">
-                
-            </div><!--END .entry-popup-->
-        </div><!-- END .popupContent -->
-    </div><!-- END .popupContainer -->
-</div><!-- END .popup --> 
-<!-- end of popups-->
 <script>
 var selected = null;
 var page = 0;

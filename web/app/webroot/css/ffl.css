@@ -92,7 +92,7 @@ a.download-appstore{
 	float:right;
 }
 .downloadapp{
-	padding:28px 20px !important;
+	padding:10px 20px !important;
 	text-align:center;
 }
 .downloadapp h3{
@@ -157,6 +157,7 @@ a.download-appstore{
 }
 #user-info span{
 	display:block;
+	float:left;
 	color:#fdcb02 !important; 
 }
 #user-info .entry{
@@ -454,7 +455,7 @@ a.download-appstore{
 	margin:0;
 }
 .squad-team{
-	min-height:790px;
+	min-height:811px;
 	position:relative;
 }
 .squad-team .jersey-player{
@@ -527,7 +528,7 @@ a.download-appstore{
 	margin:0;
 }
 .substitutions{
-	bottom:-53px;
+	bottom:-60px;
 	width:100%;
 	position:absolute;
 }
@@ -1737,7 +1738,7 @@ h3.tabtitle{
 }
 #starterTeam .flex-viewport{
 	height:670px !important;
-	top:12px;
+	top:20px;
 	padding:10px;
 	left:-10px;
 }
@@ -1971,4 +1972,31 @@ h3.tabtitle{
 	background:#fff;
 	border-bottom:solid 1px #ccc;
 	color:#000;
+}
+.smallBanner{
+	width:250px; height:250px;
+	padding:9px;
+	background:#000;
+	border-radius:5px;
+}
+.smallBanner a{
+	display:block;
+	width:250px; height:250px;
+	overflow:hidden;
+}
+.mediumBanner{
+	width:728px; height:90px;
+	padding:10px;
+	background:#000;
+	clear:both;
+	margin:20px auto;
+}
+.mediumBanner a{
+	display:block;
+	width:728px; height:90px;
+	overflow:hidden;
+	text-align:center;
+}
+.mediumBanner a img{
+	width:100%;
 }

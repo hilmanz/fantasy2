@@ -5,6 +5,7 @@
 	<?php echo $this->element('meta'); ?>
 </head>
 <body>
+	
 	<div id="fb-root"></div>
 	<div id="effect"></div>
    	<div id="flag"></div>
@@ -32,7 +33,8 @@
                                     <?php endif;?>
                                 </a> |
                                  <a class="logout" href="<?=$this->Html->url('/profile/logout')?>">Keluar</a></h3>
-                                <span class="points red"><?=number_format($USER_POINTS)?> Pts</span>
+                                <span class="points red"><?=number_format($USER_POINTS)?> Pts</span> | 
+            					<a id="btn_inbox" href="#popup-notifications">Inbox</a>
                                 
                                 
                             </div><!-- end .entry -->
@@ -168,5 +170,66 @@
 	<?php echo $this->element('js'); ?>
     
 	<?php echo $this->element('sql_dump'); ?>
+
+<div class="popup">
+	<div class="popupContainer popup-small" id="popup-notifications">
+		<div class="popupHeader">
+		</div><!-- END .popupHeader -->
+		<div class="popupContent">
+			<div class="entry-popup">
+				
+			</div><!--END .entry-popup-->
+		</div><!-- END .popupContent -->
+	</div><!-- END .popupContainer -->
+</div><!-- END .popup --> 
+<!-- end of popups-->	
+<script>
+var notifications = {};
+$(document).ready(function(){
+        get_notification(0,function(data){
+            console.log(data);
+            notifications = data;
+            if(data.total_new>0){
+                $("#btn_inbox").html('INBOX ('+data.total_new+')');
+            }else{
+                $("#btn_inbox").html('INBOX');
+            }
+        });
+        $("#btn_inbox").fancybox({
+            beforeLoad : function(){
+                render_view(tplinbox,"#popup-notifications .popupContent .entry-popup",notifications);
+                $('.loading').hide();
+                $('.inbox').show();
+            },
+           
+        });
+
+});
+</script>
+<script type="text/template" id="tplinbox">
+    <div class="loading">
+        <h1>Memuat notifikasi</h1>
+        <h3>Harap tunggu sebentar..</h3>
+        <p><img src="<?=$this->Html->url('/css/fancybox/fancybox_loading@2x.gif')?>"/></p>
+    </div>
+    <div class="inbox" style="display:none;">
+        <h1 style="margin:0;">NOTIFIKASI</h1>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
+			<thead>
+				<tr>
+					<th>Tgl</th>
+					<th>Pesan</th>
+				</tr>
+			</thead>
+			<tbody>
+            <%for(var i in messages){%>
+                <tr>
+                    <td><%=messages[i].dt%></td><td><%=messages[i].content%></td>
+                </tr>
+            <%}%>
+			</tbody>
+		</table>
+    </div>
+</script>
 </body>
 </html>
