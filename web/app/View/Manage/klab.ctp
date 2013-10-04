@@ -243,30 +243,21 @@ function isStaffExist($staff_token,$name){
                     </div>
                     <table cellspacing="0" cellpadding="0" width="100%">
                       <tr class="head">
-                        <td colspan="5">Neraca Minggu Lalu</td>
+                        <td colspan="2">Neraca Minggu Lalu</td>
                         <td align="right" class="prevbalance">ss$ <?=number_format($starting_balance)?></td>
                       </tr>
                       <tr>
                         <td>Tiket</td>
-                        <td></td>
-                        <td></td>
                         <td>Pertandingan</td>
                         <td class="alignright">Total Perolehan</td>
-                        <td>&nbsp;</td>
                       </tr>
                       <tr>
                         <td>Tiket Terjual</td>
-                        <td align="right"></td>
-                        <td align="right"></td>
-                        <td align="right"><?=@$finance['total_matches']?></td>
+                        <td><?=@$finance['total_matches']?></td>
                         <td align="right">ss$ <?=number_format(@$finance['tickets_sold'])?></td>
-                        <td>&nbsp;</td>
                       </tr>
                       <tr>
                         <td>Pemasukan Tambahan</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                       </tr>
@@ -275,11 +266,8 @@ function isStaffExist($staff_token,$name){
                       ?>
                       <tr>
                         <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
                         <td>Bonus Commercial Director</td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['commercial_director_bonus']))?></td>
-                        <td>&nbsp;</td>
                       </tr>
                       <?php endif;?>
                       <?php
@@ -287,11 +275,8 @@ function isStaffExist($staff_token,$name){
                       ?>
                       <tr>
                         <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
                         <td>Bonus Marketing Manager</td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['marketing_manager_bonus']))?></td>
-                        <td>&nbsp;</td>
                       </tr>
                       <?php endif;?>
                        <?php
@@ -299,20 +284,14 @@ function isStaffExist($staff_token,$name){
                       ?>
                       <tr>
                         <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
                         <td>Bonus Public Relations</td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['public_relation_officer_bonus']))?></td>
-                        <td>&nbsp;</td>
                       </tr>
                      <?php endif;?>
                       <tr>
                         <td>Sponsor</td>
                         <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['sponsorship']))?></td>
-                        <td>&nbsp;</td>
                       </tr>
                       <?php
                         if(isset($finance['player_sold'])):
@@ -321,90 +300,41 @@ function isStaffExist($staff_token,$name){
                       <tr>
                         <td>Penjualan Pemain</td>
                         <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['player_sold']))?></td>
-                        <td>&nbsp;</td>
                       </tr>
                       <?php
                       endif;
                       ?>
                       <tr>
                         <td>Bonus</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
                         <td>Kemenangan</td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['win_bonus']))?></td>
-                        <td>&nbsp;</td>
-                      </tr>
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
                       </tr>
                       <tr class="head">
-                        <td colspan="5">Total Perolehan</td>
+                        <td colspan="2">Total Perolehan</td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['total_earnings']))?></td>
-                      </tr>
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
                       </tr>
                       <tr>
                         <td>Biaya Operasional</td>
                         <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['operating_cost']))?></td>
-                        <td>&nbsp;</td>
-                      </tr>
-                     
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
                       </tr>
                       <tr class="head">
-                        <td colspan="6">Gaji</td>
-                      </tr>
-                      
-                      <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
+                        <td colspan="3">Gaji</td>
                       </tr>
                       <tr>
-                        <td>&nbsp;</td>
                         <td>Gaji Pemain</td>
-                        <td>&nbsp;</td>
                         <td align="right"></td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['player_salaries']))?></td>
-                        <td>&nbsp;</td>
                       </tr>
                       
                        <?php
                       if(isStaffExist($staff_token,'commercial_director')):
                       ?>
                       <tr>
-                        <td>&nbsp;</td>
                         <td>Commercial Director</td>
-                        <td>&nbsp;</td>
                         <td align="right"></td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['commercial_director']))?></td>
-                        <td>&nbsp;</td>
                       </tr>
                        
                       <?php endif;?>
@@ -412,12 +342,9 @@ function isStaffExist($staff_token,$name){
                       if(isStaffExist($staff_token,'marketing_manager')):
                       ?>
                       <tr>
-                        <td>&nbsp;</td>
                         <td>Marketing Manager</td>
-                        <td>&nbsp;</td>
                         <td align="right"></td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['marketing_manager']))?></td>
-                        <td>&nbsp;</td>
                       </tr>
                        
                        <?php endif;?>
@@ -425,12 +352,9 @@ function isStaffExist($staff_token,$name){
                       if(isStaffExist($staff_token,'public_relation_officer')):
                       ?>
                       <tr>
-                        <td>&nbsp;</td>
                         <td>Public Relations</td>
-                        <td>&nbsp;</td>
                         <td align="right"></td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['public_relation_officer']))?></td>
-                        <td>&nbsp;</td>
                       </tr>
                       
                        <?php endif;?>
@@ -438,12 +362,9 @@ function isStaffExist($staff_token,$name){
                       if(isStaffExist($staff_token,'head_of_security')):
                       ?>
                       <tr>
-                        <td>&nbsp;</td>
                         <td>Head of Security</td>
-                        <td>&nbsp;</td>
                         <td align="right"></td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['head_of_security']))?></td>
-                        <td>&nbsp;</td>
                       </tr>
                         
                        <?php endif;?>
@@ -451,12 +372,9 @@ function isStaffExist($staff_token,$name){
                       if(isStaffExist($staff_token,'football_director')):
                       ?>
                       <tr>
-                        <td>&nbsp;</td>
                         <td>Footbal Director</td>
-                        <td>&nbsp;</td>
                         <td align="right"></td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['football_director']))?></td>
-                        <td>&nbsp;</td>
                       </tr>
                         
                        <?php endif;?>
@@ -464,12 +382,9 @@ function isStaffExist($staff_token,$name){
                       if(isStaffExist($staff_token,'chief_scout')):
                       ?>
                       <tr>
-                        <td>&nbsp;</td>
                         <td>Chief Scout</td>
-                        <td>&nbsp;</td>
                         <td align="right"></td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['chief_scout']))?></td>
-                        <td>&nbsp;</td>
                       </tr>
                         
                        <?php endif;?>
@@ -477,12 +392,9 @@ function isStaffExist($staff_token,$name){
                       if(isStaffExist($staff_token,'general_scout')):
                       ?>
                       <tr>
-                        <td>&nbsp;</td>
                         <td>General Scout</td>
-                        <td>&nbsp;</td>
                         <td align="right"></td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['general_scout']))?></td>
-                        <td>&nbsp;</td>
                       </tr>
                         
                        <?php endif;?>
@@ -490,12 +402,9 @@ function isStaffExist($staff_token,$name){
                       if(isStaffExist($staff_token,'finance_director')):
                       ?>
                       <tr>
-                        <td>&nbsp;</td>
                         <td>Finance Director</td>
-                        <td>&nbsp;</td>
                         <td align="right"></td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['finance_director']))?></td>
-                        <td>&nbsp;</td>
                       </tr>
                        
                        <?php endif;?>
@@ -503,12 +412,9 @@ function isStaffExist($staff_token,$name){
                       if(isStaffExist($staff_token,'tax_consultant')):
                       ?>
                       <tr>
-                        <td>&nbsp;</td>
                         <td>Tax Consultant</td>
-                        <td>&nbsp;</td>
                         <td align="right"></td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['tax_consultant']))?></td>
-                        <td>&nbsp;</td>
                       </tr>
                        
                        <?php endif;?>
@@ -516,12 +422,9 @@ function isStaffExist($staff_token,$name){
                       if(isStaffExist($staff_token,'accountant')):
                       ?>
                       <tr>
-                        <td>&nbsp;</td>
                         <td>Accountant</td>
-                        <td>&nbsp;</td>
                         <td align="right"></td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['accountant']))?></td>
-                        <td align="right"></td>
                       </tr>
                         
                        <?php endif;?>
@@ -532,21 +435,18 @@ function isStaffExist($staff_token,$name){
                       <tr>
                         <td>Pembelian Pemain</td>
                         <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['buy_player']))?></td>
-                        <td>&nbsp;</td>
                       </tr>
                       <?php
                       endif;
                       ?>
 
                       <tr class="head">
-                        <td colspan="4">Total Pengeluaran</td>
-                        <td><td align="right">ss$ <?=number_format(@$total_expenses)?></td></td>
+                        <td colspan="2">Total Pengeluaran</td>
+                        <td align="right">ss$ <?=number_format(@$total_expenses)?></td>
                       </tr>
                       <tr class="head">
-                        <td colspan="5">Neraca Berjalan</td>
+                        <td colspan="2">Neraca Berjalan</td>
                         <td align="right">ss$ <?=number_format(@$running_balance)?></td>
                     </tr>
                    </table>

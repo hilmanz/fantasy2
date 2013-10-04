@@ -902,7 +902,7 @@ input[type=text]{
 	margin:0 auto 10px auto;
 }
 .thumbStaff{
-	width: 130px;
+	width: 170px;
 	text-align: center;
 	float:left;
 	min-height: 200px;
@@ -1051,8 +1051,8 @@ input[type=text]{
 	color:#FC0;
 }
 .club-info h3.clubname{
-	font-size:26px;
-	line-height:40px;
+	font-size:30px;
+	line-height:70px;
 }
 .club-money h3{
 	font-size:30px;
@@ -1682,15 +1682,23 @@ a.statsbox:hover{
 	width:300px;
 }
 .club-info h4{
-	font-size:16px;
+	font-size:30px;
 	margin:0;
 	color:#fdcb02;
 }
+.club-info p{
+	font-family:'BebasNeueRegular';
+	font-size:16px;
+}
 .club-info h5{
-	font-size:28px;
-	line-height:40px;
+	font-size:30px;
+	line-height:70px;
 	margin:0;
 	color:#fdcb02;
+}
+.club-money .buttons{
+	display:block;
+	margin:0 0 5px 0;
 }
 #profiletabs ul li:first-child,#profiletabs ul li:last-child{
 	width:155px;
@@ -1717,7 +1725,7 @@ h3.tabtitle{
 	border-bottom:solid 1px #444;
 }
 .popupContent .opta-widget-container .profile dt{
-	min-width:120px;
+	min-width:90px;
 }
 .popupContent .avatar-big{
 	margin:10px;
@@ -1942,4 +1950,16 @@ h3.tabtitle{
 }
 .inboxNotification h3 a{
 	color:#fff;
+}
+.opta-widget-container .profile dd.player-height{
+	float:none;
+	border-bottom:solid 1px #000;
+}
+.opta-widget-container .profile dt.player-weight{
+	float:left;
+	padding:8px 0 7px 10px;
+	width:auto;
+}
+.opta-widget-container .profile.narrow dd.player-height{
+	float:none;
 }

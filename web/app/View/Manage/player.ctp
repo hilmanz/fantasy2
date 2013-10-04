@@ -241,6 +241,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
         </div>
         <div class="club-money fr">
             <a data-team-name="<?=h($club['team_name'])?>" data-price="<?=number_format($transfer_value)?>" data-player-name="<?=$data['player']['name']?>" data-team="<?=$data['player']['original_team_id']?>" data-player="<?=$data['player']['player_id']?>" id="btnSale" class="icon-cart buttons" href="#popup-messages"><span>JUAL</span></a>
+            <a class="buttons" href="#"><span>KEMBALI</span></a>
         </div>
     </div><!-- end .headbar -->
     <div id="thecontent">
