@@ -17,6 +17,15 @@ $total_expenses+= intval(@$finance['accountant']);
 $total_expenses+= intval(@$finance['buy_player']);
 
 
+
+$first_week = $weekly_balances[0];
+$previous_balances = array();
+for($i=1;$i<$first_week['week'];$i++){
+  $previous_balances[] = array('week'=>$i,
+                              'balance'=>intval(@$starting_budget));
+}
+$weekly_balances = array_merge($previous_balances,$weekly_balances);
+
 if($week<=1){
   $starting_balance = intval(@$starting_budget);
 }else{
@@ -238,17 +247,16 @@ function isStaffExist($staff_token,$name){
                           }
                         ?>
                         <option value='0' <?=$default_week?>>Keseluruhan</option>
-                        <?php
-                          $total_matches = intval($total_matches);
-                        ?>
-                        <?php for($i=0;$i<$total_matches;$i++):?>
+                       
+                        <?php 
+                            for($i=0;$i<sizeof($weeks);$i++):?>
                           <?php
                             $selected = "";
-                            if($week==($i+1)){
+                            if($week==($weeks[$i])){
                               $selected = "selected='selected'";
                             }
                           ?>
-                          <option value='<?=($i+1)?>' <?=$selected?>>Minggu <?=($i+1)?></option>
+                          <option value='<?=($weeks[$i])?>' <?=$selected?>>Minggu <?=($weeks[$i])?></option>
                         <?php endfor;?>
                       </select>
                     </div>

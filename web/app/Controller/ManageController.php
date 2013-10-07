@@ -131,7 +131,13 @@ class ManageController extends AppController {
 
 		$financial_statement = $this->Session->read('FinancialStatement');
 		
-		
+		$weeks = array();
+		if(sizeof($financial_statement['weekly_balances'])>0){
+			foreach($financial_statement['weekly_balances'] as $fs){
+				$weeks[] = $fs['week'];
+			}
+		}
+		$this->set('weeks',$weeks);
 		//filter finance by week
 		$week = intval(@$this->request->query['week']);
 		if($week > 0){
@@ -141,6 +147,9 @@ class ManageController extends AppController {
 			
 			$this->set('finance',$weekly_statement);
 		}else{
+			if(isset($this->request->query['week'])){
+				$this->set('active_tab',1);
+			}
 			$this->set('finance',$financial_statement['finance']);
 		}
 

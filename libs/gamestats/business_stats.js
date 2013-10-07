@@ -744,6 +744,7 @@ function getGameFixture(game_id,done){
 	});
 }
 function getTeamProfile(game,done){
+	console.log(game);
 	console.log('get team profile');
 	var home,away;
 	pool.getConnection(function(err,conn){
