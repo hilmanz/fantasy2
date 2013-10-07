@@ -194,6 +194,23 @@ function getStats($category,$pos,$modifiers,$map,$stats){
     return $collection;
 }
 
+//get last performance value.
+$weekly_performance = array();
+foreach($data['stats'] as $n=>$v){
+    if(!isset($weekly_performance[$v['matchday']])){
+        $weekly_performance[$v['matchday']] = $v;
+    }else{
+        if( $weekly_performance[$v['matchday']]['performance'] == 0){
+             $weekly_performance[$v['matchday']] = $v;
+        }
+    }
+}
+$data['stats'] = null;
+while(sizeof($weekly_performance)>0){
+    $data['stats'][] = array_shift($weekly_performance);
+}
+
+$weekly_performance = null;
 
 ?>
 <div id="myClubPage">
@@ -214,8 +231,10 @@ function getStats($category,$pos,$modifiers,$map,$stats){
             <h4>
                 <?php
                     $performance = 0;
+
                     if(sizeof($data['stats'])>0){
                         if(intval(@$data['stats'][sizeof($data['stats'])-1]['points'])!=0){
+
                         $performance = getTransferValueBonus(
                                             $data['stats'][sizeof($data['stats'])-1]['performance'],
                                             $data['player']['transfer_value']);
