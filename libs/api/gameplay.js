@@ -571,7 +571,8 @@ function getFinancialStatement(game_team_id,done){
 				},
 				function(starting_budget,matches,callback){
 					//weekly balance
-					conn.query("SELECT game_id,SUM(amount) AS total_income,match_day\
+					conn.query("SELECT game_id,SUM(amount) AS total_income,match_day,\
+								SUM(item_total) AS item_total\
 								FROM ffgame.game_team_expenditures \
 								WHERE game_team_id=?\
 								GROUP BY game_id \
@@ -591,7 +592,9 @@ function getFinancialStatement(game_team_id,done){
 					if(rs.length>0){
 						for(var i in rs){
 							current_balance += parseInt(rs[i].total_income);
-							weekly_balance.push({week:rs[i].match_day,balance:current_balance});
+							weekly_balance.push({week:rs[i].match_day,
+												balance:current_balance,
+												total_items:rs[i].item_total});
 						}
 					}else{
 						weekly_balance.push({week:1,balance:starting_budget});
@@ -600,7 +603,8 @@ function getFinancialStatement(game_team_id,done){
 				},
 				function(starting_budget,weekly_balance,matches,expenditures,callback){
 					if(matches!=null){
-						conn.query("SELECT item_name,item_type,SUM(amount) AS total\
+						conn.query("SELECT item_name,item_type,SUM(amount) AS total,\
+									SUM(item_total) AS item_total\
 									FROM ffgame.game_team_expenditures\
 									WHERE game_team_id=?\
 									GROUP BY item_name;",
@@ -631,7 +635,7 @@ function getWeeklyFinance(game_team_id,week,done){
 	prepareDb(function(conn){
 		async.waterfall([
 				function(callback){
-						conn.query("SELECT game_team_id,item_name,item_type,amount,game_id,match_day \
+						conn.query("SELECT game_team_id,item_name,item_type,item_total,amount,game_id,match_day \
 							FROM ffgame.game_team_expenditures \
 							WHERE game_team_id=? AND match_day = ?;",
 							[game_team_id,week],

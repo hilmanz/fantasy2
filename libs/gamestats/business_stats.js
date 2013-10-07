@@ -310,6 +310,8 @@ function calculate_home_revenue_stats(team,game_id,game,rank,away_rank,done){
 					console.log('officials',officials);
 					//get 100% ticket guarantee from head of security.
 					var official = getOfficial('Head of Security',officials);
+					var final_attendance = attendance * stadium_earnings[quadrant].ratio[stadium_income_type];
+
 
 					//1. TICKET EARNINGS
 					var ticket_earnings = 0;
@@ -324,7 +326,7 @@ function calculate_home_revenue_stats(team,game_id,game,rank,away_rank,done){
 						ticket_earnings = (attendance * stadium_earnings[quadrant].ratio[stadium_income_type]) *  stadium_earnings[quadrant].price[stadium_income_type] * 0.8;
 						
 					}
-					earnings.push({name:'tickets_sold',value:ticket_earnings});
+					earnings.push({name:'tickets_sold',value:ticket_earnings,total:final_attendance});
 					console.log('ticket earnings ',ticket_earnings);
 
 
@@ -332,20 +334,20 @@ function calculate_home_revenue_stats(team,game_id,game,rank,away_rank,done){
 					official = getOfficial('Commercial Director',officials);
 					if(official!=null){
 						console.log(ticket_earnings,'*',official.attendance_bonus);	
-						earnings.push({name:'commercial_director_bonus',value:ticket_earnings*official.attendance_bonus});
+						earnings.push({name:'commercial_director_bonus',value:ticket_earnings*official.attendance_bonus,total:1});
 					}
 
 					//3. Earning Bonus from Marketing Manager
 					official = getOfficial('Marketing Manager',officials);
 					if(official!=null){
 						console.log(ticket_earnings,'*',official.attendance_bonus);	
-						earnings.push({name:'marketing_manager_bonus',value:ticket_earnings*official.attendance_bonus});
+						earnings.push({name:'marketing_manager_bonus',value:ticket_earnings*official.attendance_bonus,total:1});
 					}
 					//4. Earning Bonus from Public Relation Officer
 					official = getOfficial('Public Relation Officer',officials);
 					if(official!=null){
 						console.log(ticket_earnings,'*',official.attendance_bonus);	
-						earnings.push({name:'public_relation_officer_bonus',value:ticket_earnings*official.attendance_bonus});
+						earnings.push({name:'public_relation_officer_bonus',value:ticket_earnings*official.attendance_bonus,total:1});
 					}
 					console.log('earnings : ',earnings);
 					
@@ -376,15 +378,15 @@ function calculate_home_revenue_stats(team,game_id,game,rank,away_rank,done){
 						op_cost+=(basic_cost * official.op_cost_bonus);
 					}
 					console.log('operational costs',op_cost);
-					costs.push({name:'operating_cost',value:op_cost});
+					costs.push({name:'operating_cost',value:op_cost,total:1});
 
 					//7. Player Salaries (to be added soon)
 					console.log('player salaries : ',player_salaries);
-					costs.push({name:'player_salaries',value:player_salaries});
+					costs.push({name:'player_salaries',value:player_salaries,total:1});
 					//8. Official Salaries
 					for(var i in officials){
 						console.log(officials[i].salary);
-						costs.push({name:reformatName(officials[i].name),value:officials[i].salary});
+						costs.push({name:reformatName(officials[i].name),value:officials[i].salary,total:1});
 					}
 					console.log('costs',costs);
 					callback(null,officials,earnings,costs);
@@ -413,30 +415,30 @@ function calculate_home_revenue_stats(team,game_id,game,rank,away_rank,done){
 						sponsor_bonus += sponsors[i].value;
 					}
 
-					earnings.push({name:'sponsorship',value:sponsor_bonus});
+					earnings.push({name:'sponsorship',value:sponsor_bonus,total:1});
 
 					//winning bonuses
 					if(game.home_score > game.away_score){
 						console.log('home team is winning');
-						earnings.push({name:'win_bonus',value:sponsor_bonus*0.01});
+						earnings.push({name:'win_bonus',value:sponsor_bonus*0.01,total:1});
 					}
 
 					//bonuses from officials
 					official = getOfficial('Commercial Director',officials);
 					if(official!=null){
-						earnings.push({name:'commercial_director_sponsor_bonus',value:sponsor_bonus*official.sponsor_bonus});
+						earnings.push({name:'commercial_director_sponsor_bonus',value:sponsor_bonus*official.sponsor_bonus,total:1});
 					}
 
 					
 					official = getOfficial('Marketing Manager',officials);
 					if(official!=null){
-						earnings.push({name:'marketing_manager_sponsor_bonus',value:sponsor_bonus*official.sponsor_bonus});
+						earnings.push({name:'marketing_manager_sponsor_bonus',value:sponsor_bonus*official.sponsor_bonus,total:1});
 					}
 					
 					official = getOfficial('Public Relation Officer',officials);
 					if(official!=null){
 						
-						earnings.push({name:'public_relation_officer_sponsor_bonus',value:sponsor_bonus*official.sponsor_bonus});
+						earnings.push({name:'public_relation_officer_sponsor_bonus',value:sponsor_bonus*official.sponsor_bonus,total:1});
 					}
 					callback(null,{earnings:earnings,costs:costs});
 				},
@@ -444,7 +446,7 @@ function calculate_home_revenue_stats(team,game_id,game,rank,away_rank,done){
 					//save into database
 					console.log(match_money);
 					var sql = "INSERT INTO ffgame.game_team_expenditures\
-								(game_team_id,item_name,item_type,amount,game_id,match_day)\
+								(game_team_id,item_name,item_type,amount,game_id,match_day,item_total)\
 								VALUES ";
 
 					var vals = [];
@@ -452,28 +454,31 @@ function calculate_home_revenue_stats(team,game_id,game,rank,away_rank,done){
 						if(i>0){
 							sql+=',';
 						}
-						sql+="(?,?,?,?,?,?)";
+						sql+="(?,?,?,?,?,?,?)";
 						vals.push(team.id);
 						vals.push(match_money.earnings[i].name);
 						vals.push(1);
 						vals.push(match_money.earnings[i].value);
 						vals.push(game[0].game_id);
 						vals.push(game[0].matchday);
+						vals.push(match_money.earnings[i].total);
 					}
 					for(var j in match_money.costs){
 						if(i>0||j>0){
 							sql+=',';
 						}
-						sql+="(?,?,?,?,?,?)";
+						sql+="(?,?,?,?,?,?,?)";
 						vals.push(team.id);
 						vals.push(match_money.costs[j].name);
 						vals.push(2);
 						vals.push(match_money.costs[j].value*-1);
 						vals.push(game[0].game_id);
 						vals.push(game[0].matchday);
+						vals.push(match_money.costs[j].total);
 					}
 					sql+=" ON DUPLICATE KEY UPDATE\
-						   amount = VALUES(amount);";
+						   amount = VALUES(amount),\
+						   item_total = VALUES(item_total);";
 
 					conn.query(sql,vals,function(err,rs){
 						console.log(this.sql);
@@ -547,11 +552,11 @@ function calculate_away_revenue_stats(team,game_id,game,rank,away_rank,done){
 
 					//7. Player Salaries (to be added soon)
 					console.log('player salaries : ',player_salaries);
-					costs.push({name:'player_salaries',value:player_salaries});
+					costs.push({name:'player_salaries',value:player_salaries,total:1});
 					//8. Official Salaries
 					for(var i in officials){
 						console.log(officials[i].salary);
-						costs.push({name:reformatName(officials[i].name),value:officials[i].salary});
+						costs.push({name:reformatName(officials[i].name),value:officials[i].salary,total:1});
 					}
 					console.log('costs',costs);
 					callback(null,officials,earnings,costs);
@@ -580,30 +585,30 @@ function calculate_away_revenue_stats(team,game_id,game,rank,away_rank,done){
 						sponsor_bonus += sponsors[i].value;
 					}
 
-					earnings.push({name:'sponsorship',value:sponsor_bonus});
+					earnings.push({name:'sponsorship',value:sponsor_bonus,total:1});
 
 					//winning bonuses
 					if(game.home_score < game.away_score){
 						console.log('away team is winning');
-						earnings.push({name:'win_bonus',value:sponsor_bonus*0.01});
+						earnings.push({name:'win_bonus',value:sponsor_bonus*0.01,total:1});
 					}
 
 					//bonuses from officials
 					official = getOfficial('Commercial Director',officials);
 					if(official!=null){
-						earnings.push({name:'commercial_director_sponsor_bonus',value:sponsor_bonus*official.sponsor_bonus});
+						earnings.push({name:'commercial_director_sponsor_bonus',value:sponsor_bonus*official.sponsor_bonus,total:1});
 					}
 
 					
 					official = getOfficial('Marketing Manager',officials);
 					if(official!=null){
-						earnings.push({name:'marketing_manager_sponsor_bonus',value:sponsor_bonus*official.sponsor_bonus});
+						earnings.push({name:'marketing_manager_sponsor_bonus',value:sponsor_bonus*official.sponsor_bonus,total:1});
 					}
 					
 					official = getOfficial('Public Relation Officer',officials);
 					if(official!=null){
 						
-						earnings.push({name:'public_relation_officer_sponsor_bonus',value:sponsor_bonus*official.sponsor_bonus});
+						earnings.push({name:'public_relation_officer_sponsor_bonus',value:sponsor_bonus*official.sponsor_bonus,total:1});
 					}
 					callback(null,{earnings:earnings,costs:costs});
 				},
@@ -611,7 +616,7 @@ function calculate_away_revenue_stats(team,game_id,game,rank,away_rank,done){
 					//save into database
 					console.log(match_money);
 					var sql = "INSERT INTO ffgame.game_team_expenditures\
-								(game_team_id,item_name,item_type,amount,game_id,match_day)\
+								(game_team_id,item_name,item_type,amount,game_id,match_day,item_total)\
 								VALUES ";
 
 					var vals = [];
@@ -619,28 +624,31 @@ function calculate_away_revenue_stats(team,game_id,game,rank,away_rank,done){
 						if(i>0){
 							sql+=',';
 						}
-						sql+="(?,?,?,?,?,?)";
+						sql+="(?,?,?,?,?,?,?)";
 						vals.push(team.id);
 						vals.push(match_money.earnings[i].name);
 						vals.push(1);
 						vals.push(match_money.earnings[i].value);
 						vals.push(game[0].game_id);
 						vals.push(game[0].matchday);
+						vals.push(match_money.earnings[i].total);
 					}
 					for(var j in match_money.costs){
 						if(i>0||j>0){
 							sql+=',';
 						}
-						sql+="(?,?,?,?,?,?)";
+						sql+="(?,?,?,?,?,?,?)";
 						vals.push(team.id);
 						vals.push(match_money.costs[j].name);
 						vals.push(2);
 						vals.push(match_money.costs[j].value*-1);
 						vals.push(game[0].game_id);
 						vals.push(game[0].matchday);
+						vals.push(match_money.costs[j].total);
 					}
 					sql+=" ON DUPLICATE KEY UPDATE\
-						   amount = VALUES(amount);";
+						   amount = VALUES(amount),\
+						   item_total = VALUES(item_total);";
 
 					conn.query(sql,vals,function(err,rs){
 						console.log(this.sql);
