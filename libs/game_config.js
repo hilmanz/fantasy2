@@ -40,9 +40,9 @@ exports.cost_modifiers = {
 exports.stadium_earnings = {
 	q1:{
 		price:{
-			high: 100,
-			standard: 75,
-			low: 50,
+			high: 20,
+			standard: 18,
+			low: 14,
 		},
 		ratio: {
 			high:1.0,
@@ -52,9 +52,9 @@ exports.stadium_earnings = {
 	},
 	q2:{
 		price:{
-			high: 100,
-			standard: 75,
-			low: 50,
+			high: 20,
+			standard: 18,
+			low: 14,
 		},
 		ratio: {
 			high:0.75,
@@ -64,9 +64,9 @@ exports.stadium_earnings = {
 	},
 	q3:{
 		price:{
-			high: 100,
-			standard: 75,
-			low: 50,
+			high: 20,
+			standard: 18,
+			low: 14,
 		},
 		ratio: {
 			high:0.5,
@@ -76,9 +76,9 @@ exports.stadium_earnings = {
 	},
 	q4:{
 		price:{
-			high: 100,
-			standard: 75,
-			low: 50,
+			high: 20,
+			standard: 18,
+			low: 14,
 		},
 		ratio: {
 			high:0.25,

@@ -270,11 +270,19 @@ function isStaffExist($staff_token,$name){
                         <td></td>
                         <td class="alignright">Total Perolehan</td>
                       </tr>
+                      <?php if(@$finance['tickets_sold']>0):?>
                       <tr>
                         <td>Tiket Terjual</td>
-                        <td>x <?=number_format(@$total_items['tickets_sold'])?></td>
+                        <td>ss$<?=round($finance['tickets_sold']/$total_items['tickets_sold'],2)?> x <?=number_format(@$total_items['tickets_sold'])?></td>
                         <td align="right">ss$ <?=number_format(@$finance['tickets_sold'])?></td>
                       </tr>
+                      <?php else:?>
+                      <tr>
+                        <td>Tiket Terjual</td>
+                        <td>-</td>
+                        <td align="right">ss$ <?=number_format(@$finance['tickets_sold'])?></td>
+                      </tr>
+                      <?php endif;?>
                       <tr>
                         <td>Pemasukan Tambahan</td>
                         <td>&nbsp;</td>
@@ -324,11 +332,13 @@ function isStaffExist($staff_token,$name){
                       <?php
                       endif;
                       ?>
+                      <?php if(isset($finance['win_bonus'])):?>
                       <tr>
                         <td>Bonus</td>
                         <td>Kemenangan</td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['win_bonus']))?></td>
                       </tr>
+                      <?php endif;?>
                       <tr class="head">
                         <td colspan="2">Total Perolehan</td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['total_earnings']))?></td>
