@@ -85,7 +85,7 @@ _optaParams.callbacks = [profileLoaded];
     <?php echo $this->element('infobar'); ?>
     <div class="headbar tr">
         <div class="match-info fl">
-            <h4 class="playerName">FRANK LAMPARD</h4>
+            <h4 class="playerName"><?=h($data['name'])?></h4>
         </div>
         <div class="match-info fl">
             <h4><span class="matchClub"><?=h($home)?></span> <span class="matchScore"><?=intval($match['home_score'])?></span>  vs  

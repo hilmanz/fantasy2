@@ -236,38 +236,69 @@ function updateLineupStats(game_id,lineups,summary,player_stats,in_game,done){
 										 points: 0,
 										 performance: 0};
 							var is_found = false;
-							for(var i in player_stats){
-								if(item.player_id==player_stats[i].player_id){
-									stats.points = player_stats[i].points;
-									var apts =  summary[player_stats[i].team_id].average;
-									stats.performance = ((stats.points - apts)/apts)*100;
-									is_found = true;
-									break;
+							async.waterfall([
+									function(callback){
+										conn.query("SELECT game_id,player_id,stats_name \
+													FROM ffgame_stats.master_player_stats \
+													WHERE game_id = ?  AND player_id= ? \
+													AND stats_name = 'game_started' LIMIT 1;",
+													[game_id,item.player_id],function(err,sqlResult){
+														
+														var isStarter = false;
+														
+														sqlResult = sqlResult || [];
+														if(sqlResult.length>0){
+															isStarter = true;
+														}
+														console.log('check starter status',game_id,item.player_id,isStarter);
+														callback(err,isStarter);
+													});
+									},
+									function(isStarter,callback){
+										for(var i in player_stats){
+											if(item.player_id==player_stats[i].player_id){
+												stats.points = player_stats[i].points;
+												//if(!isStarter){
+												//	console.log('points reduced to 75%',(stats.points*0.75));
+												//	stats.points = stats.points * 0.75;
+												//}
+												var apts =  summary[player_stats[i].team_id].average;
+												stats.performance = ((stats.points - apts)/apts)*100;
+												is_found = true;
+												break;
+											}
+										}
+										if(!is_found && !in_game){
+											//we skip it if the player is not matched one of the player_stats,
+											//and the team is not involve with the game at all.
+											console.log('skip #',item.player_id,' from team #',item.game_team_id);
+											callback(err,null);
+										}else{
+											console.log('add #',item.player_id,' from team #',item.game_team_id,' stats');
+											conn.query("INSERT INTO ffgame_stats.game_match_player_points\
+												(game_id,game_team_id,player_id,points,performance,last_update)\
+												VALUES(?,?,?,?,?,NOW())\
+												ON DUPLICATE KEY UPDATE\
+												points = VALUES(points),\
+												performance = VALUES(performance);",
+												[	game_id,
+													item.game_team_id,
+													stats.player_id,
+													stats.points,
+													stats.performance ],
+												function(err,rs){
+													console.log(this.sql);
+													callback(err,rs);	
+											});
+										}
+									}
+
+								],
+								function(err,rsWaterfall){
+									callback();
 								}
-							}
-							if(!is_found && !in_game){
-								//we skip it if the player is not matched one of the player_stats,
-								//and the team is not involve with the game at all.
-								console.log('skip #',item.player_id,' from team #',item.game_team_id);
-								callback();
-							}else{
-								console.log('add #',item.player_id,' from team #',item.game_team_id,' stats');
-								conn.query("INSERT INTO ffgame_stats.game_match_player_points\
-									(game_id,game_team_id,player_id,points,performance,last_update)\
-									VALUES(?,?,?,?,?,NOW())\
-									ON DUPLICATE KEY UPDATE\
-									points = VALUES(points),\
-									performance = VALUES(performance);",
-									[	game_id,
-										item.game_team_id,
-										stats.player_id,
-										stats.points,
-										stats.performance ],
-									function(err,rs){
-										console.log(this.sql);
-										callback();	
-								});
-							}
+							);
+							
 							
 						},
 						function(err){

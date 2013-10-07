@@ -10,7 +10,7 @@ function profileLoaded(widget, data, id){
         });
 }
 _optaParams.callbacks = [profileLoaded];
-var club_url = "<?=$this->Html->url('/manage/club/?tab=2')?>";
+var club_url = "<?=$this->Html->url('/manage/club/?rooster=1')?>";
 <?php
 if(isset($data['daily_stats'])):
 ?>
