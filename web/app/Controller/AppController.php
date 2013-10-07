@@ -95,11 +95,24 @@ class AppController extends Controller {
 				
 				$this->set('match_date_ts',$this->nextMatch['match']['match_date_ts']);
 
+				$previous_close_dt = date("Y-m-d", strtotime("previous Saturday"))." 17:00:00";
+				
+
 				$close_dt = date("Y-m-d", strtotime("next Saturday"))." 17:00:00";
+
+			
+				if($this->nextMatch['match']['match_date_ts'] > strtotime($close_dt)){
+					$close_time = array("datetime"=>$close_dt,
+									"ts"=>strtotime($close_dt));
+				}else{
+					$close_time = array("datetime"=>$previous_close_dt,
+									"ts"=>strtotime($previous_close_dt));
+				}
+				
+
 				//$close_dt = "2013-10-07 14:20:00";  //for debugging only
 				
-				$close_time = array("datetime"=>$close_dt,
-									"ts"=>strtotime($close_dt));
+				
 
 				$this->closeTime = $close_time;
 				$this->set('close_time',$close_time);

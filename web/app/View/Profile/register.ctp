@@ -36,7 +36,7 @@
                         -
                          <select name="bod_yr">
                             <option value="0">Tahun</option>
-                            <?php for($d=1930 ; $d<(date("Y")-7); $d++):?>
+                            <?php for($d=1930 ; $d<(date("Y")); $d++):?>
                                 <option value="<?=$d?>"><?=$d?></option>
                             <?php endfor;?> 
                         </select>
