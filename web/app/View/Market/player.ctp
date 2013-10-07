@@ -231,7 +231,10 @@ function getStats($category,$pos,$modifiers,$map,$stats){
         </div>
         <div class="club-info fl">
             <h5>
-                &nbsp;
+                <?php
+                    print number_format($total_points);
+                ?>
+                Poin
             </h5>
         </div>
         <div class="fr"><a href="<?=$this->Html->url('/market/team/'.$data['player']['original_team_id'])?>" class="button">KEMBALI</a></div>
