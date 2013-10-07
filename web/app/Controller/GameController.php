@@ -76,11 +76,13 @@ class GameController extends AppController {
 	public function save_lineup(){
 		$this->loadModel('Team');
 		$this->loadModel('User');
-		if(date_default_timezone_get()=='Asia/Jakarta'){
-		    $this->nextMatch['match']['match_date_ts'] += 6*60*60;
-		}
-		$time_limit = $this->nextMatch['match']['match_date_ts']-(4*60*60);
+		//if(date_default_timezone_get()=='Asia/Jakarta'){
+		 //   $this->nextMatch['match']['match_date_ts'] += 6*60*60;
+		//}
+		//$time_limit = $this->nextMatch['match']['match_date_ts']-(4*60*60);
 		
+		$time_limit = $this->closeTime['ts'];
+
 		if(time() < $time_limit || Configure::read('debug') > 0){
 			$userData = $this->getUserData();
 			$formation = $this->request->data['formation'];

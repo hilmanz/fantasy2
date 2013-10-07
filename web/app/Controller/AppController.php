@@ -42,6 +42,7 @@ class AppController extends Controller {
 	protected $nextMatch;
 	protected $redisClient;
 	protected $gameApiAccessToken;
+	protected $closeTime;
 	public function beforeFilter(){
 		
 		$this->disableCache();
@@ -91,7 +92,17 @@ class AppController extends Controller {
 
 				$this->nextMatch = $this->Game->getNextMatch(@$this->userData['team']['team_id']);
 				$this->nextMatch['match']['match_date_ts'] = strtotime(@$this->nextMatch['match']['match_date']);
+				
 				$this->set('match_date_ts',$this->nextMatch['match']['match_date_ts']);
+
+				$close_dt = date("Y-m-d", strtotime("next Saturday"))." 17:00:00";
+				//$close_dt = "2013-10-07 14:20:00";  //for debugging only
+				
+				$close_time = array("datetime"=>$close_dt,
+									"ts"=>strtotime($close_dt));
+
+				$this->closeTime = $close_time;
+				$this->set('close_time',$close_time);
 
 				//news ticker
 				$this->set('tickers',$this->Ticker->find('all',array('limit'=>5)));
