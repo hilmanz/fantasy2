@@ -18,7 +18,7 @@
                     <div class="row-2">
 						<div class="playerlistbox last">
 							<div class="titles">
-								<h2>Pemain-Pemain Anda</h2>
+								<h2>Inilah daftar pemain tim elo, estimasi biaya mingguan tim ini tertera di sebelah kanan, sanggup mengurus tim ini ? Kalo siap  segera pencet tombol "LANJUT"</h2>
 							</div><!-- end .titles -->
                        		 <!-- available players -->
 							<table width="100%" border="0" cellspacing="0" cellpadding="0">
