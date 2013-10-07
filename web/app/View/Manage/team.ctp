@@ -601,10 +601,10 @@ $(document).ready(function(){
 
 <script type="text/template" id="tplsave">
     <div class="confirm">
-        <h1>Konfirmasi</h1>
-        <h3>Apakah Anda yakin ingin menyimpan formasi pemain yang baru?</h3>
-        <p><a href="#/save_formation" class="button">Ya</a>
-            <a href="#" class="button" onclick="$.fancybox.close();return false;">Batal</a></p>
+        <h1>KONFIRMASI</h1>
+        <h3>ANDA YAKIN INGIN MEMASANG LINE-UP INI Di PERTANDINGAN ?</h3>
+        <p><a href="#/save_formation" class="button">YAKIN</a>
+            <a href="#" class="button" onclick="$.fancybox.close();return false;">BELUM YAKIN</a></p>
     </div>
     <div class="saving" style="display:none;">
         <h1>Menyimpan formasi pemain</h1>
