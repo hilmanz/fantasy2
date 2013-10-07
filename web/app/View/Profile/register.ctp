@@ -21,18 +21,21 @@
                     <div class="row">
                         <label>Tanggal Lahir</label>
                         <select name="bod_dt">
+                            <option value="0">Tanggal</option>
                             <?php for($d=1 ; $d<32; $d++):?>
                                 <option value="<?=$d?>"><?=$d?></option>
                             <?php endfor;?> 
                         </select>
                         -
                          <select name="bod_mt">
+                            <option value="0">Bulan</option>
                             <?php for($d=1 ; $d<13; $d++):?>
                                 <option value="<?=$d?>"><?=$d?></option>
                             <?php endfor;?> 
                         </select>
                         -
                          <select name="bod_yr">
+                            <option value="0">Tahun</option>
                             <?php for($d=1930 ; $d<(date("Y")-7); $d++):?>
                                 <option value="<?=$d?>"><?=$d?></option>
                             <?php endfor;?> 
@@ -62,9 +65,9 @@
                         <input type="radio" class="styled" name="firstime" checked="checked" value="1"/><span>Ya</span>
                         <input type="radio" class="styled" name="firstime" value="0"/><span>Tidak</span>
                     </div><!-- end .row -->
-                    <div class="row inputRadio">
+                    <div class="row">
                         <label>Sebutkan klub favorit elo</label>
-                        <input type="text" class="styled" name="faveclub" value=""/>
+                        <input type="text" name="faveclub" value=""/>
                     </div><!-- end .row -->
                     <div class="row">
                         <input type="hidden" name="save" value="1"/>

@@ -296,6 +296,11 @@ class ProfileController extends AppController {
 								$this->redirect('/profile/error');
 			}else{
 				if($this->request->is('post') && $this->request->data['phone_number']!=null){
+					$this->request->data['hearffl'] = (isset($this->request->data['hearffl'])) ? $this->request->data['hearffl'] : 0;
+					$this->request->data['daylyemail'] = (isset($this->request->data['daylyemail'])) ? $this->request->data['daylyemail'] : 0;
+					$this->request->data['daylysms'] = (isset($this->request->data['daylysms'])) ? $this->request->data['daylysms'] : 0;
+					$this->request->data['firstime'] = (isset($this->request->data['firstime'])) ? $this->request->data['firstime'] : 0;
+					$birthdate = intval($this->request->data['bod_yr']).'-'.intval($this->request->data['bod_mt']).'-'.intval($this->request->data['bod_dt']);
 					$data = array('fb_id'=>$user_fb['id'],
 								  'name'=>$this->request->data['name'],
 								  'email'=>$this->request->data['email'],
@@ -306,6 +311,8 @@ class ProfileController extends AppController {
 								  'survey_daily_email'=>$this->request->data['daylyemail'],
 								  'survey_daily_sms'=>$this->request->data['daylysms'],
 								  'survey_has_play'=>$this->request->data['firstime'],
+								  'faveclub'=>Sanitize::clean($this->request->data['faveclub']),
+								  'birthdate'=>$birthdate,
 								  'n_status'=>1,
 								  'register_completed'=>0
 								  );
