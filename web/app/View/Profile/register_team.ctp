@@ -4,8 +4,8 @@
         <div id="content">
             <div class="content">
                 <div class="row-2">
-                    <h1 class="red">Pilih Tim Anda</h1>
-                    <p>Buat unik nama tim Anda dan jangan lupa pilih logo yang paling mewakili Anda.</p>
+                    <h1 class="red">Pilih Tim Fav</h1>
+                    <p>Pilih tim yang elo mau urus, kalo mau silahkan kasih nama yang unik sekalian, dan nantinya ganti logonya juga. Ingat, penggunaan logo yang kami anggap tidak layak untuk ditampilkan bisa membuat tim elo di diskualifikasi.</p>
                 </div><!-- end .row-2 -->
                 <div class="select-team">
                     <form class="theForm" action="<?=$this->Html->url('/profile/register_team')?>" method="post" enctype="multipart/form-data">

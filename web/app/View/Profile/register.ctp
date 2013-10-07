@@ -4,8 +4,8 @@
         <div id="content">
         	<div class="content">
             	<div class="row-2">
-                    <h1 class="red">Isi data lengkap Anda</h1>
-                    <p>Silakan isi semua data yang diperlukan sesuai identitas dan jawab beberapa pertanyaan yang ada. Pastikan semuanya diisi dengan benar untuk mendapatkan pengalaman terbaik dalam bermain Fantasy Football League!</p>
+                    <h1 class="red">Isi data lengkap</h1>
+                    <p>Sebelum menjadi manajer, kita perlu elo isi dulu data pribadi elo dengan lengkap. Semua ini akan membantu kita memberikan layanan permainan Football Manager yang maksimal. Email elo kita perlukan untuk interaksi dalam game, sedangkan nomor HP kita perlukan untuk menghubungi elo untuk pengiriman hadiah, dan lain lain.</p>
     			</div><!-- end .row-2 -->
                 <?php echo $this->Session->flash();?>
                 <form class="theForm" action="<?=$this->Html->url('/profile/register')?>" method="post" enctype="multipart/form-data">
