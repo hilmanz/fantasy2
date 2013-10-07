@@ -54,20 +54,7 @@
                 <?php endforeach;endif;?>
                 </tbody>
             </table>
-            <div class="row">
-                <p>Untuk memperlancar pembelian atau pencarian pemain performa tinggi, pekerjakanlah General Scount atau Chief Scout</p>
-                <div class="row">
-                    <div class="avatar-big fl">
-                        <img src="<?=$this->Html->url('/content/thumb/general_scout.jpg')?>"/>
-                    </div>
-                    <div class="avatar-big fl">
-                        <img src="<?=$this->Html->url('/content/thumb/chief_scout.jpg')?>"/>
-                    </div>
-                </div>
-                <div class="rowBtn">
-                    <a href="#" class="button">Rekrut Staff</a>
-                </div>
-            </div>
+            
         </div><!-- end .content -->
     </div><!-- end #thecontent -->
 </div><!-- end #leaderboardPage -->

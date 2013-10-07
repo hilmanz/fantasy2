@@ -688,34 +688,16 @@ $("#btnBuy").fancybox({
     </div>
     <div class="saving" style="display:none;">
         <h1>Pembelian Pemain sedang di proses</h1>
-        <h3>Untuk memperlancar pembelian atau pencarian pemain performa tinggi, pekerjakanlah General Scout atau Chief Scout</h3>
-        <div class="avatar-big">
-            <img src="<?=$this->Html->url('/content/thumb/general_scout.jpg')?>"/>
-        </div>
-        <div class="avatar-big">
-            <img src="<?=$this->Html->url('/content/thumb/chief_scout.jpg')?>"/>
-        </div>
+        
         <p><img src="<?=$this->Html->url('/css/fancybox/fancybox_loading@2x.gif')?>"/></p>
     </div>
     <div class="success" style="display:none;">
         <h1>Pembelian Berhasil</h1>
-        <h3>Untuk memperlancar pembelian atau pencarian pemain performa tinggi, pekerjakanlah General Scout atau Chief Scout</h3>
-        <div class="avatar-big">
-            <img src="<?=$this->Html->url('/content/thumb/general_scout.jpg')?>"/>
-        </div>
-        <div class="avatar-big">
-            <img src="<?=$this->Html->url('/content/thumb/chief_scout.jpg')?>"/>
-        </div>
+       
     </div>
     <div class="failure" style="display:none;">
         <h1>Pembelian Tidak Berhasil</h1>
         <h3>Silahkan coba kembali !</h3>
-        <h3>Untuk memperlancar pembelian atau pencarian pemain performa tinggi, pekerjakanlah General Scout atau Chief Scout</h3>
-        <div class="avatar-big">
-            <img src="<?=$this->Html->url('/content/thumb/general_scout.jpg')?>"/>
-        </div>
-        <div class="avatar-big">
-            <img src="<?=$this->Html->url('/content/thumb/chief_scout.jpg')?>"/>
-        </div>
+        
     </div>
 </script>

@@ -56,7 +56,7 @@ function isStaffExist($staff_token,$name){
                 <li><a href="#tabs-Info">Info</a></li>
                 <li><a href="#tabs-Money">Keuangan</a></li>
                 <li><a href="#tabs-Players">Pemain</a></li>
-                <li><a href="#tabs-Staff">Staff</a></li>
+                
               </ul>
               <div id="tabs-Info">
 
@@ -541,29 +541,7 @@ function isStaffExist($staff_token,$name){
                 </table>
                 </div><!-- end .player-list -->
               </div><!-- end #tabs-Squad -->
-              <div id="tabs-Staff">
-                    <div class="staff-list">
-                      <?php
-                                foreach($staffs as $official):
-                                  $img = str_replace(' ','_',strtolower($official['name'])).'.jpg';
-                          ?>
-                            <div class="thumbStaff">
-                                <div class="avatar-big">
-                                    <img src="<?=$this->Html->url('/content/thumb/'.$img)?>" />
-                                </div><!-- end .avatar-big -->
-                                <p><?=h($official['name'])?></p>
-                                <div>
-                                    ss$ <?=number_format($official['salary'])?> / minggu
-                                </div>
-                            </div><!-- end .thumbStaff -->
-                            <?php
-                                endforeach;
-                            ?>
-                    </div><!-- end .staff-list -->
-                     <div class="row">
-                        <a href="<?=$this->Html->url('/manage/hiring_staff')?>" class="button">Kelola Staff</a>
-                    </div>
-              </div><!-- end #tabs-Staff -->
+              
             </div><!-- end #clubtabs -->
 		</div>
 		
