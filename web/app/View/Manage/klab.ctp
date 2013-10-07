@@ -223,7 +223,7 @@ function isStaffExist($staff_token,$name){
 					</div><!-- end .col-content -->
 				</div><!-- end .row -->
 				<div class="mediumBanner">
-					<a href="<?=$long_banner[0]['Banners']['url']?>">
+					<a target="_blank" href="<?=$long_banner[0]['Banners']['url']?>">
 					  <img width="674" src="<?=$this->Html->url(Configure::read('avatar_web_url').$long_banner[0]['Banners']['banner_file'])?>" /></a>
 				</div><!-- end .mediumBanner -->
               </div><!-- end #Info -->
