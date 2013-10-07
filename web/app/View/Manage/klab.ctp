@@ -272,7 +272,7 @@ function isStaffExist($staff_token,$name){
                       </tr>
                       <tr>
                         <td>Tiket Terjual</td>
-                        <td>X <?=number_format(@$total_items['tickets_sold'])?></td>
+                        <td>x <?=number_format(@$total_items['tickets_sold'])?></td>
                         <td align="right">ss$ <?=number_format(@$finance['tickets_sold'])?></td>
                       </tr>
                       <tr>

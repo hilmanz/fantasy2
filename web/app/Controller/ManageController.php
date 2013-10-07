@@ -103,7 +103,7 @@ class ManageController extends AppController {
 		
 
 		//financial statements & cache it when necessary.  these are a hell of heavy queries.
-		$this->Session->write('FinancialStatement',null); //debug only.
+		//$this->Session->write('FinancialStatement',null); //debug only.
 		if(!is_array($this->Session->read('FinancialStatement'))){
 
 		
