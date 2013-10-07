@@ -230,6 +230,24 @@ class ProfileController extends AppController {
 			$this->redirect('/');
 		}	
 		$userData = $this->getUserData();
+
+		$user = $this->User->findByFb_id($userData['fb_id']);
+				
+		$this->User->id = $user['User']['id'];
+		$this->User->set('register_completed',1);
+		$rs = $this->User->save();
+
+		//set register_completed ==1 in session
+		$this->userData['register_completed'] = 1;
+		$this->Session->write('Userlogin.info',$this->userData);
+		if($rs){
+			$this->Session->write('first_time',true);
+			$this->redirect('/manage/team');
+		}else{
+			$this->redirect('/profile/error');
+		}
+				
+		/*
 		if($this->request->is('post')){
 			$this->loadModel('User');
 			if($this->request->data['complete_registration']==1){
@@ -279,6 +297,7 @@ class ProfileController extends AppController {
 			$this->set('officials',$officials);
 			$this->set('weekly_salaries',$total_weekly_salary);
 		}
+		*/
 	}
 	
 	public function register(){
