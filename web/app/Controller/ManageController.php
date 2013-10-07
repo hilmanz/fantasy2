@@ -76,6 +76,7 @@ class ManageController extends AppController {
 			$best_players = array();
 		}
 		$this->set('best_players',$best_players);
+		
 		//weekly salaries
 		$weekly_salaries = 0;
 		foreach($players as $p){

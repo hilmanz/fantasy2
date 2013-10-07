@@ -259,6 +259,7 @@ function getBudget(game_team_id,callback){
 		conn.query(sql,
 				[game_team_id,game_team_id],
 				function(err,rs){
+					console.log(this.sql);
 					conn.end(function(e){
 						callback(err,rs);	
 					});
