@@ -84,7 +84,7 @@ exports.done = function(){
 function get_master_team_stats(game_id,done){
 	pool.getConnection(function(err,conn){
 		conn.query("SELECT * FROM ffgame_stats.master_match_player_points\
-					WHERE game_id = ? LIMIT 30",
+					WHERE game_id = ? LIMIT 50",
 					[game_id],
 		function(err,rs){
 			if(err){console.log('lineupstats - ERROR - ',err.message);}
@@ -227,6 +227,7 @@ function getTeamLineups(team,done){
 	});	
 }
 function updateLineupStats(game_id,lineups,summary,player_stats,in_game,done){
+	console.log('player stats : ',player_stats);
 	pool.getConnection(function(err,conn){
 		async.eachSeries(lineups,
 						function(item,callback){
@@ -263,6 +264,7 @@ function updateLineupStats(game_id,lineups,summary,player_stats,in_game,done){
 										stats.points,
 										stats.performance ],
 									function(err,rs){
+										console.log(this.sql);
 										callback();	
 								});
 							}
