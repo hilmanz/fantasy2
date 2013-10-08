@@ -1996,20 +1996,24 @@ h3.tabtitle{
 	overflow:hidden;
 }
 .mediumBanner{
-	width:728px; height:90px;
-	padding:10px;
+	width:468px; height:60px;
+	padding:5px;
 	background:#000;
-	clear:both;
-	margin:20px auto;
+	margin:0 0 20px 0;
+	float:right;
 }
 .mediumBanner a{
 	display:block;
-	width:728px; height:90px;
+	width:468px; height:60px;
 	overflow:hidden;
 	text-align:center;
 }
 .mediumBanner a img{
 	width:100%;
+}
+.tabLeft{
+	margin:35px 0 0 0;
+	float:left;
 }
 #shorTable_length,.dataTables_filter,#shorTable2_length{
 	display:none;
@@ -2033,20 +2037,26 @@ table.dataTable{
 	margin:0 !important;
 }
 .dataTables_wrapper .pagination a{
-	background:url(../images/prev_btn.png) #000 no-repeat !important;
+	background:#000 no-repeat !important;
 	padding:0 !important;
 	display:block;
 	width:25px;
 	height:17px;
-	line-height:18px;
+	line-height:18px !important;
 	float:left;
+	font-size:12px !important;
 	color:#999;
-	text-indent:-5000px;
 	box-shadow:none  !important;
 	border:none  !important;
 }
+.dataTables_wrapper .pagination .prev a{
+	background:url(../images/prev_btn.png) #000 no-repeat right 0  !important;
+	text-indent:-5000px;
+	padding:0 50px 0 0;
+}
 .dataTables_wrapper .pagination .next a{
 	background:url(../images/next_btn.png) #000 no-repeat right 0  !important;
+	text-indent:-5000px;
 	padding:0 50px 0 0;
 }
 .dataTables_wrapper .pagination .prev:hover a{
