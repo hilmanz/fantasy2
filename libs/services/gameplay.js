@@ -462,7 +462,12 @@ exports.buy = function(req,res){
 		req.body.player_id,
 		function(err,result){
 			if(err){
-				handleError(res);
+				
+				if(err.message=='no money'){
+					res.send(200,{status:2,data:{player:{},stats:[]}});
+				}else{
+					handleError(res);	
+				}
 			}else{
 				if(result!=null){
 					res.send(200,{status:1,data:result,message:'the player has been successfully bought.'});

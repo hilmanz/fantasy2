@@ -38,6 +38,7 @@ function buy_player(player_id,option){
 	$('.confirm').hide();
 	$('.success').hide();
 	$('.failure').hide();
+	$('.nomoney').hide();
 	api_post(api_url+'game/buy',{player_id:player_id},
 			function(response){
 				$('.saving').hide();
@@ -48,6 +49,9 @@ function buy_player(player_id,option){
 							document.location = club_url;
 						},5000);
 					}
+				}else if(typeof response.status!=='undefined' && response.status == 2){
+					$('.nomoney').show();
+					
 				}else{
 					$('.failure').show();
 				}

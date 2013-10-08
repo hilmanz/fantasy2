@@ -1104,7 +1104,6 @@ function buy(game_team_id,player_id,done){
 						[game_team_id,player_id],
 						function(err,rs){
 							if(!err && rs[0]['total']==0){
-
 								callback(err,true);	
 							}else{
 								callback(err,false);

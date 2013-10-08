@@ -10,6 +10,7 @@ function profileLoaded(widget, data, id){
         });
 }
 _optaParams.callbacks = [profileLoaded];
+var my_club = "<?=h($club['team_name'])?>";
 var club_url = "<?=$this->Html->url('/market/team/'.$data['player']['original_team_id'])?>";
 <?php
 if(isset($data['daily_stats'])):
@@ -23,6 +24,7 @@ var daily_stats = {};
 
 </script>
 <?php
+
 //mapping statistics
 $games = array(
         'game_started'=>'game_started',
@@ -677,9 +679,9 @@ $("#btnBuy").fancybox({
       var team = team_id.replace('t','');
     %>
     <div class="confirm">
-        <h1>Apakah kamu ingin membeli pemain ini?</h1>
+        <h1>Beli Pemain</h1>
         <h3>Nilai Transfer : <?=number_format($transfer_value)?></h3>
-        <h3>Budget : <?=number_format($team_bugdet)?></h3>
+        <h3>Uang : <?=number_format($team_bugdet)?></h3>
         <opta widget="playerprofile" sport="football" competition="8" season="2013" team="<%=team%>" 
           player="<%=uid%>" show_image="true" show_nationality="true" opta_logo="false" 
           narrow_limit="400"></opta>
@@ -687,17 +689,25 @@ $("#btnBuy").fancybox({
             <a href="#" class="button" onclick="$.fancybox.close();return false;">BATAL</a></p>
     </div>
     <div class="saving" style="display:none;">
-        <h1>Pembelian Pemain sedang di proses</h1>
+        <h1>Sedang menghubungi klub dan agen <span class="yellow"><%=player_name%></span></h1>
         
         <p><img src="<?=$this->Html->url('/css/fancybox/fancybox_loading@2x.gif')?>"/></p>
     </div>
     <div class="success" style="display:none;">
-        <h1>Pembelian Berhasil</h1>
+        <h1>Selamat</h1>
+        <h3><%=player_name%> sudah menjadi pemain <span class="yellow"><%=my_club%></span>, semoga pembelian Anda akan membantu <span class="yellow"><%=my_club%></span> menjadi lebih sukses !</h3>
        
     </div>
     <div class="failure" style="display:none;">
         <h1>Pembelian Tidak Berhasil</h1>
         <h3>Silahkan coba kembali !</h3>
+        
+    </div>
+    <div class="nomoney" style="display:none;">
+        <h1>Halo?….</h1>
+        <h3>Dana Anda tidak mencukupi untuk melakukan pembelian ini. 
+            Sepertinya Anda harus lebih teliti sebelum mempermalukan wakil klub 
+            Anda yang dikirim bernegosiasi!</h3>
         
     </div>
 </script>
