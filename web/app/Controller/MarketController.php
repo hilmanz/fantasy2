@@ -56,8 +56,12 @@ class MarketController extends AppController {
 			$swap = false;
 			$p = $teams[$i-1];
 			$q = $teams[$i];
-			$q['stats']['goals'] = $q['stats']['goals'] || 0;
-			$q['stats']['conceded'] = $q['stats']['conceded'] || 0;
+			$p['stats']['goals'] = intval(@$p['stats']['goals']);
+			$p['stats']['conceded'] = intval(@$p['stats']['conceded']);
+
+			$q['stats']['goals'] = intval(@$q['stats']['goals']);
+			$q['stats']['conceded'] = intval(@$q['stats']['conceded']);
+
 			if($q['stats']['points_earned'] > $p['stats']['points_earned']){
 				$swap = true;
 			}else if($q['stats']['points_earned'] == $p['stats']['points_earned']){
