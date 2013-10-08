@@ -2,36 +2,29 @@
     <div id="thecontent">
         <div class="content">
         	<div class="titlePage">
-				<h1 class="red">Cara Bermain – Pendaftaran Manajer & Klab</h1>
-				<h4>Siap untuk menjadi manajer tim sepak bola kelas dunia dan berkompetisi di Fantasy Football League? Isi data lengkap, pilih tim, pemain, serta staff lalu atur formasi dan strategi untuk menjadi yang terbaik diantara manajer lain. Buktikan kemampuan Anda sebagai pengatur keuangan handal dan pengelola tim yang profesional!</h4>
+				<h1 class="red">Cara Bermain Super Soccer Football Manager</h1>
+				<h4>Pilih Klub yang elo mau jadikan juara. Jual beli pemain sesuai strategi elo, tapi jangan sampai elo gak bisa bayar gaji mereka.</h4>
+				<h4> Atur pemasukan dan pengeluaran keuangan Klub biar Klub kedatangan elo gak bangkrut</h4>
             </div>
-            <div class="row-3">
-				<iframe width="100%" height="400" src="//www.youtube.com/embed/EE_V-mSnH3M" frameborder="0" allowfullscreen></iframe>
+            <div class="rowd">
+					<h2 class="yellow">Kick off time</h2>
+					<h4>Performa pemain pilihan elo di dunia nyata menentukan perolehan poin elo di dunia maya</h4>
+					<h4>Pilihan elo bener turun ke lapangan <span class="yellow">+2 poin</span></h4>
+					<h4>Pilihan elo melakukan tackling <span class="yellow">+2 poin</span></h4>
+					<h4>Bikin umpan akurat di daerah lawan <span class="yellow">+1 poin</span></h4>
+					<h4>Nendang dengan akurat ke gawang <span class="yellow">+5 poin</span></h4>
+					<h4>Bikin gol dari luar kotak pinalti <span class="yellow">+50 poin</span></h4>
+					<h4>Kiper terbang nepis tendangan <span class="yellow">+10 poin</span></h4>
+					<h4>Dan banyak lagi...</h4>
+					<h4>Tapi kalo dia bikin salah poin elo pun berkurang</h4>
+					<h4>Bikin pelanggaran <span class="yellow">-1 poin</span></h4>
+					<h4>Kehilangan bola <span class="yellow">- 1 poin</span></h4>
+					<h4>Bikin kesalahan yg jadi peluang buat lawan <span class="yellow">- 10 poin</span></h4>
+					<h4>Kiper kebobolan <span class="yellow">-10 poin</span></h4>
+					<h4>Sign up segera dan bukti kan elo emang ngerti bola</h4><br/><br/>
+					<h1>Super Soccer Football Manager</h1>
+					<h1>Show What You know</h1>
             </div><!-- end .row-3 -->
-            <div class="row-3">
-                <h3 class="yellow">DAFTAR DENGAN AKUN FACEBOOK KAMU</h3>
-                <p>Untuk medaftarkan diri kamu sebagai manajer klab di liga Supersoccer Football Manager, kamu diharuskan memiliki akun Facebook karena account inilah yang kami gunakan untuk proses pendaftaran.</p>
-            </div><!-- end .row-3 -->
-            <div class="row-3">
-                <h3 class="yellow">ISI DATA LENGKAP ANDA</h3>
-                <p>Saatnya melengkapi data identitas Anda melalui form registrasi. Lengkapi pula kuesioner yang dirancang untuk menghadirkan pengalaman yang lebih personal bagi masing-masing manajer. Pastikan untuk mengisi semuanya dengan seksama.</p>
-            </div><!-- end .row-3 -->
-            <div class="row-3">
-                <h3 class="yellow">PILIH TIM</h3>
-                <p>Ciptakan nama klab paling keren dan telusuri deretan logo tim untuk memilih satu yang paling representatif. Siap untuk torehkan nama dalam sejarah kompetisi Fantasy Football League! </p>
-            </div><!-- end .row-3 -->
-            <div class="row-3">
-                <h3 class="yellow">PILIH PEMAIN</h3>
-                <p>Lihat jajaran pemain terpilih dan pastikan bahwa semuanya sesuai dengan tim yang Anda bentuk dan dapat mempertajam formasi yang akan Anda gunakan nantinya!</p>
-            </div><!-- end .row-3 -->
-            <div class="row-3">
-                <h3 class="yellow">PILIH STAFF</h3>
-                <p>Pilih dan rekrut staff dengan teliti dengan mempertimbangkan kebutuhan dan perhitungan pengeluaran. Pemilihan staff yang tepat dapat turut menentukan posisi Anda dalam kompetisi!</p>
-				<p>Kamu sukses terdaftar sebagai manajer di Supersoccer Football Manager!</p>
-            </div><!-- end .row-3 -->
-        	<div class="widget tr action-button">
-                <a class="button" href="#">Lanjut, cara mengatur klab</a>
-            </div><!-- end .widget -->
         </div><!-- end .content -->
     </div><!-- end #thecontent -->
 </div><!-- end #faqPage -->
