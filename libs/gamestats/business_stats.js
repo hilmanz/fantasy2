@@ -160,6 +160,7 @@ function calculateIncomeForAllAwayTeams(game_id,game,home_team,away_team,done){
 	
 }
 function processHomeTeams(start,limit,team_id,game_id,rank,away_rank,game,done){
+	
 	pool.getConnection(function(err,conn){
 		console.log('open connection');
 		conn.query("SELECT a.*,e.rank FROM ffgame.game_teams a\
@@ -322,8 +323,10 @@ function calculate_home_revenue_stats(team,game_id,game,rank,away_rank,done){
 						ticket_earnings = (attendance * stadium_earnings[quadrant].ratio[stadium_income_type]) *  stadium_earnings[quadrant].price[stadium_income_type];
 					}else{
 						console.log('head of security bonus not applied');
-						console.log('(',attendance,' x ',stadium_earnings[quadrant].ratio[stadium_income_type],') x',stadium_earnings[quadrant].price[stadium_income_type],' x 80% [income reduced by 20%]');
-						ticket_earnings = (attendance * stadium_earnings[quadrant].ratio[stadium_income_type]) *  stadium_earnings[quadrant].price[stadium_income_type] * 0.8;
+						//sementara di skip dulu penalty securitynya.
+						//console.log('(',attendance,' x ',stadium_earnings[quadrant].ratio[stadium_income_type],') x',stadium_earnings[quadrant].price[stadium_income_type],' x 80% [income reduced by 20%]');
+						//ticket_earnings = (attendance * stadium_earnings[quadrant].ratio[stadium_income_type]) *  stadium_earnings[quadrant].price[stadium_income_type] * 0.8;
+						ticket_earnings = (attendance * stadium_earnings[quadrant].ratio[stadium_income_type]) *  stadium_earnings[quadrant].price[stadium_income_type];
 						
 					}
 					earnings.push({name:'tickets_sold',value:ticket_earnings,total:final_attendance});
