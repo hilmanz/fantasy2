@@ -42,7 +42,8 @@ if(isset($results)):
 				<option value="FRONTPAGE">Frontpage Landing (740x350 pixels)</option>
 				<option value="MY_CLUB_LONG">Klub Saya (bottom-right) (674x100 pixels)</option>
 				<option value="TEAM_SMALL">Mengelola Tim (bottom-left) (270x100 pixels)</option>
-				<option value="FRONTPAGE_SMALL">Frontpage (bottom-right) (300x175 pixels)</option>
+				<option value="FRONTPAGE_SMALL_MIDDLE">Frontpage (bottom-middle) (379x193 pixels)</option>
+				<option value="FRONTPAGE_SMALL_RIGHT">Frontpage (bottom-right) (300x175 pixels)</option>
 			</select>
 		</td>
 	</tr>

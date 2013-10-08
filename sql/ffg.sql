@@ -142,3 +142,6 @@ CREATE TABLE ffg.notifications (
   `dt` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `ffg`.`users`     ADD COLUMN `faveclub` VARCHAR(64) NULL AFTER `first_time`,     ADD COLUMN `birthdate` DATE NULL AFTER `faveclub`;

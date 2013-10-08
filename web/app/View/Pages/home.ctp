@@ -9,7 +9,7 @@
               ?>
 	            <li class="theSlide">
 	                <div class="imgSlide">
-	                    <a href="<?=$this->Html->url($banner['Banners']['url'])?>">
+	                    <a href="<?=$this->Html->url($banner['Banners']['url'])?>" target="_blank">
                         <img src="<?=$this->Html->url(Configure::read('avatar_web_url').$banner['Banners']['banner_file'])?>" border="0"/>
                       </a>
 	                </div>
@@ -32,7 +32,7 @@
         </div><!-- end .box -->
 		<div class="bannerBox">
 
-				<a href="<?=$small_banner[0]['Banners']['url']?>"><img src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner[0]['Banners']['banner_file'])?>" /></a>
+				<a href="<?=$small_banner_1[0]['Banners']['url']?>" target="_blank"><img src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner_1[0]['Banners']['banner_file'])?>" /></a>
 		</div>
     </div><!-- end #listBox -->
 </div><!-- end #content -->
@@ -49,7 +49,7 @@
         </div><!-- end .entry -->
     </div>
         <div class="bannerBox">
-	                    <a href="<?=$small_banner[1]['Banners']['url']?>"><img src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner[0]['Banners']['banner_file'])?>" /></a>
+	                    <a href="<?=$small_banner_2[0]['Banners']['url']?>" target="_blank"><img src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner_2[0]['Banners']['banner_file'])?>" /></a>
         </div>
 </div><!-- end #sidebar -->
 
@@ -85,14 +85,14 @@
 function fb_login(){
 	FB.login(function(response) {
 	   if (response.authResponse) {
-	     console.log('Welcome!  Fetching your information.... ');
+	    
 	     FB.api('/me', function(response) {
 	       console.log('Good to see you, ' + response.name + '.');
            window.location = window.location;
 	       document.location = "<?=$FB_AFTER_LOGIN_URL?>";
 	     });
 	   } else {
-	     console.log('User cancelled login or did not fully authorize.');
+	     
 	       document.location = "<?=$FB_AFTER_LOGIN_URL?>";
 	   }
 	 },{scope: 'email,user_location,user_birthday'});

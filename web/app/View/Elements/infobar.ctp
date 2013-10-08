@@ -26,7 +26,7 @@ if(date_default_timezone_get()=='Asia/Jakarta'){
     $match_date_ts += 6*60*60;
 }
 ?>
-var match_date_ts = <?=$match_date_ts-(4*60*60)?>;
+var match_date_ts = <?=$close_time['ts']?>;
 function countdown(){
 	var date = new Date();
 	var td = date.getTime();

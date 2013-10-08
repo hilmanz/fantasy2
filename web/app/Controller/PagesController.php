@@ -85,14 +85,16 @@ class PagesController extends AppController {
 		//-->
 		
 		//Banner nih
+		
 		$banners = $this->getBanners('FRONTPAGE',10);
 		$this->set('banners',$banners);
-		$small_banners = $this->getBanners('FRONTPAGE_SMALL',2,true);
-		if(sizeof($small_banners)==1){
-			$small_banners[1] = $small_banners[0];
-		}
 		
-		$this->set('small_banner',$small_banners);
+		$small_banners = $this->getBanners('FRONTPAGE_SMALL_MIDDLE',10,true);
+		$this->set('small_banner_1',$small_banners);
+
+		$small_banners = $this->getBanners('FRONTPAGE_SMALL_RIGHT',10,true);
+		$this->set('small_banner_2',$small_banners);
+
 		//-->
 
 		if($path[0]=='home'&&$this->userDetail['Team']['id']>0){

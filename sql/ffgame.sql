@@ -650,3 +650,6 @@ CREATE TABLE ffgame.master_standings (
 
 ALTER TABLE `ffgame`.`game_fixtures` DROP KEY `IDX_TEAM_PERIOD`, ADD INDEX `IDX_TEAM_PERIOD` (`home_id`, `away_id`, `period`, `matchday`);
 ALTER TABLE `ffgame`.`game_team_expenditures` ADD INDEX `IDX_GAME_WEEK` (`game_team_id`, `match_day`);
+
+ALTER TABLE `ffgame`.`game_team_expenditures`     ADD COLUMN `item_total` INT(11) DEFAULT '1' NULL AFTER `match_day`;
+ALTER TABLE `ffgame`.`game_team_expenditures`     ADD COLUMN `base_price` INT(11) DEFAULT '1' NULL AFTER `item_total`;

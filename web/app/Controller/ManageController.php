@@ -24,6 +24,7 @@ class ManageController extends AppController {
 	private $weekly_balances = null;
 	private $expenditures = null;
 	private $starting_budget = 0;
+	private $finance_total_items_raw = null;
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->loadModel('Team');
@@ -76,6 +77,7 @@ class ManageController extends AppController {
 			$best_players = array();
 		}
 		$this->set('best_players',$best_players);
+		
 		//weekly salaries
 		$weekly_salaries = 0;
 		foreach($players as $p){
@@ -101,12 +103,13 @@ class ManageController extends AppController {
 		
 
 		//financial statements & cache it when necessary.  these are a hell of heavy queries.
+		//$this->Session->write('FinancialStatement',null); //debug only.
 		if(!is_array($this->Session->read('FinancialStatement'))){
 
 		
 			$financial_statement['finance'] = $this->getFinancialStatements($userData['fb_id']);
 			$financial_statement['weekly_balances'] = $this->weekly_balances;
-			
+			$financial_statement['total_items'] = $this->finance_total_items_raw;
 			//last earnings
 			$rs = $this->Game->getLastEarnings($userData['team']['id']);
 			if($rs['status']==1){
@@ -130,17 +133,27 @@ class ManageController extends AppController {
 
 		$financial_statement = $this->Session->read('FinancialStatement');
 		
-		
+		$weeks = array();
+		if(sizeof($financial_statement['weekly_balances'])>0){
+			foreach($financial_statement['weekly_balances'] as $fs){
+				$weeks[] = $fs['week'];
+			}
+		}
+		$this->set('weeks',$weeks);
 		//filter finance by week
 		$week = intval(@$this->request->query['week']);
 		if($week > 0){
 			$this->set('active_tab',1);
 			$weekly_finance = $this->Game->weekly_finance($userData['fb_id'],$week);
 			$weekly_statement = $this->getWeeklyFinancialStatement($weekly_finance);
-			
-			$this->set('finance',$weekly_statement);
+			$this->set('finance',$weekly_statement['transaction']);
+			$this->set('total_items',$weekly_statement['total_items']);
 		}else{
+			if(isset($this->request->query['week'])){
+				$this->set('active_tab',1);
+			}
 			$this->set('finance',$financial_statement['finance']);
+			$this->set('total_items',$financial_statement['total_items']);
 		}
 
 		$rooster = intval(@$this->request->query['rooster']);
@@ -153,6 +166,7 @@ class ManageController extends AppController {
 		$this->set('weekly_balances',$financial_statement['weekly_balances']);
 		$this->set('last_earning',$financial_statement['last_earning']);
 		$this->set('last_expenses',$financial_statement['last_expenses']);
+		
 		//--> 
 
 		//weekly points and weekly ranks
@@ -207,11 +221,13 @@ class ManageController extends AppController {
 	}
 	private function getWeeklyFinancialStatement($weekly_finance){
 		$weekly_statement = array();
-
+		$total_items = array();
 		while(sizeof($weekly_finance['transactions'])>0){
 			$p = array_shift($weekly_finance['transactions']);
 			$weekly_statement[$p['item_name']] = $p['amount'];
+			$total_items[$p['item_name']] = $p['item_total'];
 		}
+
 		$weekly_statement['total_earnings'] = intval(@$weekly_statement['tickets_sold'])+
 									intval(@$weekly_statement['commercial_director_bonus'])+
 									intval(@$weekly_statement['marketing_manager_bonus'])+
@@ -219,7 +235,7 @@ class ManageController extends AppController {
 									intval(@$weekly_statement['win_bonus'])+
 									intval(@$weekly_statement['player_sold'])
 									;
-		return $weekly_statement;
+		return array('transaction'=>$weekly_statement,'total_items'=>$total_items);
 	}
 	private function getMatches($arr,$expenditures){
 		
@@ -288,9 +304,10 @@ class ManageController extends AppController {
 
 			$report = array('total_matches' => $finance['data']['total_matches'],
 							'budget' => $finance['data']['budget']);
-
+			$total_items = array();
 			foreach($finance['data']['report'] as $n=>$v){
 				$report[$v['item_name']] = $v['total'];
+				$total_items[$v['item_name']] = $v['item_total'];
 			}
 			$report['total_earnings'] = intval(@$report['tickets_sold'])+
 										intval(@$report['commercial_director_bonus'])+
@@ -299,6 +316,7 @@ class ManageController extends AppController {
 										intval(@$report['win_bonus'])+
 										intval(@$report['player_sold'])
 										;
+			$this->finance_total_items_raw = $total_items;
 			return $report;
 		}
 	}

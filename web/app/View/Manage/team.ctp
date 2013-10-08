@@ -1,10 +1,7 @@
 <?php
 $can_update_formation = true;
 
-if(date_default_timezone_get()=='Asia/Jakarta'){
-    $match_date_ts += 6*60*60;
-}
-if(time() > $match_date_ts-(4*60*60) && Configure::read('debug') == 0){
+if(time() > $close_time['ts'] && Configure::read('debug') == 0){
     $can_update_formation = false;
 }
 if(isset($first_time) && $first_time==true):
@@ -106,7 +103,7 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
                     <a href="#" class="download-appstore">&nbsp;</a>
             </div><!-- end .widget -->
             <div class="smallBanner">
-				<a href="<?=$small_banner[0]['Banners']['url']?>"><img width="270" src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner[0]['Banners']['banner_file'])?>" /></a>
+				<a href="<?=$small_banner[0]['Banners']['url']?>" target="_blank"><img width="270" src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner[0]['Banners']['banner_file'])?>" /></a>
             </div><!-- end .smallBanner -->
            
         </div><!-- end .box4 -->
@@ -602,10 +599,10 @@ $(document).ready(function(){
 
 <script type="text/template" id="tplsave">
     <div class="confirm">
-        <h1>Konfirmasi</h1>
-        <h3>Apakah Anda yakin ingin menyimpan formasi pemain yang baru?</h3>
-        <p><a href="#/save_formation" class="button">Ya</a>
-            <a href="#" class="button" onclick="$.fancybox.close();return false;">Batal</a></p>
+        <h1>KONFIRMASI</h1>
+        <h3>ANDA YAKIN INGIN MEMASANG LINE-UP INI Di PERTANDINGAN ?</h3>
+        <p><a href="#/save_formation" class="button">YAKIN</a>
+            <a href="#" class="button" onclick="$.fancybox.close();return false;">BELUM YAKIN</a></p>
     </div>
     <div class="saving" style="display:none;">
         <h1>Menyimpan formasi pemain</h1>

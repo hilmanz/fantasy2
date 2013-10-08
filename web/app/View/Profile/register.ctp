@@ -19,6 +19,29 @@
                         <input type="text" name="email" value="<?=h(@$user['email'])?>"/>
                     </div><!-- end .row -->
                     <div class="row">
+                        <label>Tanggal Lahir</label>
+                        <select name="bod_dt">
+                            <option value="0">Tanggal</option>
+                            <?php for($d=1 ; $d<32; $d++):?>
+                                <option value="<?=$d?>"><?=$d?></option>
+                            <?php endfor;?> 
+                        </select>
+                        -
+                         <select name="bod_mt">
+                            <option value="0">Bulan</option>
+                            <?php for($d=1 ; $d<13; $d++):?>
+                                <option value="<?=$d?>"><?=$d?></option>
+                            <?php endfor;?> 
+                        </select>
+                        -
+                         <select name="bod_yr">
+                            <option value="0">Tahun</option>
+                            <?php for($d=1930 ; $d<(date("Y")); $d++):?>
+                                <option value="<?=$d?>"><?=$d?></option>
+                            <?php endfor;?> 
+                        </select>
+                    </div><!-- end .row -->
+                    <div class="row">
                         <label>Lokasi</label>
                         <input type="text" name="city" value="<?=h(@$user['location']['name'])?>"/>
                     </div><!-- end .row -->
@@ -30,7 +53,7 @@
                         <?php endif;?>
                     </div><!-- end .row -->
                     <div class="row inputRadio">
-                        <label>Dari mana Anda tahu tentang FFL?</label>
+                        <label>Dari mana elo tau tentang Super Soccer Football Manager?</label>
                         <input type="radio" class="styled" name="hearffl" checked="checked" value="1"/><span>Supersoccer</span>
                         <input type="radio" class="styled" name="hearffl" value="2"/><span>TV</span>
                         <input type="radio" class="styled" name="hearffl" value="3"/><span>Radio</span>
@@ -38,19 +61,13 @@
                         <input type="radio" class="styled" name="hearffl" value="5"/><span>Twitter</span>
                     </div><!-- end .row -->
                     <div class="row inputRadio">
-                        <label>Apakah Anda ingin menerima statistik harian melalui email?</label>
-                        <input type="radio" class="styled" name="daylyemail" checked="checked" value="1"/><span>Ya</span>
-                        <input type="radio" class="styled" name="daylyemail" value="0"/><span>Tidak</span>
-                    </div><!-- end .row -->
-                    <div class="row inputRadio">
-                        <label>Apakah Anda ingin menerima statistik harian melalui SMS*?</label>
-                        <input type="radio" class="styled" name="daylysms" checked="checked" value="1"/><span>Ya</span>
-                        <input type="radio" class="styled" name="daylysms" value="0"/><span>Tidak</span>
-                    </div><!-- end .row -->
-                    <div class="row inputRadio">
-                        <label>Apakah ini pertama kalinya Anda bermain game liga fantasi?</label>
+                        <label>Apakah ini permainan Liga fantasi pertama elo?</label>
                         <input type="radio" class="styled" name="firstime" checked="checked" value="1"/><span>Ya</span>
                         <input type="radio" class="styled" name="firstime" value="0"/><span>Tidak</span>
+                    </div><!-- end .row -->
+                    <div class="row">
+                        <label>Sebutkan klub favorit elo</label>
+                        <input type="text" name="faveclub" value=""/>
                     </div><!-- end .row -->
                     <div class="row">
                         <input type="hidden" name="save" value="1"/>

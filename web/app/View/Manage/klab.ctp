@@ -17,6 +17,15 @@ $total_expenses+= intval(@$finance['accountant']);
 $total_expenses+= intval(@$finance['buy_player']);
 
 
+
+$first_week = $weekly_balances[0];
+$previous_balances = array();
+for($i=1;$i<$first_week['week'];$i++){
+  $previous_balances[] = array('week'=>$i,
+                              'balance'=>intval(@$starting_budget));
+}
+$weekly_balances = array_merge($previous_balances,$weekly_balances);
+
 if($week<=1){
   $starting_balance = intval(@$starting_budget);
 }else{
@@ -47,7 +56,7 @@ function isStaffExist($staff_token,$name){
                 <li><a href="#tabs-Info">Info</a></li>
                 <li><a href="#tabs-Money">Keuangan</a></li>
                 <li><a href="#tabs-Players">Pemain</a></li>
-                <li><a href="#tabs-Staff">Staff</a></li>
+                
               </ul>
               <div id="tabs-Info">
 
@@ -223,7 +232,7 @@ function isStaffExist($staff_token,$name){
 					</div><!-- end .col-content -->
 				</div><!-- end .row -->
 				<div class="mediumBanner">
-					<a href="<?=$long_banner[0]['Banners']['url']?>">
+					<a target="_blank" href="<?=$long_banner[0]['Banners']['url']?>">
 					  <img width="674" src="<?=$this->Html->url(Configure::read('avatar_web_url').$long_banner[0]['Banners']['banner_file'])?>" /></a>
 				</div><!-- end .mediumBanner -->
               </div><!-- end #Info -->
@@ -238,17 +247,16 @@ function isStaffExist($staff_token,$name){
                           }
                         ?>
                         <option value='0' <?=$default_week?>>Keseluruhan</option>
-                        <?php
-                          $total_matches = intval($total_matches);
-                        ?>
-                        <?php for($i=0;$i<$total_matches;$i++):?>
+                       
+                        <?php 
+                            for($i=0;$i<sizeof($weeks);$i++):?>
                           <?php
                             $selected = "";
-                            if($week==($i+1)){
+                            if($week==($weeks[$i])){
                               $selected = "selected='selected'";
                             }
                           ?>
-                          <option value='<?=($i+1)?>' <?=$selected?>>Minggu <?=($i+1)?></option>
+                          <option value='<?=($weeks[$i])?>' <?=$selected?>>Minggu <?=($weeks[$i])?></option>
                         <?php endfor;?>
                       </select>
                     </div>
@@ -259,14 +267,22 @@ function isStaffExist($staff_token,$name){
                       </tr>
                       <tr>
                         <td>Tiket</td>
-                        <td>Pertandingan</td>
+                        <td></td>
                         <td class="alignright">Total Perolehan</td>
                       </tr>
+                      <?php if(@$finance['tickets_sold']>0):?>
                       <tr>
                         <td>Tiket Terjual</td>
-                        <td><?=@$finance['total_matches']?></td>
+                        <td>ss$<?=round($finance['tickets_sold']/$total_items['tickets_sold'],2)?> x <?=number_format(@$total_items['tickets_sold'])?></td>
                         <td align="right">ss$ <?=number_format(@$finance['tickets_sold'])?></td>
                       </tr>
+                      <?php else:?>
+                      <tr>
+                        <td>Tiket Terjual</td>
+                        <td>-</td>
+                        <td align="right">ss$ <?=number_format(@$finance['tickets_sold'])?></td>
+                      </tr>
+                      <?php endif;?>
                       <tr>
                         <td>Pemasukan Tambahan</td>
                         <td>&nbsp;</td>
@@ -316,11 +332,13 @@ function isStaffExist($staff_token,$name){
                       <?php
                       endif;
                       ?>
+                      <?php if(isset($finance['win_bonus'])):?>
                       <tr>
                         <td>Bonus</td>
                         <td>Kemenangan</td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['win_bonus']))?></td>
                       </tr>
+                      <?php endif;?>
                       <tr class="head">
                         <td colspan="2">Total Perolehan</td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['total_earnings']))?></td>
@@ -533,29 +551,7 @@ function isStaffExist($staff_token,$name){
                 </table>
                 </div><!-- end .player-list -->
               </div><!-- end #tabs-Squad -->
-              <div id="tabs-Staff">
-                    <div class="staff-list">
-                      <?php
-                                foreach($staffs as $official):
-                                  $img = str_replace(' ','_',strtolower($official['name'])).'.jpg';
-                          ?>
-                            <div class="thumbStaff">
-                                <div class="avatar-big">
-                                    <img src="<?=$this->Html->url('/content/thumb/'.$img)?>" />
-                                </div><!-- end .avatar-big -->
-                                <p><?=h($official['name'])?></p>
-                                <div>
-                                    ss$ <?=number_format($official['salary'])?> / minggu
-                                </div>
-                            </div><!-- end .thumbStaff -->
-                            <?php
-                                endforeach;
-                            ?>
-                    </div><!-- end .staff-list -->
-                     <div class="row">
-                        <a href="<?=$this->Html->url('/manage/hiring_staff')?>" class="button">Kelola Staff</a>
-                    </div>
-              </div><!-- end #tabs-Staff -->
+              
             </div><!-- end #clubtabs -->
 		</div>
 		
