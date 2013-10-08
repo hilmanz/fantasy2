@@ -133,6 +133,7 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
                 <?php if($can_update_formation):?>
                 <a id="btn_save" class="showPopup button" href="#popup-messages">SIMPAN LINE-UP</a>
                 <?php endif;?>
+				<a id="btn_inbox" href="#popup-notifications">&nbsp;</a>
                 </div>
                 <div id="droppable" class="field-formation">
                 	<div class="instrution"><h3>PILIH 11 STARTER & 5 PEMAIN CADANGAN</h3></div>

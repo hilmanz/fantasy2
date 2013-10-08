@@ -795,6 +795,13 @@ a.download-appstore{
 select.styled{
 	 top:5px;
 }
+.selectFormation .select{
+	width:90px;
+	border-radius:5px;
+}
+.selectFormation select.styled{
+	width:120px;
+}
 .rows{
 	clear:both;
 	overflow:hidden;
@@ -2054,4 +2061,33 @@ table.dataTable{
 }
 .dataTables_info{
 	font-size:12px !important; 
+}
+.boxMessages{
+	text-align:center;
+}
+#flashMessage{
+	margin:0 0 20px 0;
+	background:#fff;
+	border-radius:10px;
+	border:none;
+	font-size:20px;
+	color:#333;
+}
+#btn_inbox{
+	display:block;
+	padding:0 5px 0 35px;
+	height:20px;
+	background:url(../images/icon_mail.png) no-repeat;
+	float:right;
+	margin:7px 0 0;
+	color:#fff;
+	line-height:22px;
+	opacity:0.7;
+}
+#btn_inbox:hover{
+	opacity:1;
+	text-decoration:none;
+}
+#btn_save{
+	line-height:28px;
 }
