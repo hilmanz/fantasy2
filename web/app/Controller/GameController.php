@@ -110,7 +110,11 @@ class GameController extends AppController {
 		$this->loadModel('Team');
 		$this->loadModel('User');
 		$this->loadModel('Notification');
-		$notifications = $this->Notification->find('all',array('order'=>array("Notification.id" => "DESC"),
+		
+		$game_team_id = $this->userData['team']['id'];
+		$notifications = $this->Notification->find('all',array(
+											  'conditions'=>array('Notification.game_team_id'=>array(0, $game_team_id)),
+											  'order'=>array("Notification.id" => "DESC"),
 											  'limit 25'));
 		$messages = array();
 		$new_messages = 0;

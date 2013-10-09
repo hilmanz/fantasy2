@@ -139,9 +139,248 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 	pool.getConnection(function(err,conn){
 		async.eachSeries(team,
 						function(item,callback){
-							update_individual_team_stats(game_id,item,summary,player_stats,function(err){
-								callback();	
-							});
+							async.waterfall([
+									function(next){
+										update_individual_team_stats(game_id,item,summary,player_stats,
+											function(err){
+											next(err);	
+										});
+									},
+									function(next){
+										console.log('Lets process the extra points if the week has ended....')
+										//check the game's matchday
+										conn.query("SELECT matchday \
+													FROM ffgame.game_fixtures \
+													WHERE game_id=? \
+													LIMIT 1",[game_id],
+													function(err,r){
+														console.log('-----',this.sql,'---');
+														var matchday = 0;
+														if(!err){
+															matchday = r[0].matchday;
+														}
+														next(err,matchday);
+													});
+										
+									},
+									function(matchday,next){
+										//check if the week has lasted.
+										conn.query("SELECT COUNT(*) AS total \
+													FROM ffgame.game_fixtures \
+													WHERE period = 'FullTime' \
+													AND matchday = ? \
+													AND is_processed=1",[matchday],
+													function(err,r){
+														console.log('-----',this.sql,'---');
+														var is_finished = false;
+														if(!err){
+															if(r[0].total==10){
+																is_finished = true;
+															}
+														}
+														next(err,matchday,is_finished);
+													});
+									},
+									function(matchday,is_finished,next){
+										console.log('matchday : ',matchday,'is finished : ',is_finished);
+										console.log('is all player started ?');
+										var is_all_player_started = false;
+
+										if(is_finished){
+											async.waterfall([
+													function(cb){
+														conn.query("SELECT game_id \
+																	FROM ffgame.game_fixtures \
+																	WHERE (home_id =? OR away_id=?) \
+																	AND matchday = ?;",
+																	[item.team_id,item.team_id,matchday],
+																	function(err,r){	
+																		console.log('--> we need the exact game_id',
+																					this.sql);
+																		var the_game_id = '';
+																		if(!err){
+																			try{
+																				the_game_id = r[0].game_id;
+																			}catch(e){
+																				the_game_id = '';
+																			}
+																			
+																		}
+																		cb(err,the_game_id);
+																	});
+													}
+												],
+												function(err,the_game_id){
+													//check if all lineup is played in real game.
+													conn.query("SELECT * FROM \
+														ffgame.game_team_lineups_history a\
+														INNER JOIN\
+														ffgame_stats.master_player_stats b\
+														ON a.player_id = b.player_id\
+														INNER JOIN ffgame.game_fixtures c\
+														ON b.game_id = c.game_id\
+														WHERE a.game_team_id=? AND a.game_id = ?\
+														AND b.stats_name = 'game_started'\
+														AND c.matchday = ?\
+														AND a.position_no < 12;",[
+															item.id,the_game_id,matchday
+														],
+														function(err,r){
+															console.log('-----',this.sql,'---');
+															if(!err){
+																if(r.length==11){
+																	is_all_player_started = true;
+																}
+															}
+															next(err,the_game_id,matchday,is_finished,is_all_player_started);
+
+													});
+												}
+											);
+											
+										}else{
+											next(err,'',matchday,is_finished,is_all_player_started);
+										}
+									},
+									function(the_game_id,matchday,is_finished,is_all_player_started,next){
+										console.log('is budget below zero ?');
+										var is_team_budget_below_zero = false;
+										if(is_finished){
+											conn.query("SELECT SUM(budget+expenses) AS balance\
+														FROM (\
+															SELECT budget,0 AS expenses \
+															FROM ffgame.game_team_purse \
+															WHERE game_team_id=?\
+														UNION ALL\
+															SELECT 0,SUM(amount) AS total \
+															FROM ffgame.game_team_expenditures \
+															WHERE match_day <= ? AND game_team_id=?\
+														) a;",
+												[item.id,matchday,item.id],
+												function(err,r){
+												console.log('-----',this.sql,'---');
+												var balance = 0;
+												if(!err){
+													balance = r[0].balance;
+													if(r[0].balance < 0){
+														is_team_budget_below_zero = true;
+													}
+												}
+												next(err,
+													the_game_id,
+													matchday,
+													is_finished,is_all_player_started,
+													is_team_budget_below_zero,
+													balance);
+											});
+										}else{
+											next(err,
+													the_game_id,
+													matchday,
+													is_finished,is_all_player_started,
+													is_team_budget_below_zero,
+													0);
+										}
+									},
+									function(the_game_id,matchday,is_finished,is_all_player_started,
+											is_team_budget_below_zero,balance,next){
+										console.log('wrapping up buddy !');
+										if(is_finished){
+											async.waterfall([
+												function(cb){
+													if(is_all_player_started){
+														conn.query("INSERT INTO \
+																	ffgame_stats.game_team_extra_points\
+																	(game_id,matchday,game_team_id,\
+																		modifier_name,extra_points)\
+																	VALUES\
+																	(?,?,?,?,?)\
+																	ON DUPLICATE KEY UPDATE\
+																	extra_points = VALUES(extra_points);",
+																	[
+																		the_game_id,
+																		matchday,
+																		item.id,
+																		'ALL_LINEUP_IS_PLAYED_BONUS',
+																		20
+																	],function(err,r){
+																		console.log('-----',this.sql,'---');
+																		cb(err);
+																	});
+													}else{
+														cb(err);
+													}
+												},
+												function(cb){
+													if(is_team_budget_below_zero){
+														var penalty = Math.floor(balance/100000) * 100;
+														console.log('PENALTY : ',penalty);
+														conn.query("INSERT INTO \
+																	ffgame_stats.game_team_extra_points\
+																	(game_id,matchday,game_team_id,\
+																		modifier_name,extra_points)\
+																	VALUES\
+																	(?,?,?,?,?)\
+																	ON DUPLICATE KEY UPDATE\
+																	extra_points = VALUES(extra_points);",
+																	[
+																		the_game_id,
+																		matchday,
+																		item.id,
+																		'BALANCE_IS_BELOW_ZERO',
+																		penalty
+																	],function(err,r){
+																		console.log('-----',this.sql,'---');
+																		cb(err,true);
+																	});
+													}else{
+														cb(err,true);
+													}
+												},
+												function(all_ok,cb){
+													//send notification that the player has recieved the extra points
+													if(is_all_player_started){
+														msg = "Selamat, anda baru saja mendapatkan bonus poin sebesar 20 dipertandingan lalu.";
+														conn.query("INSERT INTO "+config.database.frontend_schema+".notifications\
+																	(content,url,dt,game_team_id)\
+																	VALUES\
+																	(?,'#',NOW(),?)",[msg,item.id],function(err,rs){
+																		console.log('---',this.sql,'----');
+																		cb(err,true);
+															});
+													}else{
+														cb(null,true);
+													}
+												},
+												function(all_ok,cb){
+													//send notification that the player has recieved the extra points
+													if(is_team_budget_below_zero){
+														var penalty = Math.floor(balance/100000) * 100;
+														msg = "Kamu mendapatkan potongan poin sebesar "+penalty+" karena keuangan kamu negatif";
+														conn.query("INSERT INTO "+config.database.frontend_schema+".notifications\
+																	(content,url,dt,game_team_id)\
+																	VALUES\
+																	(?,'#',NOW(),?)",[msg,item.id],function(err,rs){
+																		console.log('---',this.sql,'----');
+																		cb(err,true);
+															});
+													}else{
+														cb(null,true);
+													}
+												}
+
+											],function(err,endOfProcess){
+												next(err,endOfProcess);
+											});
+										}else{
+											next(err,true);
+										}
+									}
+								],
+								function(err,wf_result){
+									callback();
+								});
+							
 						},
 			function(err){
 				conn.end(function(err){
@@ -159,6 +398,8 @@ function update_individual_team_stats(game_id,team,summary,player_stats,done){
 			[
 				function(callback){
 					//step 1 - get team lineups
+					//@TODO perlu dipikirkan apakah kita perlu narik lineup dari lineup history ?
+
 					getTeamLineups(team,function(err,lineups){
 						callback(null,lineups);
 					});
@@ -179,7 +420,11 @@ function update_individual_team_stats(game_id,team,summary,player_stats,done){
 					//final steps, add entry on lineup_history
 					console.log(team,'vs',summary);
 					if(typeof summary[team.team_id]!=='undefined'){
-						console.log('track the lineup history for #',team.team_id);
+						console.log('track the lineup history for #',team.id);
+
+						//@TODO : ini nanti kayaknya harus dieksekusi sebelum step 2.
+						//agar jika kita sedang me regen data,  lineup yg dipakai adalah lineup dari history.
+						//bukan lineup actual.
 						addToHistory(game_id,team,function(err){
 							callback(err,rs);	
 						});
@@ -204,6 +449,7 @@ function addToHistory(game_id,team,done){
 					SELECT ? AS game_id,game_team_id,player_id,position_no,NOW() AS last_update\
 					FROM ffgame.game_team_lineups WHERE game_team_id=?;",[game_id,team.id],
 					function(err,rs){
+						console.log('update lineup history ',this.sql);
 						conn.end(function(err){
 							done(err);
 						});

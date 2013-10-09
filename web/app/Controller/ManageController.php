@@ -195,7 +195,7 @@ class ManageController extends AppController {
 		}
 		unset($weekly_points);
 		$this->set('weekly_points',$weekly_team_points);
-
+		
 		//matches
 		$matches = $this->getMatches($weekly_team_points,$financial_statement['expenditures']);
 		$this->set('matches',$matches);

@@ -15,4 +15,5 @@ exports.config = {
 		port:6379
 	},
 	environment: 'development' //change to production when go live.
+	
 };

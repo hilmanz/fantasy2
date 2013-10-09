@@ -1,20 +1,22 @@
-DROP PROCEDURE IF EXISTS recalculate_rank;
-DELIMITER // 
-CREATE PROCEDURE recalculate_rank() 
+DELIMITER $$
+
+USE `ffg`$$
+
+DROP PROCEDURE IF EXISTS `recalculate_rank`$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `recalculate_rank`()
 BEGIN 
 DECLARE isDone BOOLEAN DEFAULT FALSE;
 DECLARE i INT DEFAULT 1;
 DECLARE a BIGINT(11);
 DECLARE b INT(11);
-
 DECLARE curs CURSOR FOR 
-	SELECT a.team_id,a.points 
+	SELECT a.team_id,(a.points + a.extra_points) AS points
 	FROM points a
 	INNER JOIN teams b
 	ON a.team_id = b.id 
-	ORDER BY a.points DESC;
+	ORDER BY (a.points+a.extra_points) DESC;
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET isDone = TRUE;
-
 OPEN curs;
 	SET isDone = FALSE;
 	SET i = 1;
@@ -28,5 +30,6 @@ OPEN curs;
 		SET b = NULL;
 	UNTIL isDone END REPEAT;
 CLOSE curs;
-END // 
+END$$
+
 DELIMITER ;

@@ -38,7 +38,7 @@ exports.getReports = function(game_id,done){
 			},
 			function(doc,callback){
 				console.log('parse json output');
-				console.log(doc.toString());
+				//console.log(doc.toString());
 				var json = JSON.parse(xmlparser.toJson(doc.toString()));
 				callback(null,json);
 			},

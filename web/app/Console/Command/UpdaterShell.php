@@ -29,14 +29,18 @@ class UpdaterShell extends AppShell{
     		$response = $this->Game->getTeamPoints($user['User']['fb_id']);
 
     		$response['points'] = intval($response['points']);
+
+       print_r($response);
+
         if($user['Team']['id']>0){
           $sql = "
             INSERT INTO points
-          (team_id,points)
+          (team_id,points,extra_points)
           VALUES
-          ({$user['Team']['id']},{$response['points']})
+          ({$user['Team']['id']},{$response['points']},{$response['extra_points']})
           ON DUPLICATE KEY UPDATE
-          points = VALUES(points);
+          points = VALUES(points),
+          extra_points = VALUES(extra_points);
           ";
           try{
       		  $this->Team->query($sql);
@@ -45,23 +49,28 @@ class UpdaterShell extends AppShell{
           }
       		$this->out("Updating #".$user['Team']['id']." -> ".$response['points']);
           CakeLog::write('updater',"Updating #".$user['Team']['id']." -> ".$response['points']);
+
+
           if(is_array($response['game_points'])){
             $this->updating_weekly_stats($user['Team']['id'],
                                       $response['game_points']);
+           
           }
         }
     	}
     }
+   
     private function updating_weekly_stats($team_id,$game_points){
       foreach($game_points as $weekly){
         $sql = "INSERT INTO weekly_points
-                (team_id,game_id,matchday,matchdate,points)
+                (team_id,game_id,matchday,matchdate,points,extra_points)
                 VALUES
                 ({$team_id},'{$weekly['game_id']}',
                   '{$weekly['matchday']}',
-                  '{$weekly['match_date']}',{$weekly['total_points']})
+                  '{$weekly['match_date']}',{$weekly['total_points']},{$weekly['extra_points']})
                 ON DUPLICATE KEY UPDATE
-                points = VALUES(points);";
+                points = VALUES(points),
+                extra_points = VALUES(extra_points);";
 
                 try{
                    $this->Team->query($sql);
@@ -99,6 +108,5 @@ class UpdaterShell extends AppShell{
           $sql = "CALL recalculate_monthly_rank({$mth},{$yr});";
           $this->Team->query($sql);  
         }
-        
     }
 }

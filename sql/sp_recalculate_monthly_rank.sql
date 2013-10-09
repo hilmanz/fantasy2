@@ -13,11 +13,11 @@ DECLARE b INT(3);
 DECLARE c INT(4);
 DECLARE d INT(11);
 DECLARE curs CURSOR FOR 
-	SELECT team_id,bln,thn,SUM(points) AS points
-	FROM (SELECT team_id,YEAR(matchdate) AS thn,MONTH(matchdate) AS bln, points
+	SELECT team_id,bln,thn,SUM(points) AS total_points
+	FROM (SELECT team_id,YEAR(matchdate) AS thn,MONTH(matchdate) AS bln, (points + extra_points) AS points
 	FROM weekly_points) g 
 	WHERE bln = mth AND thn = yr
-	GROUP BY thn,bln,team_id ORDER BY points DESC;
+	GROUP BY thn,bln,team_id ORDER BY total_points DESC;
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET isDone = TRUE;
 OPEN curs;
 	SET isDone = FALSE;
@@ -30,6 +30,7 @@ OPEN curs;
 			VALUES
 			(a,b,c,d,i)
 			ON DUPLICATE KEY UPDATE
+			points = VALUES(points),
 			rank = VALUES(rank);
 	
 		END IF;

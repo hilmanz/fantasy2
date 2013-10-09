@@ -1,6 +1,6 @@
 DELIMITER $$
 
-USE `fantasy`$$
+USE `ffg`$$
 
 DROP PROCEDURE IF EXISTS `recalculate_weekly_rank`$$
 
@@ -12,13 +12,13 @@ DECLARE a BIGINT(11);
 DECLARE b INT(11);
 DECLARE c VARCHAR(20);
 DECLARE curs CURSOR FOR 
-	SELECT a.team_id,SUM(a.points) AS points,a.matchday
+	SELECT a.team_id,SUM(a.points+a.extra_points) AS points,a.matchday
 	FROM weekly_points a
 	INNER JOIN teams b
 	ON a.team_id = b.id 
 	WHERE a.matchday=matchday
 	GROUP BY a.team_id
-	ORDER BY points DESC;
+	ORDER BY SUM(a.points+a.extra_points) DESC;
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET isDone = TRUE;
 OPEN curs;
 	SET isDone = FALSE;

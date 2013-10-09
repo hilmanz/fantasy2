@@ -120,7 +120,10 @@ exports.formations = {
 //initial amount of money the user will have.
 exports.initial_money = 10000000;
 exports.sponsorship_chance = 0.4;
-
+exports.end_of_match_bonus = {
+	all_lineup_played: 20,
+	cash_below_zero:-100,
+}
 exports.player_stats_category = {
     games:[
         'game_started',

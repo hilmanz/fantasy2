@@ -271,7 +271,7 @@ function getUserTeamPoints(fb_id,done){
 			[	
 				function(callback){
 					//get overall points
-					conn.query("SELECT a.fb_id,b.user_id,b.id,b.team_id,c.points \
+					conn.query("SELECT a.fb_id,b.user_id,b.id,b.team_id,c.points,0 as extra_points \
 								FROM ffgame.game_users a\
 								INNER JOIN ffgame.game_teams b\
 								ON a.id = b.user_id\
@@ -289,11 +289,30 @@ function getUserTeamPoints(fb_id,done){
 					
 				},
 				function(rs,callback){
+					if(rs!=null&&rs.id!=null){
+						//extra points
+						conn.query("SELECT SUM(extra_points) AS extra_point \
+									FROM ffgame_stats.game_team_extra_points \
+									WHERE game_team_id=?;",[rs.id],function(err,r){
+										if(!err){
+											if(r!=null){
+												//rs.points += r[0].extra_point;
+
+												rs.extra_points = r[0].extra_point;
+											}
+										}
+										callback(err,rs);
+						});
+					}else{
+						callback(null,rs);
+					}
+				},
+				function(rs,callback){
 					if(rs!=null){
 						//get per game stats
 						if(rs.id!=null){
 							conn.query("SELECT a.game_id,\
-										SUM(points) AS total_points,\
+										SUM(points) AS total_points,0 as extra_points,\
 										b.matchday,\
 										b.match_date\
 										FROM ffgame_stats.game_match_player_points a\
@@ -311,9 +330,37 @@ function getUserTeamPoints(fb_id,done){
 					}else{
 						callback(null,rs);
 					}
+				},
+				function(rs,callback){
+					//extra weekly points
+					if(rs!=null&&rs.id!=null){
+						//extra points
+						conn.query("SELECT game_id,SUM(extra_points) AS extra \
+										FROM ffgame_stats.game_team_extra_points \
+										WHERE game_team_id=? GROUP BY game_id LIMIT 400",
+										[rs.id],function(err,r){
+										if(!err){
+											if(r!=null){
+												for(var i in rs.game_points){
+													for(var j in r){
+														if(rs.game_points[i].game_id==r[j].game_id){
+															//rs.game_points[i].total_points += r[j].extra;
+															rs.game_points[i].extra_points = r[j].extra;
+															break;
+														}
+													}
+												}
+											}
+										}
+										callback(err,rs);
+						});
+					}else{
+						callback(null,rs);
+					}
 				}
 			],
 			function(err,result){
+				console.log(result);
 				conn.end(function(e){
 					done(err,result);	
 				});

@@ -211,6 +211,7 @@ class Game extends AppModel {
 		$response = $this->api_call('/points/'.$fb_id);
 		if($response['fb_id']==$fb_id){
 			return array("points"=>$response['points'],
+						 "extra_points"=>$response['extra_points'],
 						 "game_points"=>$response['game_points']);
 		}else{
 			return array();

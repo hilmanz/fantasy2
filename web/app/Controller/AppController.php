@@ -85,7 +85,7 @@ class AppController extends Controller {
 				$this->userDetail = $this->User->findByFb_id($this->userData['fb_id']);
 				
 				$point = $this->Point->findByTeam_id(@$this->userDetail['Team']['id']);
-				$this->userPoints = @$point['Point']['points'];
+				$this->userPoints = @$point['Point']['points'] + @$point['Point']['extra_points'];
 				$this->userRank = @$point['Point']['rank'];
 				$this->set('USER_RANK',$this->userRank);
 				$this->set('USER_POINTS',$this->userPoints);
