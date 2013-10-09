@@ -953,17 +953,17 @@ input[type=text]{
 .selected .team-name{
 	color:#000 !important; 
 }
-#clubtabs{
+#clubtabs,#bantuanTab{
 	padding:0 0;
 	clear:both;
 }
-#clubtabs ul li{
+#clubtabs ul li,#bantuanTab ul li{
 	float:left;
 	width:150px;
 	text-align:center;
 	margin:0 10px 0 0;
 }
-#clubtabs ul li a{
+#clubtabs ul li a,#bantuanTab ul li a{
 	background:url(../images/bg_nav.jpg) repeat-x 0 -32px;
 	display:block;
 	line-height:32px;
@@ -978,7 +978,8 @@ input[type=text]{
 	font-size:16px;
 	padding:0 20px;
 }
-#clubtabs ul li a:hover,#clubtabs ul li.ui-state-active a{
+#clubtabs ul li a:hover,#clubtabs ul li.ui-state-active a,
+#bantuanTab ul li a:hover,#bantuanTab ul li.ui-state-active a{
 	background:url(../images/bg_nav.jpg) repeat-x;
 	color:#ff0000;
 	text-decoration:none;

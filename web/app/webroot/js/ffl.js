@@ -16,6 +16,7 @@ $(document).ready(function() {
         autoArrows:  true,
         dropShadows: false
     });
+	$( "#bantuanTab").tabs();
 });
 
 // SLIDER
