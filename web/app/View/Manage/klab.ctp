@@ -52,12 +52,16 @@ function isStaffExist($staff_token,$name){
     <div id="thecontent">
     	<div class="row">
 			<div id="clubtabs">
-              <ul>
+              <ul class="tabLeft">
                 <li><a href="#tabs-Info">Info</a></li>
                 <li><a href="#tabs-Money">Keuangan</a></li>
                 <li><a href="#tabs-Players">Pemain</a></li>
                 
               </ul>
+            <div class="mediumBanner">
+                <a target="_blank" href="<?=$long_banner[0]['Banners']['url']?>">
+                  <img src="<?=$this->Html->url(Configure::read('avatar_web_url').$long_banner[0]['Banners']['banner_file'])?>" /></a>
+            </div><!-- end .mediumBanner -->
               <div id="tabs-Info">
 
                 <div class="row">
@@ -231,10 +235,6 @@ function isStaffExist($staff_token,$name){
 						</div><!-- end .widget -->
 					</div><!-- end .col-content -->
 				</div><!-- end .row -->
-				<div class="mediumBanner">
-					<a target="_blank" href="<?=$long_banner[0]['Banners']['url']?>">
-					  <img width="674" src="<?=$this->Html->url(Configure::read('avatar_web_url').$long_banner[0]['Banners']['banner_file'])?>" /></a>
-				</div><!-- end .mediumBanner -->
               </div><!-- end #Info -->
               <div id="tabs-Money">
                     <div class="fr" style="height:40px;">
