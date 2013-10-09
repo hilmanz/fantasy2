@@ -102,11 +102,11 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
                     <a href="#" class="download-googleplay">&nbsp;</a>
                     <a href="#" class="download-appstore">&nbsp;</a>
             </div><!-- end .widget -->
-            <?php if(isset($SPONSOR_BANNER)):?>
+            
             <div class="smallBanner">
 				<a href="<?=$small_banner[0]['Banners']['url']?>" target="_blank"><img width="270" src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner[0]['Banners']['banner_file'])?>" /></a>
             </div><!-- end .smallBanner -->
-            <?php endif;?>
+            
         </div><!-- end .box4 -->
         <div class="box3 tr fl drop" style="height:906px;">
             <div class="field-container">
