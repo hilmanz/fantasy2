@@ -14,13 +14,14 @@ class DashboardController extends AppController {
 	public function index(){
 		//news tickers
 		$this->loadModel('Ticker');
-		$tickers = $this->Ticker->find('all');
+		$tickers = $this->Ticker->find('all',array('limit'=>1000));
 		$this->set('tickers',$tickers);
 
 
 		//notifications
 		$this->loadModel('Notification');
-		$tickers = $this->Notification->find('all');
+		$tickers = $this->Notification->find('all',array('conditions'=>array('game_team_id'=>0),
+														 'limit'=>100));
 		$this->set('notifications',$tickers);
 	}
 	public function add_ticker(){
