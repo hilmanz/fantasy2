@@ -149,7 +149,7 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
                 <h2><?=h($club['team_name'])?></h2>
                 
             </div><!-- end .widget -->
-            <div id="rooster" class="widget tr squad-team">
+            <div id="rooster" class="widget tr squad-team drop">
             	<div class="starters">
                     <h4>Daftar Pemain</h4>
                     <div id="starterTeam">
@@ -285,17 +285,21 @@ $(document).ready(function(){
             stop: function( event, ui ) {
                  drag_busy = false;
                  $("div.bench").removeClass('playerBoxSelected');
+                 $("div.starter").removeClass('playerBoxSelected');
                 // $(this).css('border','1px solid #333');
                 hide_slots();
             },
         });
 
-        
+
         $(".bench").mouseover(function(e){
+            //console.log('foo');
+            //console.log(drag_busy);
             if(!drag_busy){
                 var target = $(this);
-              
-                player_in_lineup($(this).find('a').attr('no'),function(is_exist){
+               //console.log($(this).find('a').attr('no'));
+                player_in_lineup($(this).find('a').attr('no'),function(is_exist,position_no){
+                    //console.log($(this).find('a').attr('no'),is_exist);
                     if(!is_exist){
                         $("#draggable").html(target.html());
                        
@@ -303,13 +307,13 @@ $(document).ready(function(){
                        
                         if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
                             //only for firefox
-                            nx = target.offset().left - ($("#universal").offset().left + 13);
+                            nx = target.offset().left - ($("#universal").offset().left + 12);
                         }else if(navigator.userAgent.toLowerCase().indexOf('msie') > -1){
                             //for msie
-                            nx = target.offset().left - ($("#universal").offset().left + 13);
+                            nx = target.offset().left - ($("#universal").offset().left + 12);
                         }else{
                             //for chrome
-                            nx = target.offset().left - ($("#universal").offset().left+11);
+                            nx = target.offset().left - ($("#universal").offset().left+10);
                         }
                         
                         var ny = target.offset().top - $("#universal").offset().top;
@@ -321,6 +325,7 @@ $(document).ready(function(){
                         $("#draggable").find('.player-status').remove();
                         $("#draggable").show();
                         $("div.bench").removeClass('playerBoxSelected');
+                        $("div.starter").removeClass('playerBoxSelected');
                         target.addClass('playerBoxSelected');
                           //pas di klik, langsung munculin slotnya.
                             var pos = target.find('div.num').html();
@@ -331,6 +336,7 @@ $(document).ready(function(){
                     }else{
                         $("#draggable").hide();
                         $("div.bench").removeClass('playerBoxSelected');
+                        $("div.starter").removeClass('playerBoxSelected');
                     }
                 });
             }
@@ -343,13 +349,24 @@ $(document).ready(function(){
             greedy: true,
             
             drop: function( event, ui ){
-                var dropX = event.pageX-$("#universal").position().left-30;
-                var dropY = event.pageY - $("#universal").position().top-30;
-                replaceLineup(dropX,dropY);
+                //console.log($(event));
+                console.log($(this).attr("id"));
+                if($(this).attr("id")=="rooster"){
+                    //we remove these player from lineup.
+                    removeFromLineup();
+                }else{
+                    //replace the player lineup
+                    var dropX = event.pageX-$("#universal").position().left-30;
+                    var dropY = event.pageY - $("#universal").position().top-30;
+                    replaceLineup(dropX,dropY);
+                }
+                
                 flag_players();
                 $("#draggable").hide();
                 $("div.bench").removeClass('playerBoxSelected');
+                $("div.starter").removeClass('playerBoxSelected');
                 hide_slots();
+                initLineupEvents();
               },
             
         });
@@ -409,12 +426,18 @@ $(document).ready(function(){
         }
         function player_in_lineup(id,callback){
             var is_exist = false;
+            var n_length = $("#the-formation").children().length;
+            var position_no = 0;
             $.each($("#the-formation").children(),function(k,item){
                if($(item).find('a').attr('no')==id){
                     is_exist = true;
+                    position_no = parseInt($(item).attr('id').split('p').join(''));
+                    console.log('found nih');
+                    callback(is_exist,position_no);
+                    return true;
                }
-               if(k>=10){
-                    callback(is_exist);
+               if(k==(n_length-1)){
+                    callback(is_exist,position_no);
                }
             });
         }
@@ -422,6 +445,7 @@ $(document).ready(function(){
             var current_lineup = [];
             var n=1;
             $('div.bench').removeClass('playerBoxChoosed');
+            $('div.starter').removeClass('playerBoxChoosed');
             $.each($("#the-formation").children(),function(t,l){
                     current_lineup.push({player_id:$(l).find('a').attr('no')});
                     if(n==$("#the-formation").children().length){
@@ -475,6 +499,7 @@ $(document).ready(function(){
         }
         function initLineupEvents(){
              $(".starter").click(function(){
+
                 if(selected==null){
                     selected = $(this);
                     selected.addClass('playerSelected');
@@ -484,6 +509,52 @@ $(document).ready(function(){
                     selected.html($(this).html());
                     $(this).html(h);
                     selected = null;
+                }
+            });
+
+            $(".starter").mouseover(function(e){
+                   if(!drag_busy){
+                    var target = $(this);
+                  
+                    player_in_lineup($(this).find('a').attr('no'),function(is_exist){
+                        if(is_exist){
+                            $("#draggable").html(target.html());
+                           
+                            var nx = 0;
+                           
+                            if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
+                                //only for firefox
+                                nx = target.offset().left - ($("#universal").offset().left + 13 - 12);
+                            }else if(navigator.userAgent.toLowerCase().indexOf('msie') > -1  ){
+                                //for msie
+                                nx = target.offset().left - ($("#universal").offset().left + 13 - 12);
+                            }else{
+                                //for chrome
+                                nx = target.offset().left - ($("#universal").offset().left+11 - 12);
+                            }
+                            
+                            var ny = target.offset().top - $("#universal").offset().top;
+
+                           
+                            $("#draggable").css('top',ny);
+                            $("#draggable").css('left',nx);
+                            $("#draggable").find('.player-name').hide();
+                            $("#draggable").find('.player-status').remove();
+                            $("#draggable").show();
+                            $("div.bench").removeClass('playerBoxSelected');
+                            $("div.starter").removeClass('playerBoxSelected');
+                            target.addClass('playerBoxSelected');
+                              //pas di klik, langsung munculin slotnya.
+                                var pos = target.find('div.num').html();
+                                hide_slots();
+                                show_slots(pos);
+
+
+                        }else{
+                            $("#draggable").hide();
+                            $("div.starter").removeClass('playerBoxSelected');
+                        }
+                    });
                 }
             });
         }
@@ -505,6 +576,12 @@ $(document).ready(function(){
                     return '';
                 break;
             }
+        }
+        function removeFromLineup(){
+            var player_id = $("#draggable").find('a').attr('no');
+            player_in_lineup(player_id,function(is_exist,position_no){
+                $("#p"+position_no+".starter").remove();
+            });
         }
         function replaceLineup(x,y){
             <?php if($can_update_formation):?>
@@ -535,11 +612,11 @@ $(document).ready(function(){
             $.each($("#the-formation").find('.slot'),function(k,item){
 
                 
-                console.log("#universal.offset",$("#universal").offset());
-                console.log("#universal.position",$("#universal").position());
-                console.log("ux","uy",ux,uy);
-                console.log($(item).attr('id')," - item.offset",$(item).offset());
-                console.log('droppoint',x,y);
+                //console.log("#universal.offset",$("#universal").offset());
+                //console.log("#universal.position",$("#universal").position());
+               // console.log("ux","uy",ux,uy);
+               // console.log($(item).attr('id')," - item.offset",$(item).offset());
+               // console.log('droppoint',x,y);
 
                 if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
                 //only for firefox
@@ -556,7 +633,7 @@ $(document).ready(function(){
                 }
 
                
-                console.log($(item).attr('id'),dx,dy);
+                //console.log($(item).attr('id'),dx,dy);
                 if(curr_item!=null){
                     if((curr_item.distance.x > dx && dy < 50)){
                             curr_item = {
@@ -571,18 +648,53 @@ $(document).ready(function(){
 
                     if(k>=15){
                         if(typeof $(curr_item.item).attr('id') !== 'undefined'){
+
                            var player_data = {
                                 player_id: $("#draggable").find('a').attr('no'),
                                 name: $("#draggable").find('.player-name').html(),
                                 position: getRealPosition($("#draggable").find('div.num').html()),
                                 position_no : parseInt($(curr_item.item).attr('id').replace('p',''))
                            };
+                           var new_position = parseInt($(curr_item.item).attr('id').replace('p',''));
+                           var replace_in_progress = false;
+                           player_in_lineup(player_data.player_id,function(is_exist,position_no){
+
+                                console.log(player_data.player_id,is_exist,position_no);
+                                if(is_exist){
+                                     if(!replace_in_progress){
+                                        replace_in_progress = true;
+                                         var old_player_data = {
+                                            player_id: $("#p"+new_position+".starter").find('a').attr('no'),
+                                            name: $("#p"+new_position+".starter").find('span.player-name').html(),
+                                            position: getRealPosition(
+                                                            $("#p"+new_position+".starter").find('div.jersey').html()
+                                                        ),
+                                            position_no: position_no
+                                         };
+                                         console.log('old player : ',old_player_data);
+                                         console.log('new player : ',player_data);
+                                        //just swap position
+                                         $("#p"+position_no+".starter").remove();
+                                         $("#p"+player_data.position_no+".starter").remove();
+                                         
+
+                                         append_view(tpllineup,'#the-formation',player_data);
+                                         append_view(tpllineup,'#the-formation',old_player_data);
+                                         curr_item = null;
+                                     }
+                                   
+                                     return true;
+                                     
+                                }else{
+                                    //replace the position
+                                    //replace the existing slot if necessary
+                                   $("#p"+player_data.position_no+".starter").remove();
+                                   //then add the new one
+                                   append_view(tpllineup,'#the-formation',player_data);
+                                   console.log('replace nih');
+                                }
+                           });
                            
-                           //replace the existing slot if necessary
-                           $("#p"+player_data.position_no+".starter").remove();
-                           
-                           //then add the new one
-                           append_view(tpllineup,'#the-formation',player_data);
                         }
                        curr_item = null;
                     }
@@ -596,6 +708,7 @@ $(document).ready(function(){
 
 
 });
+
 </script>
 
 <script type="text/template" id="tplsave">
