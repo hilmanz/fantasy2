@@ -19,6 +19,7 @@ $total_expenses+= intval(@$finance['buy_player']);
 
 
 $first_week = $weekly_balances[0];
+$my_balance = $weekly_balances;
 $previous_balances = array();
 for($i=1;$i<$first_week['week'];$i++){
   $previous_balances[] = array('week'=>$i,
@@ -706,7 +707,7 @@ $('#chart_ranking').highcharts({
     ]
 });
 
-var stats = <?=json_encode($weekly_balances)?>;
+var stats = <?=json_encode($my_balance)?>;
 
 categories = [];
 data = [];

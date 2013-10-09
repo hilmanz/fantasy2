@@ -281,7 +281,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
             </div><!-- end #Info -->
 
             <div class="rowBtn">
-                   <a data-team-name="<?=h($data['player']['original_team_name'])?>" data-price="<?=number_format($transfer_value)?>" data-player-name="<?=$data['player']['name']?>" data-team="<?=$data['player']['original_team_id']?>" data-player="<?=$data['player']['player_id']?>" id="btnBuy" class="icon-cart buttons" href="#popup-messages"><span>SUBMIT BID</span></a>
+                   <a data-team-name="<?=h($data['player']['original_team_name'])?>" data-price="<?=number_format($transfer_value)?>" data-player-name="<?=$data['player']['name']?>" data-team="<?=$data['player']['original_team_id']?>" data-player="<?=$data['player']['player_id']?>" id="btnBuy" class="icon-cart buttons" href="#popup-messages"><span>BELI PEMAIN</span></a>
 			</div>
 
             <div id="chartbox" class="row">
@@ -290,7 +290,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
             <div id="profiletabs">
               <div class="rowTItle">
              	 <h3 class="tabtitle"><span class="fl">PERFORMANCE DETAILS</span>   
-                    <a href="#/close_detail" class="button fr">KEMBALI</a></h3>
+                    
               </div>
               <div class="tabContainer">
               <div class="col2">
