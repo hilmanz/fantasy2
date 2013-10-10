@@ -78,13 +78,16 @@
 			</div><!-- end .content -->
         </div><!-- end #content -->
 	<div id="sidebar" class="tr">
+        <!--
 		<div class="widget tr videotutorial">
 			<h2>BINGUNG?</h2>
 			<span class="yellow">Mainkan video dibawah untuk petunjuk mengisi form ini</span>
 			<div id="vidbox">
 				<iframe width="100%" height="200" src="//www.youtube.com/embed/EE_V-mSnH3M" frameborder="0" allowfullscreen></iframe>
-			</div><!-- end #vidbox -->
-		</div><!-- end .videotutorial -->
+			</div>
+            <!-- end #vidbox -->
+		<!--</div>-->
+        <!-- end .videotutorial -->
 	    <div class="widget">
 	        <div class="nav-side">
 	            <ul>
