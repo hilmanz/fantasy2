@@ -42,8 +42,9 @@
                     
                     <div class="row-2">
                         <input type="hidden" name="players" value="">
-                        <a class="button fl" href="javascript:void();" onclick="create_team();return false;">Simpan & Lanjutkan</a>
-                        <a class="button fr" href="<?=$this->Html->url('/profile/register_team')?>">Pilih Tim Lain</a>
+                        
+                        <a class="button fl" href="<?=$this->Html->url('/profile/register_team')?>">Pilih Tim Lain</a>
+                        <a class="button fr" href="javascript:void();" onclick="create_team();return false;">Simpan & Lanjutkan</a>
                     </div><!-- end .row-2 -->
                 </form>
 			</div><!-- end .content -->
