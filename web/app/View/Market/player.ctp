@@ -1,3 +1,9 @@
+<?php
+$can_purchase = true;
+if(time() > $close_time['ts'] && Configure::read('debug') == 0){
+    $can_purchase = false;
+}
+?>
 <script>
 function profileLoaded(widget, data, id){
     $('.player-detail .opta-widget-container h2 span').html('Player Profile');
@@ -281,7 +287,11 @@ function getStats($category,$pos,$modifiers,$map,$stats){
             </div><!-- end #Info -->
 
             <div class="rowBtn">
-                   <a data-team-name="<?=h($data['player']['original_team_name'])?>" data-price="<?=number_format($transfer_value)?>" data-player-name="<?=$data['player']['name']?>" data-team="<?=$data['player']['original_team_id']?>" data-player="<?=$data['player']['player_id']?>" id="btnBuy" class="icon-cart buttons" href="#popup-messages"><span>BELI PEMAIN</span></a>
+                   <?php
+                   if($can_purchase):
+                    ?>
+                    <a data-team-name="<?=h($data['player']['original_team_name'])?>" data-price="<?=number_format($transfer_value)?>" data-player-name="<?=$data['player']['name']?>" data-team="<?=$data['player']['original_team_id']?>" data-player="<?=$data['player']['player_id']?>" id="btnBuy" class="icon-cart buttons" href="#popup-messages"><span>BELI PEMAIN</span></a>
+                    <?php endif;?>
 			</div>
 
             <div id="chartbox" class="row">

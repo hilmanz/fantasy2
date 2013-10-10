@@ -44,6 +44,11 @@ class AppController extends Controller {
 	protected $gameApiAccessToken;
 	protected $closeTime;
 	public function beforeFilter(){
+		if($this->request->is('mobile') &&
+			$this->request->params['pass'][0]!='mobile'){
+			$this->redirect('/pages/mobile');
+			die();
+		}
 		
 		$this->disableCache();
 		$this->response->disableCache();
@@ -99,8 +104,9 @@ class AppController extends Controller {
 				
 
 				$close_dt = date("Y-m-d", strtotime("next Saturday"))." 17:00:00";
-
-			
+				
+				
+				
 				if($this->nextMatch['match']['match_date_ts'] > strtotime($close_dt)){
 					$close_time = array("datetime"=>$close_dt,
 									"ts"=>strtotime($close_dt));
@@ -110,7 +116,7 @@ class AppController extends Controller {
 				}
 				
 
-				//$close_dt = "2013-10-07 14:20:00";  //for debugging only
+				
 				
 				
 
