@@ -1,13 +1,15 @@
 <div id="faqPage">
     <div id="thecontent">
         <div class="content">
-            <div class="row-3">
+            <div class="row-3" style="overflow:hidden;">
+				<div style="width:420px; float:left;margin:0 20px 0 0;">
 				<iframe width="420" height="315" src="//www.youtube.com/embed/HxwxlVqW0O0?rel=0" frameborder="0" allowfullscreen></iframe>
+				</div>
+				   <h2> Semua fans bola pasti pernah mempertanyakan keputusan manajernya, kenapa si Nani yang dipasang? Kenapa gak cabut aja Torres? Kenapa gak beli Giroud aja? Nah sekarang elo bisa membuktikan apakah elo memang lebih ngerti dari pada para manajer Liga Inggris.</h2>
+	
+	<h2>Di Super Soccer Football Manager elo dikasih kesempatan untuk mengelola tim favorit elo, lengkap dengan semua pemainnya. Lalu silahkan atur sendiri siapa yang elo mau jual atau beli. Mau ngumpulin semua pemain bintang? Silahkan, asal mampu bayar transfer dan gajinya.</h2>
             </div><!-- end .row-3 -->
             <div class="row-3">
-               <p> Semua fans bola pasti pernah mempertanyakan keputusan manajernya, kenapa si Nani yang dipasang? Kenapa gak cabut aja Torres? Kenapa gak beli Giroud aja? Nah sekarang elo bisa membuktikan apakah elo memang lebih ngerti dari pada para manajer Liga Inggris.</p>
-
-<p>Di Super Soccer Football Manager elo dikasih kesempatan untuk mengelola tim favorit elo, lengkap dengan semua pemainnya. Lalu silahkan atur sendiri siapa yang elo mau jual atau beli. Mau ngumpulin semua pemain bintang? Silahkan, asal mampu bayar transfer dan gajinya.</p>
 
 <h2>REAL SOCCER ACTION METRICS</h2>
 <p>Beda dengan Fantasy Football umumnya, di Super Soccer Football Manager elo bener bener harus memperhatikan performa pemain yang elo pasang, karena poin yang elo bukan bergantung dari penghitungan sederhana seperti menang, kalah, gol dan assist belaka. Elo harus benar benar mengerti bola, karena banyak sekali hal detil aksi di lapangan yang berdampak langsung ke perolehan poin tim elo di dunia maya. Pemain yang elo pilih melakukan tackling dapat 1 poin, bikin passing akurat di daerah serang lawan dapat 1 poin, memotong umpan lawan dapat 1 poin, kiper elo melakukan penyelamatan dapat 5 poin, kiper elo terbang dan menangkap tendangan lawan dapat 10 poin, menciptakan peluang matang dapat 10 poin,  bikin gol dari luar kotak pinalti dapat 50 poin, dan banyak lagi. Namun performa mereka di lapangan juga bisa membuat elo kehilangan poin misalnya pemain elo kecolongan bola atau salah kontrol bola maka poin dia akan dikurangi 1 poin, bahkan kalau sampai dia bikin kesalahan yang berakibat peluang lawan, poin dia akan dikurangi 10 poin.  Jadi hati hati pilih pemain yang elo masukin ke line-up karena performa mereka benar benar menentukan prestasi tim elo. Untuk rincian perolehan dan pinalti poin silahkan kunjungi link ini.</p>
