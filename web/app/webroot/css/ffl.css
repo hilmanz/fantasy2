@@ -2102,3 +2102,9 @@ table.dataTable{
 #btn_save{
 	line-height:28px;
 }
+#tablePoint td{
+	text-align:center;
+}
+#tablePoint td:first-child{
+	text-align:left;
+}
