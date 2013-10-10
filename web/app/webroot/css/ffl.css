@@ -1596,6 +1596,20 @@ table td a.button,table td .buttons{
 	background:url(../images/btn_comingsoon.png) no-repeat;
 	right:250px;
 }
+#maintenancePage{
+	text-align:center;
+	padding:50px 0 100px 0;
+}
+#maintenancePage h1{
+	font-size:40px;
+	color:#fdcb02;
+	margin:0;
+}
+#maintenancePage h2{
+	margin:0;
+	font-size:30px;
+	color:#fff;
+}
 .player-detail,.profileStats-container{
 	width:500px;
 	float:left;
