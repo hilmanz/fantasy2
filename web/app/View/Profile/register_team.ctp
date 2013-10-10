@@ -43,7 +43,7 @@
                             <input type="hidden" name="fb_id" value="<?=$USER_DATA['fb_id']?>"/>
                             <input type="hidden" name="team_id" value="<?=$previous_team_id?>"/>
                             <input type="hidden" name="create_team" value="1"/>
-                            <input type="button" value="Simpan &amp; Lanjutkan" class="button" id="btnsave"/>
+                            <input type="button" value="Simpan &amp; Lanjutkan" class="button fr" id="btnsave"/>
                         </div><!-- end .row -->
                     </form>
                 </div><!-- end .select-team -->

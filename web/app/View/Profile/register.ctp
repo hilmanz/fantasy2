@@ -72,7 +72,7 @@
                     <div class="row">
                         <input type="hidden" name="save" value="1"/>
                         <input type="hidden" name="step" value="1"/>
-                        <input type="submit" value="Continue" class="button" />
+                        <input type="submit" value="Simpan &amp; Lanjutkan" class="button fr" />
                     </div><!-- end .row -->
                 </form>
 			</div><!-- end .content -->
