@@ -1,6 +1,6 @@
 
 	<meta charset="utf-8">
-	<title>SUPER SOCCER  FOOTBALL MANAGER</title>
+	<title>SuperSoccer Football Manager - Show What You Know</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
