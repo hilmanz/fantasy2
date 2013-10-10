@@ -1,6 +1,6 @@
-<head>
+
 	<meta charset="utf-8">
-	<!-- <title>SUPER SOCCER - FANTASY FOOTBALL LEAGUE</title> -->
+	<title>SUPER SOCCER  FOOTBALL MANAGER</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
@@ -66,5 +66,3 @@
 	    }
 	  </style>
 	<![endif]-->
-	
-</head>

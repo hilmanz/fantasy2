@@ -5,9 +5,10 @@
 				<div style="width:420px; float:left;margin:0 20px 0 0;">
 				<iframe width="420" height="315" src="//www.youtube.com/embed/HxwxlVqW0O0?rel=0" frameborder="0" allowfullscreen></iframe>
 				</div>
-				   <h2> Semua fans bola pasti pernah mempertanyakan keputusan manajernya, kenapa si Nani yang dipasang? Kenapa gak cabut aja Torres? Kenapa gak beli Giroud aja? Nah sekarang elo bisa membuktikan apakah elo memang lebih ngerti dari pada para manajer Liga Inggris.</h2>
+				   <h2 style="margin-top:0;"> Semua fans bola pasti pernah mempertanyakan keputusan manajernya, kenapa si Nani yang dipasang? Kenapa gak cabut aja Torres? Kenapa gak beli Giroud aja? Nah sekarang elo bisa membuktikan apakah elo memang lebih ngerti dari pada para manajer Liga Inggris.</h2>
 	
 	<h2>Di Super Soccer Football Manager elo dikasih kesempatan untuk mengelola tim favorit elo, lengkap dengan semua pemainnya. Lalu silahkan atur sendiri siapa yang elo mau jual atau beli. Mau ngumpulin semua pemain bintang? Silahkan, asal mampu bayar transfer dan gajinya.</h2>
+					<a class="button" href="<?=$this->Html->url('/')?>">DAFTAR SEKARANG</a>
             </div><!-- end .row-3 -->
             <div class="row-3">
 
@@ -24,9 +25,9 @@
 <p>Satu hal lagi yang paling seru adalah interaksi yang akan elo alami sebagai seorang manajer klub BPL. Jangan heran kalo terima email dari Jose Mourinho yang menawar untuk membeli salah satu pemain elo, dan banyak lagi hal hal yang mungkin terjadi selama elo menjabat sebagai manajer klub BPL di Super Soccer Football Manager</p>
 
 <h2>HADIAH</h2>
-<p>Kalau semua itu belum cukup, kita juga memberikan hadiah hadiah seru setiap minggunya bagi manajer of the week Super Soccer Football Manager. Manajer yang memperoleh nilai tertinggi di setiap akhir match day boleh memilih sendiri jersey tim apa yang ia inginkan, dan kita akan menyediakannya. Selain itu sepuluh pemeroleh poin tertinggi di setiap minggu akan mendapatkan Super Soccer Medalllion yang dapat disimpan dan ditukarkan dengan berbagai hadiah dari koleksi merchandise sepak bola kami. Barang apa saja yang tersedia? Ada bola souvenir, gantungan kunci tim, miniatur stadion tim, replica medali FA, Momento bersejarah dari masing masing tim BPL, dan juga jersey bertanda tangan pemain bintang seperti Ozil, Walcott, Lampard, Mata, Van Persie dan banyak lagi.</p>
+<p>Kalau semua itu belum cukup, kita juga memberikan hadiah hadiah seru setiap minggunya bagi manajer of the week Super Soccer Football Manager. Manajer yang memperoleh nilai tertinggi di setiap akhir match day boleh memilih sendiri jersey tim apa yang ia inginkan, dan kita akan menyediakannya. Selain itu sepuluh pemeroleh poin tertinggi di setiap minggu akan mendapatkan Super Soccer Medalllion yang dapat disimpan dan ditukarkan dengan berbagai hadiah dari koleksi merchandise sepak bola kami. Barang apa saja yang tersedia? Ada bola souvenir, gantungan kunci tim, miniatur stadion tim, replica medali FA, Momento bersejarah dari masing masing tim BPL, dan juga jersey bertanda tangan pemain bintang seperti Ozil, Walcott, Lampard, Mata, Van Persie dan banyak lagi.</p><br/><br/>
 
-<p>So, elo merasa elo ngerti bola dan mampu menjabat posisi terpenting di klub kesayangan elo? Stop boasting and start working. Super Soccer Football Manager, Show what you know!</p>
+<h1>So, elo merasa elo ngerti bola dan mampu menjabat posisi terpenting di klub kesayangan elo? <br/>Stop boasting and start working. Super Soccer Football Manager, Show what you know!</h1>
             </div><!-- end .row-3 -->
         </div><!-- end .content -->
     </div><!-- end #thecontent -->
