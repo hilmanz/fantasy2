@@ -149,7 +149,7 @@ function results(game_id,done){
 								WHERE game_id=? GROUP BY team_id,stats_name;",
 					[game_id],
 					function(err,stats){
-						console.log(this.sql);
+						//console.log(this.sql);
 						callback(err,game,stats);
 					});
 				},

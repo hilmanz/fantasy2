@@ -79,7 +79,7 @@ function setLineup(game_team_id,setup,formation,done){
 								WHERE a.game_team_id = ? AND a.player_id IN (?) LIMIT 16",
 								[game_team_id,players],
 								function(err,rs){
-									console.log(this.sql);
+									//console.log(this.sql);
 									console.log(rs);
 									callback(null,rs);
 								});
@@ -218,7 +218,7 @@ function getPlayers(game_team_id,callback){
 								",
 					[game_team_id,player.uid,game_team_id,player.uid,player.team_id,player.team_id],
 					function(err,rs){
-						console.log(this.sql);
+						//console.log(this.sql);
 						player.points = 0;
 						player.last_performance = 0;
 						if(!err){
@@ -259,7 +259,7 @@ function getBudget(game_team_id,callback){
 		conn.query(sql,
 				[game_team_id,game_team_id],
 				function(err,rs){
-					console.log(this.sql);
+					//console.log(this.sql);
 					conn.end(function(e){
 						callback(err,rs);	
 					});
@@ -403,7 +403,7 @@ function getPlayerTeamStats(game_team_id,player_id,callback){
 		conn.query(sql,
 				[game_team_id,player_id],
 				function(err,rs){
-					console.log(this.sql);
+					//console.log(this.sql);
 					conn.end(function(e){
 						callback(err,rs);	
 					});
@@ -464,7 +464,7 @@ function getPlayerDailyTeamStats(game_team_id,player_id,player_pos,done){
 				conn.query(sql,
 					[player_id,game_team_id,game_team_id],
 					function(err,rs){
-						console.log(this.sql);			
+						//console.log(this.sql);			
 						callback(err,rs);	
 						
 					});
@@ -748,7 +748,7 @@ function best_match(game_team_id,done){
 								LIMIT 1;",
 								[team_id,team_id,best_match.matchday],
 								function(err,rs){
-									console.log(this.sql);
+									//console.log(this.sql);
 									callback(err,{match:rs[0],points:best_match.total_points});
 								});
 					
@@ -1059,7 +1059,7 @@ function sale(game_team_id,player_id,done){
 											 matchday
 											],
 											function(err,rs){
-												console.log(this.sql);
+												//console.log(this.sql);
 												callback(err,{name:name,transfer_value:transfer_value});
 								});
 							}
@@ -1120,7 +1120,7 @@ function buy(game_team_id,player_id,done){
 						 FROM ffgame.master_player WHERE uid = ? LIMIT 1;",
 						[player_id],
 						function(err,rs){
-							console.log(this.sql);
+							//console.log(this.sql);
 							if(!err){
 								callback(err,rs[0]['name'],rs[0]['transfer_value']);
 							}else{
@@ -1141,7 +1141,7 @@ function buy(game_team_id,player_id,done){
 					[player_id],
 					function(err,rs){
 						if(!err){
-							console.log(this.sql);
+							//console.log(this.sql);
 							//@TODO we need to calculate the player's performance value to affect
 							//the latest transfer value
 							if(rs.length>0){
@@ -1204,7 +1204,7 @@ function buy(game_team_id,player_id,done){
 									conn.query("SELECT team_id FROM ffgame.game_teams WHERE id=? LIMIT 1",
 										 [game_team_id],
 										 function(err,rs){
-										 	console.log(this.sql);
+										 	//console.log(this.sql);
 										 	callback(err,name,transfer_value,rs[0]['team_id']);
 										 	
 										 });
@@ -1225,7 +1225,7 @@ function buy(game_team_id,player_id,done){
 								ORDER BY a.matchday\
 								LIMIT 1;\
 								",[team_id,team_id],function(err,rs){
-									console.log(this.sql);
+									//console.log(this.sql);
 									callback(err,name,transfer_value,rs[0]['game_id'],rs[0]['matchday']);
 								});
 							},
@@ -1246,7 +1246,7 @@ function buy(game_team_id,player_id,done){
 											 matchday
 											],
 											function(err,rs){
-												console.log(this.sql);
+												//console.log(this.sql);
 												callback(err,{name:name,transfer_value:transfer_value});
 								});
 							}

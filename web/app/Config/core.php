@@ -189,8 +189,8 @@
  */
 	Configure::write('Session', array(
 		'defaults' => 'php',
-		'timeout'	=> 60*60*5,
-		'cookieTimeout'	=> 60*60*5,
+		'timeout'	=> 60*60*50,
+		'cookieTimeout'	=> 60*60*50,
 	));
 
 /**
