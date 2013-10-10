@@ -251,8 +251,11 @@ a.download-appstore{
 	list-style:none;
 }
 #topnav li{
-	margin:0;
+	margin:0 25px;
 	float:left;
+}
+#topnav li li{
+	margin:0;
 }
 #topnav li a{
 	color:#fff;
