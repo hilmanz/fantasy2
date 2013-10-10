@@ -39,7 +39,7 @@
 
 <div id="sidebar" class="latestActivity">
 	<div id="videoIntro">
-    	<iframe width="100%" height="200" src="//www.youtube.com/embed/ccQjUK2rlRE" frameborder="0" allowfullscreen></iframe>
+    	<iframe width="100%" height="200" src="//www.youtube.com/embed/HxwxlVqW0O0" frameborder="0" allowfullscreen></iframe>
     </div>
 	<div id="caramain" class="tr sidebox">
         <h3>Cara Bermain</h3>
