@@ -72,7 +72,7 @@ function getPlayers(team_uid,callback){
 									",
 									[player.uid,player.uid],
 									function(err,rs){
-										console.log('----->',this.sql);
+										//console.log('----->',this.sql);
 										if(rs!=null){
 											player.stats = rs[0];	
 										}else{
@@ -121,7 +121,7 @@ function create(data,callback){
 					conn.query("SELECT id FROM ffgame.game_users WHERE fb_id=? LIMIT 1",
 								[data.fb_id],
 								function(err,rs){
-									console.log(this.sql);
+									//console.log(this.sql);
 									callback(null,rs[0]);
 								});
 					
@@ -135,7 +135,7 @@ function create(data,callback){
 								(user_id,team_id,created_date,n_status)\
 								VALUES\
 								(?,?,NOW(),1);",[user.id,data.team_id],function(err,rs){
-									console.log(this.sql);
+									//console.log(this.sql);
 									if(err){
 										console.log(err.message);
 									}
@@ -159,7 +159,7 @@ function create(data,callback){
 							d.push(data.players[i]);
 						}
 						conn.query(sql,d,function(err,rs){
-							console.log(this.sql);
+							//console.log(this.sql);
 							callback(err,result.insertId);
 						});
 					}else{
@@ -243,8 +243,8 @@ function getUserTeam(fb_id,done){
 							user.id
 						],
 							function(err,team){
-								console.log(team);
-								console.log(this.sql);
+								//console.log(team);
+								//console.log(this.sql);
 								try{
 									callback(err,team[0]);
 								}catch(e){
