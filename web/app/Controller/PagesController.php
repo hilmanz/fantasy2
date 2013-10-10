@@ -99,6 +99,8 @@ class PagesController extends AppController {
 
 		if($path[0]=='home'&&$this->userDetail['Team']['id']>0){
 			$this->redirect('/manage/team');
+		}else if($path[0]=='mobile'){
+			$this->layout="mobile";
 		}
 		$this->render(implode('/', $path));
 	}
