@@ -77,23 +77,30 @@ function process_report(game_id,done){
 			//callback(null,null);
 		},
 		function(result,callback){
+			console.log('getReports -> ',result);
+			if(result.SoccerFeed.SoccerDocument.MatchData.MatchInfo.Period=='FullTime'){
+				console.log('already FullTime');
+				console.log('update lineup');
+				//@todo
+				//update lineup hanya di lakukan jika game yang bersangkutan sudah FT
+				lineup_stats.update(game_id,0,function(err,is_done,next_offset){
+					console.log('lineup stats updated !');
+					if(!is_done){
+						console.log('processing next batch');
+						lineup_stats.update(game_id,next_offset,this.done);
+					}else{
+						console.log('updating the business_stats')
+						business_stats.update(game_id,0,function(err){
+							console.log('business stats update completed');
+							console.log('all batches has been processed');
+							callback(err,'done');
+						});
+					}
+				});
+			}else{
+				callback(null,'ON GOING MATCH');
+			}
 			
-			console.log('update lineup');
-			
-			lineup_stats.update(game_id,0,function(err,is_done,next_offset){
-				console.log('lineup stats updated !');
-				if(!is_done){
-					console.log('processing next batch');
-					lineup_stats.update(game_id,next_offset,this.done);
-				}else{
-					console.log('updating the business_stats')
-					business_stats.update(game_id,0,function(err){
-						console.log('business stats update completed');
-						console.log('all batches has been processed');
-						callback(err,'done');
-					});
-				}
-			});
 			
 			/*
 			business_stats.update(game_id,0,function(err){
@@ -105,7 +112,7 @@ function process_report(game_id,done){
 	],
 	function(err,result){
 		done(err,result);
-		console.log('done');
+		console.log(result);
 	});
 }
 
