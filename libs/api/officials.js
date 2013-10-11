@@ -12,79 +12,86 @@ var mysql = require('mysql');
 var dateFormat = require('dateformat');
 var redis = require('redis');
 var formations = require(path.resolve('./libs/game_config')).formations;
-function prepareDb(){
-	var connection = mysql.createConnection({
-  		host     : config.database.host,
-	   	user     : config.database.username,
-	   	password : config.database.password,
-	});
-	
-	return connection;
+var pool = {};
+
+exports.setPool = function(p){
+	pool = p;
 }
+function prepareDb(callback){
+	pool.getConnection(function(err,conn){
+		callback(conn);
+	});
+}
+
 /** get the list of officials **/
 function official_list(game_team_id,done){
-	var conn = prepareDb();
-	async.waterfall([
-			function(callback){
-				get_master_officials(conn,function(err,officials){
-					callback(err,officials);
+	prepareDb(function(conn){
+		async.waterfall([
+				function(callback){
+					get_master_officials(conn,function(err,officials){
+						callback(err,officials);
+					});
+				},
+				function(officials,callback){
+					get_user_officials(conn,game_team_id,officials,function(err,result){
+						callback(err,result);
+					});
+				}
+			],
+			function(err,result){
+				conn.end(function(e){
+					done(err,result);						
 				});
-			},
-			function(officials,callback){
-				get_user_officials(conn,game_team_id,officials,function(err,result){
-					callback(err,result);
-				});
-			}
-		],
-		function(err,result){
-			conn.end(function(e){
-				done(err,result);						
 			});
-		});
+	});
 }
 
 function hire_official(game_team_id,official_id,callback){
-	var conn = prepareDb();
-	async.waterfall(
-		[
-			function(callback){
-				conn.query("INSERT IGNORE INTO ffgame.game_team_officials\
-				(game_team_id,official_id,recruit_date)\
-				VALUES\
-				(?,?,NOW());",[game_team_id,official_id],function (err,rs){
-					callback(err,rs.insertId);
-				});		
-			},
-			function(staff_id,callback){
-				conn.query("SELECT b.id,b.name FROM ffgame.game_team_officials a\
-							INNER JOIN ffgame.game_officials b\
-							ON a.official_id = b.id\
-							WHERE a.id=?;",[staff_id],function(err,rs){
-								console.log(rs);
-								callback(err,rs[0]);
-							});
+	prepareDb(function(conn){
+		async.waterfall(
+			[
+				function(callback){
+					conn.query("INSERT IGNORE INTO ffgame.game_team_officials\
+					(game_team_id,official_id,recruit_date)\
+					VALUES\
+					(?,?,NOW());",[game_team_id,official_id],function (err,rs){
+						callback(err,rs.insertId);
+					});		
+				},
+				function(staff_id,callback){
+					conn.query("SELECT b.id,b.name FROM ffgame.game_team_officials a\
+								INNER JOIN ffgame.game_officials b\
+								ON a.official_id = b.id\
+								WHERE a.id=?;",[staff_id],function(err,rs){
+									console.log(rs);
+									callback(err,rs[0]);
+								});
+				}
+			],
+			function(err,result){
+				conn.end(function(e){
+					callback(err,result);
+				});
 			}
-		],
-		function(err,result){
-			conn.end(function(e){
-				callback(err,result);
-			});
-		}
-	);
+		);
+	});
 	
 }
 function remove_official(game_team_id,official_id,callback){
-	var conn = prepareDb();
-	conn.query("DELETE FROM ffgame.game_team_officials WHERE game_team_id = ? AND official_id = ?",
-				[game_team_id,official_id],function (err,rs){
-					conn.end(function(e){
-						callback(err,rs);
+	prepareDb(function(conn){
+		conn.query("DELETE FROM ffgame.game_team_officials WHERE game_team_id = ? AND official_id = ?",
+					[game_team_id,official_id],function (err,rs){
+						conn.end(function(e){
+							callback(err,rs);
+						});
 					});
-				});
+	});
 }
 
 function get_master_officials(conn,callback){
+	
 	conn.query("SELECT * FROM ffgame.game_officials ORDER BY id LIMIT 20;",[],callback);
+
 }
 function get_user_officials(conn,game_team_id,officials,done){
 	async.waterfall(

@@ -1,5 +1,5 @@
 <h3>Players</h3>
-
+<h4>Total Players : <?=number_format($total_users)?></h4>
 <div class="row-2">
 <table width="100%">
 	<tr>

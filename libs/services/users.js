@@ -1,6 +1,8 @@
 var path = require('path');
 var users = require(path.resolve('./libs/api/users'));
-
+exports.setPool = function(pool){
+	users.setPool(pool);
+}
 exports.register = function(req,res){
 	users.register({
 			name:req.body.name,

@@ -18,6 +18,8 @@ class PlayersController extends AppController {
 	public function index(){
 		$this->loadModel('User');
 		$this->loadModel('Point');
+		$totalUser = $this->User->find('count');
+
 		$this->paginate = array('limit'=>20);
 		$rs = $this->paginate('User');
 		foreach($rs as $n=>$r){
@@ -26,6 +28,7 @@ class PlayersController extends AppController {
 				$rs[$n]['Point'] = $point['Point'];
 			}
 		}
+		$this->set('total_users',$totalUser);
 		$this->set('rs',$rs);
 	}
 	public function view($user_id){

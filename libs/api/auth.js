@@ -11,15 +11,11 @@ var config = require(path.resolve('./config')).config;
 var mysql = require('mysql');
 var dateFormat = require('dateformat');
 var redis = require('redis');
-
-function prepareDb(){
-	var connection = mysql.createConnection({
-  		host     : config.database.host,
-	   	user     : config.database.username,
-	   	password : config.database.password,
+var pool = {};
+function prepareDb(callback){
+	pool.getConnection(function(err,conn){
+		callback(conn);
 	});
-	
-	return connection;
 }
 
 
@@ -33,52 +29,18 @@ function authenticate(req,res){
 	}
 }
 function askForChallengeCode(req,res,api_key){
-	conn = prepareDb();
-	conn.query("SELECT * FROM ffgame.api_keys WHERE api_key = ? LIMIT 1",
-				[api_key],function(err,rs){
-					conn.end(function(err){
-						if(!err){
-							if(rs[0].api_key == api_key){
-								console.log(req.session);
-								req.session.challenge_code = {};
-								req.session.challenge_code[api_key] = generateChallengeCode(api_key);
-								
-							    res.send(200,{challenge_code:req.session.challenge_code[api_key]});
-							}else{
-								res.send(401,{error:'Invalid API Key'});	
-							}
-						}else{
-							res.send(401,{error:'Invalid API Key'});
-						}
-					});
-	});
-}
-function authenticateCode(req,res,api_key,request_code){
-	conn = prepareDb();
-	console.log('session',req.session);
-	if(typeof req.session.challenge_code !== 'undefined'){
+	
+	prepareDb(function(conn){
 		conn.query("SELECT * FROM ffgame.api_keys WHERE api_key = ? LIMIT 1",
 					[api_key],function(err,rs){
 						conn.end(function(err){
 							if(!err){
 								if(rs[0].api_key == api_key){
-									var hash = getRequestCodeHash(rs[0].api_key,
-																	req.session.challenge_code[api_key],
-																	rs[0].secret_key);
+									console.log(req.session);
+									req.session.challenge_code = {};
+									req.session.challenge_code[api_key] = generateChallengeCode(api_key);
 									
-									if(hash==request_code){
-										var access_token = generateAccessToken(api_key,request_code);
-										req.session.access_token = access_token;
-										//save the newly created access_token to redis, and set expiry time to
-										//1 hour
-										var client = req.redisClient;
-								    	client.set(access_token,'1');
-								    	client.expire(access_token,60*60*3);
-								    	res.send(200,{access_token:access_token});
-									   
-									}else{
-										res.send(403,{err:'Access Denied !'});
-									}
+								    res.send(200,{challenge_code:req.session.challenge_code[api_key]});
 								}else{
 									res.send(401,{error:'Invalid API Key'});	
 								}
@@ -86,6 +48,44 @@ function authenticateCode(req,res,api_key,request_code){
 								res.send(401,{error:'Invalid API Key'});
 							}
 						});
+		});
+	});
+}
+function authenticateCode(req,res,api_key,request_code){
+	
+	console.log('session',req.session);
+	if(typeof req.session.challenge_code !== 'undefined'){
+		prepareDb(function(conn){
+			conn.query("SELECT * FROM ffgame.api_keys WHERE api_key = ? LIMIT 1",
+						[api_key],function(err,rs){
+							conn.end(function(err){
+								if(!err){
+									if(rs[0].api_key == api_key){
+										var hash = getRequestCodeHash(rs[0].api_key,
+																		req.session.challenge_code[api_key],
+																		rs[0].secret_key);
+										
+										if(hash==request_code){
+											var access_token = generateAccessToken(api_key,request_code);
+											req.session.access_token = access_token;
+											//save the newly created access_token to redis, and set expiry time to
+											//1 hour
+											var client = req.redisClient;
+									    	client.set(access_token,'1');
+									    	client.expire(access_token,60*60*3);
+									    	res.send(200,{access_token:access_token});
+										   
+										}else{
+											res.send(403,{err:'Access Denied !'});
+										}
+									}else{
+										res.send(401,{error:'Invalid API Key'});	
+									}
+								}else{
+									res.send(401,{error:'Invalid API Key'});
+								}
+							});
+			});
 		});
 	}else{
 		res.send(403,{err:'wrong challenge code'});
@@ -146,4 +146,8 @@ exports.checkSession = function(req,res,callback){
 	}else{
 		callback(false);
 	}
+}
+
+exports.setPool = function(p){
+	pool = p;
 }

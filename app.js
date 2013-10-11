@@ -27,6 +27,8 @@ var pool  = mysql.createPool({
 
 team.setPool(pool);
 gameplay.setPool(pool);
+auth.setPool(pool);
+users.setPool(pool);
 var app = express();
 var RedisStore = require('connect-redis')(express);
 

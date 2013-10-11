@@ -153,7 +153,13 @@ function setLineup(game_team_id,setup,formation,done){
 //nomor yg lain mau penyerang semua sih gak masalah (untuk sementara waktu)
 function position_valid(players,setup,formation){
 	console.log(players);
-	
+	console.log('setup',setup);
+	console.log('formation',formation);
+	if(formation=='Pilih Formasi'){
+		formation = '4-4-2';
+		console.log('user didnt specified a formation, we choose the default 4-4-2');
+	}
+
 	var my_formation = formations[formation];
 	
 	for(var i in setup){
@@ -286,7 +292,7 @@ function getPlayerDetail(player_id,callback){
 				[player_id],
 				function(err,rs){
 					conn.end(function(e){
-						if(rs.length==1){
+						if(rs!=null && rs.length==1){
 							callback(err,rs[0]);	
 						}else{
 							callback(err,null);
@@ -549,6 +555,9 @@ function getFinancialStatement(game_team_id,done){
 					conn.query("SELECT budget FROM ffgame.game_team_purse WHERE game_team_id = ?;",
 							[game_team_id],function(err,rs){
 								if(!err){
+									if(typeof rs === 'undefined'){
+										rs = [{budget:10000000}];
+									}
 									callback(err,rs[0].budget);
 								}else{
 									callback(err,null);
@@ -1411,7 +1420,7 @@ function getTeamResultStats(conn,team_id,callback){
 }
 
 var match = require(path.resolve('./libs/api/match'));
-
+var officials = require(path.resolve('./libs/api/officials'));
 exports.leaderboard = leaderboard;
 exports.best_player = best_player;
 exports.last_earning = last_earning;
@@ -1428,7 +1437,7 @@ exports.setLineup = setLineup;
 exports.getPlayers = getPlayers;
 exports.getBudget = getBudget;
 exports.match = match;
-exports.officials = require(path.resolve('./libs/api/officials'));
+exports.officials = officials;
 exports.sponsorship = require(path.resolve('./libs/api/sponsorship'));
 exports.getPlayerOverallStats = getPlayerOverallStats;
 exports.getTeamPlayerDetail = getTeamPlayerDetail;
@@ -1439,4 +1448,5 @@ exports.getWeeklyFinance = getWeeklyFinance;
 exports.setPool = function(p){
 	pool = p;
 	match.setPool(pool);
+	officials.setPool(pool);
 }
