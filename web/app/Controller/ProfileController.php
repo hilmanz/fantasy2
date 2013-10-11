@@ -95,7 +95,7 @@ class ProfileController extends AppController {
 
 		//update team name
 		$this->loadModel('Team');
-		$this->Team->id = $user['Team']['id'];
+		$this->Team->id = intval($user['Team']['id']);
 		$this->Team->save(array(
 				'team_name' => $this->request->data['team_name']
 			));
