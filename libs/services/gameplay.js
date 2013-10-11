@@ -108,7 +108,12 @@ exports.getBudget = function(req,res){
 				handleError(res);
 			}else{
 				if(rs!=null){
-					res.json(200,{status:1,budget:rs[0].budget});
+					try{
+						res.json(200,{status:1,budget:rs[0].budget});
+					}catch(e){
+						console.log('failed to get budget',rs,'at service/gameplay line 114');
+						res.send(200,{status:0});
+					}
 				}else{
 					res.send(200,{status:0});
 				}

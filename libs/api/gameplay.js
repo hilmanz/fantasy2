@@ -555,10 +555,12 @@ function getFinancialStatement(game_team_id,done){
 					conn.query("SELECT budget FROM ffgame.game_team_purse WHERE game_team_id = ?;",
 							[game_team_id],function(err,rs){
 								if(!err){
-									if(typeof rs === 'undefined'){
-										rs = [{budget:10000000}];
+									try{
+										callback(err,rs[0].budget);
+									}catch(e){
+										callback(err,10000000);
 									}
-									callback(err,rs[0].budget);
+									
 								}else{
 									callback(err,null);
 								}

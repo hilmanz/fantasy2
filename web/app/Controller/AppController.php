@@ -44,12 +44,12 @@ class AppController extends Controller {
 	protected $gameApiAccessToken;
 	protected $closeTime;
 	public function beforeFilter(){
-		if($this->request->is('mobile') &&
+		/*if($this->request->is('mobile') &&
 			$this->request->params['pass'][0]!='mobile'){
 			$this->redirect('/pages/mobile');
 			die();
 		}
-		
+		*/
 		$this->disableCache();
 		$this->response->disableCache();
 		

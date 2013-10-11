@@ -497,6 +497,7 @@ $(document).ready(function(){
             });
 
         }
+       
         function initLineupEvents(){
              $(".starter").click(function(){
 
@@ -705,7 +706,7 @@ $(document).ready(function(){
         }
 
     getLineUp(); 
-
+    canResetFormation = true;
 
 });
 

@@ -12,6 +12,23 @@
 	var base_url = "<?=$this->Html->url('/')?>";
 	var est_expenses = 0; 
 	var staffs = [];
+	var canResetFormation = false;
+		 function resetLineups(){
+            $.each($("#the-formation").children(),function(t,l){
+                if(typeof $(l).find('a').attr('no') !== 'undefined'){
+                    $(l).remove();
+                }
+            });
+            
+            $("div.bench").removeClass('playerBoxChoosed');
+            $("div.starter").removeClass('playerBoxChoosed');
+            $("div.bench").removeClass('playerBoxSelected');
+            $("div.starter").removeClass('playerBoxSelected');
+            //show slots for subs
+            for(var i=0;i<17;i++){
+                $("#p"+i+".slot").show();
+            }
+        }
 	</script>
 
 	<?php
@@ -33,6 +50,7 @@
 			custID:		'<?=$OPTA_CUSTOMER_ID?>',
 			language:	'en',
 		};
+
 	</script>
 	<?php endif;?>
 	<!-- Le styles -->

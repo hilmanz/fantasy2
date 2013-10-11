@@ -23,8 +23,12 @@
                         <a href="#popup-upload" class="button" id="btn_upload">Ganti Logo Klab</a>
                     </div>
                     <div class="row">
-                        <label>Nama</label>
+                        <label>Nama Lengkap</label>
                         <input type="text" name="name" value="<?=h($user['name'])?>"/>
+                    </div><!-- end .row -->
+                    <div class="row">
+                        <label>Nama Klab</label>
+                        <input type="text" name="team_name" value="<?=h($team['team_name'])?>"/>
                     </div><!-- end .row -->
                     <div class="row">
                         <label>Email</label>

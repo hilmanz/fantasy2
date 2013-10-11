@@ -68,6 +68,8 @@ class ProfileController extends AppController {
 			$user = $this->User->findByFb_id($userData['fb_id']);
 			
 			$this->set('user',$user['User']);
+			$this->set('team',$user['Team']);
+			
 			//budget
 			$budget = $this->Game->getBudget($userData['team']['id']);
 			$this->set('team_bugdet',$budget);
@@ -87,9 +89,16 @@ class ProfileController extends AppController {
 		$userData = $this->getUserData();
 		$this->loadModel('User');
 		$user = $this->User->findByFb_id($userData['fb_id']);
-
 		$this->User->id = $user['User']['id'];
+		//update user profile
 		$rs = $this->User->save($data);
+
+		//update team name
+		$this->loadModel('Team');
+		$this->Team->id = $user['Team']['id'];
+		$this->Team->save(array(
+				'team_name' => $this->request->data['team_name']
+			));
 		if(isset($rs)){
 
 			$this->Session->setFlash('Profil Anda telah berhasil diubah!');

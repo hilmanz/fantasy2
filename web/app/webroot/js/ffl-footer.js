@@ -1,5 +1,6 @@
 // JAVASCRIPT FFL
 // ACIT JAZZ v.1.2
+
 $("#formation-select").change(function () {
   $("#the-formation").removeClass();
   var str = "";
@@ -8,8 +9,8 @@ $("#formation-select").change(function () {
   });
   $("#the-formation").removeClass();
   $("#the-formation").addClass('formation-'+ str);
-})
-.change();
+  if(canResetFormation) resetLineups();
+}).change();
 
 $(function() {
 
