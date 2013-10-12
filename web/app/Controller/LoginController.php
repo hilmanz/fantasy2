@@ -37,7 +37,7 @@ class LoginController extends AppController {
  * @var string
  */
 	public $name = 'Login';
-
+	public $components = array('ActivityLog');
 /**
  * This controller does not use a model
  *
@@ -99,6 +99,8 @@ class LoginController extends AppController {
 			}else if($user_session['team']!=null&&$user_session['register_completed']==0){
 				$this->redirect('/profile/register_staff');
 			}else{
+				
+				$this->ActivityLog->writeLog($rs['User']['id'],'LOGIN');
 				$this->redirect('/manage/team');
 			}
 		}else{

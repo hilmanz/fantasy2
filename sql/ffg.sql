@@ -145,3 +145,13 @@ CREATE TABLE ffg.notifications (
 
 
 ALTER TABLE `ffg`.`users`     ADD COLUMN `faveclub` VARCHAR(64) NULL AFTER `first_time`,     ADD COLUMN `birthdate` DATE NULL AFTER `faveclub`;
+
+
+CREATE TABLE ffg.activity_logs (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(21) DEFAULT NULL,
+  `log_dt` datetime DEFAULT NULL,
+  `log_type` varchar(64) DEFAULT 'LOGIN',
+  PRIMARY KEY (`id`),
+  KEY `IDX_USER_LOG` (`user_id`,`log_dt`,`log_type`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;

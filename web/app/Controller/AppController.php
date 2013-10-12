@@ -43,6 +43,8 @@ class AppController extends Controller {
 	protected $redisClient;
 	protected $gameApiAccessToken;
 	protected $closeTime;
+	
+	
 	public function beforeFilter(){
 		/*if($this->request->is('mobile') &&
 			$this->request->params['pass'][0]!='mobile'){
@@ -121,7 +123,7 @@ class AppController extends Controller {
 				
 
 				$this->closeTime = $close_time;
-				
+
 				$this->set('close_time',$close_time);
 
 				//news ticker
