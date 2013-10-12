@@ -105,22 +105,23 @@ class AppController extends Controller {
 
 				$close_dt = date("Y-m-d", strtotime("next Saturday"))." 17:00:00";
 				
+				$next_match_ts = $this->nextMatch['match']['match_date_ts'];
+				if(date_default_timezone_get()=='Asia/Jakarta'){
+				    $next_match_ts += 6*60*60;
+				}
 				
-				
-				if($this->nextMatch['match']['match_date_ts'] > strtotime($close_dt)){
+				if($next_match_ts > strtotime($close_dt)){
 					$close_time = array("datetime"=>$close_dt,
 									"ts"=>strtotime($close_dt));
 				}else{
 					$close_time = array("datetime"=>$previous_close_dt,
 									"ts"=>strtotime($previous_close_dt));
 				}
-				
-
-				
-				
+			
 				
 
 				$this->closeTime = $close_time;
+				
 				$this->set('close_time',$close_time);
 
 				//news ticker
