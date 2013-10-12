@@ -480,6 +480,7 @@ function isStaffExist($staff_token,$name){
                         <td align="right">ss$ <?=number_format(@$running_balance)?></td>
                     </tr>
                    </table>
+                   <span>*Neraca klab di update mingguan setelah pertandingan.</span>
               </div><!-- end #tabs-Keuagan -->
               <div id="tabs-Players">
                 <div class="player-list">

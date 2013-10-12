@@ -24,6 +24,7 @@
             $("div.starter").removeClass('playerBoxChoosed');
             $("div.bench").removeClass('playerBoxSelected');
             $("div.starter").removeClass('playerBoxSelected');
+            $("#draggable").hide();
             //show slots for subs
             for(var i=0;i<17;i++){
                 $("#p"+i+".slot").show();
