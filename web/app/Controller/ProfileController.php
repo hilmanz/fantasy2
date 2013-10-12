@@ -221,6 +221,11 @@ class ProfileController extends AppController {
 				$userData = $this->getUserData();
 				$this->set('INITIAL_BUDGET',Configure::read('INITIAL_BUDGET'));
 				$teams = $this->Game->getTeams();
+				//get players of selected team.
+				$players_selected = $this->Game->getMasterTeam($selected_team['team_id']);
+				$this->set('player_selected',json_encode($players_selected));
+
+
 				$this->set('team_list',$teams);
 				$this->set('selected_team',$selected_team);
 				$original = $this->Game->getClub($selected_team['team_id']);

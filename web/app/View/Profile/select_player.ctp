@@ -89,24 +89,60 @@ function getPlayers(team_id){
      api_call("<?=$this->Html->url('/game/players/')?>"+team_id,function(response){
         $("#available").html('');
         if(response.length>0){
-            tmp['available_teams'] = response;
-            var n = response.length;
-            $.each(response,function(k,v){
-                if(v!=null){
-                    est_expenses += v.salary;
-                    v.team_id = team_id;
-                    append_view(player,'#available',v);    
-                }
-                if(k==(n-1)){
-                    $('.expense').html(number_format(est_expenses));
-                }
-            });
+            try{
+                tmp['available_teams'] = response;
+                var n = response.length;
+                $.each(response,function(k,v){
+                    if(v!=null){
+                        est_expenses += v.salary;
+                        v.team_id = team_id;
+                        append_view(player,'#available',v);    
+                    }
+                    if(k==(n-1)){
+                        $('.expense').html(number_format(est_expenses));
+                    }
+                });
+            }catch(e){
+                $("#available").html('Gagal memuat daftar pemain, <a href="javascript:getPlayers("<?=$selected_team['team_id']?>");" class="button">Coba Lagi</a>');
+            }
+            
+        }else{
+            $("#available").html('Gagal memuat daftar pemain, <a href="javascript:getPlayers("<?=$selected_team['team_id']?>");" class="button">Coba Lagi</a>');
         }
     });
 }
 $(document).ready(function(){
-  getPlayers("<?=$selected_team['team_id']?>");  
+  //getPlayers("<?=$selected_team['team_id']?>");  
+  populatePlayers("<?=$selected_team['team_id']?>",<?=$player_selected?>);
 });
+
+function populatePlayers(team_id,response){
+    $("#available").html('');
+        
+        if(response.length>0){
+            try{
+                tmp['available_teams'] = response;
+                var n = response.length;
+                $.each(response,function(k,v){
+                    if(v!=null){
+                        est_expenses += v.salary;
+                        v.team_id = team_id;
+                        append_view(player,'#available',v);    
+                    }
+                    if(k==(n-1)){
+                        $('.expense').html(number_format(est_expenses));
+                    }
+                });
+            }catch(e){
+                 $("#available").html('Gagal memuat daftar pemain, '+
+                '<a href="javascript:getPlayers(\''+team_id+'\');" class="button">Coba Lagi</a>');
+            }
+                
+        }else{
+             $("#available").html('Gagal memuat daftar pemain, '+
+                '<a href="javascript:getPlayers(\''+team_id+'\');" class="button">Coba Lagi</a>');
+        }
+}
 </script>
 <script type="text/template" id="player">
   <%
