@@ -126,6 +126,12 @@ class AppController extends Controller {
 				//news ticker
 				$this->set('tickers',$this->Ticker->find('all',array('limit'=>5)));
 				
+
+				//notification stuffs
+				
+				
+				$this->set('has_read_notification',$this->Session->read('has_read_notification'));
+
 			}else{
 				$this->set('USER_IS_LOGIN',false);
 			}

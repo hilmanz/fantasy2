@@ -211,21 +211,31 @@
 </script>
 
 <script>
+
 var notifications = {};
+var has_read_notification = <?=intval(@$has_read_notification)?>;
  get_notification(0,function(data){
-            console.log(data);
             notifications = data;
-            if(data.total_new>0){
-                $("#btn_inbox").html('INBOX ('+data.total_new+')');
-            }else{
+            if(has_read_notification==1){
                 $("#btn_inbox").html('INBOX');
+            }else{
+                 if(data.total_new>0){
+                    $("#btn_inbox").html('INBOX ('+data.total_new+')');
+                }else{
+                    $("#btn_inbox").html('INBOX');
+                }
             }
+           
         });
         $("#btn_inbox").fancybox({
             beforeLoad : function(){
-                render_view(tplinbox,"#popup-notifications .popupContent .entry-popup",notifications);
-                $('.loading').hide();
-                $('.inbox').show();
+                api_call('<?=$this->Html->url('/game/read_notification')?>',function(response){
+                     render_view(tplinbox,"#popup-notifications .popupContent .entry-popup",notifications);
+                        $('.loading').hide();
+                        $('.inbox').show();
+                        $("#btn_inbox").html('INBOX');
+                });
+               
             },
            
         });

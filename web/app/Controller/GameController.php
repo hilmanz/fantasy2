@@ -130,7 +130,13 @@ class GameController extends AppController {
 		print json_encode(array('status'=>'1',
 								'data'=>array('messages'=>$messages,'total_new'=>$new_messages)));
 		die();
-	}	
+	}
+	public function read_notification(){
+		$this->Session->write('has_read_notification',1);
+		header('Content-type: application/json');
+		print json_encode(array('status'=>'1'));
+		die();
+	}
 	public function hire_staff(){
 		$this->loadModel('Team');
 		$this->loadModel('User');
