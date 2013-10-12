@@ -163,6 +163,8 @@ class GameController extends AppController {
 
 		$rs = $this->Game->sale_player($userData['team']['id'],$player_id);
 
+		//reset financial statement
+		$this->Session->write('FinancialStatement',null);
 		
 		if(@$rs['status']==1){
 			$msg = "@p1_".$this->userDetail['User']['id']." telah melepas {$rs['data']['name']} seharga SS$".number_format($rs['data']['transfer_value']);
@@ -182,7 +184,9 @@ class GameController extends AppController {
 		$player_id = Sanitize::clean($this->request->data['player_id']);
 
 		$rs = $this->Game->buy_player($userData['team']['id'],$player_id);
-
+		
+		//reset financial statement
+		$this->Session->write('FinancialStatement',null);
 		
 
 		if(@$rs['status']==1){
