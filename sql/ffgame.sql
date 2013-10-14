@@ -653,3 +653,28 @@ ALTER TABLE `ffgame`.`game_team_expenditures` ADD INDEX `IDX_GAME_WEEK` (`game_t
 
 ALTER TABLE `ffgame`.`game_team_expenditures`     ADD COLUMN `item_total` INT(11) DEFAULT '1' NULL AFTER `match_day`;
 ALTER TABLE `ffgame`.`game_team_expenditures`     ADD COLUMN `base_price` INT(11) DEFAULT '1' NULL AFTER `item_total`;
+
+
+
+CREATE TABLE ffgame.game_transfer_history (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `tw_id` int(11) DEFAULT NULL COMMENT 'transfer window ID',
+  `game_team_id` varchar(30) DEFAULT NULL,
+  `player_id` varchar(30) DEFAULT NULL,
+  `transfer_value` bigint(21) DEFAULT NULL,
+  `transfer_date` datetime DEFAULT NULL,
+  `transfer_type` tinyint(3) DEFAULT '1' COMMENT '1-> buy, 2->sale',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `tw_open` (`tw_id`,`game_team_id`,`player_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+CREATE TABLE ffgame.master_transfer_window (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `tw_open` datetime DEFAULT NULL,
+  `tw_close` datetime DEFAULT NULL,
+  `window_name` varchar(24) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IDX_TIME` (`tw_open`,`tw_close`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+
+insert  into ffgame.master_transfer_window(`id`,`tw_open`,`tw_close`,`window_name`) values (1,'2013-10-11 00:00:00','2013-10-17 00:00:00','October 2013'),(2,'2013-11-11 00:00:00','2013-11-15 00:00:00','November 2013'),(3,'2013-12-11 00:00:00','2013-12-15 00:00:00','December 2013'),(4,'2014-01-11 00:00:00','2014-01-15 00:00:00','January 2014'),(5,'2014-02-11 00:00:00','2014-02-15 00:00:00','Febuary 2014'),(6,'2014-03-11 00:00:00','2014-03-15 00:00:00','March 2014'),(7,'2014-04-11 00:00:00','2014-04-15 00:00:00','April 2014'),(8,'2014-05-11 00:00:00','2014-05-15 00:00:00','Mei 2014'),(9,'2014-06-11 00:00:00','2014-06-15 00:00:00','June 2014'),(10,'2014-07-11 00:00:00','2014-07-15 00:00:00','July 2014');
