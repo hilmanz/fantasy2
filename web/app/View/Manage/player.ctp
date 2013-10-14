@@ -719,4 +719,14 @@ $("#btnSale").fancybox({
         <h1>Penjualan Tidak Berhasil</h1>
         <h3>Silahkan coba kembali !</h3>
     </div>
+    <div class="invalid_transfer" style="display:none;">
+        <h1>Halo?….</h1>
+        <h3>Pemain ini baru bisa dijual di transfer window bulan mendatang.</h3>
+        
+    </div>
+    <div class="window_closed" style="display:none;">
+        <h1>Transfer Window Sedang Tutup</h1>
+        <h3>Transfer window SuperSoccer Football Manager sedang tutup, silahkan balik lagi tanggal 11.</h3>
+        
+    </div>
 </script>

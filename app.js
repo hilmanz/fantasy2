@@ -85,6 +85,8 @@ app.get('/game/rank',user.list);
 app.post('/sale',[auth.canAccess],gameplay.sale);
 app.post('/buy',[auth.canAccess],gameplay.buy);
 
+app.get('/transfer_window',[auth.canAccess],gameplay.getTransferWindow);
+
 app.get('/test',function(req,res){
 	client.get(req.query.access_token,function(err,rs){
 		console.log(rs);

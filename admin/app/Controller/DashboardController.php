@@ -1,5 +1,4 @@
 <?php
-
 App::uses('AppController', 'Controller');
 
 
@@ -23,6 +22,9 @@ class DashboardController extends AppController {
 		$tickers = $this->Notification->find('all',array('conditions'=>array('game_team_id'=>0),
 														 'limit'=>100));
 		$this->set('notifications',$tickers);
+	}
+	public function daily_logins(){
+		$sql = "SELECT DATE(log_dt) AS dt,COUNT(id) AS total FROM activity_logs WHERE log_type='LOGIN' GROUP BY DATE(log_dt) LIMIT 30";
 	}
 	public function add_ticker(){
 		$this->loadModel('Ticker');

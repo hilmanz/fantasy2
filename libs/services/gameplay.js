@@ -26,6 +26,15 @@ exports.getPlayers = function(req,res){
 		}
 	});
 }
+exports.getTransferWindow = function(req,res){
+	gameplay.getTransferWindow(function(err,rs){
+		if(rs!=null){
+			res.json(200,rs);
+		}else{
+			res.send(200,[]);
+		}
+	});
+}
 exports.setLineup = function(req,res){
 	
 	gameplay.setLineup(req.body.team_id,
@@ -445,11 +454,20 @@ function handleError(res){
 //sale a player
 exports.sale = function(req,res){
 	gameplay.sale(
+		req.body.window_id,
 		req.body.game_team_id,
 		req.body.player_id,
 		function(err,result){
 			if(err){
-				handleError(res);
+				
+				if(err.message=='INVALID_TRANSFER_WINDOW'){
+
+					res.send(200,{status:-1,
+									message:'you cannot sale a player who already bought from the same transfer window'});
+				}else{
+					handleError(res);
+				}
+				
 			}else{
 				if(result!=null){
 					res.send(200,{status:1,data:result,message:'the player has been successfully sold.'});
@@ -463,6 +481,7 @@ exports.sale = function(req,res){
 //buy a player
 exports.buy = function(req,res){
 	gameplay.buy(
+		req.body.window_id,
 		req.body.game_team_id,
 		req.body.player_id,
 		function(err,result){
@@ -470,6 +489,9 @@ exports.buy = function(req,res){
 				
 				if(err.message=='no money'){
 					res.send(200,{status:2,data:{player:{},stats:[]}});
+				}else if(err.message == 'INVALID_TRANSFER_WINDOW'){
+					res.send(200,{status:-1,
+									message:'you cannot sale a player who already bought from the same transfer window'});
 				}else{
 					handleError(res);	
 				}

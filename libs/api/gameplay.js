@@ -924,14 +924,42 @@ function best_player(game_team_id,done){
 	
 }
 
+//get transfer window id
+function getTransferWindow(done){
+	var async = require('async');
+	prepareDb(function(conn){
+		async.waterfall([
+				function(callback){
+					conn.query("SELECT * \
+								FROM ffgame.master_transfer_window \
+								WHERE MONTH(tw_open) = MONTH(NOW());",
+								[],function(err,rs){
+									try{
+										callback(err,rs[0]);
+									}catch(e){
+										callback(err,{});
+									}	
+								});
+				}
+			],
+			function(err,result){
+				conn.end(function(err){
+					done(err,result);
+				});
+			});
+	});
+}
+
 /*sale player
 * step 1 - make sure that the player_id is owned by the team.
 * step 2 - count the transfer value accordingly
 * step 3 - remove the player from possession and from lineups
 * step 4 - add a transfer money to game_team_expenditures
 * 
+* Change - 14/10/2013 
+* player who already bought cannot be sold on the same transfer window.
 */
-function sale(game_team_id,player_id,done){
+function sale(window_id,game_team_id,player_id,done){
 	var async = require('async');
 	prepareDb(function(conn){
 		async.waterfall(
@@ -972,28 +1000,58 @@ function sale(game_team_id,player_id,done){
 					}
 				},
 				function(name,transfer_value,callback){
-					//check for player's latest performances
-					var performance_diff = 0;
-					conn.query(
-					"SELECT points,performance FROM ffgame_stats.game_match_player_points \
-					 WHERE game_team_id=? AND player_id=? ORDER BY id DESC;",
-					[game_team_id,player_id],
-					function(err,rs){
+					//check if these player can be transfered in current transfer window.
+					async.waterfall([
+							function(cb){
+								conn.query("SELECT COUNT(*) AS total FROM ffgame.game_transfer_history \
+											WHERE tw_id=? AND game_team_id = ? AND player_id = ?;",
+											[window_id,game_team_id,player_id],
+											function(err,rs){
+												
+												var can_transfer = true;
+												try{
+													if(rs[0].total>0){
+														can_transfer = false;
+														
+													}
+												}catch(e){}
 
-						if(!err){
-							//@TODO we need to calculate the player's performance value to affect
-							//the latest transfer value
-							if(rs.length>0){
-								rs[0].performance = rs[0].performance || 0;
-								if(rs[0].performance!=0){
-									transfer_value = transfer_value + ((((rs[0].performance / 10) * 1)/100)*transfer_value);	
-								} 
+												console.log('can transfer ?',can_transfer);
+												cb(err,can_transfer);
+											});
 							}
-							callback(err,name,transfer_value);
-						}else{
-							callback(new Error('player_got no performance'),null);
-						}
+						],
+					function(err,r){
+						callback(null,r,name,transfer_value);
 					});
+				},
+				function(can_transfer,name,transfer_value,callback){
+					if(can_transfer){
+						//check for player's latest performances
+						var performance_diff = 0;
+						conn.query(
+						"SELECT points,performance FROM ffgame_stats.game_match_player_points \
+						 WHERE game_team_id=? AND player_id=? ORDER BY id DESC;",
+						[game_team_id,player_id],
+						function(err,rs){
+
+							if(!err){
+								//@TODO we need to calculate the player's performance value to affect
+								//the latest transfer value
+								if(rs.length>0){
+									rs[0].performance = rs[0].performance || 0;
+									if(rs[0].performance!=0){
+										transfer_value = transfer_value + ((((rs[0].performance / 10) * 1)/100)*transfer_value);	
+									} 
+								}
+								callback(err,name,transfer_value);
+							}else{
+								callback(new Error('player_got no performance'),null);
+							}
+						});
+					}else{
+						callback(new Error('INVALID_TRANSFER_WINDOW'),null);
+					}
 				},
 				function(name,transfer_value,callback){
 					console.log('the price',transfer_value);
@@ -1073,6 +1131,22 @@ function sale(game_team_id,player_id,done){
 												//console.log(this.sql);
 												callback(err,{name:name,transfer_value:transfer_value});
 								});
+							},
+							function(transfer_result,callback){
+								conn.query("INSERT IGNORE INTO ffgame.game_transfer_history\
+											(tw_id,game_team_id,player_id,transfer_value,\
+											transfer_date,transfer_type)\
+											VALUES\
+											(?,?,?,?,NOW(),2)",
+											[window_id,
+											 game_team_id,
+											 player_id,
+											 transfer_result.transfer_value
+											 ],
+											function(err,rs){
+												callback(err,transfer_result);
+											}
+								);
 							}
 						],
 						function(err,result){
@@ -1100,7 +1174,7 @@ function sale(game_team_id,player_id,done){
 * step 5 - deduct a transfer money from game_team_expenditures
 * 
 */
-function buy(game_team_id,player_id,done){
+function buy(window_id,game_team_id,player_id,done){
 	var async = require('async');
 	prepareDb(function(conn){
 		async.waterfall(
@@ -1144,29 +1218,60 @@ function buy(game_team_id,player_id,done){
 					}
 				},
 				function(name,transfer_value,callback){
-					//check for player's latest performances
-					var performance_diff = 0;
-					conn.query(
-					"SELECT points,performance FROM ffgame_stats.master_player_performance \
-					 WHERE player_id=? ORDER BY id DESC;",
-					[player_id],
-					function(err,rs){
-						if(!err){
-							//console.log(this.sql);
-							//@TODO we need to calculate the player's performance value to affect
-							//the latest transfer value
-							if(rs.length>0){
-								rs[0].performance = rs[0].performance || 0;
-								if(rs[0].performance!=0){
-									transfer_value = transfer_value + ((((rs[0].performance / 10) * 1)/100)*transfer_value);
-								}
+					//check if these player can be transfered in current transfer window.
+					async.waterfall([
+							function(cb){
+								conn.query("SELECT COUNT(*) AS total FROM ffgame.game_transfer_history \
+											WHERE tw_id=? AND game_team_id = ? AND player_id = ?;",
+											[window_id,game_team_id,player_id],
+											function(err,rs){
+												console.log(this.sql);
+												var can_transfer = true;
+												try{
+													if(rs[0].total>0){
+														can_transfer = false;
+														
+													}
+												}catch(e){}
+												
+												console.log('can transfer ?',can_transfer);
+												cb(err,can_transfer);
+											});
 							}
-							callback(err,name,transfer_value);
-
-						}else{
-							callback(new Error('player got no performance'),null);
-						}
+						],
+					function(err,r){
+						callback(null,r,name,transfer_value);
 					});
+				},
+				function(can_transfer,name,transfer_value,callback){
+					if(can_transfer){
+						//check for player's latest performances
+						var performance_diff = 0;
+						conn.query(
+						"SELECT points,performance FROM ffgame_stats.master_player_performance \
+						 WHERE player_id=? ORDER BY id DESC;",
+						[player_id],
+						function(err,rs){
+							if(!err){
+								//console.log(this.sql);
+								//@TODO we need to calculate the player's performance value to affect
+								//the latest transfer value
+								if(rs.length>0){
+									rs[0].performance = rs[0].performance || 0;
+									if(rs[0].performance!=0){
+										transfer_value = transfer_value + ((((rs[0].performance / 10) * 1)/100)*transfer_value);
+									}
+								}
+								callback(err,name,transfer_value);
+
+							}else{
+								callback(new Error('player got no performance'),null);
+							}
+						});
+					}else{
+						callback(new Error('INVALID_TRANSFER_WINDOW'),null);
+					}
+					
 				},
 				function(name,transfer_value,callback){
 					console.log('the price',transfer_value);
@@ -1260,6 +1365,22 @@ function buy(game_team_id,player_id,done){
 												//console.log(this.sql);
 												callback(err,{name:name,transfer_value:transfer_value});
 								});
+							},
+							function(transfer_result,callback){
+								conn.query("INSERT IGNORE INTO ffgame.game_transfer_history\
+											(tw_id,game_team_id,player_id,transfer_value,\
+											transfer_date,transfer_type)\
+											VALUES\
+											(?,?,?,?,NOW(),1)",
+											[window_id,
+											 game_team_id,
+											 player_id,
+											 transfer_result.transfer_value
+											 ],
+											function(err,rs){
+												callback(err,transfer_result);
+											}
+								);
 							}
 						],
 						function(err,result){
@@ -1447,6 +1568,7 @@ exports.getPlayerDailyTeamStats = getPlayerDailyTeamStats;
 exports.sale = sale;
 exports.buy = buy;
 exports.getWeeklyFinance = getWeeklyFinance;
+exports.getTransferWindow = getTransferWindow;
 exports.setPool = function(p){
 	pool = p;
 	match.setPool(pool);

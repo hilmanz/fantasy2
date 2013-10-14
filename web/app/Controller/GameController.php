@@ -161,15 +161,39 @@ class GameController extends AppController {
 		$userData = $this->getUserData();
 		$player_id = Sanitize::clean($this->request->data['player_id']);
 
-		$rs = $this->Game->sale_player($userData['team']['id'],$player_id);
+		$window = $this->Game->transfer_window();
 
-		//reset financial statement
-		$this->Session->write('FinancialStatement',null);
-		
-		if(@$rs['status']==1){
-			$msg = "@p1_".$this->userDetail['User']['id']." telah melepas {$rs['data']['name']} seharga SS$".number_format($rs['data']['transfer_value']);
-			$this->Info->write('sale player',$msg);
+		//check if the transfer window is opened, or the player is just registered within 24 hours
+		$is_new_user = false;
+		$can_transfer = false;
+		if(time()<strtotime($this->userDetail['User']['register_date'])+(24*60*60)){
+			$is_new_user = true;
 		}
+		if(!$is_new_user){
+			if(strtotime($window['tw_open']) <= time() && strtotime($window['tw_close'])>=time()){
+				$can_transfer = true;
+				
+			}
+		}else{
+			$can_transfer = true;
+		}
+		
+		
+		if($can_transfer){
+			$window_id = $window['id'];
+			$rs = $this->Game->sale_player($window_id,$userData['team']['id'],$player_id);
+
+			//reset financial statement
+			$this->Session->write('FinancialStatement',null);
+			
+			if(@$rs['status']==1){
+				$msg = "@p1_".$this->userDetail['User']['id']." telah melepas {$rs['data']['name']} seharga SS$".number_format($rs['data']['transfer_value']);
+				$this->Info->write('sale player',$msg);
+			}
+		}else{
+			$rs = array('status'=>3,'message'=>'Transfer window is closed');
+		}
+		
 		header('Content-type: application/json');
 		print json_encode($rs);
 		die();
@@ -183,16 +207,40 @@ class GameController extends AppController {
 		$userData = $this->getUserData();
 		$player_id = Sanitize::clean($this->request->data['player_id']);
 
-		$rs = $this->Game->buy_player($userData['team']['id'],$player_id);
-		
-		//reset financial statement
-		$this->Session->write('FinancialStatement',null);
-		
+		$window = $this->Game->transfer_window();
+		$window_id = $window['id'];
 
-		if(@$rs['status']==1){
-			$msg = "@p1_".$this->userDetail['User']['id']." telah membeli {$rs['data']['name']} seharga SS$".number_format($rs['data']['transfer_value']);
-			$this->Info->write('buy player',$msg);
+		//check if the transfer window is opened, or the player is just registered within 24 hours
+		$is_new_user = false;
+		$can_transfer = false;
+		if(time()<strtotime($this->userDetail['User']['register_date'])+(24*60*60)){
+			$is_new_user = true;
 		}
+		if(!$is_new_user){
+			if(strtotime($window['tw_open']) <= time() && strtotime($window['tw_close'])>=time()){
+				$can_transfer = true;
+				
+			}
+		}else{
+			$can_transfer = true;
+		}
+
+		if($can_transfer){
+			$rs = $this->Game->buy_player($window_id,$userData['team']['id'],$player_id);
+		
+			//reset financial statement
+			$this->Session->write('FinancialStatement',null);
+			
+
+			if(@$rs['status']==1){
+				$msg = "@p1_".$this->userDetail['User']['id']." telah membeli {$rs['data']['name']} seharga SS$".number_format($rs['data']['transfer_value']);
+				$this->Info->write('buy player',$msg);
+			}
+		}else{
+			$rs = array('status'=>3,'message'=>'Transfer window is closed');
+		}
+
+		
 		header('Content-type: application/json');
 		print json_encode($rs);
 		die();

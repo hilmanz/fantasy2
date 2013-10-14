@@ -42,7 +42,10 @@ class Game extends AppModel {
 		$response = $this->api_call('/teams');
 		return $response;
 	}
-	
+	public function transfer_window(){
+		$response = $this->api_call('/transfer_window');
+		return $response;
+	}
 	public function getMasterTeam($team_id){
 		$response = $this->api_call('/players/'.$team_id);
 		return $response;
@@ -85,8 +88,9 @@ class Game extends AppModel {
 	/*
 	* selling player
 	*/
-	public function sale_player($team_id,$player_id){
+	public function sale_player($window_id,$team_id,$player_id){
 		$response = $this->api_post('/sale',array(
+			'window_id'=>$window_id,
 			'game_team_id'=>$team_id,
 			'player_id'=>$player_id
 		));
@@ -95,8 +99,9 @@ class Game extends AppModel {
 	/*
 	* buy_player
 	*/
-	public function buy_player($team_id,$player_id){
+	public function buy_player($window_id,$team_id,$player_id){
 		$response = $this->api_post('/buy',array(
+			'window_id'=>$window_id,
 			'game_team_id'=>$team_id,
 			'player_id'=>$player_id
 		));

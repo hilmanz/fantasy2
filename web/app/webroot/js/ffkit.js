@@ -39,6 +39,8 @@ function buy_player(player_id,option){
 	$('.success').hide();
 	$('.failure').hide();
 	$('.nomoney').hide();
+	$('.invalid_transfer').hide();
+	$('.window_closed').hide();
 	api_post(api_url+'game/buy',{player_id:player_id},
 			function(response){
 				$('.saving').hide();
@@ -52,6 +54,11 @@ function buy_player(player_id,option){
 				}else if(typeof response.status!=='undefined' && response.status == 2){
 					$('.nomoney').show();
 					
+				}else if(typeof response.status!=='undefined' && response.status == -1){
+					$('.invalid_transfer').show();
+					
+				}else if(typeof response.status!=='undefined' && response.status == 3){
+					$('.window_closed').show();
 				}else{
 					$('.failure').show();
 				}
@@ -72,6 +79,8 @@ function sale_player(player_id,option){
 	$('.confirm').hide();
 	$('.success').hide();
 	$('.failure').hide();
+	$('.invalid_transfer').hide();
+	$('.window_closed').hide();
 	api_post(api_url+'game/sale',{player_id:player_id},
 			function(response){
 				$('.saving').hide();
@@ -86,6 +95,10 @@ function sale_player(player_id,option){
 					}else{
 						$("tr#"+player_id).remove();
 					}
+				}else if(typeof response.status!=='undefined' && response.status == -1){
+					$('.invalid_transfer').show();
+				}else if(typeof response.status!=='undefined' && response.status == 3){
+					$('.window_closed').show();
 				}else{
 					$('.failure').show();
 				}
