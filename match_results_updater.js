@@ -83,20 +83,32 @@ function process_report(game_id,done){
 				console.log('update lineup');
 				//@todo
 				//update lineup hanya di lakukan jika game yang bersangkutan sudah FT
-				lineup_stats.update(game_id,0,function(err,is_done,next_offset){
-					console.log('lineup stats updated !');
-					if(!is_done){
-						console.log('processing next batch');
-						lineup_stats.update(game_id,next_offset,this.done);
-					}else{
-						console.log('updating the business_stats')
+				var is_finished = false;
+				var offset = 0;
+				async.doWhilst(
+					function(cb){
+						console.log('offset',offset);
+						lineup_stats.update(game_id,offset,function(err,is_done,next_offset){
+							offset = next_offset;
+							is_finished = is_done;
+							cb();
+						});
+					},
+					function(){
+						console.log('is_finished',is_finished);
+						if(!is_finished){
+							return true;
+						}
+					},
+					function(err){
+						console.log('updating business stats');
 						business_stats.update(game_id,0,function(err){
 							console.log('business stats update completed');
 							console.log('all batches has been processed');
 							callback(err,'done');
 						});
 					}
-				});
+				);
 			}else{
 				callback(null,'ON GOING MATCH');
 			}

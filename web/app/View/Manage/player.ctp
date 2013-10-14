@@ -720,8 +720,9 @@ $("#btnSale").fancybox({
         <h3>Silahkan coba kembali !</h3>
     </div>
     <div class="invalid_transfer" style="display:none;">
-        <h1>Halo?….</h1>
-        <h3>Pemain ini baru bisa dijual di transfer window bulan mendatang.</h3>
+        <h1>Dijual lagi??</h1>
+        <h3>Pemain yang baru dibeli tidak bisa di jual dalam transfer window yang sama. 
+            Next time, jangan buru-buru jual pemain elo ya !</h3>
         
     </div>
     <div class="window_closed" style="display:none;">

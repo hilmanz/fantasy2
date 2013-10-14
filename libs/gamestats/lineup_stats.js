@@ -37,8 +37,10 @@ exports.update = function(game_id,start,done){
 			function(callback){
 				get_user_teams(start,limit,function(err,team){
 					//if there's no more data. we stop :)
+					console.log(team);
 					if(team.length<limit){
 						is_complete = true;
+						console.log("NO MORE TEAM TO PROCESS");
 					}else{
 						start+=limit;
 					}
@@ -66,7 +68,8 @@ exports.update = function(game_id,start,done){
 				})
 			}
 		],
-		function(err,result){		
+		function(err,result){
+			
 			done(err,is_complete,start);
 		}
 	);	
@@ -559,6 +562,7 @@ function updateLineupStats(game_id,lineups,summary,player_stats,in_game,done){
 * updating the team's overall points
 */
 function update_team_points(done){
+	console.log('updating team points');
 	pool.getConnection(function(err,conn){
 		conn.query("INSERT INTO ffgame_stats.game_team_points\
 					(game_team_id,points)\
@@ -570,7 +574,6 @@ function update_team_points(done){
 						conn.end(function(err){
 							done(err);	
 						});
-						
 					});
 	});
 }
