@@ -162,7 +162,7 @@ function calculateIncomeForAllAwayTeams(game_id,game,home_team,away_team,done){
 function processHomeTeams(start,limit,team_id,game_id,rank,away_rank,game,done){
 	
 	pool.getConnection(function(err,conn){
-		console.log('open connection');
+		console.log('open connection, processing home team');
 		conn.query("SELECT a.*,e.rank FROM ffgame.game_teams a\
 					INNER JOIN ffgame.game_users b\
 					ON a.user_id = b.id\
@@ -178,7 +178,8 @@ function processHomeTeams(start,limit,team_id,game_id,rank,away_rank,game,done){
 					function(err,rs){
 						console.log(this.sql);
 							conn.end(function(err){
-								async.each(rs,
+								console.log('processing each home teams');
+								async.eachSeries(rs,
 									function(team,callback){
 										calculate_home_revenue_stats(team,game_id,game,rank,away_rank,function(err){
 											callback();		
@@ -197,7 +198,7 @@ function processHomeTeams(start,limit,team_id,game_id,rank,away_rank,game,done){
 }
 function processAwayTeams(start,limit,team_id,game_id,rank,away_rank,game,done){
 	pool.getConnection(function(err,conn){
-		console.log('open connection');
+		console.log('open connection, processing away team');
 		conn.query("SELECT a.*,e.rank FROM ffgame.game_teams a\
 					INNER JOIN ffgame.game_users b\
 					ON a.user_id = b.id\
@@ -212,7 +213,9 @@ function processAwayTeams(start,limit,team_id,game_id,rank,away_rank,game,done){
 					[team_id,start,limit],
 					function(err,rs){
 							conn.end(function(err){
-								async.each(rs,
+								console.log(this.sql);
+								console.log('processing each away teams');
+								async.eachSeries(rs,
 									function(team,callback){
 										calculate_away_revenue_stats(team,game_id,game,rank,away_rank,function(err){
 											callback();		

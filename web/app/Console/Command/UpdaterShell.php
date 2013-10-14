@@ -29,7 +29,7 @@ class UpdaterShell extends AppShell{
     		$response = $this->Game->getTeamPoints($user['User']['fb_id']);
 
     		$response['points'] = intval($response['points']);
-
+        $response['extra_points'] = intval($response['extra_points']);
        print_r($response);
 
         if($user['Team']['id']>0){
