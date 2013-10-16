@@ -423,7 +423,10 @@ class ApiController extends AppController {
 		$response['weekly_stats']['balances'] = $financial_statement['weekly_balances'];
 		$response['weekly_stats']['points'] = $weekly_team_points;
 
-		
+		//matches
+		$matches = $this->getMatches($game_team['id'],$game_team['team_id'],$weekly_team_points,$financial_statement['expenditures']);
+
+		$response['previous_matches'] = $matches;
 
 
 		$this->set('response',array('status'=>1,'data'=>$response));
@@ -465,7 +468,7 @@ class ApiController extends AppController {
 									;
 		return array('transaction'=>$weekly_statement,'total_items'=>$total_items);
 	}
-	private function getMatches($arr,$expenditures){
+	private function getMatches($game_team_id,$team_id,$arr,$expenditures){
 		
 		$matches = array();
 		if(sizeof($arr)>0){
@@ -483,11 +486,11 @@ class ApiController extends AppController {
 					ON a.home_id = b.uid
 					INNER JOIN ffgame.master_team c
 					ON a.away_id = c.uid
-					WHERE (a.home_id = '{$this->userData['team']['team_id']}' 
-							OR a.away_id = '{$this->userData['team']['team_id']}')
+					WHERE (a.home_id = '{$team_id}' 
+							OR a.away_id = '{$team_id}')
 					AND EXISTS (SELECT 1 FROM ffgame_stats.game_match_player_points d
 								WHERE d.game_id = a.game_id 
-								AND d.game_team_id = {$this->userData['team']['id']} LIMIT 1)
+								AND d.game_team_id = {$game_team_id} LIMIT 1)
 					ORDER BY a.game_id";
 			$rs = $this->Game->query($sql);
 			
