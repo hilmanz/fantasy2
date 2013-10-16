@@ -34,7 +34,7 @@ class ApiController extends AppController {
 	public function auth(){
 		$fb_id = $this->request->query('fb_id');
 		$user = $this->User->findByFb_id($fb_id);
-		
+
 		if(isset($user['User'])){
 			$rs = $this->Apikey->findByApi_key($this->request->query['api_key']);
 			if(isset($rs['Apikey']) && $rs['Apikey']['api_key']!=null){
@@ -118,7 +118,8 @@ class ApiController extends AppController {
 		}else{
 			$next_match['match']['away_name'] = $club['Team']['team_name'];
 		}
-
+		$this->getCloseTime($next_match);
+		
 		$response['next_match'] = array('game_id'=>$next_match['match']['game_id'],
 										'home_name'=>$next_match['match']['home_name'],
 										'away_name'=>$next_match['match']['away_name'],
@@ -166,6 +167,10 @@ class ApiController extends AppController {
 			$this->set('best_player',$rs['data']);
 			$response['stats']['best_player'] = $rs['data'];
 		}
+
+		//close time
+		$response['close_time'] = $this->closeTime;
+
 		$this->set('response',array('status'=>1,'data'=>$response));
 		$this->render('default');
 	}
@@ -283,6 +288,7 @@ class ApiController extends AppController {
 		}else{
 			$next_match['match']['away_name'] = $club['Team']['team_name'];
 		}
+		$this->getCloseTime($next_match);
 
 		$response['next_match'] = array('game_id'=>$next_match['match']['game_id'],
 										'home_name'=>$next_match['match']['home_name'],
@@ -331,7 +337,8 @@ class ApiController extends AppController {
 			$response['stats']['best_player'] = $rs['data'];
 		}
 
-		
+		//close time
+		$response['close_time'] = $this->closeTime;
 		$this->set('response',array('status'=>1,'data'=>$response));
 		$this->render('default');
 	}
@@ -378,6 +385,7 @@ class ApiController extends AppController {
 			$next_match['match']['away_name'] = $club['Team']['team_name'];
 		}
 		
+		$this->getCloseTime($next_match);
 		
 		if($act=='save'){
 			if($this->request->is('post')){
@@ -396,6 +404,7 @@ class ApiController extends AppController {
 										'match_date'=>date("Y-m-d H:i:s",strtotime($next_match['match']['match_date'])),
 										'match_date_ts'=>strtotime($next_match['match']['match_date'])
 										);
+				$user['User']['close_time'] = $this->closeTime;
 				$this->set('response',array('status'=>1,'data'=>$rs['User']));
 			}else{
 				$this->set('response',array('status'=>0,'error'=>'Cannot save profile'));
@@ -410,9 +419,33 @@ class ApiController extends AppController {
 										'match_date'=>date("Y-m-d H:i:s",strtotime($next_match['match']['match_date'])),
 										'match_date_ts'=>strtotime($next_match['match']['match_date'])
 										);
+			$user['User']['close_time'] = $this->closeTime;
 			$this->set('response',array('status'=>1,'data'=>$user['User']));
 		}
 		$this->render('default');
+	}
+	function getCloseTime($nextMatch){
+		$this->nextMatch = $nextMatch;
+
+		$previous_close_dt = date("Y-m-d", strtotime("previous Saturday"))." 17:00:00";
+		
+
+		$close_dt = date("Y-m-d", strtotime("next Saturday"))." 17:00:00";
+		
+		$next_match_ts = $this->nextMatch['match']['match_date_ts'];
+		if(date_default_timezone_get()=='Asia/Jakarta'){
+		    $next_match_ts += 6*60*60;
+		}
+		
+		if($next_match_ts > strtotime($close_dt)){
+			$close_time = array("datetime"=>$close_dt,
+							"ts"=>strtotime($close_dt));
+		}else{
+			$close_time = array("datetime"=>$previous_close_dt,
+							"ts"=>strtotime($previous_close_dt));
+		}
+	
+		$this->closeTime = $close_time;
 	}
 
 }
