@@ -34,6 +34,7 @@ class ApiController extends AppController {
 	public function auth(){
 		$fb_id = $this->request->query('fb_id');
 		$user = $this->User->findByFb_id($fb_id);
+		
 		if(isset($user['User'])){
 			$rs = $this->Apikey->findByApi_key($this->request->query['api_key']);
 			if(isset($rs['Apikey']) && $rs['Apikey']['api_key']!=null){
@@ -203,6 +204,7 @@ class ApiController extends AppController {
 		$this->render('default');
 	}
 	public function club(){
+
 		$this->loadModel('Point');
 
 		$api_session = $this->readAccessToken();
@@ -382,7 +384,7 @@ class ApiController extends AppController {
 				$data = array(
 					'name'=>@$this->request->data['name'],
 					'email'=>@$this->request->data['email'],
-					'city'=>@$this->request->data['city']
+					'location'=>@$this->request->data['location']
 				);
 				$this->User->id = $user['User']['id'];
 				$rs = $this->User->save($data);
