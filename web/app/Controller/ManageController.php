@@ -83,6 +83,7 @@ class ManageController extends AppController {
 		foreach($players as $p){
 			$weekly_salaries += intval(@$p['salary']);
 		}
+		
 		//-->
 		//list of staffs
 		//get officials

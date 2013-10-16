@@ -30,6 +30,10 @@ class ApiController extends AppController {
  */
 	public $name = 'Api';
 	public $uses = array();
+	private $weekly_balances = null;
+	private $expenditures = null;
+	private $starting_budget = 0;
+	private $finance_total_items_raw = null;
 	
 	public function auth(){
 		$fb_id = $this->request->query('fb_id');
@@ -118,8 +122,9 @@ class ApiController extends AppController {
 		}else{
 			$next_match['match']['away_name'] = $club['Team']['team_name'];
 		}
+		$next_match['match']['match_date_ts'] = strtotime($next_match['match']['match_date']);
 		$this->getCloseTime($next_match);
-		
+
 		$response['next_match'] = array('game_id'=>$next_match['match']['game_id'],
 										'home_name'=>$next_match['match']['home_name'],
 										'away_name'=>$next_match['match']['away_name'],
@@ -232,13 +237,16 @@ class ApiController extends AppController {
 									'fb_id'=>$user['User']['fb_id'],
 									'name'=>$user['User']['name'],
 									'avatar_img'=>$user['User']['avatar_img']);
-		$response['stats']['points'] = intval(@$point['Point']['points']);
+
+		$response['stats']['points'] = intval(@$point['Point']['points']) + intval(@$point['Point']['extra_points']);
 		$response['stats']['rank'] = intval(@$point['Point']['rank']);
 
 		//budget
 		$budget = $this->Game->getBudget($game_team['id']);
 		$response['budget'] = $budget;
+
 		$response['stats']['club_value'] = intval($budget) + $response['stats']['points'];
+
 		//club
 		$club = $this->Team->findByUser_id($user['User']['id']);
 		$response['club'] = array('id'=>$club['Team']['id'],
@@ -255,6 +263,13 @@ class ApiController extends AppController {
 		$players = $this->Game->get_team_players($fb_id);
 		$response['players'] = $players;
 		
+
+		//players weekly salaries
+		$weekly_salaries = 0;
+		foreach($players as $p){
+			$weekly_salaries += intval(@$p['salary']);
+		}
+
 		//lineup starters
 		$lineup = $this->Game->getLineup($game_team['id']);
 		$response['lineup_settings'] = $lineup;
@@ -273,12 +288,45 @@ class ApiController extends AppController {
 			}
 		}
 		
+		//staff's weekly salaries
+		foreach($staffs as $p){
+			$weekly_salaries += intval(@$p['salary']);
+		}
+		$response['weekly_salaries'] = $weekly_salaries;
+
 		$response['staffs'] = $staffs;
 
 		//financial statements
 		$finance = $this->getFinancialStatements($fb_id);
+		$financial_statement['finance'] = $finance;
+		$financial_statement['weekly_balances'] = $this->weekly_balances;
+		$financial_statement['total_items'] = $this->finance_total_items_raw;
+
+		//last earnings
+		$rs = $this->Game->getLastEarnings($game_team['id']);
+		if($rs['status']==1){
+			$financial_statement['last_earning'] = $rs['data']['total_earnings'];
+		}else{
+			$financial_statement['last_earning'] = 0;
+		}
+
+		//last expenses
+		$rs = $this->Game->getLastExpenses($game_team['id']);
+		if($rs['status']==1){
+			$financial_statement['last_expenses'] = $rs['data']['total_expenses'];
+		}else{
+			$financial_statement['last_expenses'] = 0;
+		}
+		$financial_statement['expenditures'] = $this->expenditures;
+		$financial_statement['starting_budget'] = $this->starting_budget;
+
+
+
 		
+
+
 		$response['finance'] = $finance;
+		$response['finance_details'] = $financial_statement;
 
 		$next_match = $this->Game->getNextMatch($game_team['team_id']);
 		$next_match['match']['home_original_name'] = $next_match['match']['home_name'];
@@ -288,6 +336,8 @@ class ApiController extends AppController {
 		}else{
 			$next_match['match']['away_name'] = $club['Team']['team_name'];
 		}
+
+		$next_match['match']['match_date_ts'] = strtotime($next_match['match']['match_date']);
 		$this->getCloseTime($next_match);
 
 		$response['next_match'] = array('game_id'=>$next_match['match']['game_id'],
@@ -339,10 +389,47 @@ class ApiController extends AppController {
 
 		//close time
 		$response['close_time'] = $this->closeTime;
+
+
+		//weekly points and weekly balances
+
+		//for weekly points, make sure the points from other player are included
+		$this->loadModel('Weekly_point');
+		$this->Weekly_point->virtualFields['TotalPoints'] = 'SUM(Weekly_point.points)';
+		$options = array('fields'=>array('Weekly_point.id', 'Weekly_point.team_id', 
+							'Weekly_point.game_id', 'Weekly_point.matchday', 'Weekly_point.matchdate', 
+							'SUM(Weekly_point.points) AS TotalPoints', 'Team.id', 'Team.user_id', 
+							'Team.team_id','Team.team_name'),
+			'conditions'=>array('Weekly_point.team_id'=>$club['Team']['id']),
+	        'limit' => 100,
+	        'group' => 'Weekly_point.matchday',
+	        'order' => array(
+	            'matchday' => 'asc'
+	        ));
+		$weekly_points = $this->Weekly_point->find('all',$options);
+		$weekly_team_points = array();
+		while(sizeof($weekly_points) > 0){
+			$p = array_shift($weekly_points);
+			$weekly_team_points[] = array(
+					'game_id'=>$p['Weekly_point']['game_id'],
+					'matchday'=>$p['Weekly_point']['matchday'],
+					'matchdate'=>$p['Weekly_point']['matchdate'],
+					'points'=>$p[0]['TotalPoints']
+				);
+		}
+		unset($weekly_points);
+
+
+		$response['weekly_stats']['balances'] = $financial_statement['weekly_balances'];
+		$response['weekly_stats']['points'] = $weekly_team_points;
+
+		
+
+
 		$this->set('response',array('status'=>1,'data'=>$response));
 		$this->render('default');
 	}
-
+	/*
 	private function getFinancialStatements($fb_id){
 		$finance = $this->Game->financial_statements($fb_id);
 		if($finance['status']==1){
@@ -357,6 +444,107 @@ class ApiController extends AppController {
 										intval(@$report['marketing_manager_bonus'])+
 										intval(@$report['public_relation_officer_bonus'])+
 										intval(@$report['win_bonus']);
+			return $report;
+		}
+	}*/
+	private function getWeeklyFinancialStatement($weekly_finance){
+		$weekly_statement = array();
+		$total_items = array();
+		while(sizeof($weekly_finance['transactions'])>0){
+			$p = array_shift($weekly_finance['transactions']);
+			$weekly_statement[$p['item_name']] = $p['amount'];
+			$total_items[$p['item_name']] = $p['item_total'];
+		}
+
+		$weekly_statement['total_earnings'] = intval(@$weekly_statement['tickets_sold'])+
+									intval(@$weekly_statement['commercial_director_bonus'])+
+									intval(@$weekly_statement['marketing_manager_bonus'])+
+									intval(@$weekly_statement['public_relation_officer_bonus'])+
+									intval(@$weekly_statement['win_bonus'])+
+									intval(@$weekly_statement['player_sold'])
+									;
+		return array('transaction'=>$weekly_statement,'total_items'=>$total_items);
+	}
+	private function getMatches($arr,$expenditures){
+		
+		$matches = array();
+		if(sizeof($arr)>0){
+			$game_ids = array();
+
+			foreach($arr as $a){
+				$game_ids[] = "'".$a['game_id']."'";
+			}
+
+			$a_game_ids = implode(',',$game_ids);
+			$sql = "SELECT game_id,home_id,away_id,b.name AS home_name,c.name AS away_name,
+					a.matchday,a.match_date,a.home_score,a.away_score
+					FROM ffgame.game_fixtures a
+					INNER JOIN ffgame.master_team b
+					ON a.home_id = b.uid
+					INNER JOIN ffgame.master_team c
+					ON a.away_id = c.uid
+					WHERE (a.home_id = '{$this->userData['team']['team_id']}' 
+							OR a.away_id = '{$this->userData['team']['team_id']}')
+					AND EXISTS (SELECT 1 FROM ffgame_stats.game_match_player_points d
+								WHERE d.game_id = a.game_id 
+								AND d.game_team_id = {$this->userData['team']['id']} LIMIT 1)
+					ORDER BY a.game_id";
+			$rs = $this->Game->query($sql);
+			
+
+			foreach($rs as $n=>$r){
+				$points = 0;
+				$balance = 0;
+				foreach($arr as $a){
+					if($r['a']['matchday']==$a['matchday']){
+						$points = $a['points'];
+						break;
+					}
+				}
+				foreach($expenditures as $b){
+					if($r['a']['game_id']==$b['game_id']){
+						$income = $b['total_income'];
+						break;
+					}
+				}
+				$match = $r['a'];
+				$match['home_name'] = $r['b']['home_name'];
+				$match['away_name'] = $r['c']['away_name'];
+				$match['points'] = $points;
+				$match['income'] = $income;
+				$matches[] = $match;
+			}
+
+			//clean memory
+			$rs = null;
+			unset($rs);
+		}
+		return $matches;
+	}
+	private function getFinancialStatements($fb_id){
+		$finance = $this->Game->financial_statements($fb_id);
+		
+		$this->weekly_balances = @$finance['data']['weekly_balances'];
+		$this->expenditures = @$finance['data']['expenditures'];
+		$this->starting_budget = @intval($finance['data']['starting_budget']);
+
+		if($finance['status']==1){
+
+			$report = array('total_matches' => $finance['data']['total_matches'],
+							'budget' => $finance['data']['budget']);
+			$total_items = array();
+			foreach($finance['data']['report'] as $n=>$v){
+				$report[$v['item_name']] = $v['total'];
+				$total_items[$v['item_name']] = $v['item_total'];
+			}
+			$report['total_earnings'] = intval(@$report['tickets_sold'])+
+										intval(@$report['commercial_director_bonus'])+
+										intval(@$report['marketing_manager_bonus'])+
+										intval(@$report['public_relation_officer_bonus'])+
+										intval(@$report['win_bonus'])+
+										intval(@$report['player_sold'])
+										;
+			$this->finance_total_items_raw = $total_items;
 			return $report;
 		}
 	}
@@ -384,7 +572,7 @@ class ApiController extends AppController {
 		}else{
 			$next_match['match']['away_name'] = $club['Team']['team_name'];
 		}
-		
+		$next_match['match']['match_date_ts'] = strtotime($next_match['match']['match_date']);
 		$this->getCloseTime($next_match);
 		
 		if($act=='save'){
@@ -424,7 +612,8 @@ class ApiController extends AppController {
 		}
 		$this->render('default');
 	}
-	function getCloseTime($nextMatch){
+	private function getCloseTime($nextMatch){
+		
 		$this->nextMatch = $nextMatch;
 
 		$previous_close_dt = date("Y-m-d", strtotime("previous Saturday"))." 17:00:00";
@@ -448,4 +637,11 @@ class ApiController extends AppController {
 		$this->closeTime = $close_time;
 	}
 
+	public function test(){
+		$this->set('response',array('status'=>1,'data'=>array()));
+		$this->render('default');
+	}
+	private function getRingkasanClub(){
+
+	}
 }
