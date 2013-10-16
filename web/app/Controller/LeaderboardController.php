@@ -230,6 +230,11 @@ class LeaderboardController extends AppController {
 	    	$manager = $this->User->findById($r['Team']['user_id']);
 	    	$rs[$n]['Manager'] = @$manager['User'];
 	    }
+	    
+	    if($rs[0]['Point']['TotalPoints']==0){
+	    	$rs = null;
+	    	$this->userRank = 0;
+	    }
 	    $this->set('team',$rs);
 	    $this->set('rank',$this->userRank);
 	    $this->set('tier',$this->getTier($this->userRank));

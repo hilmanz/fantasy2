@@ -94,6 +94,11 @@ class AppController extends Controller {
 				$point = $this->Point->findByTeam_id(@$this->userDetail['Team']['id']);
 				$this->userPoints = @$point['Point']['points'] + @$point['Point']['extra_points'];
 				$this->userRank = @$point['Point']['rank'];
+				//temporary patch.  remove it after next match.
+				if($this->userPoints==0){
+					$this->userRank = 0;
+				}
+				//======>
 				$this->set('USER_RANK',$this->userRank);
 				$this->set('USER_POINTS',$this->userPoints);
 
