@@ -168,8 +168,8 @@ class ProfileController extends AppController {
 	}
 
 	public function create_team(){
-		if($userData['register_completed']!=1){
-			$userData = $this->getUserData();
+		$userData = $this->getUserData();
+		if(@$userData['register_completed']!=1){
 			$team = $this->Session->read('TeamRegister');
 			$players = explode(',',$this->request->data['players']);
 			$data = array(
@@ -177,9 +177,16 @@ class ProfileController extends AppController {
 				'fb_id'=>Sanitize::paranoid($userData['fb_id'])
 			);
 			
+			$players_selected = $this->Game->getMasterTeam($team['team_id']);
+			$players = array();
+			foreach($players_selected as $p){
+				$players[] = $p['uid'];
+			}
+			/*
 			foreach($players as $n=>$p){
 					$players[$n] = Sanitize::clean(trim($p));
 			}
+			*/
 			$data['players'] = json_encode($players);
 
 
