@@ -293,7 +293,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                     <a data-team-name="<?=h($data['player']['original_team_name'])?>" data-price="<?=number_format($transfer_value)?>" data-player-name="<?=$data['player']['name']?>" data-team="<?=$data['player']['original_team_id']?>" data-player="<?=$data['player']['player_id']?>" id="btnBuy" class="icon-cart buttons" href="#popup-messages"><span>BELI PEMAIN</span></a>
                     <?php endif;?>
 			</div>
-
+            <?php if(sizeof($data['daily_stats'])>0):?>
             <div id="chartbox" class="row">
                 <div class="stats"></div>
             </div>
@@ -496,6 +496,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
               </div><!-- end #tabcontainer -->
 			  </div>
             </div><!-- end #clubtabs -->
+            <?php endif;?>
         </div><!-- end .content -->
 
 
