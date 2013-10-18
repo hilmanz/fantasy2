@@ -302,6 +302,7 @@ $weekly_performance = null;
                   </div><!-- end .profileStats-container -->
                 </div><!-- end .profileStats-container -->     
             </div><!-- end #Info -->
+            <?php if(sizeof($data['daily_stats'])>0):?>
             <div id="chartbox" class="row">
                 <div class="stats"></div>
             </div>
@@ -503,6 +504,7 @@ $weekly_performance = null;
               </div><!-- end #tabcontainer -->
 			  </div>
             </div><!-- end #clubtabs -->
+            <?php endif;?>
         </div><!-- end .content -->
 
 
