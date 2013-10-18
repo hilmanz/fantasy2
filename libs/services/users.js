@@ -4,6 +4,9 @@ exports.setPool = function(pool){
 	users.setPool(pool);
 }
 exports.register = function(req,res){
+	//req.body.name = req.body.name || '';
+	//req.body.email = req.body.email || '';
+	//req.body.phone = req.body.phone || '';
 	users.register({
 			name:req.body.name,
 			email:req.body.email,
@@ -14,7 +17,7 @@ exports.register = function(req,res){
 			if(rs!=null){
 				res.send(200,{status:1,message:'the user is successfully registered !'});
 			}else{
-				res.send(200,{status:0,err:"the user cannot be registered of it's already exists"});
+				res.send(200,{status:0,err:"the user cannot be registered because it's already exists"});
 			}
 	});
 }

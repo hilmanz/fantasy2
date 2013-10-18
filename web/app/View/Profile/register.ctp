@@ -17,6 +17,9 @@
                     <div class="row">
                         <label>Email</label>
                         <input type="text" name="email" value="<?=h(@$user['email'])?>"/>
+                        <?php if(isset($email_empty)):?>
+                        <span class="error">harap isi dahulu.</span>
+                        <?php endif;?>
                     </div><!-- end .row -->
                     <div class="row">
                         <label>Tanggal Lahir</label>

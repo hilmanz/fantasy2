@@ -335,7 +335,8 @@ class ProfileController extends AppController {
 															Silahkan coba kembali beberapa saat lagi!');
 								$this->redirect('/profile/error');
 			}else{
-				if($this->request->is('post') && $this->request->data['phone_number']!=null){
+				if($this->request->is('post') && $this->request->data['phone_number']!=null 
+					&& strlen($this->request->data['email']) > 0){
 					$this->request->data['hearffl'] = (isset($this->request->data['hearffl'])) ? $this->request->data['hearffl'] : 0;
 					$this->request->data['daylyemail'] = (isset($this->request->data['daylyemail'])) ? $this->request->data['daylyemail'] : 0;
 					$this->request->data['daylysms'] = (isset($this->request->data['daylysms'])) ? $this->request->data['daylysms'] : 0;
@@ -388,6 +389,9 @@ class ProfileController extends AppController {
 				}else if($this->request->is('post') && $this->request->data['phone_number']==null){
 					$this->Session->setFlash('Harap mengisi nomor mobile phone terlebih dahulu !');
 					$this->set('phone_empty',true);
+				}else if($this->request->is('post') && strlen($this->request->data['email']) == 0){
+					$this->Session->setFlash('Harap mengisi email terlebih dahulu !');
+					$this->set('email_empty',true);
 				}
 			}
 			

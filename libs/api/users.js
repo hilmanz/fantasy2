@@ -34,6 +34,7 @@ function register(data,callback){
 					(name,email,phone,fb_id,n_status,access_key,register_date)\
 					VALUES(?,?,?,?,?,?,NOW());",
 					[data.name,data.email,data.phone,data.fb_id,1,''],function(err,rs){
+						
 						conn.end(function(err){
 							callback(err,rs);
 						});
