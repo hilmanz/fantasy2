@@ -6,26 +6,107 @@
 */
 //income dikurangi untuk 2 home game berikutnya atau sampai transfer window berikutnya
 var home_income_cuts = function(){
-	return {income_cuts:0.75,balance_cuts:0,terms:{type:'2home_or_next_transfer',amount:2}};
+	return {income_cuts:0.75,balance_cuts:0,terms:{type:'2home_or_next_transfer',amount:3}};
 }
 exports.home_income_cuts = home_income_cuts;
 
 
 //balance dikurangi untuk 2 home game berikutnya atau sampai transfer window berikutnya
 var home_balance_cuts = function(){
-	return {income_cuts:0,balance_cuts:150000,terms:{type:'2home_or_next_transfer',amount:2}};
+	return {income_cuts:0,balance_cuts:150000,terms:{type:'2home_or_next_transfer',amount:3}};
 }
 exports.home_balance_cuts = home_balance_cuts;
 
 //balance dikurangi selama 4 minggu berturut2
 var away_balance_cuts = function(){
-	return {income_cuts:0,balance_cuts:500000,terms:{type:'weekly',amount:4}};
+	return {income_cuts:0,balance_cuts:500000,terms:{type:'weekly',amount:5}};
 }
 exports.away_balance_cuts = away_balance_cuts;
 
-exports.execute_punishment = function(conn,type,game_id,game_team_id,callback){
+exports.execute_punishment = function(conn,game_id,game_team_id,callback){
 	var async = require('async');
-	async.waterfall([],function(err,rs){
+	async.waterfall([
+		function(cb){
+			//check if the team has home punishment in effect.
+			conn.query("SELECT id,game_type,punishment \
+			FROM ffgame.game_punishments \
+			WHERE game_team_id=? AND \
+			game_type = 'home' AND \
+			n_status=0 GROUP BY punishment;",
+			[game_team_id],
+			function(err,rs){
+				try{
+					console.log(sqlOut(this.sql));
+					if(rs!=null && rs.length > 0){
+						cb(err,rs);
+					}else{
+						//no punishment
+						cb(err,[]);
+					}
+				}catch(e){
+					//no punishment
+					cb(err,[]);
+				}
+			});
+		},
+		function(punish,cb){
+			
+			if(punish.length >0){
+				async.eachSeries(punish,function(item,next){
+						doPunish(conn,game_id,game_team_id,item,function(err){
+							next();
+						});
+					},
+					function(err){
+						cb(err);
+					}
+				);
+			}else{
+				cb(null);
+			}
+		},
+		function(cb){
+			//check if the team has home punishment in effect.
+			conn.query("SELECT id,game_type,punishment \
+			FROM ffgame.game_punishments \
+			WHERE game_team_id=? AND \
+			game_type = 'away' AND \
+			n_status=0 GROUP BY punishment;",
+			[game_team_id],
+			function(err,rs){
+				try{
+					console.log(sqlOut(this.sql));
+					if(rs!=null && rs.length > 0){
+						cb(err,rs);
+					}else{
+						//no punishment
+						cb(err,[]);
+					}
+				}catch(e){
+					//no punishment
+					cb(err,[]);
+				}
+			});
+		},
+		function(punish,cb){
+			
+			if(punish.length >0){
+				async.eachSeries(punish,function(item,next){
+						doPunish(conn,game_id,game_team_id,item,function(err){
+							next();
+						});
+					},
+					function(err){
+						cb(err,null);
+					}
+				);
+			}else{
+				cb(null,null);
+			}
+		}
+	],
+
+	function(err,rs){
 		callback(err,rs);
 	});
 }
@@ -86,6 +167,7 @@ exports.check_violation = function(conn,game_id,game_team_id,original_team_id,ca
 			if((check.original/check.total) < 0.5){
 				console.log(check,game_type);
 				add_rules(conn,game_id,game_team_id,game_type,function(err){
+					console.log('done');
 					cb(null,null);
 				});
 				
@@ -95,6 +177,7 @@ exports.check_violation = function(conn,game_id,game_team_id,original_team_id,ca
 		}
 	],
 	function(err,rs){
+		console.log('done');
 		callback(err,rs);
 	});
 	
@@ -192,8 +275,9 @@ function add_rules(conn,game_id,game_team_id,game_type,done){
 		],
 
 		function(e,r){
+			console.log('done');
 			done(e);
-		})
+		});
 
 	}else if(game_type=='away'){
 		console.log('#',game_team_id,'away nih');
@@ -243,6 +327,7 @@ function add_rules(conn,game_id,game_team_id,game_type,done){
 		],
 
 		function(e,r){
+			console.log('done');
 			done(e);
 		})
 
@@ -251,8 +336,133 @@ function add_rules(conn,game_id,game_team_id,game_type,done){
 		done(null);
 	}
 }
+
+function doPunish(conn,game_id,game_team_id,item,cb){
+	console.log(game_team_id,item);
+	var async = require('async');
+	var t = {};
+	switch(item.punishment){
+		case 'home_balance_cuts':
+			t = home_balance_cuts();
+		break;
+		case 'home_income_cuts':
+			t = home_income_cuts();
+		break;
+		case 'away_balance_cuts':
+			t = away_balance_cuts();
+		break;
+		default:
+			t = null;
+		break;
+	}
+	if(t!=null){
+		var ticket_sold = 0;
+		var matchday = 0;
+		var cut_ok = false;
+		async.waterfall([
+			function(callback){
+				conn.query("SELECT matchday \
+							FROM ffgame.game_fixtures \
+							WHERE game_id=? \
+							LIMIT 1",[game_id],
+							function(err,r){
+								try{
+									matchday = r[0].matchday;
+								}catch(e){
+									
+								}
+								callback(err);
+							});
+			},
+			function(callback){
+				//get tickets sold
+				conn.query("SELECT amount FROM ffgame.game_team_expenditures \
+							WHERE game_id = ? AND game_team_id = ? \
+							AND item_name = 'tickets_sold';",
+							[game_id,game_team_id],
+							function(err,rs){
+								try{
+									ticket_sold = rs[0].amount;
+								}catch(e){}
+								callback(err);
+							});
+			},
+			function(callback){
+				if(t.income_cuts >0){
+					console.log('we cut the ticket sold income by ',t.income_cuts);
+					var amount = (-1) * (t.income_cuts * ticket_sold);
+					addCost(conn,game_id,game_team_id,'ticket_sold_penalty',amount,matchday,
+					function(err,rs){
+						try{
+							if(rs.affectedRows>0){
+								cut_ok = true;
+							}
+						}catch(err){}
+						callback(err);
+					});
+
+				}else{
+					callback(null);
+				}
+			},
+			function(callback){
+				if(t.balance_cuts > 0){
+					console.log(item.punishment,'we cut the balance by ',t.balance_cuts);
+					var amount = (-1) * t.balance_cuts;
+					if(item.punishment=='home_balance_cuts'){
+						var item_name = 'security_overtime_fee';
+					}else{
+						var item_name = 'compensation_fee';
+					}
+					addCost(conn,game_id,game_team_id,item_name,amount,matchday,
+					function(err,rs){
+						try{
+							if(rs.affectedRows>0){
+								cut_ok = true;
+							}
+						}catch(err){}
+						callback(err);
+					});
+				}else{
+					callback(null);
+				}
+			},
+			function(callback){
+				if(cut_ok){
+					conn.query("UPDATE ffgame.game_punishments SET n_status=1 WHERE id = ?",
+								[item.id],function(err,rs){
+									callback(err);
+								});
+				}else{
+					callback(null);
+				}
+			}
+		],
+		function(err,rs){
+			cb(null);
+		});
+	}else{
+		cb(null);	
+	}
+	
+}
+function addCost(conn,game_id,game_team_id,item_name,amount,matchday,callback){
+
+	conn.query("INSERT INTO ffgame.game_team_expenditures\
+				(game_team_id,item_name,item_type,amount,game_id,match_day,item_total,base_price)\
+				VALUES\
+				(?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE\
+				amount=VALUES(amount);",
+				[game_team_id,item_name,2,amount,game_id,matchday,1,1],
+				function(err,rs){
+					console.log(rs);
+					callback(err,rs);
+				});
+}
 function sqlOut(sql){
 	var S = require('string');
 	
 	return S(sql).collapseWhitespace().s
 }
+
+

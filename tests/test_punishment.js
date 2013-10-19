@@ -12,9 +12,9 @@ var conn = mysql.createConnection({
    	password : config.database.password,
 });
 
-var game_team_id=395;
-var game_id = 'f694951'; //f694945,f694951
-var team_id = 't43';
+var game_team_id=402;
+var game_id = 'f694946'; //f694954,f694946
+var team_id = 't88';
 
 async.waterfall([
 		function(callback){
@@ -22,6 +22,13 @@ async.waterfall([
 			punishment.check_violation(conn,game_id,game_team_id,team_id,function(err,rs){
 				callback(err,rs);
 			});
+		},
+		function(rs,callback){
+			//test redeeme punishment
+			punishment.execute_punishment(conn,game_id,game_team_id,function(err,rs){
+				callback(err,rs);	
+			});
+			
 		}
 	],
 function(err,rs){
