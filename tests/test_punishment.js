@@ -25,7 +25,7 @@ async.waterfall([
 		},
 		function(rs,callback){
 			//test redeeme punishment
-			punishment.execute_punishment(conn,game_id,game_team_id,function(err,rs){
+			punishment.execute_punishment(conn,game_id,game_team_id,team_id,function(err,rs){
 				callback(err,rs);	
 			});
 			

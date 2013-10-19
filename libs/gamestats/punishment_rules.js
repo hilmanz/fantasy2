@@ -4,6 +4,9 @@
 * income cuts, or balance deduction.
 * so every rule must returns an object that consists income_cuts and balance_deduction.
 */
+var path = require('path');
+var config = require(path.resolve('./config')).config;
+
 //income dikurangi untuk 2 home game berikutnya atau sampai transfer window berikutnya
 var home_income_cuts = function(){
 	return {income_cuts:0.75,balance_cuts:0,terms:{type:'2home_or_next_transfer',amount:3}};
@@ -23,7 +26,7 @@ var away_balance_cuts = function(){
 }
 exports.away_balance_cuts = away_balance_cuts;
 
-exports.execute_punishment = function(conn,game_id,game_team_id,callback){
+exports.execute_punishment = function(conn,game_id,game_team_id,team_id,callback){
 	var async = require('async');
 	async.waterfall([
 		function(cb){
@@ -36,7 +39,7 @@ exports.execute_punishment = function(conn,game_id,game_team_id,callback){
 			[game_team_id],
 			function(err,rs){
 				try{
-					console.log(sqlOut(this.sql));
+					
 					if(rs!=null && rs.length > 0){
 						cb(err,rs);
 					}else{
@@ -53,7 +56,7 @@ exports.execute_punishment = function(conn,game_id,game_team_id,callback){
 			
 			if(punish.length >0){
 				async.eachSeries(punish,function(item,next){
-						doPunish(conn,game_id,game_team_id,item,function(err){
+						doPunish(conn,game_id,game_team_id,team_id,item,function(err){
 							next();
 						});
 					},
@@ -92,7 +95,7 @@ exports.execute_punishment = function(conn,game_id,game_team_id,callback){
 			
 			if(punish.length >0){
 				async.eachSeries(punish,function(item,next){
-						doPunish(conn,game_id,game_team_id,item,function(err){
+						doPunish(conn,game_id,game_team_id,team_id,item,function(err){
 							next();
 						});
 					},
@@ -165,7 +168,7 @@ exports.check_violation = function(conn,game_id,game_team_id,original_team_id,ca
 		},
 		function(check,game_type,cb){
 			if((check.original/check.total) < 0.5){
-				console.log(check,game_type);
+				
 				add_rules(conn,game_id,game_team_id,game_type,function(err){
 					console.log('done');
 					cb(null,null);
@@ -300,24 +303,39 @@ function add_rules(conn,game_id,game_team_id,game_type,done){
 							});
 			},
 			function(can_punish,cb){
+				
 				console.log('#',game_team_id,'away_balance_cuts');
 				if(can_punish){
 					console.log('can punish');
-					var setting = away_balance_cuts();
-					async.times(setting.terms.amount,function(n,next){
-						conn.query("INSERT INTO ffgame.game_punishments\
-								(game_id,game_team_id,game_type,punishment,n_status,submit_dt)\
-								VALUES\
-								(?,?,?,?,0,NOW());",
-								[game_id,game_team_id,game_type,'away_balance_cuts'],
-								function(err,rs){
-									console.log(sqlOut(this.sql));
-									next(err,rs);
-								});
+					async.waterfall([
+						function(c){
+							var setting = away_balance_cuts();
+							async.times(setting.terms.amount,function(n,next){
+								conn.query("INSERT INTO ffgame.game_punishments\
+										(game_id,game_team_id,game_type,punishment,n_status,submit_dt)\
+										VALUES\
+										(?,?,?,?,0,NOW());",
+										[game_id,game_team_id,game_type,'away_balance_cuts'],
+										function(err,rs){
+											console.log(sqlOut(this.sql));
+											next(err,rs);
+										});
+								},
+							function(err,results){
+								c(err);
+							});	
 						},
-					function(err,results){
+						function(c){
+							sendNotification(conn,game_id,game_team_id,3,function(err){
+								c(err);
+							});
+						}
+					],
+					function(err,r){
 						cb(err);
-					});	
+					});
+					
+					
 				}else{
 					console.log('cannot punish');
 					cb(null);
@@ -337,10 +355,11 @@ function add_rules(conn,game_id,game_team_id,game_type,done){
 	}
 }
 
-function doPunish(conn,game_id,game_team_id,item,cb){
-	console.log(game_team_id,item);
+function doPunish(conn,game_id,game_team_id,team_id,item,cb){
+	console.log(game_team_id,item,team_id);
 	var async = require('async');
 	var t = {};
+
 	switch(item.punishment){
 		case 'home_balance_cuts':
 			t = home_balance_cuts();
@@ -359,15 +378,19 @@ function doPunish(conn,game_id,game_team_id,item,cb){
 		var ticket_sold = 0;
 		var matchday = 0;
 		var cut_ok = false;
+		var is_home = false;
 		async.waterfall([
 			function(callback){
-				conn.query("SELECT matchday \
+				conn.query("SELECT home_id,away_id,matchday \
 							FROM ffgame.game_fixtures \
 							WHERE game_id=? \
 							LIMIT 1",[game_id],
 							function(err,r){
 								try{
 									matchday = r[0].matchday;
+									if(r[0].home_id==team_id){
+										is_home=true;
+									}
 								}catch(e){
 									
 								}
@@ -388,14 +411,20 @@ function doPunish(conn,game_id,game_team_id,item,cb){
 							});
 			},
 			function(callback){
+				if(!is_home){
+					t.income_cuts = 0;
+				}
 				if(t.income_cuts >0){
-					console.log('we cut the ticket sold income by ',t.income_cuts);
+					console.log(game_team_id,'we cut the ticket sold income by ',t.income_cuts);
 					var amount = (-1) * (t.income_cuts * ticket_sold);
 					addCost(conn,game_id,game_team_id,'ticket_sold_penalty',amount,matchday,
 					function(err,rs){
 						try{
 							if(rs.affectedRows>0){
 								cut_ok = true;
+								console.log('#',game_team_id,'CUT OK');
+							}else{
+								console.log('#',game_team_id,'we already cut the income');
 							}
 						}catch(err){}
 						callback(err);
@@ -406,8 +435,11 @@ function doPunish(conn,game_id,game_team_id,item,cb){
 				}
 			},
 			function(callback){
+				if(!is_home && item.punishment=='home_balance_cuts'){
+					t.balance_cuts = 0;
+				}
 				if(t.balance_cuts > 0){
-					console.log(item.punishment,'we cut the balance by ',t.balance_cuts);
+					console.log(game_team_id,item.punishment,'we cut the balance by ',t.balance_cuts);
 					var amount = (-1) * t.balance_cuts;
 					if(item.punishment=='home_balance_cuts'){
 						var item_name = 'security_overtime_fee';
@@ -418,7 +450,10 @@ function doPunish(conn,game_id,game_team_id,item,cb){
 					function(err,rs){
 						try{
 							if(rs.affectedRows>0){
+								console.log('#',game_team_id,'CUT OK');
 								cut_ok = true;
+							}else{
+								console.log('#',game_team_id,'we already cut the balance');
 							}
 						}catch(err){}
 						callback(err);
@@ -436,6 +471,24 @@ function doPunish(conn,game_id,game_team_id,item,cb){
 				}else{
 					callback(null);
 				}
+			},
+			function(callback){
+				if(cut_ok){
+					if(item.punishment=='home_income_cuts'){
+						sendNotification(conn,game_id,game_team_id,1,function(err){
+							callback(err);
+						});
+
+					}else if(item.punishment=='home_balance_cuts'){
+						sendNotification(conn,game_id,game_team_id,2,function(err){
+							callback(err);
+						});
+					}else{
+						callback(null);
+					}
+				}else{
+					callback(null);
+				}
 			}
 		],
 		function(err,rs){
@@ -448,16 +501,79 @@ function doPunish(conn,game_id,game_team_id,item,cb){
 }
 function addCost(conn,game_id,game_team_id,item_name,amount,matchday,callback){
 
-	conn.query("INSERT INTO ffgame.game_team_expenditures\
+	conn.query("INSERT IGNORE INTO ffgame.game_team_expenditures\
 				(game_team_id,item_name,item_type,amount,game_id,match_day,item_total,base_price)\
 				VALUES\
-				(?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE\
-				amount=VALUES(amount);",
+				(?,?,?,?,?,?,?,?);",
 				[game_team_id,item_name,2,amount,game_id,matchday,1,1],
 				function(err,rs){
 					console.log(rs);
 					callback(err,rs);
 				});
+}
+
+function sendNotification(conn,game_id,game_team_id,type,callback){
+	var msg = "";
+	if(type==1){
+		msg = "Hi, apa kabar? <br/>Saya  Ben Dover dari bagian penjualan tiket pertandingan.<br/>\
+			 Sepertinya keputusan Anda mengobral Tim telah membuat para supporter merasa tim kita kehilangan identitasnya.<br/>\
+			 Mereka memutuskan untuk memboikot tim kita dan tidak menghadiri pertandingan kemarin.<br/>\
+			 Sekelompok kecil fans melakukan demo di luar stadion, dan menghalangi fans lain datang ke stadion,<br/>\
+			 sehingga pemasukan tiket berkurang 75% dari biasanya.<br/> \
+			Mohon maaf atas berita buruk ini. <br/>\
+			Good luck in the next game.<br/>\
+				<br/>\
+			Salam,<br/>\
+			<br/>\
+			Ben Dover<br/>";
+			conn.query("INSERT INTO "+config.database.frontend_schema+".notifications\
+						(content,url,dt,game_team_id)\
+						VALUES\
+						(?,'#',NOW(),?)",[msg,game_team_id],function(err,rs){
+							console.log(sqlOut(this.sql));
+							callback(err);
+				});
+	}else if(type==2){
+		msg = "Dengan hormat,<br/>\
+				Sehubungan dengan terjadinya keributan di daerah stadion Anda akhir pekan ini, \
+				kami terpaksa memberlakukan biaya over time kepada seluruh polisi yang bertugas menjaga keamanan di stadion Anda. \
+				Sesuai peraturan yang berlaku, maka kami membebankan biaya over time sebesar ss$150,000 kepada Anda. \
+				<br/>Terima kasih atas perhatiannya.<br/><br/>\
+				Hormat kami,<br/>\
+				<br/>\
+				Chris P. Nutts<br/>\
+				Inspektur Polisi";
+				conn.query("INSERT INTO "+config.database.frontend_schema+".notifications\
+						(content,url,dt,game_team_id)\
+						VALUES\
+						(?,'#',NOW(),?)",[msg,game_team_id],function(err,rs){
+							console.log(sqlOut(this.sql));
+							callback(err);
+				});
+	}else if(type==3){
+		msg = "Hi, <br/>\
+			   sebagai manajer tim, Anda berhak menentukan siapa yang Anda inginkan menjadi pemain klub Anda,\
+			   namun beberapa pemain yang Anda jual secara paksa baru baru ini merasa dirugikan karena baru saja \
+			   mengeluarkan cukup banyak biaya rumah tangga dan biaya lainnya yang kini harus mereka keluarkan lagi \
+			   setelah berpindah klub.<br/>\
+			   Setelah membicarakan hal ini dengan tim legal klab, kami sepakat untuk membayarkan kompensasi \
+			   sebesar ss$2,500,000 yang akan dibayarkan dalam 4 termin. <br/><br/>\
+			   Terimakasih<br/><br/>\
+				Salam,<br/>\
+				<br/>\
+				Anita Hanjaab<br/>\
+				Head of legal division<br/>\
+				";
+				conn.query("INSERT INTO "+config.database.frontend_schema+".notifications\
+						(content,url,dt,game_team_id)\
+						VALUES\
+						(?,'#',NOW(),?)",[msg,game_team_id],function(err,rs){
+							console.log(sqlOut(this.sql));
+							callback(err);
+				});
+	}else{
+		//do nothing
+	}
 }
 function sqlOut(sql){
 	var S = require('string');
