@@ -30,6 +30,7 @@ var pool  = mysql.createPool({
    user     : config.database.username,
    password : config.database.password,
 });
+var punishment = require(path.resolve('./libs/gamestats/punishment_rules'));
 var frontend_schema = config.database.frontend_schema;
 var total_teams = 0;
 console.log('business_stats : pool opened');
@@ -181,9 +182,24 @@ function processHomeTeams(start,limit,team_id,game_id,rank,away_rank,game,done){
 								console.log('processing each home teams');
 								async.eachSeries(rs,
 									function(team,callback){
-										calculate_home_revenue_stats(team,game_id,game,rank,away_rank,function(err){
-											callback();		
+										async.waterfall([
+											function(cb){
+												calculate_home_revenue_stats(team,game_id,game,rank,away_rank,function(err){
+													cb(err);
+												});
+											},
+											function(cb){
+												punishment.execute_punishment(conn,
+																			game_id,team.id,team.team_id,
+																			function(err,rs){
+																				cb(err,rs);	
+																			});
+											}
+										],
+										function(err,r){
+											callback();
 										});
+										
 									},function(err){
 										if(rs.length==limit){
 											processHomeTeams(start+100,limit,team_id,game_id,rank,away_rank,game,done)
@@ -217,9 +233,24 @@ function processAwayTeams(start,limit,team_id,game_id,rank,away_rank,game,done){
 								console.log('processing each away teams');
 								async.eachSeries(rs,
 									function(team,callback){
-										calculate_away_revenue_stats(team,game_id,game,rank,away_rank,function(err){
-											callback();		
+										async.waterfall([
+											function(cb){
+												calculate_away_revenue_stats(team,game_id,game,rank,away_rank,function(err){
+													cb(err);		
+												});
+											},
+											function(cb){
+												punishment.execute_punishment(conn,
+																			game_id,team.id,team.team_id,
+																			function(err,rs){
+																				cb(err,rs);	
+																			});
+											}
+										],
+										function(err,r){
+											callback();
 										});
+
 									},function(err){
 										if(rs.length==limit){
 											processAwayTeams(start+100,limit,team_id,game_id,rank,away_rank,game,done)

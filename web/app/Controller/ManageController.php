@@ -153,6 +153,7 @@ class ManageController extends AppController {
 			if(isset($this->request->query['week'])){
 				$this->set('active_tab',1);
 			}
+
 			$this->set('finance',$financial_statement['finance']);
 			$this->set('total_items',$financial_statement['total_items']);
 		}

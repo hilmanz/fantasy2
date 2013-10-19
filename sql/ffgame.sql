@@ -678,3 +678,15 @@ CREATE TABLE ffgame.master_transfer_window (
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 insert  into ffgame.master_transfer_window(`id`,`tw_open`,`tw_close`,`window_name`) values (1,'2013-10-11 00:00:00','2013-10-17 00:00:00','October 2013'),(2,'2013-11-11 00:00:00','2013-11-15 00:00:00','November 2013'),(3,'2013-12-11 00:00:00','2013-12-15 00:00:00','December 2013'),(4,'2014-01-11 00:00:00','2014-01-15 00:00:00','January 2014'),(5,'2014-02-11 00:00:00','2014-02-15 00:00:00','Febuary 2014'),(6,'2014-03-11 00:00:00','2014-03-15 00:00:00','March 2014'),(7,'2014-04-11 00:00:00','2014-04-15 00:00:00','April 2014'),(8,'2014-05-11 00:00:00','2014-05-15 00:00:00','Mei 2014'),(9,'2014-06-11 00:00:00','2014-06-15 00:00:00','June 2014'),(10,'2014-07-11 00:00:00','2014-07-15 00:00:00','July 2014');
+
+  CREATE TABLE ffgame.game_punishments (
+  `id` BIGINT(21) NOT NULL AUTO_INCREMENT,
+  `game_id` VARCHAR(140) DEFAULT NULL,
+  `game_team_id` BIGINT(21) DEFAULT NULL,
+  `game_type` VARCHAR(14) DEFAULT NULL COMMENT 'HOME / AWAY',
+  `punishment` VARCHAR(32) DEFAULT NULL,
+  `n_status` TINYINT(3) DEFAULT '0' COMMENT '0->pending, 1-> passed',
+  `submit_dt` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_PUNISHMENT` (`game_id`,`game_team_id`,`game_type`,`punishment`,`n_status`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;

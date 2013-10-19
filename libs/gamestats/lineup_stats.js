@@ -25,6 +25,7 @@ var pool  = mysql.createPool({
    user     : config.database.username,
    password : config.database.password,
 });
+var punishment = require(path.resolve('./libs/gamestats/punishment_rules'));
 console.log('lineup_stats - creating pool');
 exports.update = function(game_id,start,done){
 	//the updates will run for each 100 entries.
@@ -150,6 +151,13 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 										});
 									},
 									function(next){
+										console.log('check penalty if the club rooster is unbalance');
+										punishment.check_violation(conn,game_id,item.id,item.team_id,
+											function(err,rs){
+												callback(err,rs);
+										});
+									},
+									function(next){
 										console.log('Lets process the extra points if the week has ended....')
 										//check the game's matchday
 										conn.query("SELECT matchday \
@@ -184,6 +192,7 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 														next(err,matchday,is_finished);
 													});
 									},
+
 									function(matchday,is_finished,next){
 										console.log('matchday : ',matchday,'is finished : ',is_finished);
 										console.log('is all player started ?');

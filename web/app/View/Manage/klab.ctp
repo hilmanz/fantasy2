@@ -16,8 +16,16 @@ $total_expenses+= intval(@$finance['tax_consultant']);
 $total_expenses+= intval(@$finance['accountant']);
 $total_expenses+= intval(@$finance['buy_player']);
 
+$total_expenses+= intval(@$finance['compensation_fee']);
+$total_expenses+= intval(@$finance['ticket_sold_penalty']);
+$total_expenses+= intval(@$finance['security_overtime_fee']);
 
+/*
+$penalty_expenses = intval(@$finance['compensation_fee']) + 
+                    intval(@$finance['ticket_sold_penalty']) + 
+                    intval(@$finance['security_overtime_fee']);
 
+*/
 $first_week = $weekly_balances[0];
 $my_balance = $weekly_balances;
 $previous_balances = array();
@@ -357,7 +365,27 @@ function isStaffExist($staff_token,$name){
                         <td align="right"></td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['player_salaries']))?></td>
                       </tr>
-                      
+                      <?php if(isset($finance['compensation_fee'])):?>
+                      <tr>
+                        <td>Biaya Kompesansi</td>
+                        <td align="right"></td>
+                        <td align="right">ss$ <?=number_format(abs(@$finance['compensation_fee']))?></td>
+                      </tr>
+                      <?php endif;?>
+                      <?php if(isset($finance['ticket_sold_penalty'])):?>
+                      <tr>
+                        <td>Pinalti hasil penjualan tiket</td>
+                        <td align="right"></td>
+                        <td align="right">ss$ <?=number_format(abs(@$finance['ticket_sold_penalty']))?></td>
+                      </tr>
+                      <?php endif;?>
+                      <?php if(isset($finance['security_overtime_fee'])):?>
+                      <tr>
+                        <td>Biaya Overtime Sekuriti</td>
+                        <td align="right"></td>
+                        <td align="right">ss$ <?=number_format(abs(@$finance['security_overtime_fee']))?></td>
+                      </tr>
+                      <?php endif;?>
                        <?php
                       if(isStaffExist($staff_token,'commercial_director')):
                       ?>
@@ -378,6 +406,8 @@ function isStaffExist($staff_token,$name){
                       </tr>
                        
                        <?php endif;?>
+                       
+
                         <?php
                       if(isStaffExist($staff_token,'public_relation_officer')):
                       ?>
