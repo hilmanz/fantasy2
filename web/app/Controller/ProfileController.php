@@ -81,32 +81,38 @@ class ProfileController extends AppController {
 	}
 
 	public function update(){
-		$data = array(
-			'name'=>$this->request->data['name'],
-			'email'=>$this->request->data['email'],
-			'location'=>$this->request->data['location']
-		);
-		$userData = $this->getUserData();
-		$this->loadModel('User');
-		$user = $this->User->findByFb_id($userData['fb_id']);
-		$this->User->id = $user['User']['id'];
-		//update user profile
-		$rs = $this->User->save($data);
+		if(strlen($this->request->data['email'])>0){
+			$data = array(
+				'name'=>$this->request->data['name'],
+				'email'=>$this->request->data['email'],
+				'location'=>$this->request->data['location']
+			);
+			$userData = $this->getUserData();
+			$this->loadModel('User');
+			$user = $this->User->findByFb_id($userData['fb_id']);
+			$this->User->id = $user['User']['id'];
+			//update user profile
+			$rs = $this->User->save($data);
 
-		//update team name
-		$this->loadModel('Team');
-		$this->Team->id = intval($user['Team']['id']);
-		$this->Team->save(array(
-				'team_name' => $this->request->data['team_name']
-			));
-		if(isset($rs)){
+			//update team name
+			$this->loadModel('Team');
+			$this->Team->id = intval($user['Team']['id']);
+			$this->Team->save(array(
+					'team_name' => $this->request->data['team_name']
+				));
+			if(isset($rs)){
 
-			$this->Session->setFlash('Profil Anda telah berhasil diubah!');
-			$this->redirect('/profile/success');
+				$this->Session->setFlash('Profil Anda telah berhasil diubah!');
+				$this->redirect('/profile/success');
+			}else{
+				$this->Session->setFlash('Gagal menyimpan perubahan, coba beberapa saat lagi!');
+				$this->redirect('/profile/error');
+			}
 		}else{
-			$this->Session->setFlash('Gagal menyimpan perubahan, coba beberapa saat lagi!');
-			$this->redirect('/profile/error');
+			$this->Session->setFlash('Mohon maaf, email wajib diisi !');
+				$this->redirect('/profile/error?attempt=1');
 		}
+		
 	
 		die();
 	}
@@ -400,6 +406,9 @@ class ProfileController extends AppController {
 		}
 	}
 	public function error(){
+		if(isset($this->request->query['attempt'])){
+			$this->set('attempt',1);
+		}
 		$this->render('error');
 	}
 	public function team_error(){
