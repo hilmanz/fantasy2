@@ -154,7 +154,7 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 										console.log('check penalty if the club rooster is unbalance');
 										punishment.check_violation(conn,game_id,item.id,item.team_id,
 											function(err,rs){
-												callback(err,rs);
+												next(err);
 										});
 									},
 									function(next){
@@ -166,6 +166,7 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 													LIMIT 1",[game_id],
 													function(err,r){
 														console.log('-----',this.sql,'---');
+														console.log(r);
 														var matchday = 0;
 														if(!err){
 															matchday = r[0].matchday;
@@ -175,6 +176,7 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 										
 									},
 									function(matchday,next){
+										console.log('check if the week has lasted');
 										//check if the week has lasted.
 										conn.query("SELECT COUNT(*) AS total \
 													FROM ffgame.game_fixtures \

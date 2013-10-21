@@ -12,9 +12,9 @@ var conn = mysql.createConnection({
    	password : config.database.password,
 });
 
-var game_team_id=402;
-var game_id = 'f694946'; //f694954,f694946
-var team_id = 't88';
+var game_team_id=11516;
+var game_id = 'f694961'; //f694954,f694946
+var team_id = 't97';
 
 async.waterfall([
 		function(callback){

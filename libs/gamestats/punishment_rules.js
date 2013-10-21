@@ -27,7 +27,9 @@ var away_balance_cuts = function(){
 exports.away_balance_cuts = away_balance_cuts;
 
 exports.execute_punishment = function(conn,game_id,game_team_id,team_id,callback){
+
 	var async = require('async');
+	console.log('execute punishment',game_id,game_team_id,team_id);
 	async.waterfall([
 		function(cb){
 			//check if the team has home punishment in effect.
@@ -39,7 +41,7 @@ exports.execute_punishment = function(conn,game_id,game_team_id,team_id,callback
 			[game_team_id],
 			function(err,rs){
 				try{
-					
+					console.log(sqlOut(this.sql));
 					if(rs!=null && rs.length > 0){
 						cb(err,rs);
 					}else{
@@ -156,8 +158,10 @@ exports.check_violation = function(conn,game_id,game_team_id,original_team_id,ca
 					try{
 						if(rs[0].home_id == original_team_id){
 							type='home';
-						}else{
+						}else if(rs[0].away_id == original_team_id){
 							type='away';
+						}else{
+							type='';
 						}
 					}catch(e){
 						type = '';
@@ -507,6 +511,7 @@ function addCost(conn,game_id,game_team_id,item_name,amount,matchday,callback){
 				(?,?,?,?,?,?,?,?);",
 				[game_team_id,item_name,2,amount,game_id,matchday,1,1],
 				function(err,rs){
+					console.log(sqlOut(this.sql));
 					console.log(rs);
 					callback(err,rs);
 				});

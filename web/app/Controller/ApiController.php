@@ -20,7 +20,8 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 App::uses('AppController', 'Controller');
-
+App::uses('Sanitize', 'Utility');
+require_once APP . 'Vendor' . DS. 'Thumbnail.php';
 class ApiController extends AppController {
 
 /**
@@ -884,6 +885,43 @@ class ApiController extends AppController {
 										);
 			$user['User']['close_time'] = $this->closeTime;
 			$this->set('response',array('status'=>1,'data'=>$user['User']));
+		}
+		$this->render('default');
+	}
+	public function save_avatar(){
+		$this->loadModel('User');
+		$api_session = $this->readAccessToken();
+		$fb_id = $api_session['fb_id'];
+		$user = $this->User->findByFb_id($fb_id);
+		if(isset($_FILES)){
+			$_FILES['file']['name'] = str_replace(array(' ','\''),"_",$_FILES['file']['name']);
+			if(move_uploaded_file($_FILES['file']['tmp_name'],
+					Configure::read('avatar_img_dir').$_FILES['file']['name'])){
+				//resize to 120x120 pixels
+				$thumb = new Thumbnail();
+				$thumb->resizeImage('resizeCrop', $_FILES['file']['name'], 
+								Configure::read('avatar_img_dir'), 
+								'120x120_'.$_FILES['file']['name'], 
+								120, 
+								120, 
+								100);
+				//save to db
+				$data = array(
+					'avatar_img'=>$_FILES['file']['name']
+				);
+				if(intval($user['User']['id']) > 0){
+					$this->User->id = $user['User']['id'];
+					$rs = $this->User->save($data);
+					$this->set('response',array('status'=>1,'files'=>$_FILES['file']['name']));	
+				}else{
+					$this->set('response',array('status'=>400,'error'=>'User not found'));
+				}
+				
+			}else{
+				$this->set('response',array('status'=>0,'error'=>'cannot save the uploaded file.'));
+			}
+		}else{
+			$this->set('response',array('status'=>500,'error'=>'no file uploaded'));
 		}
 		$this->render('default');
 	}
