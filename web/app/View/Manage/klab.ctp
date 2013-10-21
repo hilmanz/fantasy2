@@ -145,21 +145,25 @@ function isStaffExist($staff_token,$name){
 								  <tbody id="myplayerlist">
 								  	<?php if(isset($matches)):foreach($matches as $m):?>
 								  	<?php
-                    
+                      $is_home_game = true;
                       $hidden_params = encrypt_param(serialize($m));
                       extract($m);
                       if($home_id==$club['team_id']){
                         $versus = $away_name;
                         $versus_id = str_replace("t","",$away_id);
+                        $is_home_game = true;
                       }else{
                         $versus = $home_name;
                         $versus_id = str_replace("t","",$home_id);
+                        $is_home_game = false;
                       }
                     ?>
 									<tr id="p50004" class="odd">
 									  <td><a class="thumbClub" href="<?=$this->Html->url('/manage/matchinfo?game_id='.$game_id).'&r='.$hidden_params?>" title="<?=h($versus)?>"><img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=$versus_id?>.png"/></a></td>
 									  <td class="aligncenter"><?=number_format($points)?></td>
-									  <td class="alignright"><?=number_format($income)?></td>
+									  <td class="alignright"><?=number_format($income)?>
+                      <?php if(!$is_home_game): echo "(Away)";endif;?>
+                    </td>
 									</tr>
 									<?php endforeach;endif;?>
 		                          </tbody>
