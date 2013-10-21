@@ -804,7 +804,7 @@ function last_earning(game_team_id,done){
 								FROM ffgame.game_team_expenditures \
 								WHERE game_team_id = ? \
 								AND \
-								game_id = ? AND amount >= 0;",
+								game_id = ? AND item_name='tickets_sold'",
 								[game_team_id,game_id],
 								function(err,rs){
 
@@ -859,7 +859,7 @@ function last_expenses(game_team_id,done){
 								FROM ffgame.game_team_expenditures \
 								WHERE game_team_id = ? \
 								AND \
-								game_id = ? AND amount <= 0;",
+								game_id = ? AND item_name <> 'buy_player' AND amount <= 0;",
 								[game_team_id,game_id],
 								function(err,rs){
 
