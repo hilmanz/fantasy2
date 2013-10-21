@@ -694,7 +694,7 @@ class ApiController extends AppController {
 	    foreach($stats as $s){
 	        foreach($statTypes as $n=>$v){
 	            if(!isset($collection[$n])){
-	                $collection[$n] = 0;
+	                $collection[$n] = array('total'=>0,'points'=>0);
 	            }
 	            if($s['stats_name'] == $v){
 	                $collection[$n] = array('total'=>$s['total'],

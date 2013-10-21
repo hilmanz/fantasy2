@@ -425,7 +425,7 @@ $weekly_performance = null;
                     </div><!-- end .profileStats -->
                 </div><!-- end .profileStats-container -->
               </div><!-- end #tabs-Squad -->
-             
+              <?php if($pos=='g'):?>
               <div id="tabs-Goalkeeping" class="boxTab">
                    <div class="profileStatsContainer">
                     <div class="profileStats">
@@ -463,7 +463,7 @@ $weekly_performance = null;
                     </div><!-- end .profileStats -->
                 </div><!-- end .profileStats-container -->
               </div><!-- end #tabs-Staff -->
-             
+             <?php endif;?>
               <div id="tabs-Mistakes" class="boxTab">
                    <div class="profileStatsContainer">
                     <div class="profileStats">

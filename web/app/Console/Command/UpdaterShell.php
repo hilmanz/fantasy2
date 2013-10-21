@@ -2,27 +2,33 @@
 class UpdaterShell extends AppShell{
 	 var $uses = array('Game','Team','User');
 	 public function main() {
-	 	$limit = 10;
-	 	$start = 0;
-        $this->out('getting points');
-       
-       	$this->beforeFilter();
-       	
-        do{
-	       	$user = $this->User->find('all',array(
-	       		'offset'=>$start,
-	       		'limit'=>$limit
-	       	));
-	       	$this->get_points($user);
-	       	$start += $limit;
-       	}while(sizeof($user)>0);
-       
-       $this->out('recalculate ranks');
-       CakeLog::write('updater', 'recalculate ranks');
-       $this->recalculate_ranks();
-       
-       $this->out('done');
-       CakeLog::write('updater', 'done');
+    	 	$limit = 10;
+    	 	$start = 0;
+
+        if($this->week_finished()){
+            $this->out('getting points');
+        
+            $this->beforeFilter();
+          
+            do{
+              $user = $this->User->find('all',array(
+                'offset'=>$start,
+                'limit'=>$limit
+              ));
+              $this->get_points($user);
+              $start += $limit;
+            }while(sizeof($user)>0);
+         
+           $this->out('recalculate ranks');
+           CakeLog::write('updater', 'recalculate ranks');
+           $this->recalculate_ranks();
+           
+           $this->out('done');
+           CakeLog::write('updater', 'done');
+        }else{
+           $this->out('the games has not finished yet');
+           CakeLog::write('updater', 'current matchday is still ongoing');
+        }
     }
     private function get_points($users){
     	foreach($users as $user){
