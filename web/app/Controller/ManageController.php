@@ -25,6 +25,7 @@ class ManageController extends AppController {
 	private $expenditures = null;
 	private $starting_budget = 0;
 	private $finance_total_items_raw = null;
+	private $tickets_sold;
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->loadModel('Team');
@@ -127,6 +128,7 @@ class ManageController extends AppController {
 				$financial_statement['last_expenses'] = 0;
 			}
 			$financial_statement['expenditures'] = $this->expenditures;
+			$financial_statement['tickets_sold'] = $this->tickets_sold;
 			$financial_statement['starting_budget'] = $this->starting_budget;
 
 			$this->Session->write('FinancialStatement',$financial_statement);
@@ -199,7 +201,7 @@ class ManageController extends AppController {
 		$this->set('weekly_points',$weekly_team_points);
 		
 		//matches
-		$matches = $this->getMatches($weekly_team_points,$financial_statement['expenditures']);
+		$matches = $this->getMatches($weekly_team_points,$financial_statement['expenditures'],$financial_statement['tickets_sold']);
 		$this->set('matches',$matches);
 
 		//enable OPTA Widget
@@ -239,7 +241,7 @@ class ManageController extends AppController {
 									;
 		return array('transaction'=>$weekly_statement,'total_items'=>$total_items);
 	}
-	private function getMatches($arr,$expenditures){
+	private function getMatches($arr,$expenditures,$tickets_sold){
 		
 		$matches = array();
 		if(sizeof($arr)>0){
@@ -269,13 +271,14 @@ class ManageController extends AppController {
 			foreach($rs as $n=>$r){
 				$points = 0;
 				$balance = 0;
+				$income = 0;
 				foreach($arr as $a){
 					if($r['a']['matchday']==$a['matchday']){
 						$points = $a['points'];
 						break;
 					}
 				}
-				foreach($expenditures as $b){
+				foreach($tickets_sold as $b){
 					if($r['a']['game_id']==$b['game_id']){
 						$income = $b['total_income'];
 						break;
@@ -300,6 +303,7 @@ class ManageController extends AppController {
 		
 		$this->weekly_balances = @$finance['data']['weekly_balances'];
 		$this->expenditures = @$finance['data']['expenditures'];
+		$this->tickets_sold = @$finance['data']['tickets_sold'];
 		$this->starting_budget = @intval($finance['data']['starting_budget']);
 
 		if($finance['status']==1){

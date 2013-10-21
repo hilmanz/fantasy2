@@ -30,6 +30,9 @@ class UpdaterShell extends AppShell{
            CakeLog::write('updater', 'current matchday is still ongoing');
         }
     }
+    private function week_finished(){
+      return true;
+    }
     private function get_points($users){
     	foreach($users as $user){
     		$response = $this->Game->getTeamPoints($user['User']['fb_id']);

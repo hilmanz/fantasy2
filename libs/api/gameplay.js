@@ -613,6 +613,23 @@ function getFinancialStatement(game_team_id,done){
 					callback(null,starting_budget,weekly_balance,matches,rs);
 				},
 				function(starting_budget,weekly_balance,matches,expenditures,callback){
+					//get weekly ticket sold
+					conn.query("SELECT game_id,SUM(amount) AS total_income,match_day,\
+								SUM(item_total) AS item_total\
+								FROM ffgame.game_team_expenditures \
+								WHERE game_team_id=? AND item_name='tickets_sold'\
+								GROUP BY game_id \
+								ORDER BY match_day LIMIT 100;",
+								[game_team_id],
+								function(err,rs){
+									if(!err){
+										callback(err,starting_budget,weekly_balance,matches,expenditures,rs);
+									}else{
+										callback(err,null,null,null);
+									}
+								});
+				},
+				function(starting_budget,weekly_balance,matches,expenditures,tickets_sold,callback){
 					if(matches!=null){
 						conn.query("SELECT item_name,item_type,SUM(amount) AS total,\
 									SUM(item_total) AS item_total\
@@ -625,7 +642,8 @@ function getFinancialStatement(game_team_id,done){
 											  weekly_balances:weekly_balance,
 											  total_matches:matches.total_matches,
 											  report:result,
-											  expenditures:expenditures});
+											  expenditures:expenditures,
+											  tickets_sold:tickets_sold});
 						});
 					}else{	
 						callback(null,null);
