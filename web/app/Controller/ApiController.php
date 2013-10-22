@@ -893,7 +893,7 @@ class ApiController extends AppController {
 		$api_session = $this->readAccessToken();
 		$fb_id = $api_session['fb_id'];
 		$user = $this->User->findByFb_id($fb_id);
-		if(isset($_FILES)){
+		if(isset($_FILES['name'])&&strlen($_FILES['name'])>0){
 			$_FILES['file']['name'] = str_replace(array(' ','\''),"_",$_FILES['file']['name']);
 			if(move_uploaded_file($_FILES['file']['tmp_name'],
 					Configure::read('avatar_img_dir').$_FILES['file']['name'])){
@@ -920,6 +920,40 @@ class ApiController extends AppController {
 			}else{
 				$this->set('response',array('status'=>0,'error'=>'cannot save the uploaded file.'));
 			}
+		}else if(isset($_POST['file'])){
+			$buffer = base64_decode($_POST['file']);
+			$new_filename = 'f'.time().rand(0,99999).".jpg";
+			$fp = fopen(Configure::read('avatar_img_dir').$new_filename, "wb");
+			$w = fwrite($fp, $buffer);
+			fclose($fp);
+			
+			//resize to 120x120 pixels
+			$thumb = new Thumbnail();
+			$thumb->resizeImage('resizeCrop', $new_filename, 
+							Configure::read('avatar_img_dir'), 
+							'120x120_'.$new_filename, 
+							120, 
+							120, 
+							100);
+			
+			if($w){
+				//save to db
+				$data = array(
+					'avatar_img'=>$new_filename
+				);
+				if(intval($user['User']['id']) > 0){
+					$this->User->id = $user['User']['id'];
+					$rs = $this->User->save($data);
+					$this->set('response',array('status'=>1,'files'=>$new_filename));	
+				}else{
+					$this->set('response',array('status'=>400,'error'=>'User not found'));
+				}
+			}else{
+				$this->set('response',array('status'=>501,'error'=>'no file uploaded'));
+			}
+			
+			//$this->set('response',array('status'=>2,'error'=>'masih testing','file'=>Configure::read('avatar_img_dir').$new_filename));
+			
 		}else{
 			$this->set('response',array('status'=>500,'error'=>'no file uploaded'));
 		}
