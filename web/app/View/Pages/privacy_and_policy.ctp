@@ -2,12 +2,14 @@
 	#faqPage p{
 	margin:0 0 20px 0;
   }
+  	#faqPage h1{ font-size:30px;}
 </style>
 <div id="faqPage">
     <div id="thecontent">
         <div class="content">
             <div class="row-3">
 
+<h1>Privacy and Policy</h1>
 <h2>Kebijakan Privasi untuk <a class="yellow" href="http://www.supersoccer.co.id" target="_blank">www.supersoccer.co.id</a></h2>
 <p>Jika Anda memerlukan informasi lebih lanjut atau memiliki pertanyaan tentang kebijakan privasi kami,</br>jangan ragu untuk menghubungi kami melalui email di <a class="yellow" href="mailto:info@supersoccer.co.id">info@supersoccer.co.id</a>.</p>
 
