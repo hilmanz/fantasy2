@@ -690,3 +690,6 @@ insert  into ffgame.master_transfer_window(`id`,`tw_open`,`tw_close`,`window_nam
   PRIMARY KEY (`id`),
   KEY `IDX_PUNISHMENT` (`game_id`,`game_team_id`,`game_type`,`punishment`,`n_status`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `ffgame`.`game_transfer_history` ADD INDEX `IDX_GAME_TRANSFER` (`game_team_id`, `transfer_type`);

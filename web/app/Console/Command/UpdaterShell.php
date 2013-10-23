@@ -1,11 +1,13 @@
 <?php
 class UpdaterShell extends AppShell{
 	 var $uses = array('Game','Team','User');
+   private $recent_matchday = 0;
 	 public function main() {
     	 	$limit = 10;
     	 	$start = 0;
 
         if($this->week_finished()){
+            $this->out('the game is completed');
             $this->out('getting points');
         
             $this->beforeFilter();
@@ -23,7 +25,9 @@ class UpdaterShell extends AppShell{
            CakeLog::write('updater', 'recalculate ranks');
            $this->recalculate_ranks();
            
+           $this->flagJobAftermatch();
            $this->out('done');
+
            CakeLog::write('updater', 'done');
         }else{
            $this->out('the games has not finished yet');
@@ -31,7 +35,32 @@ class UpdaterShell extends AppShell{
         }
     }
     private function week_finished(){
-      return true;
+      $rs = $this->Game->query("SELECT MAX(matchday) AS last_matchday 
+                                FROM ffgame.game_fixtures 
+                                WHERE period='FullTime' AND is_processed = 1;");
+      $recent_matchday = intval($rs[0][0]['last_matchday']);
+
+      $this->out('recent matchday : '.$rs[0][0]['last_matchday']);
+      
+      $rs = $this->Game->query("SELECT COUNT(*) AS total FROM ffgame.game_fixtures 
+                                WHERE matchday={$recent_matchday} 
+                                AND period='FullTime' AND is_processed = 1;");
+
+      if($rs[0][0]['total']==10){
+        //check if the matchday is already processed ?
+        //we do these to prevent race condition
+        $job = $this->Game->query("SELECT * FROM job_aftermatch WHERE matchday={$recent_matchday} LIMIT 1;");
+        if(sizeof($job)==0){
+          $this->recent_matchday = $recent_matchday;
+          return true;
+        }else{
+          $this->out('matchday : '.$recent_matchday.' Already processed');
+        }
+      }
+    }
+    private function flagJobAftermatch(){
+      $this->Game->query("INSERT IGNORE INTO job_aftermatch(matchday,update_dt)
+                          VALUES({$this->recent_matchday},NOW())");
     }
     private function get_points($users){
     	foreach($users as $user){
@@ -61,14 +90,203 @@ class UpdaterShell extends AppShell{
 
 
           if(is_array($response['game_points'])){
+
             $this->updating_weekly_stats($user['Team']['id'],
                                       $response['game_points']);
-           
+            
+            $this->generate_summary($user);
           }
         }
     	}
     }
-   
+    private function generate_summary($user){
+        $this->out("Generate Summary #".$user['Team']['id']);
+        $gameData = $this->Game->query("SELECT * FROM ffgame.game_users GameUser
+                              INNER JOIN ffgame.game_teams GameTeam
+                              ON GameTeam.user_id = GameUser.id
+                              WHERE GameUser.fb_id = '{$user['User']['fb_id']}' LIMIT 1");
+        $game_team_id = $gameData[0]['GameTeam']['id'];
+        //get money
+        $r = $this->Game->query("SELECT SUM(start_budget+transactions) AS balance FROM 
+                                (SELECT budget AS start_budget,0 AS transactions
+                                FROM ffgame.game_team_purse WHERE game_team_id=402 LIMIT 1
+                                UNION ALL
+                                SELECT 0,SUM(amount) AS transactions
+                                FROM ffgame.game_team_expenditures
+                                WHERE game_team_id={$game_team_id}
+                                ) Finance;");
+        $money = $r[0][0]['balance'];
+     
+
+        //get import player counts
+        $r = $this->Game->query("SELECT game_team_id,COUNT(id) AS total 
+                                  FROM ffgame.game_transfer_history 
+                                  WHERE game_team_id = {$game_team_id} 
+                                  AND transfer_type=1 LIMIT 10;");
+        $import_player_counts = $r[0][0]['total'];
+
+
+     
+        $categories = $this->getStatsCategories();
+
+         $modifiers = $this->Game->query("SELECT * FROM ffgame.game_matchstats_modifier Modifier LIMIT 10000");
+         $modifier = array();
+         while(sizeof($modifiers)>0){
+            $p = array_shift($modifiers);
+            $modifier[$p['Modifier']['name']] = array(
+                                                  'goalkeeper'=>$p['Modifier']['g'],
+                                                  'defender'=>$p['Modifier']['d'],
+                                                  'midfielder'=>$p['Modifier']['m'],
+                                                  'forward'=>$p['Modifier']['f']
+                                                  );
+         }
+        $games = $this->getStats($game_team_id,'games',$modifier);
+        $passing_and_attacking = $this->getStats($game_team_id,'passing_and_attacking',$modifier);
+        $defending = $this->getStats($game_team_id,'defending',$modifier);
+        $goalkeeping = $this->getStats($game_team_id,'goalkeeping',$modifier);
+        $mistakes_and_errors = $this->getStats($game_team_id,'mistakes_and_errors',$modifier);
+
+        $sql = "INSERT INTO team_summary
+                      (game_team_id,money,import_player_counts,games,passing_and_attacking,defending,goalkeeping,mistakes_and_errors,last_update)
+                      VALUES
+                      ({$game_team_id},
+                        {$money},
+                        {$import_player_counts},
+                        {$games},{$passing_and_attacking},
+                        {$defending},{$goalkeeping},{$mistakes_and_errors},NOW())
+                      ON DUPLICATE KEY UPDATE
+                      money = VALUES(money),
+                      import_player_counts = VALUES(import_player_counts),
+                      games = VALUES(games),
+                      passing_and_attacking = VALUES(passing_and_attacking),
+                      defending = VALUES(defending),
+                      goalkeeping = VALUES(goalkeeping),
+                      mistakes_and_errors = VALUES(mistakes_and_errors),
+                      last_update = VALUES(last_update);";
+
+      
+        $rs = $this->Game->query($sql);
+       if($rs){
+           $this->out("Generate Summary #".$user['Team']['id'].' DONE');
+       }
+        
+    }
+    private function getStats($game_team_id,$category,$modifier){
+      $map = $this->getStatsCategories();
+      $stats = array();
+
+      foreach($map[$category] as $n=>$v){
+        $stats[] = "'".trim($v)."'";
+      }
+      $sqlStr = implode(',',$stats);
+      $rs = $this->Game->query("SELECT a.stats_name,SUM(a.stats_value) AS frequency,b.position 
+                          FROM ffgame_stats.master_player_stats a
+                          INNER JOIN ffgame.master_player b
+                          ON a.player_id = b.uid
+                          WHERE EXISTS (SELECT 1 FROM ffgame_stats.game_match_player_points b 
+                              WHERE b.game_team_id={$game_team_id} AND b.player_id = a.player_id) 
+                          AND stats_name IN ({$sqlStr})
+                          GROUP BY stats_name,a.player_id
+                          LIMIT 1000;");
+      $total = 0;
+      foreach($rs as $r){
+        $stats_name = $r['a']['stats_name'];
+        $pos = strtolower($r['b']['position']);
+        $total += ($modifier[$stats_name][$pos] * $r[0]['frequency']);
+      }
+      return $total;
+    }
+    private function getStatsCategories(){
+      $games = array(
+          'game_started'=>'game_started',
+          'sub_on'=>'total_sub_on'
+      );
+
+      $passing_and_attacking = array(
+              'Freekick Goal'=>'att_freekick_goal',
+              'Goal inside the box'=>'att_ibox_goal',
+              'Goal Outside the Box'=>'att_obox_goal',
+              'Penalty Goal'=>'att_pen_goal',
+              'Freekick Shots'=>'att_freekick_post',
+              'On Target Scoring Attempt'=>'ontarget_scoring_att',
+              'Shot From Outside the Box'=>'att_obox_target',
+              'big_chance_created'=>'big_chance_created',
+              'big_chance_scored'=>'big_chance_scored',
+              'goal_assist'=>'goal_assist',
+              'total_assist_attempt'=>'total_att_assist',
+              'Second Goal Assist'=>'second_goal_assist',
+              'final_third_entries'=>'final_third_entries',
+              'fouled_final_third'=>'fouled_final_third',
+              'pen_area_entries'=>'pen_area_entries',
+              'won_contest'=>'won_contest',
+              'won_corners'=>'won_corners',
+              'penalty_won'=>'penalty_won',
+              'last_man_contest'=>'last_man_contest',
+              'accurate_corners_intobox'=>'accurate_corners_intobox',
+              'accurate_cross_nocorner'=>'accurate_cross_nocorner',
+              'accurate_freekick_cross'=>'accurate_freekick_cross',
+              'accurate_launches'=>'accurate_launches',
+              'long_pass_own_to_opp_success'=>'long_pass_own_to_opp_success',
+              'successful_final_third_passes'=>'successful_final_third_passes',
+              'accurate_flick_on'=>'accurate_flick_on'
+          );
+
+
+      $defending = array(
+              'aerial_won'=>'aerial_won',
+              'ball_recovery'=>'ball_recovery',
+              'duel_won'=>'duel_won',
+              'effective_blocked_cross'=>'effective_blocked_cross',
+              'effective_clearance'=>'effective_clearance',
+              'effective_head_clearance'=>'effective_head_clearance',
+              'interceptions_in_box'=>'interceptions_in_box',
+              'interception_won' => 'interception_won',
+              'possession_won_def_3rd' => 'poss_won_def_3rd',
+              'possession_won_mid_3rd' => 'poss_won_mid_3rd',
+              'possession_won_att_3rd' => 'poss_won_att_3rd',
+              'won_tackle' => 'won_tackle',
+              'offside_provoked' => 'offside_provoked',
+              'last_man_tackle' => 'last_man_tackle',
+              'outfielder_block' => 'outfielder_block'
+          );
+
+      $goalkeeper = array(
+                      'dive_catch'=> 'dive_catch',
+                      'dive_save'=> 'dive_save',
+                      'stand_catch'=> 'stand_catch',
+                      'stand_save'=> 'stand_save',
+                      'cross_not_claimed'=> 'cross_not_claimed',
+                      'good_high_claim'=> 'good_high_claim',
+                      'punches'=> 'punches',
+                      'good_one_on_one'=> 'good_one_on_one',
+                      'accurate_keeper_sweeper'=> 'accurate_keeper_sweeper',
+                      'gk_smother'=> 'gk_smother',
+                      'saves'=> 'saves',
+                      'goals_conceded'=>'goals_conceded'
+                          );
+
+
+      $mistakes_and_errors = array(
+                  'penalty_conceded'=>'penalty_conceded',
+                  'red_card'=>'red_card',
+                  'yellow_card'=>'yellow_card',
+                  'challenge_lost'=>'challenge_lost',
+                  'dispossessed'=>'dispossessed',
+                  'fouls'=>'fouls',
+                  'overrun'=>'overrun',
+                  'total_offside'=>'total_offside',
+                  'unsuccessful_touch'=>'unsuccessful_touch',
+                  'error_lead_to_shot'=>'error_lead_to_shot',
+                  'error_lead_to_goal'=>'error_lead_to_goal'
+                  );
+      $map = array('games'=>$games,
+                    'passing_and_attacking'=>$passing_and_attacking,
+                    'defending'=>$defending,
+                    'goalkeeping'=>$goalkeeper,
+                    'mistakes_and_errors'=>$mistakes_and_errors
+                   );
+      return $map;
+    }
     private function updating_weekly_stats($team_id,$game_points){
       foreach($game_points as $weekly){
         $sql = "INSERT INTO weekly_points

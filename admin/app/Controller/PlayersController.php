@@ -6,6 +6,7 @@
 App::uses('AppController', 'Controller');
 
 
+
 class PlayersController extends AppController {
 
 /**
@@ -19,7 +20,6 @@ class PlayersController extends AppController {
 		$this->loadModel('User');
 		$this->loadModel('Point');
 		$totalUser = $this->User->find('count');
-
 		$this->paginate = array('limit'=>20);
 		$rs = $this->paginate('User');
 		foreach($rs as $n=>$r){
@@ -96,5 +96,35 @@ class PlayersController extends AppController {
 		
 		$stats[0][0]['last_performance'] = @$last_performance[0][0];
 		return $stats[0][0];
+	}
+
+	public function top_weekly($week){
+		$sql = "SELECT a.team_id,b.team_name,b.team_id,d.name AS original_team,
+						c.*,SUM(points+extra_points) AS total_points 
+				FROM fantasy.weekly_points a
+				INNER JOIN fantasy.teams b
+				ON a.team_id = b.id 
+				INNER JOIN fantasy.users c
+				ON b.user_id = c.id
+				INNER JOIN ffgame.master_team d
+				ON b.team_id = d.uid
+				WHERE matchday={$week} GROUP BY a.team_id
+				ORDER BY total_points DESC LIMIT 20;";
+		$rs = $this->query($sql);
+
+	}
+	public function overall(){
+		$this->loadModel('User');
+		$this->loadModel('Point');
+		App::Import('Model', 'PlayerReport');
+		$this->PlayerReport = new PlayerReport;
+		
+		$totalUser = $this->User->find('count');
+		$this->paginate = array('limit'=>25);
+		$rs = $this->paginate('PlayerReport');
+
+		$this->set('total_users',$totalUser);
+		$this->set('rs',$rs);
+		
 	}
 }

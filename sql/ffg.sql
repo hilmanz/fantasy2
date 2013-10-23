@@ -155,3 +155,30 @@ CREATE TABLE ffg.activity_logs (
   PRIMARY KEY (`id`),
   KEY `IDX_USER_LOG` (`user_id`,`log_dt`,`log_type`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE ffg.job_aftermatch (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `matchday` int(11) DEFAULT '0',
+  `update_dt` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE_MATCHDAY` (`matchday`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE ffg.team_summary (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `game_team_id` bigint(21) DEFAULT NULL,
+  `money` bigint(21) DEFAULT '0',
+  `import_player_counts` bigint(20) DEFAULT '0',
+  `games` bigint(20) DEFAULT '0',
+  `passing_and_attacking` bigint(20) DEFAULT '0',
+  `defending` bigint(20) DEFAULT '0',
+  `goalkeeping` bigint(20) DEFAULT '0',
+  `mistakes_and_errors` bigint(20) DEFAULT '0',
+  `last_update` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE_TEAM` (`game_team_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;

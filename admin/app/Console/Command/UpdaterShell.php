@@ -14,6 +14,7 @@ class UpdaterShell extends AppShell{
 	       		'limit'=>$limit
 	       	));
 	       	$this->get_points($user);
+        
 	       	$start += $limit;
        	}while(sizeof($user)>0);
        
@@ -35,7 +36,19 @@ class UpdaterShell extends AppShell{
 				points = VALUES(points);
     		");
     		$this->out("Updating #".$user['Team']['id']." -> ".$response['points']);
+
+        $this->out("Generate Summary #".$user['Team']['id']);
+        $this->generate_summary($user);
+
     	}
+    }
+    private function generate_summary($user){
+        $gameData = $this->Game->query("SELECT * FROM ffgame.game_users GameUser
+                              INNER JOIN ffgame.game_teams GameTeam
+                              ON GameTeam.user_id = GameUser.id
+                              WHERE GameUser.fb_id = '{$user['User']['fb_id']}' LIMIT 1");
+        pr($gameData);
+        die();
     }
     private function recalculate_ranks(){
         $sql = "CALL recalculate_rank;";
