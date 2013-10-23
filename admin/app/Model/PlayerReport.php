@@ -253,6 +253,7 @@ class PlayerReport extends AppModel {
 			
 			
 			$rs[$n]['Money'] = intval($r[0]['Summary']['money']);
+			$rs[$n]['Summary'] = $r[0]['Summary'];
 		}
 
 		return $rs;
@@ -308,6 +309,7 @@ class PlayerReport extends AppModel {
 			
 			
 			$rs[$n]['Money'] = intval($r[0]['Summary']['money']);
+			$rs[$n]['Summary'] = $r[0]['Summary'];
 		}
 
 		return $rs;
@@ -364,6 +366,7 @@ class PlayerReport extends AppModel {
 			
 			
 			$rs[$n]['Money'] = intval($r[0]['Summary']['money']);
+			$rs[$n]['Summary'] = $r[0]['Summary'];
 		}
 
 		return $rs;
@@ -418,6 +421,7 @@ class PlayerReport extends AppModel {
 			
 			
 			$rs[$n]['Money'] = intval($r[0]['Summary']['money']);
+			$rs[$n]['Summary'] = $r[0]['Summary'];
 		}
 		
 		return $rs;

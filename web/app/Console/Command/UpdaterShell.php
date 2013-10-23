@@ -143,12 +143,22 @@ class UpdaterShell extends AppShell{
         $import_player_counts = $r[0][0]['total'];
 
         unset($r);
-     
+        
+        /*
         $games = $this->getStats($game_team_id,'games',$modifier);
         $passing_and_attacking = $this->getStats($game_team_id,'passing_and_attacking',$modifier);
         $defending = $this->getStats($game_team_id,'defending',$modifier);
         $goalkeeping = $this->getStats($game_team_id,'goalkeeping',$modifier);
         $mistakes_and_errors = $this->getStats($game_team_id,'mistakes_and_errors',$modifier);
+        */
+
+        $stats_group = $this->getStatsGroupValues($game_team_id,$modifier);
+
+        $games = $stats_group['games'];
+        $passing_and_attacking = $stats_group['passing_and_attacking'];
+        $defending = $stats_group['defending'];
+        $goalkeeping = $stats_group['goalkeeping'];
+        $mistakes_and_errors = $stats_group['mistakes_and_errors'];
 
         $sql = "INSERT INTO team_summary
                       (game_team_id,money,import_player_counts,games,passing_and_attacking,defending,goalkeeping,mistakes_and_errors,last_update)
@@ -168,13 +178,94 @@ class UpdaterShell extends AppShell{
                       mistakes_and_errors = VALUES(mistakes_and_errors),
                       last_update = VALUES(last_update);";
 
-        $this->out($sql);
+       // $this->out($sql);
       
         $rs = $this->Game->query($sql);
        if($rs){
            $this->out("Generate Summary #".$user['Team']['id'].' DONE');
        }
         
+    }
+    private function getStatsGroupValues($game_team_id,$modifier){
+        $map = $this->getStatsCategories();
+        $games = 0;
+        $passing_and_attacking = 0;
+        $defending = 0;
+        $goalkeeping = 0;
+        $mistakes_and_errors = 0;
+
+        $game_ids = $this->Game->query("SELECT game_id FROM ffgame_stats.game_match_player_points a
+                                        WHERE game_team_id={$game_team_id} GROUP BY game_id;");
+
+        $game_id = array();
+        while(sizeof($game_ids)>0){
+          $g = array_pop($game_ids);
+          $game_id[] = "'".$g['a']['game_id']."'";
+        }
+
+        $players = $this->Game->query("SELECT player_id FROM ffgame_stats.game_match_player_points bb
+                                          WHERE bb.game_team_id={$game_team_id} GROUP BY player_id;",false);
+        $pp = array();
+        while(sizeof($players)>0){
+          $p = array_pop($players);
+          $pp[] = "'".$p['bb']['player_id']."'";
+        }
+        if(sizeof($pp)>0 && sizeof($game_id)>0){
+          $is_finished = false;
+          $start = 0;
+          while(!$is_finished){
+                $sql = "SELECT a.stats_name,SUM(a.stats_value) AS frequency,b.position 
+                              FROM ffgame_stats.master_player_stats a
+                              INNER JOIN ffgame.master_player b
+                              ON a.player_id = b.uid
+                              WHERE a.game_id IN (".implode(',',$game_id).") AND a.player_id IN (".implode(",",$pp).")
+                              GROUP BY a.stats_name,a.player_id
+                              LIMIT {$start},100;";
+               $rs = $this->Game->query($sql,false);
+
+               // $this->out($sql);
+               if(sizeof($rs)>0){
+                  foreach($rs as $r){
+                    $stats_name = $r['a']['stats_name'];
+                    $pos = strtolower($r['b']['position']);
+                    $poin = ($modifier[$stats_name][$pos] * $r[0]['frequency']);
+                    if($this->is_in_category($map,'games',$stats_name)){
+                      $games += $poin;
+                    }
+                    if($this->is_in_category($map,'passing_and_attacking',$stats_name)){
+                      $passing_and_attacking += $poin;
+                    }
+                    if($this->is_in_category($map,'defending',$stats_name)){
+                      $defending += $poin;
+                    }
+                    if($this->is_in_category($map,'goalkeeping',$stats_name)){
+                      $goalkeeping += $poin;
+                    }
+                    if($this->is_in_category($map,'mistakes_and_errors',$stats_name)){
+                      $mistakes_and_errors += $poin;
+                    }
+                  }
+                  $rs = null;
+                  unset($rs);
+                  $start+=100;
+               }else{
+                  $is_finished = true;
+               }
+          }
+      
+        }    
+        return array('games'=>$games,
+                      'passing_and_attacking'=>$passing_and_attacking,
+                      'defending'=>$defending,
+                      'goalkeeping'=>$goalkeeping,
+                      'mistakes_and_errors'=>$mistakes_and_errors);
+    }
+    private function is_in_category($map,$category,$stats_name){
+        foreach($map[$category] as $n=>$v){
+            if($v==$stats_name){
+              return true;
+            }
+        }
     }
     private function getStats($game_team_id,$category,$modifier){
       $map = $this->getStatsCategories();
@@ -187,41 +278,52 @@ class UpdaterShell extends AppShell{
       $sqlStr = implode(',',$stats);
       unset($stats);
 
-      $this->out('getting stats : #'.$game_team_id.'-'.$category);
+     // $this->out('getting stats : #'.$game_team_id.'-'.$category);
       $is_finished = false;
       $start = 0;
       $total = 0;
-      while(!$is_finished){
-          $this->out('start :'.$start);
-          $this->out('total :'.$total);
-           $rs = $this->Game->query("SELECT a.stats_name,SUM(a.stats_value) AS frequency,b.position 
-                          FROM ffgame_stats.master_player_stats a
-                          INNER JOIN ffgame.master_player b
-                          ON a.player_id = b.uid
-                          WHERE EXISTS (SELECT 1 FROM ffgame_stats.game_match_player_points b 
-                              WHERE b.game_team_id={$game_team_id} AND b.player_id = a.player_id) 
-                          AND stats_name IN ({$sqlStr})
-                          GROUP BY stats_name,a.player_id
-                          LIMIT {$start},20;",false);
-           if(sizeof($rs)>0){
-              foreach($rs as $r){
-                $stats_name = $r['a']['stats_name'];
-                $pos = strtolower($r['b']['position']);
-                $total += ($modifier[$stats_name][$pos] * $r[0]['frequency']);
-              }
-              $rs = null;
-              unset($rs);
-              $start+=20;
-           }else{
-            $is_finished = true;
-           }
+      $players = $this->Game->query("SELECT player_id FROM ffgame_stats.game_match_player_points bb
+                                          WHERE bb.game_team_id={$game_team_id} GROUP BY player_id;",false);
+      $pp = array();
+      while(sizeof($players)>0){
+        $p = array_pop($players);
+        $pp[] = "'".$p['bb']['player_id']."'";
       }
+      if(sizeof($pp)>0){
+        while(!$is_finished){
+           // $this->out('start :'.$start);
+           // $this->out('total :'.$total);
 
+             $rs = $this->Game->query("SELECT a.stats_name,a.stats_value AS frequency,b.position 
+                            FROM ffgame_stats.master_player_stats a
+                            INNER JOIN ffgame.master_player b
+                            ON a.player_id = b.uid
+                            WHERE player_id IN (".implode(",",$pp).") 
+                            AND stats_name IN ({$sqlStr})
+                            LIMIT {$start},20;",false);
+
+            
+             if(sizeof($rs)>0){
+                foreach($rs as $r){
+                  $stats_name = $r['a']['stats_name'];
+                  $pos = strtolower($r['b']['position']);
+                  $total += ($modifier[$stats_name][$pos] * $r['a']['frequency']);
+                }
+                $rs = null;
+                unset($rs);
+                $start+=20;
+             }else{
+              $is_finished = true;
+             }
+        }
+  
+      }     
+      
       
       return $total;
     }
     private function getStatsCategories(){
-      $this->out('get map');
+     // $this->out('get map');
       $games = array(
           'game_started'=>'game_started',
           'sub_on'=>'total_sub_on'
