@@ -1,10 +1,10 @@
 <h3>Players</h3>
-<h4>Total Players : <?=number_format($total_users)?></h4>
+<div style="overflow:auto;">
+
 <form action="<?=$this->Html->url('/players/search')?>" method="get" 
 	enctype="application/x-www-form-urlencoded">
 	<input type="text" name="q" value=""/><input type="submit" name="btn" value="Search"/>
 </form>
-<div style="overflow:auto;">
 <table width="100%">
 	<tr>
 		<td>No</td>
@@ -15,15 +15,15 @@
 		<td>Joined</td>
 		<td>Registration</td>
 		<td>Team Name</td>
-		<td><?php echo $this->Paginator->sort('rank','Rank');?></td>
-		<td><?php echo $this->Paginator->sort('import','Import Player Counts');?></td>
-		<td><?php echo $this->Paginator->sort('points','Points');?></td>
-		<td><?php echo $this->Paginator->sort('money','Money');?></td>
-		<td><?php echo $this->Paginator->sort('games','Games');?></td>
-		<td><?php echo $this->Paginator->sort('passing_and_attacking','Passing and Attacking');?></td>
-		<td><?php echo $this->Paginator->sort('defending','Defending');?></td>
-		<td><?php echo $this->Paginator->sort('goalkeeping','Goalkeeping');?></td>
-		<td><?php echo $this->Paginator->sort('mistakes_and_errors','Mistakes and Errors');?></td>
+		<td>Rank</td>
+		<td>Import Player Counts</td>
+		<td>Points</td>
+		<td>Money</td>
+		<td>Games</td>
+		<td>Passing and Attacking</td>
+		<td>Defending</td>
+		<td>Goalkeeping</td>
+		<td>Mistakes and errors</td>
 	</tr>
 	<?php
 

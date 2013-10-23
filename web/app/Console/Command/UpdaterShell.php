@@ -63,12 +63,25 @@ class UpdaterShell extends AppShell{
                           VALUES({$this->recent_matchday},NOW())");
     }
     private function get_points($users){
+     $modifiers = $this->Game->query("SELECT * FROM ffgame.game_matchstats_modifier Modifier LIMIT 100");
+     $modifier = array();
+     while(sizeof($modifiers)>0){
+        $p = array_shift($modifiers);
+        $modifier[$p['Modifier']['name']] = array(
+                                              'goalkeeper'=>$p['Modifier']['g'],
+                                              'defender'=>$p['Modifier']['d'],
+                                              'midfielder'=>$p['Modifier']['m'],
+                                              'forward'=>$p['Modifier']['f']
+                                              );
+     }
+
+
     	foreach($users as $user){
     		$response = $this->Game->getTeamPoints($user['User']['fb_id']);
 
     		$response['points'] = intval($response['points']);
         $response['extra_points'] = intval($response['extra_points']);
-       print_r($response);
+      
 
         if($user['Team']['id']>0){
           $sql = "
@@ -94,27 +107,31 @@ class UpdaterShell extends AppShell{
             $this->updating_weekly_stats($user['Team']['id'],
                                       $response['game_points']);
             
-            $this->generate_summary($user);
+            $this->generate_summary($user,$modifier);
           }
         }
     	}
+      unset($modifier);
+      unset($modifiers);
     }
-    private function generate_summary($user){
+    private function generate_summary($user,$modifier){
         $this->out("Generate Summary #".$user['Team']['id']);
         $gameData = $this->Game->query("SELECT * FROM ffgame.game_users GameUser
                               INNER JOIN ffgame.game_teams GameTeam
                               ON GameTeam.user_id = GameUser.id
-                              WHERE GameUser.fb_id = '{$user['User']['fb_id']}' LIMIT 1");
+                              WHERE GameUser.fb_id = '{$user['User']['fb_id']}' LIMIT 1",false);
         $game_team_id = $gameData[0]['GameTeam']['id'];
+
+        unset($gameData);
         //get money
         $r = $this->Game->query("SELECT SUM(start_budget+transactions) AS balance FROM 
                                 (SELECT budget AS start_budget,0 AS transactions
-                                FROM ffgame.game_team_purse WHERE game_team_id=402 LIMIT 1
+                                FROM ffgame.game_team_purse WHERE game_team_id={$game_team_id} LIMIT 1
                                 UNION ALL
                                 SELECT 0,SUM(amount) AS transactions
                                 FROM ffgame.game_team_expenditures
                                 WHERE game_team_id={$game_team_id}
-                                ) Finance;");
+                                ) Finance;",false);
         $money = $r[0][0]['balance'];
      
 
@@ -122,24 +139,11 @@ class UpdaterShell extends AppShell{
         $r = $this->Game->query("SELECT game_team_id,COUNT(id) AS total 
                                   FROM ffgame.game_transfer_history 
                                   WHERE game_team_id = {$game_team_id} 
-                                  AND transfer_type=1 LIMIT 10;");
+                                  AND transfer_type=1 LIMIT 10;",false);
         $import_player_counts = $r[0][0]['total'];
 
-
+        unset($r);
      
-        $categories = $this->getStatsCategories();
-
-         $modifiers = $this->Game->query("SELECT * FROM ffgame.game_matchstats_modifier Modifier LIMIT 10000");
-         $modifier = array();
-         while(sizeof($modifiers)>0){
-            $p = array_shift($modifiers);
-            $modifier[$p['Modifier']['name']] = array(
-                                                  'goalkeeper'=>$p['Modifier']['g'],
-                                                  'defender'=>$p['Modifier']['d'],
-                                                  'midfielder'=>$p['Modifier']['m'],
-                                                  'forward'=>$p['Modifier']['f']
-                                                  );
-         }
         $games = $this->getStats($game_team_id,'games',$modifier);
         $passing_and_attacking = $this->getStats($game_team_id,'passing_and_attacking',$modifier);
         $defending = $this->getStats($game_team_id,'defending',$modifier);
@@ -164,6 +168,7 @@ class UpdaterShell extends AppShell{
                       mistakes_and_errors = VALUES(mistakes_and_errors),
                       last_update = VALUES(last_update);";
 
+        $this->out($sql);
       
         $rs = $this->Game->query($sql);
        if($rs){
@@ -178,8 +183,18 @@ class UpdaterShell extends AppShell{
       foreach($map[$category] as $n=>$v){
         $stats[] = "'".trim($v)."'";
       }
+      unset($map);
       $sqlStr = implode(',',$stats);
-      $rs = $this->Game->query("SELECT a.stats_name,SUM(a.stats_value) AS frequency,b.position 
+      unset($stats);
+
+      $this->out('getting stats : #'.$game_team_id.'-'.$category);
+      $is_finished = false;
+      $start = 0;
+      $total = 0;
+      while(!$is_finished){
+          $this->out('start :'.$start);
+          $this->out('total :'.$total);
+           $rs = $this->Game->query("SELECT a.stats_name,SUM(a.stats_value) AS frequency,b.position 
                           FROM ffgame_stats.master_player_stats a
                           INNER JOIN ffgame.master_player b
                           ON a.player_id = b.uid
@@ -187,16 +202,26 @@ class UpdaterShell extends AppShell{
                               WHERE b.game_team_id={$game_team_id} AND b.player_id = a.player_id) 
                           AND stats_name IN ({$sqlStr})
                           GROUP BY stats_name,a.player_id
-                          LIMIT 1000;");
-      $total = 0;
-      foreach($rs as $r){
-        $stats_name = $r['a']['stats_name'];
-        $pos = strtolower($r['b']['position']);
-        $total += ($modifier[$stats_name][$pos] * $r[0]['frequency']);
+                          LIMIT {$start},20;",false);
+           if(sizeof($rs)>0){
+              foreach($rs as $r){
+                $stats_name = $r['a']['stats_name'];
+                $pos = strtolower($r['b']['position']);
+                $total += ($modifier[$stats_name][$pos] * $r[0]['frequency']);
+              }
+              $rs = null;
+              unset($rs);
+              $start+=20;
+           }else{
+            $is_finished = true;
+           }
       }
+
+      
       return $total;
     }
     private function getStatsCategories(){
+      $this->out('get map');
       $games = array(
           'game_started'=>'game_started',
           'sub_on'=>'total_sub_on'
@@ -285,6 +310,12 @@ class UpdaterShell extends AppShell{
                     'goalkeeping'=>$goalkeeper,
                     'mistakes_and_errors'=>$mistakes_and_errors
                    );
+
+      unset($games);
+      unset($passing_and_attacking);
+      unset($defending);
+      unset($goalkeeper);
+      unset($mistakes_and_errors);
       return $map;
     }
     private function updating_weekly_stats($team_id,$game_points){

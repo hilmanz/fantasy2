@@ -4,7 +4,7 @@
 *
 */
 App::uses('AppController', 'Controller');
-
+App::uses('Sanitize', 'Utility');
 
 
 class PlayersController extends AppController {
@@ -30,6 +30,24 @@ class PlayersController extends AppController {
 		}
 		$this->set('total_users',$totalUser);
 		$this->set('rs',$rs);
+	}
+
+	public function search(){
+		$this->loadModel('User');
+		$this->loadModel('Point');
+		App::Import('Model', 'PlayerReport');
+		$this->PlayerReport = new PlayerReport;
+		
+		$q = $this->request->query['q'];
+		//$this->paginate = array('limit'=>25);
+		$this->paginate = array('conditions'=>array('OR'=>array("team_name LIKE '%".Sanitize::clean($q)."%'",
+												"User.email LIKE '%".Sanitize::clean($q)."%'")),
+								'limit'=>1);
+		$rs = $this->paginate('PlayerReport');
+
+		
+		$this->set('rs',$rs);
+		
 	}
 	public function view($user_id){
 		$this->loadModel('User');

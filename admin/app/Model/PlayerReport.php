@@ -375,6 +375,11 @@ class PlayerReport extends AppModel {
 									$page, 
 									$recursive,
 									$extra){
+		
+		$search = '';
+		if(isset($conditions['OR'])){
+			$search = "WHERE (({$conditions['OR'][0]}) OR ({$conditions['OR'][1]}))";
+		}
 		//decide the paging
 		if($page==1){
 			$start = 0;
@@ -386,13 +391,14 @@ class PlayerReport extends AppModel {
 							ON Team.user_id = User.id
 							INNER JOIN ffgame.master_team MasterTeam
 							ON Team.team_id = MasterTeam.uid
-							LIMIT {$start},{$limit}");
+							{$search}
+							LIMIT {$start},{$limit}",false);
 		//additional data
 		foreach($rs as $n=>$v){
 			$r = $this->query("SELECT * FROM ffgame.game_users GameUser
 								INNER JOIN ffgame.game_teams GameTeam
 								ON GameTeam.user_id = GameUser.id
-								WHERE GameUser.fb_id = '{$v['User']['fb_id']}' LIMIT 1;");
+								WHERE GameUser.fb_id = '{$v['User']['fb_id']}' LIMIT 1;",false);
 			$rs[$n]['GameData'] = $r[0];
 
 			$r = $this->query("SELECT (points+extra_points) AS total_points,rank 
@@ -404,7 +410,7 @@ class PlayerReport extends AppModel {
 			$game_team_id = $rs[$n]['GameData']['GameTeam']['id'];
 			
 			$r = $this->query("SELECT * FROM team_summary Summary
-								WHERE game_team_id={$game_team_id} LIMIT 1;");
+								WHERE game_team_id={$game_team_id} LIMIT 1;",false);
 			
 			$rs[$n]['ImportPlayerCounts'] = intval($r[0]['Summary']['import_player_counts']);
 
@@ -416,14 +422,22 @@ class PlayerReport extends AppModel {
 		
 		return $rs;
 	}
+
 	public function paginateCount(
 										$conditions = null, 
 										$recursive = 0, 
 										$extra = array()) {
+
+		$search = '';
+		if(isset($conditions['OR'])){
+			$search = "WHERE (({$conditions['OR'][0]}) OR ({$conditions['OR'][1]}))";
+		}
 	    // method body
-		$rs = $this->query("SELECT COUNT(a.id) as total FROM users a 
-							INNER JOIN teams b
-						    ON b.user_id = a.id");
+		$rs = $this->query("SELECT COUNT(User.id) as total FROM users User 
+							INNER JOIN teams Team
+						    ON Team.user_id = User.id
+						    {$search}
+						    ");
 		
 		return $rs[0][0]['total'];
 	}
