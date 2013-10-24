@@ -27,6 +27,9 @@
                     	<li>
                         	<a href="<?=$this->Html->url('/players/overall')?>">Players</a>
                         </li>
+                        <li>
+                            <a href="<?=$this->Html->url('/players/playerstats')?>">Master Player</a>
+                        </li>
                     	<li>
                             <a href="<?=$this->Html->url('/pushlogs')?>">Push Logs</a>
                         </li>

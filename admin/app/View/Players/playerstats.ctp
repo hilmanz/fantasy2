@@ -32,6 +32,7 @@ function getdata(){
 							]);
 					}
 					start += 20;
+					$(".msg").html($(".msg").html()+'.');
 					getdata();
 				}else{
 					//draw table
