@@ -1,4 +1,6 @@
-<h3>Create Sponsor</h3>
+<div class="titleBox">
+	<h1>Create Sponsor</h1>
+</div>
 <div class="row">
 <form action="<?=$this->Html->url('/sponsors/create')?>" method="POST" enctype="application/x-www-form-urlencoded">
 	<table width="100%">

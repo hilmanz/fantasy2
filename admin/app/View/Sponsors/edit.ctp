@@ -1,4 +1,6 @@
-<h3>Edit Sponsor</h3>
+<div class="titleBox">
+	<h1>Edit Sponsor</h1>
+</div>
 <div class="row">
 <form action="<?=$this->Html->url('/sponsors/edit/'.$sponsor['id'])?>" method="POST" enctype="application/x-www-form-urlencoded">
 	<table width="100%">

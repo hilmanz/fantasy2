@@ -1,8 +1,9 @@
 <?php
 $sponsors = (isset($sponsors))? $sponsors : array();
 ?>
-<h3>Sponsorships</h3>
-
+<div class="titleBox">
+<h1>Sponsorships</h1>
+</div>
 <div class="row-2">
 	<a href="<?=$this->Html->url('/sponsors/create')?>" class="button">Create Sponsorship</a>
 	<a href="<?=$this->Html->url('/sponsors/perks')?>" class="button">Show Perks</a>
