@@ -9,6 +9,16 @@
 			<td>Expiry Time</td><td><input type="text" name="expiry_time" value="<?=$sponsor['expiry_time']?>"></td>
 		</tr>
 		<tr>
+			<td>Availability</td>
+			<td>
+
+				<select name="is_available">
+					<option value="1" <?php if($sponsor['is_available']==1): echo 'selected';endif;?>>Yes</option>
+					<option value="0" <?php if($sponsor['is_available']==0): echo 'selected';endif;?>>No</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
 			<td colspan="2"><input type="submit" name="btn" value="Save"/></td>
 		</tr>
 	</table>

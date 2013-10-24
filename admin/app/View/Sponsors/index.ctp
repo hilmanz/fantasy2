@@ -5,6 +5,7 @@ $sponsors = (isset($sponsors))? $sponsors : array();
 
 <div class="row-2">
 	<a href="<?=$this->Html->url('/sponsors/create')?>" class="button">Create Sponsorship</a>
+	<a href="<?=$this->Html->url('/sponsors/perks')?>" class="button">Show Perks</a>
 </div>
 <div class="row-2">
 	<h4>Current Sponsors</h4>
