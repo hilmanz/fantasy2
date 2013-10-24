@@ -30,6 +30,9 @@
                         <li>
                             <a href="<?=$this->Html->url('/players/playerstats')?>">Master Player</a>
                         </li>
+                        <li>
+                            <a href="<?=$this->Html->url('/sponsors')?>">Sponsors</a>
+                        </li>
                     	<li>
                             <a href="<?=$this->Html->url('/pushlogs')?>">Push Logs</a>
                         </li>

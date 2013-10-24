@@ -30,6 +30,8 @@ function getdata(){
 								response.data[i].stats.defending,
 								response.data[i].stats.goalkeeping,
 								response.data[i].stats.mistakes_and_errors,
+								response.data[i].stats.total,
+
 							]);
 					}
 					start += 20;
@@ -57,6 +59,7 @@ function draw_table(){
 			{ "sTitle": "Def", "sClass": "center" },
 			{ "sTitle": "GK", "sClass": "center" },
 			{ "sTitle": "Mistakes/Errors", "sClass": "center" },
+			{ "sTitle": "Total Points", "sClass": "center" },
 		]
 	} );
 }
