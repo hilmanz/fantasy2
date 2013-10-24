@@ -111,4 +111,11 @@ class SponsorsController extends AppController {
 			$this->set('success',0);
 		}
 	}
+
+	public function perks(){
+		$this->loadModel('Perk');
+
+		$rs = $this->Perk->find('all');
+		$this->set('rs',$rs);
+	}
 }
