@@ -141,6 +141,8 @@ class PlayersController extends AppController {
 
 	}
 	public function overall(){
+
+
 		$this->loadModel('User');
 		$this->loadModel('Point');
 		App::Import('Model', 'PlayerReport');
@@ -152,7 +154,7 @@ class PlayersController extends AppController {
 
 		$this->set('total_users',$totalUser);
 		$this->set('rs',$rs);
-		
+		$this->set('sort',$this->request->params['named']['sort']);
 	}
 	/*
 	* the page that showing the master player's stats
