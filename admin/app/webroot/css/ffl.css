@@ -1472,3 +1472,30 @@ th h4, th h5{
 	border-radius:0;
 	padding:0 10px;
 }
+.dataTablePlayer tr th:nth-child(10){
+	width:85px;
+}
+.dataTablePlayer tr th:nth-child(9){
+	width:85px;
+}
+.dataTablePlayer tr th:nth-child(8){
+	width:30px;
+}
+.dataTablePlayer tr th:nth-child(7){
+	width:30px;
+}
+.dataTablePlayer tr th:nth-child(6){
+	width:55px;
+}
+.dataTablePlayer tr th:nth-child(5){
+	width:55px;
+}
+.dataTablePlayer tr th:nth-child(4){
+	width:55px;
+}
+.dataTablePlayer tr th:nth-child(3){
+	width:55px;
+}
+
+
+

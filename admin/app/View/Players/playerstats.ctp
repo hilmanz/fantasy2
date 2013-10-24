@@ -3,7 +3,7 @@
 </div>
 <div class="theContainer">
 <div class="msg alert">Loading player data....</div>
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="dataTable" id="tbl">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="dataTable dataTablePlayer" id="tbl">
 	
 </table>
 </div>
