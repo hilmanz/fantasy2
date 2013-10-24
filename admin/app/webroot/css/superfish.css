@@ -23,6 +23,7 @@
 	background: linear-gradient(to bottom, #444444 1%,#131313 22%,#1c1c1c 48%,#383838 99%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#444444', endColorstr='#383838',GradientType=0 ); /* IE6 */
 	box-shadow:0 0 50px #222 inset;
+	z-index:10000;
 }
 .sf-menu ul li {
 	width:			100%;

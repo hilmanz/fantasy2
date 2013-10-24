@@ -13,34 +13,47 @@
            <div id="header">
                <a id="logo" href="<?=$this->Html->url('/')?>" title="SUPER SOCCER - FANTASY FOOTBALL LEAGUE">&nbsp;</a>
             </div><!-- end #header -->
+			<script>
+				$(document).ready(function() {
+					$('ul#topnav').superfish({ 
+						delay:       600,
+						animation:   {opacity:'show',height:'show'},
+						speed:       'fast',
+						autoArrows:  true,
+						dropShadows: false
+					});
+				});
+			</script>
             <?php
                 if($USER_IS_LOGIN):
             ?>
                 <div id="navigation">
-                	<ul>
+                	<ul id="topnav">
                     	<li>
                         	<a href="<?=$this->Html->url('/')?>">Dashboard</a>
                         </li>
-                    	<li>
-                        	<a href="<?=$this->Html->url('/schedule')?>">Schedule</a>
+                    	<li><a href="#">GAME</a>
+							<ul>
+								<li>
+									<a href="<?=$this->Html->url('/schedule')?>">Schedule</a>
+								</li>
+								<li>
+									<a href="<?=$this->Html->url('/players/overall')?>">Players</a>
+								</li>
+								<li>
+									<a href="<?=$this->Html->url('/players/playerstats')?>">Master Player</a>
+								</li>
+								<li>
+									<a href="<?=$this->Html->url('/sponsors')?>">Sponsors</a>
+								</li>
+							</ul>
                         </li>
-                    	<li>
-                        	<a href="<?=$this->Html->url('/players/overall')?>">Players</a>
-                        </li>
-                        <li>
-                            <a href="<?=$this->Html->url('/players/playerstats')?>">Master Player</a>
-                        </li>
-                        <li>
-                            <a href="<?=$this->Html->url('/sponsors')?>">Sponsors</a>
-                        </li>
-                    	<li>
-                            <a href="<?=$this->Html->url('/pushlogs')?>">Push Logs</a>
-                        </li>
-                        <li>
-                            <a href="<?=$this->Html->url('/matches')?>">Match Results</a>
-                        </li>
-                        <li>
-                            <a href="<?=$this->Html->url('/stats')?>">Statistics</a>
+                    	<li><a href="#">OPTA</a>
+							<ul>
+                            	<li><a href="<?=$this->Html->url('/pushlogs')?>">Push Logs</a></li>
+                            	<li><a href="<?=$this->Html->url('/matches')?>">Match Results</a></li>
+                            	<li><a href="<?=$this->Html->url('/stats')?>">Statistics</a></li>
+							</ul>
                         </li>
                         <li>
                             <a href="<?=$this->Html->url('/banners')?>">Banners</a>
