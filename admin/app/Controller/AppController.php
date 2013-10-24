@@ -36,6 +36,11 @@ class AppController extends Controller {
 	
 	public function beforeFilter(){
 		$this->layout = 'admin';
+		$this->loadModel('Game');
+		//set acces token
+		$this->initAccessToken();
+		$this->Game->setAccessToken($this->getAccessToken());
+
 		if($this->Session->read('AdminLogin')==null && $this->request->params['controller']!='login'){
 			
 			$this->redirect('/login');
@@ -51,5 +56,79 @@ class AppController extends Controller {
 	public function salt(){
 		return Configure::read('API_SALT');
 	}
+	public function getAccessToken(){
+		$access_token = $this->Session->read('access_token');
+		
+		return $access_token;
+	}
+	public function initAccessToken(){
+		
+		if($this->getAccessToken()!=null){
+			
+			$check = $this->api_call('/checkSession',array('access_token'=>$this->getAccessToken()));
+			if($check['status']==0){
+				$this->Session->write('access_token',null);
+			}
+		}
+		if($this->Session->read('access_token')==null){
+			$ckfile = tempnam ("/tmp", "CURLCOOKIE");
+			$response = $this->api_post('/auth',array(),
+									$ckfile);
+			if(!isset($response['error'])){
+				$challenge_code = $response['challenge_code'];
+				$request_code = sha1($this->getAPIKey().'|'.$challenge_code.'|'.$this->salt());
+				$response = $this->api_post('/auth',
+											array('request_code'=>$request_code),
+											$ckfile);
+
+				unlink($ckfile);
+				$this->Session->write('access_token',$response['access_token']);
+				$access_token = $this->Session->read('access_token');
+				return $access_token;
+				
+			}else{
+				unlink($ckfile);
+				if($this->request->params['controller']!='login'
+					&& $this->request->params['action']!='service_unavailable' 
+					&& $this->request->params['controller']!='api'){
+					$this->redirect('/login/service_unavailable');
+				}else{
+					//die(json_encode(array('error'=>'service unavailable')));
+				}
+			}
+			return 0;
+		}else{
+
+			return $this->Session->read('access_token');
+		}
+		
+	}
+	public function getAPIUrl(){
+		return Configure::read('API_URL');
+	}
+	public function getAPIKey(){
+		return Configure::read('API_KEY');
+	}
+
+
+	public function api_post($uri,$params,$cookie_file='',$timeout=15){
+		App::import("Vendor","common");
+		if($this->getAccessToken()!=null){
+			$params['access_token'] = $this->getAccessToken();
+		}
+		$params['api_key'] = $this->getAPIKey();
+		$response = json_decode(curlPost($this->getAPIUrl().$uri,$params,$cookie_file,$timeout),true);
+		return $response;
+	}
+	public function api_call($uri,$params,$cookie_file='',$timeout=15){
+		App::import("Vendor","common");
+		if($this->getAccessToken()!=null){
+			$params['access_token'] = $this->getAccessToken();
+		}
+		$params['api_key'] = $this->getAPIKey();
+		$response = json_decode(curlGet($this->getAPIUrl().$uri,$params,$cookie_file,$timeout),true);
+		return $response;
+	}
+	
 }
 

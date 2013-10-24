@@ -39,24 +39,30 @@
 	<td>Name</td>
 	<td>Position</td>
 	<td>Plays</td>
-	<td>Points</td>
-	<td>Last Performance</td>
-	<td>Value</td>
+	<td>Current Points</td>
+	<!--<td>Last Week Performance (compare to overall team points)</td>-->
+	<td>Basic Value</td>
+	<td>Current Value</td>
 </tr>
 <?php
 	foreach($squad as $n=>$s):
-		$transfer_value = $s['b']['transfer_value'];
-		$performance_value = round(($s['stats']['last_performance']['total_performance']/100)
-								* $transfer_value);
-		$transfer_value += $performance_value;
+		if($s['points']!=0){
+	      $last_performance = floatval($s['last_performance']);
+	      $performance_bonus = getTransferValueBonus($last_performance,intval($s['transfer_value']));
+	    }else{
+	      $performance_bonus = 0;
+	    }
+		$transfer_value = $s['transfer_value'] + $performance_bonus;
+		
 ?>
 <tr>
 	<td><?=$n+1?></td>
-	<td><?=$s['b']['name']?></td>
-	<td><?=$s['b']['position']?></td>
-	<td><?=number_format(@$s['stats']['total_plays'])?></td>
-	<td><?=number_format(@$s['stats']['total_points'])?></td>
-	<td><?=number_format(@$s['stats']['last_performance']['total_performance'])?></td>
+	<td><?=h($s['name'])?></td>
+	<td><?=$s['position']?></td>
+	<td><?=number_format(@$s['total_plays'])?></td>
+	<td><?=number_format(@$s['points'])?></td>
+	<!--<td><?=number_format(@$s['last_performance'])?></td>-->
+	<td><?=number_format($s['transfer_value'])?></td>
 	<td><?=number_format($transfer_value)?></td>
 </tr>
 <?php
