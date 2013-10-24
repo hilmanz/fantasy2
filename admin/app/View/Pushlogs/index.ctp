@@ -1,23 +1,28 @@
-<h3>Push Logs</h3>
-<div>
-	Below is the latest push from Opta. Refreshed every 10 seconds.
+<div class="titleBox">
+	<h1>Push Logs</h1>
 </div>
-<div id="logstable" class="row">
-	
-</div>
-<div class="row">
-	<a class="button" href="<?=$this->Html->url('/pushlogs/show_list')?>">Show All Logs</a>
-	<a class="button" href="<?=$this->Html->url('/pushlogs/performance')?>">Performance</a>
+<div class="theContainer">
+	<h3 class="titles">Below is the latest push from Opta. Refreshed every 10 seconds.</h3>
+	<div id="logstable" class="row">
+		
+	</div>
+	<div class="row">
+		<a class="button" href="<?=$this->Html->url('/pushlogs/show_list')?>">Show All Logs</a>
+		<a class="button" href="<?=$this->Html->url('/pushlogs/performance')?>">Performance</a>
+	</div>
 </div>
 <script type="text/template" id="tpl-logstable">
-    <table width="100%">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="dataTable">
+		<thead>
 		<tr>
-			<td>id</td>
-			<td>Time</td>
-			<td>Source</td>
-			<td>Feed Type</td>
-			<td>Saved File</td>
+			<th>id</th>
+			<th>Time</th>
+			<th>Source</th>
+			<th>Feed Type</th>
+			<th>Saved File</th>
 		</tr>
+		</thead>
+		<tbody>
 		<%
 			for(var i in data){
 		%>
@@ -31,6 +36,7 @@
 		<%
 			}
 		%>
+		</tbody>
 	</table>
 </script>
 <script>

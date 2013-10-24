@@ -11,7 +11,7 @@ if(isset($results)):
 <td>ID</td>
 <td><?=h($rs['Banners']['slot'])?></td>
 <td><?=h($rs['Banners']['banner_name'])?></td>
-<td><img src='<?=$this->Html->url(Configure::read('avatar_web_url').$rs['Banners']['banner_file'])?>' width="400"/></td>
+<td><img src='<?=$this->Html->url(Configure::read('avatar_web_url').$rs['Banners']['banner_file'])?>' width="100"/></td>
 <td><?=h($rs['Banners']['url'])?></td>
 <td><a href="<?=$this->Html->url('/banners/remove/?id='.$rs['Banners']['id'])?>" class="button">Remove</a></td>
 </tr>

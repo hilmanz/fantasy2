@@ -1,8 +1,9 @@
-<h3>Master Player Stats</h3>
-
-<div class="row-2">
+<div class="titleBox">
+	<h1>Master Player Stats</h1>
+</div>
+<div class="theContainer">
 <div class="msg alert">Loading player data....</div>
-<table width="100%" id="tbl">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="dataTable" id="tbl">
 	
 </table>
 </div>
@@ -20,7 +21,7 @@ function getdata(){
 						var uid = response.data[i].uid.split('p').join('');
 						var team_id = response.data[i].team_id.split('t').join('');
 						data.push([
-								' <img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description='+team_id+'&dimensions=103x155&id='+uid+'"/>',
+								'<a class="thumbPlayer"><img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description='+team_id+'&dimensions=103x155&id='+uid+'"/></a>',
 								response.data[i].name,
 								response.data[i].position,
 								response.data[i].team_name,

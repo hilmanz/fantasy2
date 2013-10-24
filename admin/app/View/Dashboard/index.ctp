@@ -1,7 +1,8 @@
-<h3>Welcome to Administration Page</h3>
-
+<div class="titleBox">
+	<h1>Welcome to Administration Page</h1>
+</div>
 <div class="row-2">
-	<h3>News Ticker</h3>
+	<h3 class="titles">News Ticker</h3>
 
 	<table width="100%">
 	<?php 
@@ -16,22 +17,14 @@
 	<?php endforeach;endif;?>
 	</table>
 	<form action="<?=$this->Html->url('/dashboard/add_ticker')?>" method="post" enctype="application/x-www-form-urlencoded">
-	<div>
 	<input type="text" name='content' value="" placeholder="Type New Info"/>
-	</div>
-	<div>
 	<input type="text" name='url' value="" placeholder="http://"/>
-	</div>
-	<div class="row-2">
 	<input type="submit" name="btnTickerSaved" value="Save Tickers"/>
-	</div>
-	</div>
 	</form>
 </div>
 
 <div class="row-2">
-	<h3>Notifications</h3>
-
+	<h3 class="titles">Notifications</h3>
 	<table width="100%">
 	<?php 
 	if(isset($notifications)):
@@ -48,15 +41,8 @@
 	<form action="<?=$this->Html->url('/dashboard/add_notification')?>" 
 		  method="post" 
 		  enctype="application/x-www-form-urlencoded">
-	<div>
 	<input type="text" name='content' value="" placeholder="Type New Info"/>
-	</div>
-	<div>
 	<input type="text" name='url' value="" placeholder="http://"/>
-	</div>
-	<div class="row-2">
-	<input type="submit" name="btnNotifSaved" value="Save Notification"/>
-	</div>
-	</div>
+		<input type="submit" name="btnNotifSaved" value="Save Notification"/>
 	</form>
 </div>

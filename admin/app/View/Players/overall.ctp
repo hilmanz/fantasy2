@@ -1,30 +1,37 @@
-<h3>Players</h3>
-<h4>Total Players : <?=number_format($total_users)?></h4>
-<form action="<?=$this->Html->url('/players/search')?>" method="get" 
-	enctype="application/x-www-form-urlencoded">
-	<input type="text" name="q" value=""/><input type="submit" name="btn" value="Search"/>
-</form>
-<div style="overflow:auto;">
-<table width="100%">
-	<tr>
-		<td>No</td>
-		<td></td>
-		<td><?php echo $this->Paginator->sort('user_id','User');?></td>
-		<td>Original Team</td>
-		<td>Phone Number</td>
-		<td>Joined</td>
-		<td>Registration</td>
-		<td>Team Name</td>
-		<td><?php echo $this->Paginator->sort('rank','Rank');?></td>
-		<td><?php echo $this->Paginator->sort('import','Import Player Counts');?></td>
-		<td><?php echo $this->Paginator->sort('points','Points');?></td>
-		<td><?php echo $this->Paginator->sort('money','Money');?></td>
-		<td><?php echo $this->Paginator->sort('games','Games');?></td>
-		<td><?php echo $this->Paginator->sort('passing_and_attacking','Passing and Attacking');?></td>
-		<td><?php echo $this->Paginator->sort('defending','Defending');?></td>
-		<td><?php echo $this->Paginator->sort('goalkeeping','Goalkeeping');?></td>
-		<td><?php echo $this->Paginator->sort('mistakes_and_errors','Mistakes and Errors');?></td>
-	</tr>
+<div class="titleBox">
+	<h1>Players</h1>
+</div>
+<div class="theContainer">
+
+	<h4>Total Players : <?=number_format($total_users)?></h4>
+	<form class="searchBox" action="<?=$this->Html->url('/players/search')?>" method="get" 
+		enctype="application/x-www-form-urlencoded">
+		<input type="text" name="q" value=""/><input type="submit" name="btn" value="Search"/>
+	</form>
+	<div style="overflow:auto;">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="dataTable">
+		<thead>
+			<tr>
+				<th>No</th>
+				<th></th>
+				<th><?php echo $this->Paginator->sort('user_id','User');?></th>
+				<th>Original Team</th>
+				<th>Phone Number</th>
+				<th>Joined</th>
+				<th>Registration</th>
+				<th>Team Name</th>
+				<th><?php echo $this->Paginator->sort('rank','Rank');?></th>
+				<th><?php echo $this->Paginator->sort('import','Import Player Counts');?></th>
+				<th><?php echo $this->Paginator->sort('points','Points');?></th>
+				<th><?php echo $this->Paginator->sort('money','Money');?></th>
+				<th><?php echo $this->Paginator->sort('games','Games');?></th>
+				<th><?php echo $this->Paginator->sort('passing_and_attacking','Passing and Attacking');?></th>
+				<th><?php echo $this->Paginator->sort('defending','Defending');?></th>
+				<th><?php echo $this->Paginator->sort('goalkeeping','Goalkeeping');?></th>
+				<th><?php echo $this->Paginator->sort('mistakes_and_errors','Mistakes and Errors');?></th>
+			</tr>
+		</thead>
+		<tbody>
 	<?php
 
 	foreach($rs as $n=>$m):
@@ -75,8 +82,10 @@
 		<td><?=number_format(@$m['Summary']['mistakes_and_errors'])?></td>
 	</tr>
 	<?php endforeach;?>
+		</tbody>
 </table>
+	</div>
 </div>
-<div class="row-2">
+<div class="paging">
 <?php echo $this->Paginator->numbers();?>
 </div>
