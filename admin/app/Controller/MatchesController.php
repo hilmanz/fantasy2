@@ -18,6 +18,7 @@ class MatchesController extends AppController {
 	public function index(){
 		$this->loadModel('Matches');
 		$this->paginate = array('limit'=>10,
+								'conditions'=>array('competition_id'=>'c8','season_id'=>'2013'),
 								'order'=>array('Matches.matchdate'=>'asc'));
 		$rs = $this->paginate('Matches');
 		foreach($rs as $n=>$v){

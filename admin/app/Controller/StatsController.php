@@ -19,6 +19,7 @@ class StatsController extends AppController {
 		$this->loadModel('Service');
 	}
 	public function index(){
+		
 		$this->redirect('/stats/teams');
 	}
 	public function teams(){

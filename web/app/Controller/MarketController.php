@@ -97,7 +97,7 @@ class MarketController extends AppController {
 
 		//list of players
 		$my_players = $this->Game->get_team_players($userData['fb_id']);
-
+		
 		$player_list = array();
 		while(sizeof($players)>0){
 			$p = array_shift($players);
