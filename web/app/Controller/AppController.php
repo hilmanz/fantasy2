@@ -115,11 +115,21 @@ class AppController extends Controller {
 				
 				$next_match_ts = $this->nextMatch['match']['match_date_ts'];
 				
-
+				$last_matchday = $this->nextMatch['match']['matchday'] - 1;
+				$last_games = $this->Game->query("SELECT COUNT(*) as total 
+													FROM ffgame.game_fixtures 
+													WHERE matchday=".$last_matchday."
+													AND is_processed = 1 AND period='FullTime'");
+				$total_last_game = $last_games[0][0]['total'];
+				unset($last_games);
+				
 				if(date_default_timezone_get()=='Asia/Jakarta'){
 				    $next_match_ts += 6*60*60;
 				}
 				
+				if($total_last_game < 10){
+					$next_match_ts = $previous_close_dt;
+				}
 
 				if($next_match_ts > strtotime($current_dt)){
 					//these saturday
@@ -135,9 +145,8 @@ class AppController extends Controller {
 					$close_time = array("datetime"=>$previous_close_dt,
 									"ts"=>strtotime($previous_close_dt));
 				}
-			
 				
-
+				
 				$this->closeTime = $close_time;
 
 				$this->set('close_time',$close_time);
