@@ -411,10 +411,26 @@ function update_individual_team_stats(game_id,team,summary,player_stats,done){
 		async.waterfall(
 			[
 				function(callback){
+					console.log(team,'vs',summary);
+					if(typeof summary[team.team_id]!=='undefined'){
+						console.log('track the lineup history for #',team.id);
+
+						//@TODO : ini nanti kayaknya harus dieksekusi sebelum step 2.
+						//agar jika kita sedang me regen data,  lineup yg dipakai adalah lineup dari history.
+						//bukan lineup actual.
+						addToHistory(game_id,team,function(err){
+							callback(err);	
+						});
+					}else{
+						console.log('no need to track the lineup history for #',team.team_id);
+						callback(null);	
+					}
+				},
+				function(callback){
 					//step 1 - get team lineups
 					//@TODO perlu dipikirkan apakah kita perlu narik lineup dari lineup history ?
 
-					getTeamLineups(team,function(err,lineups){
+					getTeamLineups(game_id,team,function(err,lineups){
 						callback(null,lineups);
 					});
 					
@@ -429,24 +445,8 @@ function update_individual_team_stats(game_id,team,summary,player_stats,done){
 						callback(err,rs);
 					});
 					
-				},
-				function(rs,callback){
-					//final steps, add entry on lineup_history
-					console.log(team,'vs',summary);
-					if(typeof summary[team.team_id]!=='undefined'){
-						console.log('track the lineup history for #',team.id);
-
-						//@TODO : ini nanti kayaknya harus dieksekusi sebelum step 2.
-						//agar jika kita sedang me regen data,  lineup yg dipakai adalah lineup dari history.
-						//bukan lineup actual.
-						addToHistory(game_id,team,function(err){
-							callback(err,rs);	
-						});
-					}else{
-						console.log('no need to track the lineup history for #',team.team_id);
-						callback(null,rs);	
-					}
 				}
+				
 			],
 				function(err,result){
 					done(err);
@@ -470,20 +470,60 @@ function addToHistory(game_id,team,done){
 					});
 	});
 }
-function getTeamLineups(team,done){
+function getTeamLineups(game_id,team,done){
+	var matchday = 0;
 	pool.getConnection(function(err,conn){
-		conn.query("SELECT * FROM ffgame.game_team_lineups WHERE game_team_id = ? LIMIT 20",
-					[team.id],function(err,rs){
-					
-							conn.end(function(err){
-									if(typeof rs !== 'object' && rs.length > 0){
-										err = new Error('no lineups :(');
-										rs = [];
-									}
-
-									done(err,rs);
+		async.waterfall([
+			function(callback){
+				conn.query("SELECT matchday FROM ffgame.game_fixtures WHERE game_id=? LIMIT 1",
+							[game_id],function(err,match){
+								console.log('ISSUE1',this.sql);
+								try{
+									matchday = match[0]['matchday'];
+								}catch(e){
+									matchday = 0;	
+								}
+								callback(err);
 							});
+			},
+			function(callback){
+				conn.query("SELECT game_id FROM ffgame.game_fixtures \
+							WHERE (home_id = ? OR away_id = ?) \
+							AND matchday=? LIMIT 1",
+							[team.team_id,team.team_id,matchday],function(err,match){
+								console.log('ISSUE1','get the game_id : ',this.sql);
+								var the_game_id = '';
+								try{
+									the_game_id = match[0]['game_id'];
+								}catch(e){
+									err = new Error('no game_id found');
+								}
+								console.log('the game id : ',the_game_id);
+
+								callback(err,the_game_id);
+							});
+			},
+			function(the_game_id,callback){
+				conn.query("SELECT * FROM ffgame.game_team_lineups_history \
+					WHERE game_id=? AND game_team_id = ?\
+					LIMIT 20",
+					[the_game_id,team.id],function(err,rs){
+							console.log('ISSUE1','lineup : ',this.sql);
+							callback(err,rs);
+					});
+			}
+		],
+		function(err,rs){
+			conn.end(function(err){
+					console.log('ISSUE1','get team lineup ends');
+					if(typeof rs !== 'object' && rs.length > 0){
+						err = new Error('no lineups :(');
+						rs = [];
+					}
+					done(err,rs);
+			});
 		});
+		
 	});	
 }
 function updateLineupStats(game_id,lineups,summary,player_stats,in_game,done){
