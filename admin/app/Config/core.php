@@ -368,3 +368,4 @@ Configure::write('stats_service_url','http://localhost/fantasy_stats/');
 Configure::write('avatar_img_dir','/home/duf/node_workspace/fantasy_fork/web/app/webroot/files/');
 Configure::write('avatar_web_dir','/files/');
 Configure::write('avatar_web_url','http://localhost/fantasy/files/');
+Configure::write('WWW_URL','http://localhost/fantasy');

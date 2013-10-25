@@ -41,7 +41,14 @@ $sponsors = (isset($sponsors))? $sponsors : array();
 			No
 			<?php endif;?>
 		</td>
-		<td><a href="<?=$this->Html->url('/sponsors/edit/'.$v['Sponsors']['id'])?>">Edit</a></td>
+		<td>
+			<a href="<?=$this->Html->url('/sponsors/edit/'.$v['Sponsors']['id'])?>" class="button">
+				Edit
+			</a>
+			<a href="<?=$this->Html->url('/sponsors/invite/'.$v['Sponsors']['id'])?>" class="button">
+				Invite
+			</a>
+		</td>
 	</tr>
 	<?php endforeach;?>
 </table>
@@ -52,8 +59,7 @@ $sponsors = (isset($sponsors))? $sponsors : array();
 		<div>
 			<a href="#" class="btn btn-perk-selected" data-perkID="<?=$perk['id']?>" 
 				data-perkName="<?=$perk['name']?>"
-				data-amount="<?=$perk['amount']?>"
-				>
+				data-amount="<?=$perk['amount']?>">
 				<h4><?=$perk['name']?></h4>
 			</a>
 			<p style="margin-top:-21px;"><?=$perk['description']?></p>
