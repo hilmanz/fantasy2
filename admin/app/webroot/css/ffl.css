@@ -1496,6 +1496,14 @@ th h4, th h5{
 .dataTablePlayer tr th:nth-child(3){
 	width:55px;
 }
-
-
-
+.buttonShorter{
+	float:right;
+	position:relative;
+	top:17px;
+}
+.buttonShorter .button{
+	border-radius:5px 5px 0 0;
+}
+.tableContainer{
+	clear:both;
+}

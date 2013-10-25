@@ -17,14 +17,14 @@ $frames = array(
 </div>
 <div class="theContainer">
 	<h4>Total Players : <?=number_format($total_users)?></h4>
-	<form class="searchBox" action="<?=$this->Html->url('/players/search')?>" method="get" 
+	<form class="searchBox fl" action="<?=$this->Html->url('/players/search')?>" method="get" 
 		enctype="application/x-www-form-urlencoded">
 		<input type="text" name="q" value=""/><input type="submit" name="btn" value="Search"/>
 	</form>
-	<div>
+	<div class="buttonShorter">
 		<a href="#profile" class="button btntoggle">Profile</a><a href="#summary" class="button btntoggle">Summary</a><a href="#stats" class="button btntoggle">Stats</a>
 	</div>
-	<div style="overflow:auto;">
+	<div style="overflow:auto;" class="tableContainer">
 	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="dataTable">
 		<thead>
 			<tr>
