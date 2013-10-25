@@ -36,7 +36,7 @@ $sponsors = (isset($sponsors))? $sponsors : array();
 		<td>
 			<?=number_format($v['Perk']['amount'])?>
 		</td>
-		<td><a href="<?=$this->Html->url('/sponsors/edit_perks/'.$v['Perk']['id'])?>">Edit</a></td>
+		<td><a href="<?=$this->Html->url('/sponsors/edit_perk/'.$v['Perk']['id'])?>">Edit</a></td>
 	</tr>
 	<?php endforeach;?>
 </table>
@@ -56,7 +56,7 @@ $sponsors = (isset($sponsors))? $sponsors : array();
 			<td>Descriptions</td><td><input type="text" name="description" value=""></td>
 		</tr>
 		<tr>
-			<td>Amount</td><td><input type="text" name="description" value="5000000"></td>
+			<td>Amount</td><td><input type="text" name="amount" value="5000000"></td>
 		</tr>
 		<tr>
 			<td colspan="2"><input type="submit" name="btn" value="Add Perk"/></td>

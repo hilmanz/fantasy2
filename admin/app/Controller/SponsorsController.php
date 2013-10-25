@@ -58,6 +58,39 @@ class SponsorsController extends AppController {
 			}
 		}
 	}
+	public function create_perk(){
+		$this->loadModel('Perk');
+		if($this->request->is('post')){
+			$this->Perk->create();
+			$rs = $this->Perk->save($this->request->data);
+			if($rs){
+				$this->Session->setFlash("new perk has been saved successfully !");
+				$this->redirect('/sponsors/perks');
+			}else{
+				$this->Session->setFlash("Cannot save the perk, please try again later !");
+			}
+		}
+	}
+	public function edit_perk($id){
+		$this->loadModel('Perk');
+		
+		
+		//posting data (if any)
+		if($this->request->is('post')){
+			$this->Perk->id = $id;
+			$rs = $this->Perk->save($this->request->data);
+			if($rs){
+				$this->Session->setFlash("The changes has been saved successfully !");
+			}else{
+				$this->Session->setFlash("Cannot save the changes, please try again later !");
+			}
+		}//-->
+
+		//load sponsorship details
+		$rs = $this->Perk->findById($id);
+		
+		$this->set('perk',$rs['Perk']);
+	}
 	public function edit($id){
 		$this->loadModel('Sponsorship');
 		$this->loadModel('SponsorBanner');

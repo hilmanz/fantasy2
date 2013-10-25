@@ -8,7 +8,7 @@ if(isset($results)):
 	foreach($results as $rs):
 ?>
 <tr>
-<td>ID</td>
+<td><?=$rs['Banners']['id']?></td>
 <td><?=h($rs['Banners']['slot'])?></td>
 <td><?=h($rs['Banners']['banner_name'])?></td>
 <td><img src='<?=$this->Html->url(Configure::read('avatar_web_url').$rs['Banners']['banner_file'])?>' width="100"/></td>
