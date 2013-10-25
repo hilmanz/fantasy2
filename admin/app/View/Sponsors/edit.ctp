@@ -21,6 +21,21 @@
 			</td>
 		</tr>
 		<tr>
+			<td valign="top">Invitation Email </td>
+			<td><textarea name="invitation_email" style="width: 762px; height: 272px;"><?=$sponsor['invitation_email']?></textarea></td>
+		</tr>
+		<tr>
+			<td valign="top">Win Bonus Email</td>
+			<td><textarea name="win_bonus_email" style="width: 762px; height: 272px;"><?=$sponsor['win_bonus_email']?></textarea></td>
+		</tr>
+		<tr>
+			<td valign="top">SMS Text</td>
+			<td><textarea name="sms_text" style="width: 762px; height: 272px;"><?=$sponsor['sms_text']?></textarea></td>
+		</tr>
+		<tr>
+			<td colspan="2"><input type="submit" name="btn" value="Save"/></td>
+		</tr>
+		<tr>
 			<td colspan="2"><input type="submit" name="btn" value="Save"/></td>
 		</tr>
 	</table>
