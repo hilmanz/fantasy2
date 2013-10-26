@@ -693,3 +693,70 @@ insert  into ffgame.master_transfer_window(`id`,`tw_open`,`tw_close`,`window_nam
 
 
 ALTER TABLE `ffgame`.`game_transfer_history` ADD INDEX `IDX_GAME_TRANSFER` (`game_team_id`, `transfer_type`);
+
+
+
+#sponsorship
+
+CREATE TABLE ffgame.email_queue (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `email` varchar(140) DEFAULT NULL,
+  `plain_txt` longtext,
+  `html_text` longtext,
+  `queue_dt` datetime DEFAULT NULL,
+  `send_dt` datetime DEFAULT NULL,
+  `n_status` tinyint(3) DEFAULT '0' COMMENT '0->pending, 1->sent, 2->failed, 3->bounced',
+  PRIMARY KEY (`id`),
+  KEY `IDX_EMAIL` (`email`),
+  KEY `IDX_SEND_DT` (`send_dt`),
+  KEY `IDX_QUEUE_DT` (`queue_dt`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE ffgame.game_sponsor_emails (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `sponsor_id` bigint(21) DEFAULT NULL,
+  `game_team_id` varchar(140) DEFAULT NULL,
+  `email_type` varchar(32) DEFAULT 'INVITATION' COMMENT 'INVITATION,WIN_BONUS',
+  `email` varchar(140) DEFAULT NULL,
+  `apply_link` text,
+  `sent_dt` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_EMAIL` (`sponsor_id`,`game_team_id`,`email_type`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE ffgame.game_sponsor_perks (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `sponsor_id` bigint(21) DEFAULT NULL,
+  `perk_id` bigint(21) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IDX_PERKS` (`sponsor_id`,`perk_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE ffgame.game_sponsorship_banners (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `sponsor_id` bigint(21) DEFAULT NULL,
+  `banner_name` varchar(140) DEFAULT NULL,
+  `banner_file` varchar(140) DEFAULT NULL,
+  `url` varchar(255) DEFAULT '#',
+  `upload_date` datetime DEFAULT NULL,
+  `slot` varchar(64) DEFAULT 'FRONTPAGE' COMMENT '1->frontpage, 2->270x100, 3->674x100',
+  PRIMARY KEY (`id`),
+  KEY `IDX_SLOT` (`slot`),
+  KEY `IDX_SPONSOR_ID` (`sponsor_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE ffgame.master_perks (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `perk_name` varchar(140) DEFAULT NULL,
+  `name` varchar(140) DEFAULT NULL,
+  `description` varchar(140) DEFAULT NULL,
+  `amount` bigint(21) DEFAULT '5000000',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IDX_PERK` (`perk_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;

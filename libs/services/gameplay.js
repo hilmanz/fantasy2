@@ -161,11 +161,17 @@ exports.getActiveSponsors = function(req,res){
 }
 exports.applySponsorship = function(req,res){
 	gameplay.sponsorship.applySponsorship(
-		req.body.team_id,
+		req.body.game_id,
+		req.body.matchday,
+		req.body.game_team_id,
 		req.body.sponsor_id,
 			function(err,rs){
 				if(err){
-					handleError(res);
+					if(err.message=='ALREADY_HAVE_SPONSOR'){
+						res.json(200,{status:2,message:'Already have a sponsor'});
+					}else{
+						handleError(res);	
+					}
 				}else{
 					if(rs){
 						res.json(200,{status:1,message:'Sponsorship Accepted'});

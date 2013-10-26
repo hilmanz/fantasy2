@@ -1562,6 +1562,7 @@ function getTeamResultStats(conn,team_id,callback){
 
 var match = require(path.resolve('./libs/api/match'));
 var officials = require(path.resolve('./libs/api/officials'));
+var sponsorship = require(path.resolve('./libs/api/sponsorship'));
 exports.leaderboard = leaderboard;
 exports.best_player = best_player;
 exports.last_earning = last_earning;
@@ -1579,7 +1580,7 @@ exports.getPlayers = getPlayers;
 exports.getBudget = getBudget;
 exports.match = match;
 exports.officials = officials;
-exports.sponsorship = require(path.resolve('./libs/api/sponsorship'));
+exports.sponsorship = sponsorship;
 exports.getPlayerOverallStats = getPlayerOverallStats;
 exports.getTeamPlayerDetail = getTeamPlayerDetail;
 exports.getPlayerDailyTeamStats = getPlayerDailyTeamStats;
@@ -1591,4 +1592,5 @@ exports.setPool = function(p){
 	pool = p;
 	match.setPool(pool);
 	officials.setPool(pool);
+	sponsorship.setPool(pool);
 }

@@ -228,5 +228,20 @@ class Game extends AppModel {
 		$response = $this->api_call('/leaderboard');
 		return $response;
 	}
+
+
+	/////SPONSORSHIPS
+	/*
+	* apply sponsorship
+	*/
+	public function apply_sponsorship($game_id,$matchday,$team_id,$sponsor_id){
+		$response = $this->api_post('/sponsorship/apply',array(
+			'game_id'=>$game_id,
+			'matchday'=>$matchday,
+			'game_team_id'=>$team_id,
+			'sponsor_id'=>$sponsor_id
+		));
+		return $response;
+	}
 }
 

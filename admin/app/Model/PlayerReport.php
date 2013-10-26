@@ -420,7 +420,7 @@ class PlayerReport extends AppModel {
 			//money
 			
 			
-			$rs[$n]['Money'] = intval($r[0]['Summary']['money']);
+			$rs[$n]['Money'] = intval(@$r[0]['Summary']['money']);
 			$rs[$n]['Summary'] = $r[0]['Summary'];
 		}
 		

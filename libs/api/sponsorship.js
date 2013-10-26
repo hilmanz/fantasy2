@@ -13,20 +13,24 @@ var dateFormat = require('dateformat');
 var redis = require('redis');
 var formations = require(path.resolve('./libs/game_config')).formations;
 var sponsorship_chance = require(path.resolve('./libs/game_config')).sponsorship_chance;
-function prepareDb(){
-	var connection = mysql.createConnection({
-  		host     : config.database.host,
-	   	user     : config.database.username,
-	   	password : config.database.password,
+var S = require('string');
+var pool = null;
+
+exports.setPool = function(p){
+	pool = p;
+}
+function prepareDb(callback){
+
+	pool.getConnection(function(err,conn){
+		callback(conn);
 	});
 	
-	return connection;
 }
 /** get the list of available sponsorships **/
 
 function getAvailableSponsorship(game_team_id,callback){
-	conn = prepareDb();
-	conn.query("SELECT a.id,name,value,expiry_time,is_available \
+	prepareDb(function(conn){
+		conn.query("SELECT a.id,name,value,expiry_time,is_available \
 				FROM ffgame.game_sponsorships a\
 				WHERE a.is_available = 1 AND NOT EXISTS(\
 					SELECT 1 FROM ffgame.game_team_sponsors b\
@@ -39,49 +43,97 @@ function getAvailableSponsorship(game_team_id,callback){
 						callback(err,rs);	
 					});
 				});
+	});
+	
 }
-function applySponsorship(game_team_id,sponsor_id,callback){
-	var chance = roll();
-	var upper = sponsorship_chance * 24;
-
-	if(chance<=upper){
-		//got the sponsorship, let's claim it.
-		conn = prepareDb();
+function applySponsorship(game_id,matchday,game_team_id,sponsor_id,callback){
+	
+	var immediate_money = 0; //the immediate money recieved upon getting these sponsor.
+	console.log(game_id,matchday,game_team_id,sponsor_id);
+	//got the sponsorship, let's claim it.
+	prepareDb(function(conn){
 		async.waterfall([
 			function(callback){
-				conn.query("SELECT id,name,value,expiry_time,is_available \
-				FROM ffgame.game_sponsorships a\
-				WHERE a.id = ? AND a.is_available = 1 AND NOT EXISTS(\
-					SELECT 1 FROM ffgame.game_team_sponsors b\
-					WHERE b.game_team_id = ? AND b.sponsor_id = a.id LIMIT 1\
-				) \
-				LIMIT 1;",[sponsor_id,game_team_id],function(err,rs){
-					
-					if(err) console.log(err.message);
-					callback(err,rs[0]);
+				console.log('detil sponsorship');
+				//detil sponsorship
+				conn.query("SELECT * FROM ffgame.game_sponsorships WHERE id=? LIMIT 1;",
+							[sponsor_id],
+							function(err,rs){
+								try{
+									callback(err,rs[0]);
+								}catch(e){
+									callback(new Error('no sponsorship found'),null);
+								}
+							});
+			},
+			function(sponsor_data,callback){
+				// search immediate_money perk
+				conn.query(
+					"SELECT a.* FROM ffgame.game_sponsor_perks a\
+					INNER JOIN ffgame.master_perks b \
+					ON a.perk_id = b.id\
+					WHERE a.sponsor_id=? AND b.perk_name = 'IMMEDIATE_MONEY';",
+					[sponsor_id],
+					function(err,rs){
+						console.log(S(this.sql).collapseWhitespace().s);
+						try{
+							immediate_money = rs[0].amount;
+							console.log('immediate money',immediate_money);
+							callback(err,sponsor_data);
+						}catch(e){
+							callback(new Error('cannot query the perk'),sponsor_data);
+						}
 				});
 			},
-			function(sponsor,callback){
-				if(sponsor!=null){
-					conn.query("INSERT IGNORE INTO ffgame.game_team_sponsors\
+			function(sponsor_data,callback){
+				conn.query("SELECT * FROM ffgame.game_team_sponsors\
+							WHERE game_team_id=? LIMIT 1",
+							[game_team_id],function(err,rs){
+					
+					console.log(S(this.sql).collapseWhitespace().s);
+					
+					if(err) console.log(err.message);
+					
+					callback(err,sponsor_data,rs[0]);
+				});
+			},
+			function(sponsor_data,has_sponsor,callback){
+				if(!has_sponsor){
+					conn.query("INSERT INTO ffgame.game_team_sponsors\
 								(game_team_id,sponsor_id,valid_for)\
 								VALUES(?,?,?)",
-								[game_team_id,sponsor.id,sponsor.expiry_time],
+								[game_team_id,sponsor_id,38],
 								function(err,result){
-									console.log(this.sql);
-									callback(err,sponsor,result);
+									console.log(S(this.sql).collapseWhitespace().s);
+									callback(err,sponsor_data,result);
 								});
 				}else{
-					
-					callback(new Error('the sponsorship is not available anymore !'),null,null)
+					callback(new Error('ALREADY_HAVE_SPONSOR'),null,null);
 				}
 			},
-			function(sponsor,insertResult,callback){
-				conn.query("UPDATE ffgame.game_sponsorships SET is_available=0 WHERE id = ?",
-					[sponsor_id],
-					function(err,result){
-						callback(err,result);
-					});
+			function(sponsor_data,insertResult,callback){
+				if(insertResult){
+					var item_name = 'SPONSOR_IMMEDIATE_MONEY';
+					//add money if available
+					if(immediate_money>0){
+						conn.query("INSERT INTO ffgame.game_team_expenditures\
+									(game_team_id,item_name,item_type,amount,game_id,\
+									match_day,item_total,base_price)\
+									VALUES\
+									(?,?,1,?,?,?,1,1)\
+									ON DUPLICATE KEY UPDATE\
+									amount = VALUES(amount);",
+									[game_team_id,item_name,immediate_money,game_id,matchday],
+									function(err,rs){
+										console.log(S(this.sql).collapseWhitespace().s);
+										callback(err,rs);
+									});
+					}else{
+						callback(null,true);	
+					}
+				}else{
+					callback(null,true);	
+				}
 			}
 		],
 		function(err,result){
@@ -94,23 +146,23 @@ function applySponsorship(game_team_id,sponsor_id,callback){
 			});
 			
 		});
-	}else{
-		callback(null,false);
-	}
+	});
+	
 }
 function getActiveSponsors(game_team_id,callback){
-	conn = prepareDb();
-	conn.query("SELECT b.name,b.value,a.valid_for \
-				FROM ffgame.game_team_sponsors a\
-				INNER JOIN ffgame.game_sponsorships b\
-				ON a.sponsor_id = b.id\
-				WHERE a.game_team_id = ?;",
-				[game_team_id],
-				function(err,rs){
-					conn.end(function(e){
-						callback(err,rs);	
+	prepareDb(function(conn){
+		conn.query("SELECT b.name,b.value,a.valid_for \
+					FROM ffgame.game_team_sponsors a\
+					INNER JOIN ffgame.game_sponsorships b\
+					ON a.sponsor_id = b.id\
+					WHERE a.game_team_id = ?;",
+					[game_team_id],
+					function(err,rs){
+						conn.end(function(e){
+							callback(err,rs);	
+						});
 					});
-				});
+	});
 }
 function roll(){
 	var n = Math.random()*24;
