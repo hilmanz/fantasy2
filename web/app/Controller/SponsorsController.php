@@ -57,6 +57,9 @@ class SponsorsController extends AppController {
 													$this->nextMatch['match']['matchday'],
 													$data['game_team_id'],
 													$data['sponsor_id']);
+
+				
+
 				if($rs['status']==1){
 					//sponsorship accepted
 					$this->set('sponsor_name',$sponsor[0]['Sponsor']['name']);
@@ -67,6 +70,10 @@ class SponsorsController extends AppController {
 					//denied
 					$this->refused();
 				}
+
+				//reset financial statement
+				$this->Session->write('FinancialStatement',null);
+				
 			}else{
 				$this->errorCode();
 			}

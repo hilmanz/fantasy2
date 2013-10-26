@@ -114,7 +114,7 @@ class SponsorsController extends AppController {
 				$this->Session->setFlash("Cannot save the changes, please try again later !");
 			}
 		}//-->
-
+		
 		//load sponsorship details
 		$rs = $this->Sponsorship->findById($id);
 		$rs['Sponsorship']['perks'] = $this->Sponsorship->getPerksBySponsorId($rs['Sponsorship']['id']);

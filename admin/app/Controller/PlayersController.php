@@ -161,7 +161,13 @@ class PlayersController extends AppController {
 	*/
 	public function playerstats(){
 
-	}	
+	}
+	/*
+	* the page that showing the master player's stats by weekly
+	*/
+	public function playerweekly(){
+
+	}		
 	public function player_performances(){
 		$this->layout = 'ajax';
 		$data = array();
@@ -191,6 +197,92 @@ class PlayersController extends AppController {
 		}
 		$this->set('response',array('status'=>1,'data'=>$data));
 		$this->render('response');
+	}
+	public function player_performances_weekly(){
+		$this->layout = 'ajax';
+		$data = array();
+		$start = intval($this->request->query['start']);
+		$week = intval(@$this->request->query['week']);
+		$modifier = $this->Game->query("SELECT * FROM ffgame.game_matchstats_modifier s");
+		$mods = array();
+		while(sizeof($modifier)>0){
+			$m = array_shift($modifier);
+			$mods[$m['s']['name']] = array('goalkeeper'=>$m['s']['g'],
+										'defender'=>$m['s']['d'],
+										'midfielder'=>$m['s']['m'],
+										'forward'=>$m['s']['f']);
+		}
+
+
+		$rs = $this->Game->query("SELECT a.*,b.name as team_name 
+									FROM ffgame.master_player a
+								  INNER JOIN ffgame.master_team b
+								  ON a.team_id = b.uid
+								  ORDER BY id ASC LIMIT {$start},20",false);
+		while(sizeof($rs)>0){
+			$p = array_shift($rs);
+			$stats = $this->get_player_statistics_weekly($week,$p['a'],$mods);
+			$p['a']['stats'] = $stats;
+			$p['a']['team_name'] = $p['b']['team_name'];
+			$data[] = $p['a'];
+		}
+		$this->set('response',array('status'=>1,'data'=>$data));
+		$this->render('response');
+	}
+	private function get_player_statistics_weekly($week,$player,$modifier){
+		$map = $this->getStatsCategories();
+		//get the game_id of specified week
+		$sql = "SELECT * FROM ffgame.game_fixtures Fixture WHERE matchday={$week} LIMIT 10";
+		$games = $this->Game->query($sql,false);
+		$game_ids = array();
+		foreach($games as $g){
+			$game_ids[] = "'".$g['Fixture']['game_id']."'";
+		}
+
+		unset($games);
+
+		$sql = "SELECT player_id,stats_name,SUM(stats_value) AS total 
+				FROM ffgame_stats.master_player_stats s
+				WHERE player_id='{$player['uid']}' 
+				AND game_id IN (".implode(',',$game_ids).")
+				GROUP BY stats_name;";
+		$rs = $this->Game->query($sql,false);
+		
+		$games = 0;
+		$passing_and_attacking = 0;
+		$defending = 0;
+		$goalkeeping = 0;
+		$mistakes_and_errors = 0;
+		$total_points = 0;
+		foreach($rs as $n=>$r){
+
+			$stats_name = $r['s']['stats_name'];
+			$pos = strtolower($player['position']);
+            $poin = ($modifier[$stats_name][$pos] * $r[0]['total']);
+            if($this->is_in_category($map,'games',$stats_name)){
+              $games += $poin;
+            }
+            if($this->is_in_category($map,'passing_and_attacking',$stats_name)){
+              $passing_and_attacking += $poin;
+            }
+            if($this->is_in_category($map,'defending',$stats_name)){
+              $defending += $poin;
+            }
+            if($this->is_in_category($map,'goalkeeping',$stats_name)){
+              $goalkeeping += $poin;
+            }
+            if($this->is_in_category($map,'mistakes_and_errors',$stats_name)){
+              $mistakes_and_errors += $poin;
+            }
+            $total_points += $poin;
+		}
+		return array('games'=>$games,
+                      'passing_and_attacking'=>$passing_and_attacking,
+                      'defending'=>$defending,
+                      'goalkeeping'=>$goalkeeping,
+                      'mistakes_and_errors'=>$mistakes_and_errors,
+                      'total'=>$total_points);
+
 	}
 	private function get_player_statistics($player,$modifier){
 		$map = $this->getStatsCategories();

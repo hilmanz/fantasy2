@@ -20,6 +20,11 @@ $total_expenses+= intval(@$finance['compensation_fee']);
 $total_expenses+= intval(@$finance['ticket_sold_penalty']);
 $total_expenses+= intval(@$finance['security_overtime_fee']);
 
+
+$sponsor = 0;
+$sponsor += intval(@$finance['SPONSOR_IMMEDIATE_MONEY']);
+$sponsor += intval(@$finance['sponsorship']);
+$finance['total_earnings'] += $sponsor;
 /*
 $penalty_expenses = intval(@$finance['compensation_fee']) + 
                     intval(@$finance['ticket_sold_penalty']) + 
@@ -331,7 +336,7 @@ function isStaffExist($staff_token,$name){
                       <tr>
                         <td>Sponsor</td>
                         <td>&nbsp;</td>
-                        <td align="right">ss$ <?=number_format(abs(@$finance['sponsorship']))?></td>
+                        <td align="right">ss$ <?=number_format(abs(@$sponsor))?></td>
                       </tr>
                       <?php
                         if(isset($finance['player_sold'])):

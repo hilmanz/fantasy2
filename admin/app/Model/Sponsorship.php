@@ -26,9 +26,13 @@ class Sponsorship extends AppModel {
 							ON a.perk_id = b.id
 							WHERE a.sponsor_id = {$sponsor_id} 
 							LIMIT 1000");
+
 		$perks = array();
 		foreach($rs as $r){
-			$perks[] = $r['b'];
+			$p = $r['b'];
+			$p['amount'] = $r['a']['amount'];
+			$perks[] = $p;
+
 		}
 		unset($rs);
 		return $perks;
@@ -43,9 +47,9 @@ class Sponsorship extends AppModel {
 			return false;
 		}else{
 			$sql = "INSERT IGNORE INTO ffgame.game_sponsor_perks
-						(sponsor_id,perk_id)
+						(sponsor_id,perk_id,amount)
 						VALUES(
-							{$data['sponsor_id']},{$data['perkID']})";
+							{$data['sponsor_id']},{$data['perkID']},{$data['amount']})";
 	
 			$rs = $this->query($sql);	
 			return true;

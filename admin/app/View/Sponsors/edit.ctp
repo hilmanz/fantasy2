@@ -46,7 +46,8 @@
 	<h4>Perks</h4>
 	<div class="perk-list-<?=$sponsor['id']?> perks">
 	<?php 
-	if(isset($v['perks'])):foreach($sponsor['perks'] as $p):
+	
+	if(isset($sponsor['perks'])):foreach($sponsor['perks'] as $p):
 	?>
 		<div><a href="#"><?=$p['name']?> (<?=number_format($p['amount'])?>)</a></div>
 	<?php endforeach;endif;?>
@@ -130,10 +131,11 @@ $('.btnPerks').click(function(e){
 $('.btn-perk-selected').click(function(e){
 	var perkID = $(this).attr('data-perkID');
 	var perkName = $(this).attr('data-perkName');
-	var amount = $(this).attr('data-amount');
+	var amount = window.prompt('Amount',0);
 	api_post('<?=$this->Html->url('/sponsors/add_perk')?>',
 		{sponsor_id:current_id,
-		 perkID:perkID},
+		 perkID:perkID,
+		 amount:amount},
 		function(response){
 			if(response.status==1){
 				$(".perk-list-"+current_id).append('<div>'+perkName+' ('+number_format(amount)+')'+'</div>');

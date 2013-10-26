@@ -4,7 +4,19 @@
 <div class="theContainer">
 <a href="<?=$this->Html->url('/players/playerstats')?>" class="button">Overall Stats</a>
 <a href="<?=$this->Html->url('/players/playerweekly')?>" class="button">Weekly Stats</a>
-<div class="msg alert">Loading player data....</div>
+<div class="msg alert" style="display:none;">Loading player data....</div>
+
+<div>
+<label>Week</label>
+<select name="week">
+	<option value="0">--WEEK--</option>
+	<?php for($i=1;$i<=38;$i++):?>
+		<option value="<?=$i?>"><?=$i?></option>
+	<?php endfor;?>
+</select>
+</div>
+
+
 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="dataTable dataTablePlayer" id="tbl">
 	
 </table>
@@ -13,9 +25,9 @@
 <script>
 var start = 0;
 var data = [];
-
-function getdata(){
-	api_call("<?=$this->Html->url('/players/player_performances/?start=')?>"+start,
+var oTable = null;
+function getdata(week){
+	api_call("<?=$this->Html->url('/players/player_performances_weekly/?start=')?>"+start+'&week='+week,
 		function(response){
 			if(response.status==1){
 				if(response.data.length > 0){
@@ -38,7 +50,7 @@ function getdata(){
 					}
 					start += 20;
 					$(".msg").html($(".msg").html()+'.');
-					getdata();
+					getdata(week);
 				}else{
 					//draw table
 					draw_table();
@@ -49,7 +61,12 @@ function getdata(){
 }
 
 function draw_table(){
-	$('#tbl').dataTable( {
+
+	if(oTable!=null){
+		oTable.fnDestroy();
+		$("#tbl").html('');
+	}
+	oTable = $('#tbl').dataTable( {
 		"aaData": data,
 		"aoColumns": [
 			{ "sTitle": "" },
@@ -65,6 +82,11 @@ function draw_table(){
 		]
 	} );
 }
-
-getdata();
+$('select[name=week]').change(function(e){
+	$('.msg').html('Loading Data');
+	$('.msg').show();
+	start = 0;
+	data = [];
+	getdata($(this).val());
+});
 </script>
