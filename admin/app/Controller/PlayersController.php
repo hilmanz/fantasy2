@@ -166,7 +166,11 @@ class PlayersController extends AppController {
 	* the page that showing the master player's stats by weekly
 	*/
 	public function playerweekly(){
-
+		$rs = $this->Game->query("SELECT MAX(matchday) AS last_week 
+									FROM ffgame.game_fixtures Fixture 
+									WHERE period='FullTime'");
+		
+		$this->set('last_week',$rs[0][0]['last_week']);
 	}		
 	public function player_performances(){
 		$this->layout = 'ajax';

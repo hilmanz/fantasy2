@@ -104,7 +104,7 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
             </div> end .widget -->
             
             <div class="smallBanner">
-				<a href="<?=$small_banner[0]['Banners']['url']?>" target="_blank"><img src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner[0]['Banners']['banner_file'])?>" /></a>
+				<?=$this->element('sponsor_banner',array('slot'=>'TEAM_SMALL','game_team_id'=>$game_team_id));?>
             </div><!-- end .smallBanner -->
             
         </div><!-- end .box4 -->

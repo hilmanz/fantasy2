@@ -73,8 +73,7 @@ function isStaffExist($staff_token,$name){
                 
               </ul>
             <div class="mediumBanner">
-                <a target="_blank" href="<?=$long_banner[0]['Banners']['url']?>">
-                  <img src="<?=$this->Html->url(Configure::read('avatar_web_url').$long_banner[0]['Banners']['banner_file'])?>" /></a>
+                <?=$this->element('sponsor_banner',array('slot'=>'MY_CLUB_LONG','game_team_id'=>$game_team_id));?>
             </div><!-- end .mediumBanner -->
               <div id="tabs-Info">
 

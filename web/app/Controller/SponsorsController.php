@@ -41,6 +41,23 @@ class SponsorsController extends AppController {
 	public function index(){
 		$this->redirect('/');
 	}
+	public function banners(){
+		$game_team_id = intval($this->request->query['game_team_id']);
+		$slot = $this->request->query['slot'];
+		//get Sponsorship
+		$sponsor = $this->Game->query("SELECT * FROM ffgame.game_team_sponsors TeamSponsor
+										WHERE game_team_id={$game_team_id} LIMIT 1");
+		if(sizeof($sponsor)>0){
+			$rs = $this->Game->query("SELECT * FROM ffgame.game_sponsorship_banners Banner
+							WHERE sponsor_id={$sponsor[0]['TeamSponsor']['sponsor_id']} AND slot='{$slot}' 
+							ORDER BY RAND() LIMIT 10;");
+			return $rs;
+		}else{
+			return array();
+		}
+		
+		
+	}
 	public function apply(){
 		$this->loadModel('GameTeamSponsor');
 		$c = Sanitize::clean($this->request->query['c']);
@@ -73,7 +90,7 @@ class SponsorsController extends AppController {
 
 				//reset financial statement
 				$this->Session->write('FinancialStatement',null);
-				
+
 			}else{
 				$this->errorCode();
 			}

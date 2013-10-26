@@ -11,7 +11,14 @@
 <select name="week">
 	<option value="0">--WEEK--</option>
 	<?php for($i=1;$i<=38;$i++):?>
-		<option value="<?=$i?>"><?=$i?></option>
+	<?php
+		if($i==$last_week){
+			$selected = "selected='true'";
+		}else{
+			$selected = "";
+		}
+	?>
+		<option value="<?=$i?>" <?=$selected?>><?=$i?></option>
 	<?php endfor;?>
 </select>
 </div>
@@ -62,10 +69,7 @@ function getdata(week){
 
 function draw_table(){
 
-	if(oTable!=null){
-		oTable.fnDestroy();
-		$("#tbl").html('');
-	}
+	
 	oTable = $('#tbl').dataTable( {
 		"aaData": data,
 		"aoColumns": [
@@ -87,6 +91,14 @@ $('select[name=week]').change(function(e){
 	$('.msg').show();
 	start = 0;
 	data = [];
+	if(oTable!=null){
+		oTable.fnDestroy();
+		$("#tbl").html('');
+	}
 	getdata($(this).val());
 });
+
+$('.msg').html('Loading Data');
+$('.msg').show();
+getdata(<?=$last_week?>);
 </script>

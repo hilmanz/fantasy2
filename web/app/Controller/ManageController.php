@@ -62,6 +62,9 @@ class ManageController extends AppController {
 		//club
 		$club = $this->Team->findByUser_id($user['User']['id']);
 		$this->set('club',$club['Team']);
+		$this->set('game_team_id',$userData['team']['id']);
+
+	
 
 		//get original club
 		$original_club = $this->Game->getClub($club['Team']['team_id']);
@@ -383,6 +386,8 @@ class ManageController extends AppController {
 		//club
 		$club = $this->Team->findByUser_id($user['User']['id']);
 		$this->set('club',$club['Team']);
+
+		$this->set('game_team_id',$userData['team']['id']);
 	
 		$next_match = $this->nextMatch;
 		$next_match['match']['home_original_name'] = $next_match['match']['home_name'];
