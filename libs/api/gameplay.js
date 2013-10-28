@@ -950,7 +950,8 @@ function getTransferWindow(done){
 				function(callback){
 					conn.query("SELECT * \
 								FROM ffgame.master_transfer_window \
-								WHERE MONTH(tw_open) = MONTH(NOW());",
+								WHERE MONTH(tw_open) = MONTH(NOW())\
+								AND NOW() BETWEEN tw_open AND tw_close;",
 								[],function(err,rs){
 									try{
 										callback(err,rs[0]);

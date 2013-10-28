@@ -29,6 +29,7 @@ exports.getPlayers = function(req,res){
 exports.getTransferWindow = function(req,res){
 	gameplay.getTransferWindow(function(err,rs){
 		if(rs!=null){
+			
 			res.json(200,rs);
 		}else{
 			res.send(200,[]);

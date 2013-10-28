@@ -208,8 +208,8 @@ class GameController extends AppController {
 		$player_id = Sanitize::clean($this->request->data['player_id']);
 
 		$window = $this->Game->transfer_window();
-		$window_id = $window['id'];
-
+		$window_id = intval(@$window['id']);
+		
 		//check if the transfer window is opened, or the player is just registered within 24 hours
 		$is_new_user = false;
 		$can_transfer = false;
@@ -217,7 +217,7 @@ class GameController extends AppController {
 			$is_new_user = true;
 		}
 		if(!$is_new_user){
-			if(strtotime($window['tw_open']) <= time() && strtotime($window['tw_close'])>=time()){
+			if(strtotime(@$window['tw_open']) <= time() && strtotime(@$window['tw_close'])>=time()){
 				$can_transfer = true;
 				
 			}

@@ -204,7 +204,9 @@ class ManageController extends AppController {
 		$this->set('weekly_points',$weekly_team_points);
 		
 		//matches
-		$matches = $this->getMatches($weekly_team_points,$financial_statement['expenditures'],$financial_statement['tickets_sold']);
+		$matches = $this->getMatches($weekly_team_points,
+										$financial_statement['expenditures'],
+										$financial_statement['tickets_sold']);
 		$this->set('matches',$matches);
 
 		//enable OPTA Widget
