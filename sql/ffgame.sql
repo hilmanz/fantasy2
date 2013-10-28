@@ -760,3 +760,16 @@ CREATE TABLE ffgame.master_perks (
   PRIMARY KEY (`id`),
   UNIQUE KEY `IDX_PERK` (`perk_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE ffgame.sponsor_banner_logs (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `banner_id` bigint(21) DEFAULT NULL,
+  `current_month` int(3) DEFAULT NULL,
+  `current_year` int(4) DEFAULT '2013',
+  `location` varchar(140) DEFAULT NULL,
+  `t_click` bigint(21) DEFAULT '0',
+  `t_view` bigint(21) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IDX_BANNER_MONTH_LOCATION` (`banner_id`,`current_month`,`current_year`,`location`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
