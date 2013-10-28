@@ -48,6 +48,9 @@ $sponsors = (isset($sponsors))? $sponsors : array();
 			<a href="<?=$this->Html->url('/sponsors/invite/'.$v['Sponsors']['id'])?>" class="button">
 				Invite
 			</a>
+			<a href="<?=$this->Html->url('/sponsors/stats/'.$v['Sponsors']['id'])?>" class="button">
+				Stats
+			</a>
 		</td>
 	</tr>
 	<?php endforeach;?>

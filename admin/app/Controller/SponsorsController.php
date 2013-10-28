@@ -4,7 +4,7 @@
 *
 */
 App::uses('AppController', 'Controller');
-
+App::uses('Sanitize', 'Utility');
 
 class SponsorsController extends AppController {
 
@@ -28,6 +28,103 @@ class SponsorsController extends AppController {
 		//attach perks on json
 		$perks = $this->Sponsorship->getPerks();
 		$this->set('perks',$perks);
+	}
+	public function stats($id){
+		$this->loadModel('Sponsorship');
+		$this->loadModel('SponsorBanner');
+
+		
+		//load sponsorship details
+		$rs = $this->Sponsorship->findById($id);
+		$this->set('sponsor',$rs['Sponsorship']);
+
+		//get the list of banners and it's summary
+		$banners = $this->Game->query("SELECT a.id,a.banner_name,a.slot,
+										SUM(t_click) AS clicks,
+										SUM(t_view) AS views 
+										FROM 
+										ffgame.game_sponsorship_banners a
+										INNER JOIN 
+										ffgame.sponsor_banner_logs b
+										ON a.id = b.banner_id
+										WHERE a.sponsor_id = 1
+										GROUP BY b.banner_id
+										LIMIT 100");
+		$this->set('banners',$banners);
+	}
+	public function stats_detail($id,$banner_id){
+		$this->loadModel('Sponsorship');
+		$this->loadModel('SponsorBanner');
+
+		
+		//load sponsorship details
+		$rs = $this->Sponsorship->findById($id);
+		$this->set('sponsor',$rs['Sponsorship']);
+
+			
+		$banner = $this->SponsorBanner->findById($banner_id);
+		$this->set('banner',$banner['SponsorBanner']);
+
+		//overall monthly
+		$overall_monthly = $this->Game->query("SELECT current_month AS mt,current_year AS yr,
+												SUM(t_click) AS clicks,SUM(t_view) AS views 
+												FROM ffgame.sponsor_banner_logs 
+												WHERE banner_id={$banner_id} GROUP BY current_month,current_year
+												ORDER BY current_year ASC,current_month ASC;");
+		$this->set('overall_monthly',$overall_monthly);
+	}
+	public function citystats($sponsor_id,$banner_id){
+		$this->loadModel('Sponsorship');
+		$this->loadModel('SponsorBanner');
+
+		$location = (isset($this->request->query['location']))? $this->request->query['location'] : '';
+		$location = Sanitize::clean($location);
+
+		$this->set('location',$location);
+		
+		//load sponsorship details
+		$rs = $this->Sponsorship->findById($sponsor_id);
+		$this->set('sponsor',$rs['Sponsorship']);
+
+			
+		$banner = $this->SponsorBanner->findById($banner_id);
+		$this->set('banner',$banner['SponsorBanner']);
+
+
+		//overall monthly
+		$overall_monthly = $this->Game->query("SELECT location,current_month AS mt,current_year AS yr,
+												SUM(t_click) AS clicks,SUM(t_view) AS views 
+												FROM ffgame.sponsor_banner_logs 
+												WHERE banner_id={$banner_id} AND location='{$location}' 
+												GROUP BY current_month,current_year,location
+												LIMIT 0,36;");
+		$this->set('overall_monthly',$overall_monthly);
+	}
+	public function banner_per_city($banner_id=0){
+		$this->layout="ajax";
+		$start = intval(@$this->request->query['start']);
+		$sql = "SELECT location,
+				SUM(t_click) AS clicks,
+				SUM(t_view) AS views 
+				FROM ffgame.sponsor_banner_logs 
+				WHERE banner_id=$banner_id
+				GROUP BY location
+				LIMIT {$start},20;";
+			
+		$rs = $this->Game->query($sql);
+		$stats = array();
+		$total_data = sizeof($rs);
+		while(sizeof($rs)>0){
+			$p = array_shift($rs);
+			$stats[] = array('location'=>$p['sponsor_banner_logs']['location'],
+							 'impressions'=>$p[0]['views'],
+							 'clicks'=>$p[0]['clicks']
+							 );
+			$start += 20;
+		}
+		unset($rs);
+		$this->set('response',array('status'=>1,'total_data'=>$total_data,'data'=>$stats,'next_offset'=>$start));
+		$this->render('response');
 	}
 	public function add_perk(){
 		$this->layout="ajax";
@@ -237,7 +334,7 @@ class SponsorsController extends AppController {
 		}
 		return $in_queue;
 	}
-
+	
 	private function generate_apply_link($sponsor_id,$game_team_id,$email,$email_type){
 		$data = serialize(array('sponsor_id'=>$sponsor_id,
 					  'game_team_id'=>$game_team_id,

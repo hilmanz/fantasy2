@@ -25,6 +25,7 @@
 			'highcharts',
 			'underscore-min',
 			'backbone-min',
+			'string.min',
 			'kit'
 	  ));
 ?>
