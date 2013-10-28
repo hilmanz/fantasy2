@@ -170,7 +170,7 @@ class GameController extends AppController {
 			$is_new_user = true;
 		}
 		if(!$is_new_user){
-			if(strtotime($window['tw_open']) <= time() && strtotime($window['tw_close'])>=time()){
+			if(strtotime(@$window['tw_open']) <= time() && strtotime(@$window['tw_close'])>=time()){
 				$can_transfer = true;
 				
 			}
