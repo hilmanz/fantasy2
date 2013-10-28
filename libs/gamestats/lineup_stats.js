@@ -19,6 +19,7 @@ var path = require('path');
 var async = require('async');
 var xmlparser = require('xml2json');
 var config = require(path.resolve('./config')).config;
+var S = require('string');
 var mysql = require('mysql');
 var pool  = mysql.createPool({
    host     : config.database.host,
@@ -411,9 +412,9 @@ function update_individual_team_stats(game_id,team,summary,player_stats,done){
 		async.waterfall(
 			[
 				function(callback){
-					console.log(team,'vs',summary);
-					if(typeof summary[team.team_id]!=='undefined'){
-						console.log('track the lineup history for #',team.id);
+					console.log('UPDATE_INDIVIDUAL',team,'vs',summary);
+					//if(typeof summary[team.team_id]!=='undefined'){
+						console.log('HISTORY','track the lineup history for #',team.id);
 
 						//@TODO : ini nanti kayaknya harus dieksekusi sebelum step 2.
 						//agar jika kita sedang me regen data,  lineup yg dipakai adalah lineup dari history.
@@ -421,10 +422,10 @@ function update_individual_team_stats(game_id,team,summary,player_stats,done){
 						addToHistory(game_id,team,function(err){
 							callback(err);	
 						});
-					}else{
-						console.log('no need to track the lineup history for #',team.team_id);
-						callback(null);	
-					}
+					//}else{
+						//console.log('no need to track the lineup history for #',team.team_id);
+						//callback(null);	
+					//}
 				},
 				function(callback){
 					//step 1 - get team lineups
@@ -456,18 +457,78 @@ function update_individual_team_stats(game_id,team,summary,player_stats,done){
 	
 }
 function addToHistory(game_id,team,done){
+	var matchday = 0;
 	pool.getConnection(function(err,conn){
-		conn.query("INSERT IGNORE INTO \
+		async.waterfall([
+			function(callback){
+				conn.query("SELECT matchday FROM ffgame.game_fixtures WHERE game_id=? LIMIT 1",
+							[game_id],function(err,match){
+								console.log('ISSUE1',this.sql);
+								try{
+									matchday = match[0]['matchday'];
+								}catch(e){
+									matchday = 0;	
+								}
+								callback(err);
+							});
+			},
+			function(callback){
+				conn.query("SELECT game_id FROM ffgame.game_fixtures \
+							WHERE (home_id = ? OR away_id = ?) \
+							AND matchday=? LIMIT 1",
+							[team.team_id,team.team_id,matchday],function(err,match){
+								console.log('ISSUE1','0# get the game_id : ',this.sql);
+								var the_game_id = '';
+								try{
+									the_game_id = match[0]['game_id'];
+								}catch(e){
+									err = new Error('no game_id found');
+								}
+								console.log('the game id : ',the_game_id);
+
+								callback(err,the_game_id);
+							});
+			},
+			function(the_game_id,callback){
+				var can_insert = true;
+				//we only do insert once
+				conn.query("SELECT * FROM ffgame.game_team_lineups_history\
+							WHERE game_id = ? AND game_team_id= ?",
+							[the_game_id,team.id],function(err,rs){
+								console.log('ISSUE1','check if theres already history',S(this.sql).collapseWhitespace().s);
+								try{
+									if(rs.length>0){
+										can_insert = false;
+									}
+								}catch(e){
+									can_insert = false;
+								}
+								callback(err,the_game_id,can_insert);
+							});
+			},
+			function(the_game_id,can_insert,callback){
+				if(can_insert){
+					conn.query("INSERT IGNORE INTO \
 					ffgame.game_team_lineups_history\
 					(game_id,game_team_id,player_id,position_no,last_update)\
 					SELECT ? AS game_id,game_team_id,player_id,position_no,NOW() AS last_update\
-					FROM ffgame.game_team_lineups WHERE game_team_id=?;",[game_id,team.id],
+					FROM ffgame.game_team_lineups WHERE game_team_id=?;",
+					[the_game_id,team.id],
 					function(err,rs){
-						console.log('update lineup history ',this.sql);
-						conn.end(function(err){
-							done(err);
-						});
+						console.log('ISSUE1','update lineup history ',S(this.sql).collapseWhitespace().s);
+						callback(err,rs);
 					});
+				}else{
+					console.log('ISSUE1','no insert history #',team.id,' - ',the_game_id);
+					callback(null,null);
+				}
+				
+			}
+		],function(err,rs){
+			conn.end(function(err){
+				done(err);
+			});
+		});
 	});
 }
 function getTeamLineups(game_id,team,done){

@@ -240,6 +240,22 @@ var has_read_notification = <?=intval(@$has_read_notification)?>;
             },
            
         });
+
+
+
+//banner functions
+function banner_click(banner_id,url){
+    banner_id = parseInt(banner_id);
+    api_call('<?=$this->Html->url('/sponsors/track/2?id=')?>'+banner_id,function(response){
+        document.location = url;
+    });
+}
+function banner_view(banner_id,url){
+    banner_id = parseInt(banner_id);
+    api_call('<?=$this->Html->url('/sponsors/track/1?id=')?>'+banner_id,function(response){
+        //do nothing
+    });
+}
 </script>
  <?php endif;?>
  

@@ -125,4 +125,38 @@ class SponsorsController extends AppController {
 	public function success(){
 		$this->render('success');
 	}
+	/**
+	* track banner views/clicks
+	* $type = 1 -> view
+	* $type = 2 -> click
+	*/
+	public function track($type=1){
+		$this->layout = "ajax";
+		$banner_id = intval(@$this->request->query['id']);
+		$location = Sanitize::clean(strtolower($this->parseLocation($this->userDetail['User']['location'])));
+		if($type==2){
+			//click
+			$t_click = 1;
+			$t_view = 0;
+		}else{
+			$t_click = 0;
+			$t_view = 1;
+		}
+		$sql = "INSERT INTO ffgame.sponsor_banner_logs
+				(banner_id,current_month,location,t_click,t_view)
+				VALUES
+				({$banner_id},".date('m').",'{$location}',{$t_click},{$t_view})
+				ON DUPLICATE KEY UPDATE
+				t_click = t_click + VALUES(t_click),
+				t_view = t_view + VALUES(t_view)";
+				
+		$this->Game->query($sql);
+		$this->set('response',array('status'=>1,'type'=>$type));
+		$this->render('response');
+	}
+	private function parseLocation($str){
+		$a = explode(",",$str);
+		return trim($a[0]);
+	}
+
 }

@@ -6,7 +6,7 @@ class UpdaterShell extends AppShell{
     	 	$limit = 10;
     	 	$start = 0;
 
-        if($this->week_finished()){
+        //if($this->week_finished()){
             $this->out('the game is completed');
             $this->out('getting points');
         
@@ -29,10 +29,10 @@ class UpdaterShell extends AppShell{
            $this->out('done');
 
            CakeLog::write('updater', 'done');
-        }else{
-           $this->out('the games has not finished yet');
-           CakeLog::write('updater', 'current matchday is still ongoing');
-        }
+       // }else{
+       //    $this->out('the games has not finished yet');
+        //   CakeLog::write('updater', 'current matchday is still ongoing');
+       // }
     }
     private function week_finished(){
       $rs = $this->Game->query("SELECT MAX(matchday) AS last_matchday 
