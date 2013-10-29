@@ -1,0 +1,105 @@
+/*
+Theme Name: FANTASY FOOTBALL LEAGUE
+Version: 1.0
+Author: ACIT JAZZ 
+*/
+@import url('../fonts/colaborate.css');
+@import url('../fonts/bebas.css');
+
+*{outline:none;}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,p,blockquote,th,td{margin:0;padding:0;}
+table{border-collapse:collapse;border-spacing:0;}
+fieldset,img{border:0;}
+address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}
+ol,ul {list-style:none;}
+caption,th {text-align:left;}
+q:before,q:after{content:'';}
+body{
+	background: url(../images/mobile/bg.jpg) no-repeat center center fixed;
+	background-color:#000;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/bg.jpg', sizingMethod='scale');
+	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/bg.jpg', sizingMethod='scale')";
+	margin:0;
+	padding:0;
+    font-family: 'ColaborateRegular';
+	font-size:14px;
+	color:#fff;
+	line-height:1.4;
+	overflow-x:hidden;
+	 -webkit-font-smoothing: antialiased;
+     font-smoothing: antialiased;
+}
+h1,h2,h3,h4,h5,h6{
+    font-family: 'BebasNeueRegular';
+	font-weight:normal;
+	margin:15px 0;
+}
+h1{
+	font-size:40px;
+	color:#f1ca4c;
+	margin:0;
+}
+h2{
+	font-size:22px;
+}
+h3{
+	font-size:18px;
+	color:#fff;
+}
+h4{
+	font-size:18px;
+}
+.yellow{
+	color:#f1ca4c;
+}
+a{
+	text-decoration:none;
+	color:#c20101;
+	outline:none;
+	-webkit-transition: all 0.3s ease-in-out;
+	-moz-transition: all 0.3s ease-in-out;
+	-o-transition: all 0.3s ease-in-out;
+	-ms-transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
+}
+a:hover{
+	text-decoration:underline;
+	color:#FC0
+}
+#body{
+	width:90%;
+	margin:0 auto;
+	padding:40px 0 0 0;
+}
+.btnWeb{
+	float:right;
+	width:50%;
+}
+.btnWeb img{
+	width:100%;
+}
+#container{
+	background:url(../images/mobile/tr.png) repeat;
+	padding:20px;
+	width:90%;
+	margin:0 auto;
+	text-align:center;
+}
+#logo img{
+	width:100%;
+}
+#logo{
+	display:block;
+	width:90%;
+	margin:0 auto;
+}
+.btn_android{
+	display:block;
+}
+.btn_android img{
+	width:100%;
+}
