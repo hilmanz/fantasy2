@@ -272,7 +272,9 @@ class SponsorsController extends AppController {
 		$sponsor = $this->Sponsorship->findById($sponsor_id);
 		
 
-		
+		$start_rank = 0;
+		$end_rank = 0;
+
 		if($filter=='everyone_once'){
 			$rs = $this->Sponsorship->query("SELECT a.fb_id,c.email,b.id AS game_team_id
 										FROM ffgame.game_users a
@@ -287,18 +289,26 @@ class SponsorsController extends AppController {
 			$rs = $this->queue_in_tier1_once(1,$start,$sponsor_id,$email_type,$sponsor['Sponsorship']);
 			$total_scan = $rs['total'];
 			$in_queue = $rs['in_queue'];
+			$start_rank = $rs['start_rank'];
+			$end_rank = $rs['end_rank'];
 		}else if($filter=="tier2"){
 			$rs = $this->queue_in_tier1_once(2,$start,$sponsor_id,$email_type,$sponsor['Sponsorship']);
 			$total_scan = $rs['total'];
 			$in_queue = $rs['in_queue'];
+			$start_rank = $rs['start_rank'];
+			$end_rank = $rs['end_rank'];
 		}else if($filter=="tier3"){
 			$rs = $this->queue_in_tier1_once(3,$start,$sponsor_id,$email_type,$sponsor['Sponsorship']);
 			$total_scan = $rs['total'];
 			$in_queue = $rs['in_queue'];
+			$start_rank = $rs['start_rank'];
+			$end_rank = $rs['end_rank'];
 		}else if($filter=="tier4"){
 			$rs = $this->queue_in_tier1_once(4,$start,$sponsor_id,$email_type,$sponsor['Sponsorship']);
 			$total_scan = $rs['total'];
 			$in_queue = $rs['in_queue'];
+			$start_rank = $rs['start_rank'];
+			$end_rank = $rs['end_rank'];
 		}else{
 			$rs = $this->Sponsorship->query("SELECT a.fb_id,c.email,b.id AS game_team_id
 										FROM ffgame.game_users a
@@ -312,7 +322,11 @@ class SponsorsController extends AppController {
 		}
 		
 		
-		$this->set('response',array('status'=>1,'total'=>$total_scan,'in_queue'=>$in_queue));	
+		$this->set('response',array('status'=>1,
+									'total'=>$total_scan,
+									'in_queue'=>$in_queue,
+									'start_rank'=>$start_rank,
+									'end_rank'=>$end_rank));	
 		
 		
 		$this->render('response');
@@ -368,13 +382,15 @@ class SponsorsController extends AppController {
 						FROM ffgame.game_teams a
 						INNER JOIN ffgame.game_users b
 						ON a.user_id = b.id
-						WHERE b.fb_id = '{$rs[0]['c']['fb_id']}';");
+						WHERE b.fb_id = '{$r['c']['fb_id']}';");
 				
-				$game_team_id = $team[0]['a']['game_team_id'];
-				$in_queue += $this->queue_everyone_in_tier($sponsor_id,$game_team_id,$rs[0]['c']['email'],$email_type,$sponsor);
+				$game_team_id = intval(@$team[0]['a']['game_team_id']);
+				$in_queue += $this->queue_everyone_in_tier($sponsor_id,$game_team_id,$r['c']['email'],$email_type,$sponsor);
 			}
 			return array('total'=>$total_scan,
-						 'in_queue'=>$in_queue);
+						 'in_queue'=>$in_queue,
+						 'start_rank'=>$start_rank,
+						 'end_rank'=>$end_rank);
 			
 	}
 	private function queue_everyone_in_tier($sponsor_id,$game_team_id,$email,$email_type,$sponsor){
@@ -386,30 +402,40 @@ class SponsorsController extends AppController {
 													 $email,
 													 $email_type);
 			//put into queue
-			$q = $this->Sponsorship->query("INSERT INTO ffgame.game_sponsor_emails
+			if(intval($game_team_id)>0){
+				$q = $this->Sponsorship->query("INSERT INTO ffgame.game_sponsor_emails
 										(sponsor_id,game_team_id,email_type,email,apply_link,sent_dt)
 										VALUES
 										({$sponsor_id},{$game_team_id},'{$email_type}',
 										 '{$email}','{$apply_link}',NOW())");
 
-			if(is_array($q)){
-				//@TODO - we have to also create HTML version of email body :(
-				//queue email
-				//invitation_email
-				if($email_type=='invitation'){
-					$plain = str_replace("{{APPLY_LINK}}",Configure::read('WWW_URL').$apply_link,$sponsor['invitation_email']);
+				if(is_array($q)){
+					//@TODO - we have to also create HTML version of email body :(
+					//queue email
+					//invitation_email
+					if($email_type=='invitation'){
+						$subject = "Proposal Sponsor Klab dari ".$sponsor['name'];
+						$plain = str_replace("{{APPLY_LINK}}",Configure::read('WWW_URL').$apply_link,$sponsor['invitation_email']);
+					}else{
+						$subject = "Selamat, anda mendapatkan bonus dari sponsor !";
+						$plain = str_replace("{{APPLY_LINK}}",Configure::read('WWW_URL').$apply_link,$sponsor['win_bonus_email']);
+					}
+					$view = new View($this, false);
+					$body = $view->element('html_email',array('subject'=>$subject,'body'=>$plain));
+					
+					$body = mysql_escape_string($body);
+					$this->Sponsorship->query("INSERT INTO ffgame.email_queue
+												(subject,email,plain_txt,html_text,queue_dt,send_dt,n_status)
+												VALUES
+												('{$subject}','{$email}','{$body}','{$body}',NOW(),NULL,0);");
+					return 1;
 				}else{
-					$plain = str_replace("{{APPLY_LINK}}",Configure::read('WWW_URL').$apply_link,$sponsor['win_bonus_email']);
+					return 0;
 				}
-				$plain = mysql_escape_string($plain);
-				$this->Sponsorship->query("INSERT INTO ffgame.email_queue
-											(email,plain_txt,html_text,queue_dt,send_dt,n_status)
-											VALUES
-											('{$email}','{$plain}','{$plain}',NOW(),NULL,0);");
-				return 1;
 			}else{
 				return 0;
 			}
+			
 	}
 	private function queue_everyone_once($sponsor_id,$rs,$email_type,$sponsor){
 		$in_queue = 0;

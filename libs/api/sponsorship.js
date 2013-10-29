@@ -113,7 +113,7 @@ function applySponsorship(game_id,matchday,game_team_id,sponsor_id,callback){
 			},
 			function(sponsor_data,insertResult,callback){
 				if(insertResult){
-					var item_name = 'SPONSOR_IMMEDIATE_MONEY';
+					var item_name = 'Joining_Bonus';
 					//add money if available
 					if(immediate_money>0){
 						conn.query("INSERT INTO ffgame.game_team_expenditures\

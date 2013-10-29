@@ -773,3 +773,8 @@ CREATE TABLE ffgame.sponsor_banner_logs (
   PRIMARY KEY (`id`),
   UNIQUE KEY `IDX_BANNER_MONTH_LOCATION` (`banner_id`,`current_month`,`current_year`,`location`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `ffgame`.`email_queue`     CHANGE `n_status` `n_status` TINYINT(3) DEFAULT '0' NULL  COMMENT '0->pending, 1->sending, 2->OK, 3->FAILED';
+
+ALTER TABLE `ffgame`.`email_queue`     ADD COLUMN `subject` VARCHAR(140) NULL AFTER `id`;
