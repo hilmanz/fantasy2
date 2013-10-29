@@ -270,28 +270,146 @@ class SponsorsController extends AppController {
 		$start = intval($this->request->query['start']);
 
 		$sponsor = $this->Sponsorship->findById($sponsor_id);
-		$rs = $this->Sponsorship->query("SELECT a.fb_id,c.email,b.id AS game_team_id
+		
+
+		
+		if($filter=='everyone_once'){
+			$rs = $this->Sponsorship->query("SELECT a.fb_id,c.email,b.id AS game_team_id
 										FROM ffgame.game_users a
 										INNER JOIN ffgame.game_teams b
 										ON a.id = b.user_id
 										INNER JOIN ffg.users c
 										ON a.fb_id = c.fb_id LIMIT {$start},20;
 										");
-
-		$total_scan = sizeof($rs);
-		if($filter=='everyone_once'){
+			$total_scan = sizeof($rs);
 			$in_queue = $this->queue_everyone_once($sponsor_id,$rs,$email_type,$sponsor['Sponsorship']);
+		}else if($filter=="tier1"){
+			$rs = $this->queue_in_tier1_once(1,$start,$sponsor_id,$email_type,$sponsor['Sponsorship']);
+			$total_scan = $rs['total'];
+			$in_queue = $rs['in_queue'];
+		}else if($filter=="tier2"){
+			$rs = $this->queue_in_tier1_once(2,$start,$sponsor_id,$email_type,$sponsor['Sponsorship']);
+			$total_scan = $rs['total'];
+			$in_queue = $rs['in_queue'];
+		}else if($filter=="tier3"){
+			$rs = $this->queue_in_tier1_once(3,$start,$sponsor_id,$email_type,$sponsor['Sponsorship']);
+			$total_scan = $rs['total'];
+			$in_queue = $rs['in_queue'];
+		}else if($filter=="tier4"){
+			$rs = $this->queue_in_tier1_once(4,$start,$sponsor_id,$email_type,$sponsor['Sponsorship']);
+			$total_scan = $rs['total'];
+			$in_queue = $rs['in_queue'];
 		}else{
+			$rs = $this->Sponsorship->query("SELECT a.fb_id,c.email,b.id AS game_team_id
+										FROM ffgame.game_users a
+										INNER JOIN ffgame.game_teams b
+										ON a.id = b.user_id
+										INNER JOIN ffg.users c
+										ON a.fb_id = c.fb_id LIMIT {$start},20;
+										");
+			$total_scan = sizeof($rs);
 			$in_queue = $total_scan;
 		}
 		
-		if($start!=10000){
-			$this->set('response',array('status'=>1,'total'=>$total_scan,'in_queue'=>$in_queue));	
-		}else{
-			$this->set('response',array('status'=>1,'total'=>0));	
-		}
+		
+		$this->set('response',array('status'=>1,'total'=>$total_scan,'in_queue'=>$in_queue));	
+		
 		
 		$this->render('response');
+	}
+	private function queue_in_tier1_once($tier,$start,$sponsor_id,$email_type,$sponsor){
+		//get current users in total.
+		$ct = $this->Game->query("SELECT COUNT(a.id) AS total 
+								FROM points a
+								INNER JOIN teams b
+								ON a.team_id = b.id;");
+		$total_users = $ct[0][0]['total'];
+		
+		switch($tier){
+			case 1:
+				$start_rank = 0;
+				$end_rank 	= floor(0.25 * $total_users);
+			break;
+			case 2:
+				$start_rank = ceil(0.25 * $total_users);
+				$end_rank 	= floor(0.5 * $total_users);
+			break;
+			case 3:
+				$start_rank = ceil(0.5 * $total_users);
+				$end_rank 	= floor(0.75 * $total_users);
+			break;
+			case 4:
+				$start_rank = ceil(0.75 * $total_users);
+				$end_rank 	= floor(1.0 * $total_users);
+			break;
+			default:
+				$start_rank = 0;
+				$end_rank 	= 0;
+			break;
+		}
+			$sql = "SELECT b.team_name,c.* FROM points a
+			INNER JOIN teams b
+			ON a.team_id = b.id
+			INNER JOIN users c
+			ON b.user_id = c.id 
+			WHERE 
+			rank > {$start_rank} 
+			AND rank <={$end_rank}
+			LIMIT {$start},20;";
+
+			$rs = $this->Game->query($sql);
+
+			$total_scan = sizeof($rs);
+			$in_queue = 0;
+
+			foreach($rs as $r){
+				//get the game_team_id and put it in queue
+				$team = $this->Game->query("SELECT a.id AS game_team_id 
+						FROM ffgame.game_teams a
+						INNER JOIN ffgame.game_users b
+						ON a.user_id = b.id
+						WHERE b.fb_id = '{$rs[0]['c']['fb_id']}';");
+				
+				$game_team_id = $team[0]['a']['game_team_id'];
+				$in_queue += $this->queue_everyone_in_tier($sponsor_id,$game_team_id,$rs[0]['c']['email'],$email_type,$sponsor);
+			}
+			return array('total'=>$total_scan,
+						 'in_queue'=>$in_queue);
+			
+	}
+	private function queue_everyone_in_tier($sponsor_id,$game_team_id,$email,$email_type,$sponsor){
+		$in_queue = 0;
+
+		
+			$apply_link = $this->generate_apply_link($sponsor_id,
+													 $game_team_id,
+													 $email,
+													 $email_type);
+			//put into queue
+			$q = $this->Sponsorship->query("INSERT INTO ffgame.game_sponsor_emails
+										(sponsor_id,game_team_id,email_type,email,apply_link,sent_dt)
+										VALUES
+										({$sponsor_id},{$game_team_id},'{$email_type}',
+										 '{$email}','{$apply_link}',NOW())");
+
+			if(is_array($q)){
+				//@TODO - we have to also create HTML version of email body :(
+				//queue email
+				//invitation_email
+				if($email_type=='invitation'){
+					$plain = str_replace("{{APPLY_LINK}}",Configure::read('WWW_URL').$apply_link,$sponsor['invitation_email']);
+				}else{
+					$plain = str_replace("{{APPLY_LINK}}",Configure::read('WWW_URL').$apply_link,$sponsor['win_bonus_email']);
+				}
+				$plain = mysql_escape_string($plain);
+				$this->Sponsorship->query("INSERT INTO ffgame.email_queue
+											(email,plain_txt,html_text,queue_dt,send_dt,n_status)
+											VALUES
+											('{$email}','{$plain}','{$plain}',NOW(),NULL,0);");
+				return 1;
+			}else{
+				return 0;
+			}
 	}
 	private function queue_everyone_once($sponsor_id,$rs,$email_type,$sponsor){
 		$in_queue = 0;
@@ -334,6 +452,7 @@ class SponsorsController extends AppController {
 		}
 		return $in_queue;
 	}
+
 	
 	private function generate_apply_link($sponsor_id,$game_team_id,$email,$email_type){
 		$data = serialize(array('sponsor_id'=>$sponsor_id,
