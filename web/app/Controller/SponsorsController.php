@@ -101,18 +101,18 @@ class SponsorsController extends AppController {
 		}
 	}
 	private function refused(){
-		$this->set('title','Mohon Maaf');
-		$this->set('message','Permohonan anda ditolak.');
+		$this->set('title','Aplikasi Tidak Valid!');
+		$this->set('message','Elo sudah pernah mengajukan aplikasi atau sudah memiliki kontrak dengan sponsor ini. ');
 		$this->error();
 	}
 	private function hasSponsorError(){
-		$this->set('title','Hallo ? ');
-		$this->set('message','Anda sudah memiliki sponsor, 1 tim hanya diperkenankan memiliki 1 sponsor.');
+		$this->set('title','Aplikasi Ditolak!');
+		$this->set('message','Elo sudah terikat kontrak dengan sponsor lain. Silahkan tunggu penawaran sponsor berikutnya.');
 		$this->error();
 	}
 	private function errorCode(){
-		$this->set('title','Hallo ? ');
-		$this->set('message','Kami tidak menemukan sponsor yang anda maksud ! Silahkan cek kembali email anda !<br/> Terima Kasih !');
+		$this->set('title','Aplikasi Tidak Dapat di Proses! ');
+		$this->set('message','Penerimaan sponsorship cuma dapat diperoleh melalui jalur-jalur resmi Supersoccer Football Manager');
 		$this->error();
 	}
 	public function error(){
