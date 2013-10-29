@@ -265,7 +265,7 @@ function getBudget(game_team_id,callback){
 		conn.query(sql,
 				[game_team_id,game_team_id],
 				function(err,rs){
-					//console.log(this.sql);
+					console.log(this.sql);
 					conn.end(function(e){
 						callback(err,rs);	
 					});
@@ -324,11 +324,16 @@ function getTeamPlayerDetail(game_team_id,player_id,callback){
 				[game_team_id,player_id],
 				function(err,rs){
 					conn.end(function(e){
-						if(rs.length==1){
-							callback(err,rs[0]);	
-						}else{
+						try{
+							if(rs.length==1){
+								callback(err,rs[0]);	
+							}else{
+								callback(err,null);
+							}
+						}catch(e){
 							callback(err,null);
 						}
+						
 					});
 				});
 	});
@@ -562,7 +567,7 @@ function getFinancialStatement(game_team_id,done){
 									}
 									
 								}else{
-									callback(err,null);
+									callback(err,10000000);
 								}
 							});
 				},
@@ -625,7 +630,7 @@ function getFinancialStatement(game_team_id,done){
 									if(!err){
 										callback(err,starting_budget,weekly_balance,matches,expenditures,rs);
 									}else{
-										callback(err,null,null,null);
+										callback(err,null,null,null,null,null);
 									}
 								});
 				},

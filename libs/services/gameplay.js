@@ -349,13 +349,24 @@ exports.financial_statements = function(req,res){
 	async.waterfall([
 		function(callback){
 			gameplay.getBudget(req.params.game_team_id,function(err,result){
-				callback(err,result[0]);
+				if(result==null){
+					callback(new Error('budget not found'),null);
+				}else{
+					callback(err,result[0]);	
+				}
+				
 			});
 		},
 		function(budget,callback){
 			gameplay.getFinancialStatement(req.params.game_team_id,function(err,result){
-				result.budget = budget.budget;
-				callback(err,result);
+				try{
+					result.budget = budget.budget;	
+					callback(err,result);
+				}catch(e){
+					callback(err,null);
+				}
+				
+				
 			});
 		}
 	],
