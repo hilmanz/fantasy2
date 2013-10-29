@@ -2,10 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>EMAIL</title>
+<title>SUPER SOCCER - FANTASY FOOTBALL LEAGUE</title>
 </head>
 
-<body bgcolor="#000000" style="margin:0;">
+<body style="margin:0;">
 	<table border="0" cellspacing="0" cellpadding="0" style="max-width:700px; background:#fff; color:#000; margin:0 auto; font-family:Arial, Helvetica, sans-serif; font-size:14px;">
       <tr>
         <td bgcolor="#de1019" height="100" style=" box-shadow:0 0 25px rgba(0,0,0,0.4) inset">
