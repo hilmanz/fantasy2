@@ -23,6 +23,7 @@ var transport = nodemailer.createTransport("SMTP",{
 										        	pass: "AqkTdt3g+a6jKvD6zYNUkLDnNwjskCkBQ4Joe7tpo9tP"
 										    	}
 										    });
+var sleep = require('sleep');
 /////DECLARATIONS/////////
 
 
@@ -34,9 +35,18 @@ var pool  = mysql.createPool({
    password : config.database.password,
 });
 var no = 0;
+var dt = new Date();
+var last_t = dt.getTime();
+var n_sent = 0;
+var total_sent = 0;
+var send_limit = 1;
+console.log('start time',last_t);
+//console.log(prev_t,last_t);
+//console.log(Math.round((last_t - prev_t)/1000));
 runLoop();
 
 function runLoop(){
+
 	pool.getConnection(function(err,conn){
 		async.waterfall([
 			function(callback){
@@ -52,7 +62,7 @@ function runLoop(){
 			},
 			function(queue,callback){
 				if(queue!=null){
-					console.log('processing #',queue.id);
+					console.log('processing #',queue.id,'-',queue.email);
 					//set sending status
 					conn.query("UPDATE ffgame.email_queue SET n_status=1 WHERE id = ?",
 							[queue.id],
@@ -74,15 +84,32 @@ function runLoop(){
 					    generateTextFromHTML:true,
 					    html: queue.html_text
 					}
-
 					transport.sendMail(mailOptions,function(error, responseStatus){
+						
+						var td = ((new Date()).getTime() - last_t)/1000;
+						n_sent++;
+						total_sent++;
+						console.log('elapsed : ',td,'total sent : ',n_sent);
+						if(td < 1 && n_sent > 5){
+							console.log('sleep for 1s');
+							//sleep 1 second
+							sleep.sleep(1);
+							console.log('resetting the timewatch and n_sent');
+							n_sent = 0;
+							last_t = (new Date()).getTime();
+						}else if(td > 1 && n_sent < 5){
+							console.log('reset time and counter');
+							last_t = (new Date()).getTime();
+							n_sent = 0;
+						}else{
+							//do nothing
+						}
 						if(!error){
 							callback(null,error,queue,responseStatus);	
 						}else{
 							console.log('error : ',error.message);
 							callback(null,null,queue,null);
 						}
-					    
 					});
 				}else{
 					callback(null,null,queue,null);
@@ -90,7 +117,10 @@ function runLoop(){
 				
 			},
 			function(errorStatus,queue,responseStatus,callback){
+				console.log(responseStatus);
 				if(errorStatus!=null){
+
+
 					console.log('error : ',errorStatus.message);
 				}
 				if(queue!=null && responseStatus!=null){
@@ -114,7 +144,10 @@ function runLoop(){
 		],
 		function(err,rs){
 			conn.end(function(err){
-				if(rs==null){
+				if(rs==null || (total_sent >= send_limit)){
+					if(total_sent >= send_limit){
+						console.log('Sending limit reached :( ---> ',total_sent);
+					}
 					pool.end(function(err){
 						console.log('no more data, pool closed');
 						console.log('closing smtp transport');

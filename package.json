@@ -23,6 +23,7 @@
     "optimist": "0.5.2",
     "winston": "*",
     "string":"latest",
-    "nodemailer":"latest"
+    "nodemailer":"latest",
+    "sleep":"latest"
   }
 }
