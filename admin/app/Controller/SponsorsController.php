@@ -47,7 +47,7 @@ class SponsorsController extends AppController {
 										INNER JOIN 
 										ffgame.sponsor_banner_logs b
 										ON a.id = b.banner_id
-										WHERE a.sponsor_id = 1
+										WHERE a.sponsor_id = {$id}
 										GROUP BY b.banner_id
 										LIMIT 100");
 		$this->set('banners',$banners);
