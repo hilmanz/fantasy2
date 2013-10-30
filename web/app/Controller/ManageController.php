@@ -130,13 +130,14 @@ class ManageController extends AppController {
 			}else{
 				$financial_statement['last_expenses'] = 0;
 			}
+			
 			$financial_statement['expenditures'] = $this->expenditures;
 			$financial_statement['tickets_sold'] = $this->tickets_sold;
 			$financial_statement['starting_budget'] = $this->starting_budget;
 
 			$this->Session->write('FinancialStatement',$financial_statement);
 		}
-
+		
 		$financial_statement = $this->Session->read('FinancialStatement');
 		
 		$weeks = array();

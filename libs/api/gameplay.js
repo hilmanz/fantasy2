@@ -11,6 +11,7 @@ var config = require(path.resolve('./config')).config;
 var mysql = require('mysql');
 var dateFormat = require('dateformat');
 var redis = require('redis');
+var S = require('string');
 var formations = require(path.resolve('./libs/game_config')).formations;
 var player_stats_category = require(path.resolve('./libs/game_config')).player_stats_category;
 var pool = {};
@@ -806,11 +807,44 @@ function last_earning(game_team_id,done){
 		async.waterfall(
 			[
 				function(callback){
-					conn.query("SELECT game_id FROM ffgame.game_team_expenditures \
-								WHERE game_team_id=? ORDER BY id DESC \
+					//get team_id
+					conn.query("SELECT team_id FROM ffgame.game_teams WHERE id = ? LIMIT 1",
+						[game_team_id],function(err,rs){
+							try{
+								callback(err,rs[0].team_id);
+							}catch(e){
+								callback(err,'');
+							}
+					});
+				},
+				function(team_id,callback){
+					//get next match's game_id
+					conn.query("SELECT \
+								a.game_id\
+								FROM ffgame.game_fixtures a\
+								INNER JOIN ffgame.master_team b\
+								ON a.home_id = b.uid\
+								INNER JOIN ffgame.master_team c\
+								ON a.away_id = c.uid\
+								WHERE (home_id = ? OR away_id=?) AND period <> 'FullTime'\
+								ORDER BY a.matchday\
 								LIMIT 1;\
-							",[game_team_id],function(err,rs){
+							",[team_id,team_id],function(err,rs){
+								console.log(S(this.sql).collapseWhitespace().s);
+								try{
+									callback(err,rs[0].game_id);
+								}catch(e){
+									callback(err,'');
+								}
 								
+							});
+				},
+				function(next_game_id,callback){
+					conn.query("SELECT game_id FROM ffgame.game_team_expenditures \
+								WHERE game_team_id=? AND game_id <> ? ORDER BY id DESC \
+								LIMIT 1;\
+							",[game_team_id,next_game_id],function(err,rs){
+								console.log(S(this.sql).collapseWhitespace().s);
 								if(err){
 									callback(new Error('no data'),{});
 								}else{
@@ -861,10 +895,43 @@ function last_expenses(game_team_id,done){
 		async.waterfall(
 			[
 				function(callback){
-					conn.query("SELECT game_id FROM ffgame.game_team_expenditures \
-								WHERE game_team_id=? ORDER BY id DESC \
+					//get team_id
+					conn.query("SELECT team_id FROM ffgame.game_teams WHERE id = ? LIMIT 1",
+						[game_team_id],function(err,rs){
+							try{
+								callback(err,rs[0].team_id);
+							}catch(e){
+								callback(err,'');
+							}
+					});
+				},
+				function(team_id,callback){
+					//get next match's game_id
+					conn.query("SELECT \
+								a.game_id\
+								FROM ffgame.game_fixtures a\
+								INNER JOIN ffgame.master_team b\
+								ON a.home_id = b.uid\
+								INNER JOIN ffgame.master_team c\
+								ON a.away_id = c.uid\
+								WHERE (home_id = ? OR away_id=?) AND period <> 'FullTime'\
+								ORDER BY a.matchday\
 								LIMIT 1;\
-							",[game_team_id],function(err,rs){
+							",[team_id,team_id],function(err,rs){
+								console.log(S(this.sql).collapseWhitespace().s);
+								try{
+									callback(err,rs[0].game_id);
+								}catch(e){
+									callback(err,'');
+								}
+								
+							});
+				},
+				function(next_game_id,callback){
+					conn.query("SELECT game_id FROM ffgame.game_team_expenditures \
+								WHERE game_team_id=? AND game_id <> ? ORDER BY id DESC \
+								LIMIT 1;\
+							",[game_team_id,next_game_id],function(err,rs){
 								
 								if(err){
 									callback(new Error('no data'),{});
