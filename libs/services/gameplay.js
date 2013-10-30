@@ -168,8 +168,11 @@ exports.applySponsorship = function(req,res){
 		req.body.sponsor_id,
 			function(err,rs){
 				if(err){
+					console.log('error:',err.message);
 					if(err.message=='ALREADY_HAVE_SPONSOR'){
 						res.json(200,{status:2,message:'Already have a sponsor'});
+					}else if(err.message=='ALREADY_APPLIED'){
+						res.send(200,{status:0,message:'Sponsorship Denied !'});
 					}else{
 						handleError(res);	
 					}

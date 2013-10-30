@@ -24,6 +24,7 @@ $total_expenses+= intval(@$finance['security_overtime_fee']);
 $sponsor = 0;
 $sponsor += intval(@$finance['Joining_Bonus']);
 $sponsor += intval(@$finance['sponsorship']);
+
 $finance['total_earnings'] += $sponsor;
 /*
 $penalty_expenses = intval(@$finance['compensation_fee']) + 

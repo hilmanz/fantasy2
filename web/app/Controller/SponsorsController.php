@@ -76,7 +76,9 @@ class SponsorsController extends AppController {
 													$data['sponsor_id']);
 
 				
-
+				//reset financial statement
+				$this->Session->write('FinancialStatement',null);
+				
 				if($rs['status']==1){
 					//sponsorship accepted
 					$this->set('sponsor_name',$sponsor[0]['Sponsor']['name']);

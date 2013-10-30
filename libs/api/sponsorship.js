@@ -98,6 +98,7 @@ function applySponsorship(game_id,matchday,game_team_id,sponsor_id,callback){
 				});
 			},
 			function(sponsor_data,has_sponsor,callback){
+				console.log(has_sponsor);
 				if(!has_sponsor){
 					conn.query("INSERT INTO ffgame.game_team_sponsors\
 								(game_team_id,sponsor_id,valid_for)\
@@ -108,7 +109,13 @@ function applySponsorship(game_id,matchday,game_team_id,sponsor_id,callback){
 									callback(err,sponsor_data,result);
 								});
 				}else{
-					callback(new Error('ALREADY_HAVE_SPONSOR'),null,null);
+					console.log('udah punya sponsor nih');
+					if(has_sponsor.sponsor_id == sponsor_id){
+						callback(new Error('ALREADY_APPLIED'),null,null);
+					}else{
+						callback(new Error('ALREADY_HAVE_SPONSOR'),null,null);	
+					}
+					
 				}
 			},
 			function(sponsor_data,insertResult,callback){
@@ -137,7 +144,8 @@ function applySponsorship(game_id,matchday,game_team_id,sponsor_id,callback){
 			}
 		],
 		function(err,result){
-			conn.end(function(err){
+			
+			conn.end(function(e){
 				if(result){
 					callback(err,true);
 				}else{
