@@ -787,10 +787,15 @@ class ApiController extends AppController {
 					}
 				}
 				$match = $r['a'];
+				if($r['b']['home_id']==$team_id){
+					$match['against'] = $r['c']['away_name'];
+				}else{
+					$match['against'] = $r['b']['home_name'];
+				}
 				$match['home_name'] = $r['b']['home_name'];
 				$match['away_name'] = $r['c']['away_name'];
-				$match['points'] = $points;
-				$match['income'] = $income;
+				$match['points'] = intval(@$points);
+				$match['income'] = intval(@$income);
 				$matches[] = $match;
 			}
 
