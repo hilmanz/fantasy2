@@ -7,7 +7,7 @@
           		foreach($tickers as $ticker):
           	?>
             <li class="newsticker-entry">
-                <h3><a href="<?=$this->Html->url($ticker['Ticker']['url'])?>">
+                <h3><a href="<?=$this->Html->url($ticker['Ticker']['url'])?>" target="_blank">
                 	<?=__($ticker['Ticker']['content'])?></a></h3>
             </li><!-- end .newsticker-entry -->
             
