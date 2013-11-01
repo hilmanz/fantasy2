@@ -13,7 +13,7 @@ var dateFormat = require('dateformat');
 var redis = require('redis');
 var formations = require(path.resolve('./libs/game_config')).formations;
 var stats_map = require(path.resolve('./libs/stats_map')).stats_map;
-
+var S = require('string');
 var pool = {};
 
 exports.setPool = function(p){
@@ -87,22 +87,30 @@ function getMatchResultForUserTeam(game_team_id,game_id,done){
 				var p = {}
 				//get each players stats
 				async.eachSeries(players,function(player,next){
-					conn.query("SELECT stats_name,stats_value FROM ffgame_stats.master_player_stats \
-								WHERE game_id = ? AND player_id = ?",[player.game_id,player.player_id],
+					conn.query("SELECT stats_name,stats_value,points FROM ffgame_stats.game_team_player_weekly \
+								WHERE game_team_id = ? AND game_id = ? AND player_id = ?",
+								[game_team_id,player.game_id,player.player_id],
 								function(err,rs){
+									console.log(S(this.sql).collapseWhitespace().s);
 									if(!err){
 										if(rs.length>0 || (!p[player.player_id])){
 											var stats = {};
+											var ori_stats = {};
+											var total_points = 0;
 											for(var i in rs){
 												stats[rs[i].stats_name] = rs[i].stats_value;
+												ori_stats[rs[i].stats_name] = {total:rs[i].stats_value,points:rs[i].points};
+												total_points += rs[i].points;
 											}
 											p[player.player_id] = {
 												name:player.name,
 												position:player.position,
-												points:player.points,
+												points:total_points,
 												original_team_id : player.original_team_id,
-												stats:stats
+												stats:stats,
+												ori_stats:ori_stats
 											};	
+											console.log(p);
 										}
 									}
 									next();

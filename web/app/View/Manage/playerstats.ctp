@@ -13,13 +13,19 @@ function getPoin($position,$stats_name,$modifier){
     return intval(@$modifier[$stats_name][$position]);
 }
 function getStatsList($position,$str,$stats,$modifier){
+
      $arr = explode(",",$str);
      $s = array();
 
     foreach($arr as $a){
         $stats_name = trim($a);
-        $s[trim($stats_name)]['frequency'] = intval(@$stats[$stats_name]);
-        $s[trim($stats_name)]['point'] =  $s[trim($stats_name)]['frequency'] * getPoin($position,$stats_name,$modifier);
+        if(isset($stats[$stats_name])){
+	        $s[trim($stats_name)]['frequency'] = intval(@$stats[$stats_name]['total']);
+	        $s[trim($stats_name)]['point'] = $stats[$stats_name]['points'];
+
+    	}else{
+    		$s[trim($stats_name)] = array('frequency'=>0,'point'=>0);
+    	}
     }
     return $s;
 }
@@ -33,15 +39,15 @@ function getTotalPoints($str,$stats){
 }
 
 
-$games = getStatsList($data['position'],'game_started,total_sub_on',$data['stats'],$modifier);
+$games = getStatsList($data['position'],'game_started,total_sub_on',$data['ori_stats'],$modifier);
                
 $attacking_and_passing = getStatsList($data['position'],'att_freekick_goal,att_ibox_goal,att_obox_goal,att_pen_goal,att_freekick_post,ontarget_scoring_att,att_obox_target,big_chance_created,big_chance_scored,goal_assist,total_att_assist,second_goal_assist,final_third_entries,fouled_final_third,pen_area_entries,won_contest,won_corners,penalty_won,last_man_contest,accurate_corners_intobox,accurate_cross_nocorner,accurate_freekick_cross,accurate_launches,long_pass_own_to_opp_success,successful_final_third_passes,accurate_flick_on',
-                        $data['stats'],$modifier);
-$defending = getStatsList($data['position'],'aerial_won,ball_recovery,duel_won,effective_blocked_cross,effective_clearance,effective_head_clearance,interceptions_in_box,interception_won,poss_won_def_3rd,poss_won_mid_3rd,poss_won_att_3rd,won_tackle,offside_provoked,last_man_tackle,outfielder_block',$data['stats'],$modifier);
+                        $data['ori_stats'],$modifier);
+$defending = getStatsList($data['position'],'aerial_won,ball_recovery,duel_won,effective_blocked_cross,effective_clearance,effective_head_clearance,interceptions_in_box,interception_won,poss_won_def_3rd,poss_won_mid_3rd,poss_won_att_3rd,won_tackle,offside_provoked,last_man_tackle,outfielder_block',$data['ori_stats'],$modifier);
 
-$goalkeeping = getStatsList($data['position'],'dive_catch,dive_save,stand_catch,stand_save,cross_not_claimed,good_high_claim,punches,good_one_on_one,accurate_keeper_sweeper,gk_smother,saves,goals_conceded',$data['stats'],$modifier);
+$goalkeeping = getStatsList($data['position'],'dive_catch,dive_save,stand_catch,stand_save,cross_not_claimed,good_high_claim,punches,good_one_on_one,accurate_keeper_sweeper,gk_smother,saves,goals_conceded',$data['ori_stats'],$modifier);
 $mistakes_and_errors = getStatsList($data['position'],
-    'penalty_conceded,red_card,yellow_card,challenge_lost,dispossessed,fouls,overrun,total_offside,unsuccessful_touch,error_lead_to_shot,error_lead_to_goal',$data['stats'],$modifier);
+    'penalty_conceded,red_card,yellow_card,challenge_lost,dispossessed,fouls,overrun,total_offside,unsuccessful_touch,error_lead_to_shot,error_lead_to_goal',$data['ori_stats'],$modifier);
 
 $games_total = 0;
 foreach($games as $v){
@@ -109,25 +115,25 @@ _optaParams.callbacks = [profileLoaded];
 				<div class="profileStats" style="overflow:hidden;">
 					<a href="#" class="statsbox">
 						<h4>Games</h4>
-						<p><?=number_format($games_total)?></p>
+						<p><?=($games_total)?></p>
 					</a>
 					<a href="" class="statsbox">
 						<h4>Passing and Attacking</h4>
-						<p><?=number_format($attacking_and_passing_total)?></p>
+						<p><?=($attacking_and_passing_total)?></p>
 					</a>
 					<a href="#" class="statsbox">
 						<h4>Defending</h4>
-						<p><?=number_format($defending_total)?></p>
+						<p><?=($defending_total)?></p>
 					</a>
 				   
 					<a href="#/stats_detail/3" class="statsbox">
 						<h4>Goalkeeping</h4>
-						<p><?=number_format($goalkeeping_total)?></p>
+						<p><?=($goalkeeping_total)?></p>
 					</a>
 				   
 					<a href="#/stats_detail/4" class="statsbox">
 						<h4>Mistakes and Errors</h4>
-						<p><?=number_format($mistakes_and_errors_total)?></p>
+						<p><?=($mistakes_and_errors_total)?></p>
 					</a>
 				   
 				</div><!-- end .profileStats -->
@@ -137,7 +143,7 @@ _optaParams.callbacks = [profileLoaded];
         <div class="row">
               <div class="col2">
 				  <div  class="boxTab">
-					<div class="titleTab"><span class="fl">Games</span><span class="fr yellow">Total Poin  <?=number_format($games_total);?></span></div>
+					<div class="titleTab"><span class="fl">Games</span><span class="fr yellow">Total Poin  <?=($games_total);?></span></div>
 					<table width="100%" border="0" cellspacing="0" cellpadding="0">
 						<thead>
 							<th>Aksi</th><th>Frekuensi</th><th>Poin</th>
@@ -152,7 +158,7 @@ _optaParams.callbacks = [profileLoaded];
 								<?=number_format($val['frequency'])?>
 							</td>
 							<td>
-								<?=number_format($val['point'])?>
+								<?=($val['point'])?>
 							</td>
 						</tr>
 					   <?php
@@ -162,7 +168,7 @@ _optaParams.callbacks = [profileLoaded];
 					</table>
 				  </div><!-- end .boxTab -->
 				  <div  class="boxTab">
-						<div class="titleTab"><span class="fl">Attacking and Passing</span><span class="fr yellow">Total Poin  <?=number_format($attacking_and_passing_total);?></span></div>
+						<div class="titleTab"><span class="fl">Attacking and Passing</span><span class="fr yellow">Total Poin  <?=($attacking_and_passing_total);?></span></div>
 						<table width="100%" border="0" cellspacing="0" cellpadding="0">
 							<thead>
 								<th>Aksi</th><th>Frekuensi</th><th>Poin</th>
@@ -177,7 +183,7 @@ _optaParams.callbacks = [profileLoaded];
 									<?=number_format($val['frequency'])?>
 								</td>
 								<td>
-									<?=number_format($val['point'])?>
+									<?=($val['point'])?>
 								</td>
 							</tr>
 						   <?php
@@ -189,7 +195,7 @@ _optaParams.callbacks = [profileLoaded];
 				</div><!-- end .col2 -->
               <div class="col2 col2Right">
 				  <div  class="boxTab">
-					    <div class="titleTab"><span class="fl">Defending</span><span class="fr yellow">Total Poin  <?=number_format($defending_total);?></span></div>
+					    <div class="titleTab"><span class="fl">Defending</span><span class="fr yellow">Total Poin  <?=($defending_total);?></span></div>
 						<table width="100%" border="0" cellspacing="0" cellpadding="0">
 							<thead>
 								<th>Aksi</th><th>Frekuensi</th><th>Poin</th>
@@ -204,7 +210,7 @@ _optaParams.callbacks = [profileLoaded];
 									<?=number_format($val['frequency'])?>
 								</td>
 								<td>
-									<?=number_format($val['point'])?>
+									<?=($val['point'])?>
 								</td>
 							</tr>
 						   <?php
@@ -214,7 +220,7 @@ _optaParams.callbacks = [profileLoaded];
 					</table>
 				  </div><!-- end .boxTab -->
 				  <div  class="boxTab">
-					    <div class="titleTab"><span class="fl">Goalkeeping</span><span class="fr yellow">Total Poin  <?=number_format($goalkeeping_total);?></span></div>
+					    <div class="titleTab"><span class="fl">Goalkeeping</span><span class="fr yellow">Total Poin  <?=($goalkeeping_total);?></span></div>
 						<table width="100%" border="0" cellspacing="0" cellpadding="0">
 							<thead>
 								<th>Aksi</th><th>Frekuensi</th><th>Poin</th>
@@ -229,7 +235,7 @@ _optaParams.callbacks = [profileLoaded];
 									<?=number_format($val['frequency'])?>
 								</td>
 								<td>
-									<?=number_format($val['point'])?>
+									<?=($val['point'])?>
 								</td>
 							</tr>
 						   <?php
@@ -239,7 +245,7 @@ _optaParams.callbacks = [profileLoaded];
 					</table>
 				  </div><!-- end .boxTab -->
 				  <div  class="boxTab">
-					    <div class="titleTab"><span class="fl">Mistakes and Errors</span><span class="fr yellow">Total Poin  <?=number_format($mistakes_and_errors_total);?></span></div>
+					    <div class="titleTab"><span class="fl">Mistakes and Errors</span><span class="fr yellow">Total Poin  <?=($mistakes_and_errors_total);?></span></div>
 						<table width="100%" border="0" cellspacing="0" cellpadding="0">
 							<thead>
 								<th>Aksi</th><th>Frekuensi</th><th>Poin</th>
@@ -254,7 +260,7 @@ _optaParams.callbacks = [profileLoaded];
 									<?=number_format($val['frequency'])?>
 								</td>
 								<td>
-									<?=number_format($val['point'])?>
+									<?=($val['point'])?>
 								</td>
 							</tr>
 						   <?php

@@ -27,6 +27,8 @@ var pool  = mysql.createPool({
    password : config.database.password,
 });
 var punishment = require(path.resolve('./libs/gamestats/punishment_rules'));
+var player_stats_category = require(path.resolve('./libs/game_config')).player_stats_category;
+
 console.log('lineup_stats - creating pool');
 exports.update = function(game_id,start,done){
 	//the updates will run for each 100 entries.
@@ -152,22 +154,22 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 										});
 									},
 									function(next){
-										console.log('check penalty if the club rooster is unbalance');
+										console.log('ISSUE1','check penalty if the club rooster is unbalance');
 										punishment.check_violation(conn,game_id,item.id,item.team_id,
 											function(err,rs){
 												next(err);
 										});
 									},
 									function(next){
-										console.log('Lets process the extra points if the week has ended....')
+										console.log('ISSUE1','Lets process the extra points if the week has ended....')
 										//check the game's matchday
 										conn.query("SELECT matchday \
 													FROM ffgame.game_fixtures \
 													WHERE game_id=? \
 													LIMIT 1",[game_id],
 													function(err,r){
-														console.log('-----',this.sql,'---');
-														console.log(r);
+														//console.log('-----',this.sql,'---');
+														//console.log(r);
 														var matchday = 0;
 														if(!err){
 															matchday = r[0].matchday;
@@ -175,6 +177,67 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 														next(err,matchday);
 													});
 										
+									},
+									function(matchday,next){
+										async.waterfall([
+												function(cb){
+													console.log('ISSUE1','checking for #',team);
+													conn.query("SELECT game_id FROM ffgame.game_fixtures \
+															WHERE (home_id = ? OR away_id = ?) \
+															AND matchday=? LIMIT 1",
+															[item.team_id,item.team_id,matchday],
+															function(err,match){
+																//console.log(S(this.sql).collapseWhitespace().s);
+																//console.log('ISSUE1','1# get the game_id : ',this.sql);
+																var the_game_id = '';
+																try{
+																	the_game_id = match[0]['game_id'];
+																}catch(e){
+																	err = new Error('no game_id found');
+																}
+																//console.log('the game id : ',the_game_id);
+
+																cb(err,the_game_id);
+															});
+												},
+												function(t_game_id,cb){
+													conn.query("SELECT a.player_id,a.position_no,b.position \
+																FROM ffgame.game_team_lineups_history a\
+																INNER JOIN ffgame.master_player b\
+																ON a.player_id = b.uid\
+																WHERE a.game_id = ?\
+																AND a.game_team_id=? LIMIT 16;",
+																[t_game_id,item.id],
+																function(err,rs){
+																	//console.log('ISSUE1',S(this.sql).collapseWhitespace().s);
+																	cb(err,rs);
+																});
+												},
+												function(lineup_players,cb){
+													//console.log('ISSUE1',lineup_players);
+													async.eachSeries(lineup_players,function(lp,nx){
+														var is_sub = false;
+														if(lp.position_no>11){
+															is_sub = true;
+														}
+														getPlayerDailyTeamStats(conn,
+																			item.id,
+																			lp.player_id,
+																			lp.position,
+																			matchday,
+																			lp.position_no,
+																			function(err,rs){
+																nx();
+														});
+													},function(err){
+														cb(err,matchday);
+													});
+													
+												}
+											],
+											function(err,rs){
+												next(err,matchday);
+										});
 									},
 									function(matchday,next){
 										console.log('check if the week has lasted');
@@ -185,7 +248,7 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 													AND matchday = ? \
 													AND is_processed=1",[matchday],
 													function(err,r){
-														console.log('-----',this.sql,'---');
+														//console.log('-----',this.sql,'---');
 														var is_finished = false;
 														if(!err){
 															if(r[0].total==10){
@@ -210,8 +273,8 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 																	AND matchday = ?;",
 																	[item.team_id,item.team_id,matchday],
 																	function(err,r){	
-																		console.log('--> we need the exact game_id',
-																					this.sql);
+																		//console.log('--> we need the exact game_id',
+																		//			this.sql);
 																		var the_game_id = '';
 																		if(!err){
 																			try{
@@ -241,7 +304,7 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 															item.id,the_game_id,matchday
 														],
 														function(err,r){
-															console.log('-----',this.sql,'---');
+															//console.log('-----',this.sql,'---');
 															if(!err){
 																if(r.length==11){
 																	is_all_player_started = true;
@@ -257,6 +320,7 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 											next(err,'',matchday,is_finished,is_all_player_started);
 										}
 									},
+
 									function(the_game_id,matchday,is_finished,is_all_player_started,next){
 										console.log('is budget below zero ?');
 										var is_team_budget_below_zero = false;
@@ -319,7 +383,7 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 																		'ALL_LINEUP_IS_PLAYED_BONUS',
 																		20
 																	],function(err,r){
-																		console.log('-----',this.sql,'---');
+																		//console.log('-----',this.sql,'---');
 																		cb(err);
 																	});
 													}else{
@@ -345,7 +409,7 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 																		'BALANCE_IS_BELOW_ZERO',
 																		penalty
 																	],function(err,r){
-																		console.log('-----',this.sql,'---');
+																		//console.log('-----',this.sql,'---');
 																		cb(err,true);
 																	});
 													}else{
@@ -360,7 +424,7 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 																	(content,url,dt,game_team_id)\
 																	VALUES\
 																	(?,'#',NOW(),?)",[msg,item.id],function(err,rs){
-																		console.log('---',this.sql,'----');
+																		//console.log('---',this.sql,'----');
 																		cb(err,true);
 															});
 													}else{
@@ -376,7 +440,7 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 																	(content,url,dt,game_team_id)\
 																	VALUES\
 																	(?,'#',NOW(),?)",[msg,item.id],function(err,rs){
-																		console.log('---',this.sql,'----');
+																		//console.log('---',this.sql,'----');
 																		cb(err,true);
 															});
 													}else{
@@ -408,6 +472,149 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 		
 	});
 }
+
+function getPlayerDailyTeamStats(conn,game_team_id,player_id,player_pos,matchday,position_no,done){
+	console.log('ISSUE2','updating matchday#',matchday,'stats for player #',player_id,'in team #',game_team_id);
+	var pos = 'g';
+	switch(player_pos){
+		case 'Forward':
+			pos = 'f';
+		break;
+		case 'Midfielder':
+			pos = 'm';
+		break;
+		case 'Defender':
+			pos = 'd';
+		break;
+		default:
+			pos = 'g';
+		break;
+	}
+	
+	sql = "SELECT a.game_id,stats_name,stats_value\
+			FROM ffgame_stats.master_player_stats a \
+			INNER JOIN ffgame.game_fixtures b\
+			ON a.game_id = b.game_id\
+			WHERE a.player_id=? AND b.matchday=?\
+			AND EXISTS(\
+				SELECT 1\
+				FROM ffgame.game_team_players c\
+				WHERE c.game_team_id=?\
+				AND c.player_id = a.player_id\
+				LIMIT 1\
+			)\
+			AND EXISTS(\
+				SELECT 1 FROM ffgame_stats.game_match_player_points d\
+				WHERE d.game_team_id=? AND d.game_id = a.game_id \
+				AND d.player_id = a.player_id LIMIT 1\
+			)\
+			LIMIT 500;";
+	
+	
+	async.waterfall([
+		function(callback){
+			conn.query(sql,
+				[player_id,matchday,game_team_id,game_team_id],
+				function(err,rs){
+					//console.log(S(this.sql).collapseWhitespace().s);		
+					callback(err,rs);	
+					
+				});
+		},
+		function(result,callback){
+			conn.query("SELECT * FROM ffgame.game_matchstats_modifier;",
+			[],
+			function(err,rs){
+				callback(err,rs,result);	
+				
+			});
+		},
+		function(modifiers,result,callback){
+			//mapping
+			var weekly = [];
+			var point_modifier = 1.0;
+			if(position_no > 11){
+				//if substitution, all points reduced to 50%
+				point_modifier = 0.5;
+			}
+			if(result.length>0){
+				for(var i in result){
+					
+					//distributed the counts for each categories
+					for(var category in player_stats_category){
+						for(var j in player_stats_category[category]){
+							if(player_stats_category[category][j] == result[i].stats_name){
+								var points =  (parseInt(result[i].stats_value) * getModifierValue(modifiers,
+																	  					result[i].stats_name,
+																	  					pos));
+								weekly.push({
+									game_id:result[i].game_id,
+									category:category,
+									game_team_id:game_team_id,
+									player_id:player_id,
+									matchday:matchday,
+									stats_name:result[i].stats_name,
+									stats_value:result[i].stats_value,
+									points: (points * point_modifier),
+									position_no: position_no
+
+								});
+							}
+						}
+					}
+				}
+			}
+			//console.log(weekly);
+			callback(null,weekly);
+		},
+		function(weekly,callback){
+
+			async.eachSeries(weekly,function(w,next){
+				conn.query("INSERT INTO ffgame_stats.game_team_player_weekly\
+						(game_id,game_team_id,matchday,player_id,stats_category,stats_name,stats_value,points,position_no)\
+						VALUES\
+						(?,?,?,?,?,?,?,?,?)\
+						ON DUPLICATE KEY UPDATE\
+						stats_value = VALUES(stats_value),\
+						points = VALUES(points),\
+						position_no = VALUES(position_no)",
+						[w.game_id,
+						w.game_team_id,
+						 w.matchday,
+						 w.player_id,
+						 w.category,
+						 w.stats_name,
+						 w.stats_value,
+						 w.points,
+						 w.position_no
+						 ],function(err,rs){
+						 	//console.log(S(this.sql).collapseWhitespace().s);
+						 	next();
+						});
+			},
+			function(err){callback(err,weekly)});
+			
+		}
+	],
+	function(err,result){
+		done(err,result);
+	});
+}
+/**
+* get modifier value based on player's position
+*/
+function getModifierValue(modifiers,stats_name,position){
+	
+	for(var i in modifiers){
+		if(modifiers[i].name==stats_name){
+			return (parseInt(modifiers[i][position]));
+		}
+	}
+	return 0;
+}
+
+
+//update user's team stats individually. (currently we need to process each of 35000++ users)
 function update_individual_team_stats(game_id,team,summary,player_stats,done){
 		async.waterfall(
 			[
@@ -678,11 +885,12 @@ function update_team_points(done){
 	pool.getConnection(function(err,conn){
 		conn.query("INSERT INTO ffgame_stats.game_team_points\
 					(game_team_id,points)\
-					SELECT game_team_id,SUM(points) AS total_points \
-					FROM ffgame_stats.game_match_player_points\
+					SELECT game_team_id,SUM(points) AS total_points\
+					FROM ffgame_stats.game_team_player_weekly\
 					GROUP BY game_team_id\
 					ON DUPLICATE KEY UPDATE\
-					points = VALUES(points);",[],function(err,rs){
+					points = VALUES(points);",
+					[],function(err,rs){
 						conn.end(function(err){
 							done(err);	
 						});

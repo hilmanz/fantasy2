@@ -16,7 +16,7 @@ function getTotalPoints($str,$stats){
     $arr = explode(",",$str);
     $total = 0;
     foreach($arr as $a){
-        $total += intval(@$stats[$a]);
+        $total += floatval(@$stats[$a]['points']);
     }
     return $total;
 }
@@ -55,22 +55,24 @@ function getTotalPoints($str,$stats){
                 $overall_points = 0;
 
                 foreach($players as $player_id=>$detail):
+                    /*
                     foreach($detail['stats'] as $n=>$v){
-                        $detail['stats'][$n] = $detail['stats'][$n] * 
-                                                getPoin($detail['position'],
-                                                        $n,
-                                                        $modifier);
+                        //$detail['stats'][$n] = $detail['stats'][$n] * 
+                                               // getPoin($detail['position'],
+                                                       // $n,
+                                                       // $modifier);
+                      
                     }
-                    
-                    $games = getTotalPoints('game_started,total_sub_on',$detail['stats']);
+                    */
+                    $games = getTotalPoints('game_started,total_sub_on',$detail['ori_stats']);
 
                     
                     $attacking_and_passing = getTotalPoints('att_freekick_goal,att_ibox_goal,att_obox_goal,att_pen_goal,att_freekick_post,ontarget_scoring_att,att_obox_target,big_chance_created,big_chance_scored,goal_assist,total_att_assist,second_goal_assist,final_third_entries,fouled_final_third,pen_area_entries,won_contest,won_corners,penalty_won,last_man_contest,accurate_corners_intobox,accurate_cross_nocorner,accurate_freekick_cross,accurate_launches,long_pass_own_to_opp_success,successful_final_third_passes,accurate_flick_on',
-                                            $detail['stats']);
-                    $defending = getTotalPoints('aerial_won,ball_recovery,duel_won,effective_blocked_cross,effective_clearance,effective_head_clearance,interceptions_in_box,interception_won,poss_won_def_3rd,poss_won_mid_3rd,poss_won_att_3rd,won_tackle,offside_provoked,last_man_tackle,outfielder_block',$detail['stats']);
+                                            $detail['ori_stats']);
+                    $defending = getTotalPoints('aerial_won,ball_recovery,duel_won,effective_blocked_cross,effective_clearance,effective_head_clearance,interceptions_in_box,interception_won,poss_won_def_3rd,poss_won_mid_3rd,poss_won_att_3rd,won_tackle,offside_provoked,last_man_tackle,outfielder_block',$detail['ori_stats']);
 
-                    $goalkeeping = getTotalPoints('dive_catch,dive_save,stand_catch,stand_save,cross_not_claimed,good_high_claim,punches,good_one_on_one,accurate_keeper_sweeper,gk_smother,saves,goals_conceded',$detail['stats']);
-                    $mistakes_and_errors = getTotalPoints('penalty_conceded,red_card,yellow_card,challenge_lost,dispossessed,fouls,overrun,total_offside,unsuccessful_touch,error_lead_to_shot,error_lead_to_goal',$detail['stats']);
+                    $goalkeeping = getTotalPoints('dive_catch,dive_save,stand_catch,stand_save,cross_not_claimed,good_high_claim,punches,good_one_on_one,accurate_keeper_sweeper,gk_smother,saves,goals_conceded',$detail['ori_stats']);
+                    $mistakes_and_errors = getTotalPoints('penalty_conceded,red_card,yellow_card,challenge_lost,dispossessed,fouls,overrun,total_offside,unsuccessful_touch,error_lead_to_shot,error_lead_to_goal',$detail['ori_stats']);
 
                     $total_poin = $games + $attacking_and_passing + $defending +
                                   $goalkeeping + $mistakes_and_errors;

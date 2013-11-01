@@ -35,7 +35,7 @@
                                     <?php endif;?>
                                 </a> |
                                  <a class="logout" href="<?=$this->Html->url('/profile/logout')?>">Keluar</a></h3>
-                                <span class="points red"><?=number_format($USER_POINTS)?> Pts</span>
+                                <span class="points red"><?=($USER_POINTS)?> Pts</span>
                             </div><!-- end .entry -->
                         </div>
            			 </div><!-- end #header -->

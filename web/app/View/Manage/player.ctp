@@ -136,11 +136,21 @@ $main_stats_vals = array('games'=>0,
                             'mistakes_and_errors'=>0,
                          );
 
-
-
 if(isset($data['overall_stats'])){
     foreach($data['overall_stats'] as $stats){
-      
+        $total_points += $stats['points'];
+        $main_stats_vals[$stats['stats_category']]+= $stats['points'];
+    }
+    //foreach($main_stats_vals as $n){
+    //    $total_points += $n;
+    //}
+
+}
+
+/*
+if(isset($data['overall_stats'])){
+    foreach($data['overall_stats'] as $stats){
+        $total_points += $stats['points'];
         foreach($map as $mainstats=>$substats){
             foreach($substats as $n=>$v){
                 
@@ -159,11 +169,11 @@ if(isset($data['overall_stats'])){
             }
         }
     }
-    foreach($main_stats_vals as $n){
-        $total_points += $n;
-    }
+    //foreach($main_stats_vals as $n){
+    //    $total_points += $n;
+    //}
 
-}
+}*/
 
 function getModifierValue($modifiers,$statsName,$pos){
     foreach($modifiers as $m){
@@ -173,6 +183,26 @@ function getModifierValue($modifiers,$statsName,$pos){
     }
     return 0;
 }
+function getStats($category,$pos,$modifiers,$map,$stats){
+    $collection = array();
+    $statTypes = $map[$category];
+    foreach($stats as $st){
+        if($st['stats_category']==$category){
+            foreach($statTypes as $n=>$v){
+                if(!isset($collection[$n])){
+                    $collection[$n] = 0;
+                }
+                if($st['stats_name'] == $v){
+
+                    $collection[$n] = array('total'=>$st['total'],
+                                            'points'=>$st['points']);
+                }
+            }
+        }
+    }
+    return $collection;
+}
+/*
 function getStats($category,$pos,$modifiers,$map,$stats){
     
     
@@ -193,7 +223,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
     
     return $collection;
 }
-
+*/
 //get last performance value.
 $weekly_performance = array();
 foreach($data['stats'] as $n=>$v){
@@ -253,7 +283,7 @@ $weekly_performance = null;
         <div class="club-info fl">
             <h5>
                 <?php
-                    print number_format($total_points);
+                    print ($total_points);
                 ?>
                 Poin
             </h5>
@@ -277,25 +307,25 @@ $weekly_performance = null;
                     <div class="profileStats" style="overflow:hidden;">
                         <a href="#" class="statsbox">
                             <h4>Games</h4>
-                            <p><?=number_format($main_stats_vals['games'])?></p>
+                            <p><?=($main_stats_vals['games'])?></p>
                         </a>
                         <a href="#" class="statsbox">
                             <h4>Passing and Attacking</h4>
-                            <p><?=number_format($main_stats_vals['passing_and_attacking'])?></p>
+                            <p><?=($main_stats_vals['passing_and_attacking'])?></p>
                         </a>
                         <a href="#" class="statsbox">
                             <h4>Defending</h4>
-                            <p><?=number_format($main_stats_vals['defending'])?></p>
+                            <p><?=($main_stats_vals['defending'])?></p>
                         </a>
                        
                         <a href="#" class="statsbox">
                             <h4>Goalkeeping</h4>
-                            <p><?=number_format($main_stats_vals['goalkeeper'])?></p>
+                            <p><?=($main_stats_vals['goalkeeper'])?></p>
                         </a>
                        
                         <a href="#" class="statsbox">
                             <h4>Mistakes and Errors</h4>
-                            <p><?=number_format($main_stats_vals['mistakes_and_errors'])?></p>
+                            <p><?=($main_stats_vals['mistakes_and_errors'])?></p>
                         </a>
                        
                     </div><!-- end .profileStats -->
@@ -337,7 +367,7 @@ $weekly_performance = null;
 									<?=number_format($statsVal['total'])?>
 								</td>
 								<td class="aligncenter">
-								   <?=number_format($statsVal['points'])?>
+								   <?=floatval($statsVal['points'])?>
 								</td>
 							  </tr>
 							<?php
@@ -374,7 +404,7 @@ $weekly_performance = null;
 								   <?=number_format($statsVal['total'])?>
 								</td>
 								<td class="aligncenter">
-									<?=number_format($statsVal['points'])?>
+									<?=floatval($statsVal['points'])?>
 								</td>
 							  </tr>
 							<?php
@@ -413,7 +443,7 @@ $weekly_performance = null;
                                 <?=number_format($statsVal['total'])?>
                             </td>
                             <td class="aligncenter">
-                                <?=number_format($statsVal['points'])?>
+                                <?=floatval($statsVal['points'])?>
                             </td>
                           </tr>
                         <?php
@@ -451,7 +481,7 @@ $weekly_performance = null;
                                 <?=number_format($statsVal['total'])?>
                             </td>
                             <td class="aligncenter">
-                                <?=number_format($statsVal['points'])?>
+                                <?=floatval($statsVal['points'])?>
                             </td>
                           </tr>
                         <?php
@@ -489,7 +519,7 @@ $weekly_performance = null;
                                 <?=number_format($statsVal['total'])?>
                             </td>
                             <td class="aligncenter">
-                                <?=number_format($statsVal['points'])?>
+                                <?=floatval($statsVal['points'])?>
                             </td>
                           </tr>
                         <?php

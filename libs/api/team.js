@@ -7,6 +7,7 @@ var xmlparser = require('xml2json');
 var async = require('async');
 var config = require(path.resolve('./config')).config;
 var mysql = require('mysql');
+var S = require('string');
 var initial_money = require(path.resolve('./libs/game_config')).initial_money;
 var pool = {};
 function prepareDb(callback){
@@ -311,18 +312,16 @@ function getUserTeamPoints(fb_id,done){
 					if(rs!=null){
 						//get per game stats
 						if(rs.id!=null){
-							conn.query("SELECT a.game_id,\
-										SUM(points) AS total_points,0 as extra_points,\
-										b.matchday,\
-										b.match_date\
-										FROM ffgame_stats.game_match_player_points a\
-										INNER JOIN ffgame.game_fixtures b\
-										ON a.game_id = b.game_id\
-										WHERE game_team_id=? \
-										GROUP BY game_id\
-										LIMIT 400;",
+							conn.query("SELECT a.game_id,SUM(a.points) AS total_points,\
+										0 AS extra_points,\
+										a.matchday\
+										FROM \
+										ffgame_stats.game_team_player_weekly a\
+										WHERE a.game_team_id = ?\
+										GROUP BY a.game_id LIMIT 400;",
 										[rs.id],
 										function(err,result){
+											console.log(S(this.sql).collapseWhitespace().s);
 											rs.game_points = result;
 											callback(null,rs);
 										});

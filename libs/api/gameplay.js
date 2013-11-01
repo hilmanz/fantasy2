@@ -211,7 +211,7 @@ function getPlayers(game_team_id,callback){
 								SUM(performance) AS performance\
 								FROM (\
 								(SELECT SUM(points) AS total_points ,0 AS performance\
-								FROM ffgame_stats.game_match_player_points \
+								FROM ffgame_stats.game_team_player_weekly \
 								WHERE game_team_id = ? AND player_id = ?)\
 								UNION ALL\
 								(SELECT 0,performance FROM ffgame_stats.game_match_player_points a\
@@ -231,7 +231,7 @@ function getPlayers(game_team_id,callback){
 						if(!err){
 							if(rs!=null){
 								if(rs[0].total_points!=null){
-									player.points = parseInt(rs[0].total_points);
+									player.points = parseFloat(rs[0].total_points);
 									player.last_performance = parseFloat(rs[0].performance);	
 									
 								}
@@ -365,23 +365,12 @@ function getPlayerStats(player_id,callback){
 */
 function getPlayerOverallStats(game_team_id,player_id,callback){
 	if(game_team_id!=0){
-		sql = "SELECT stats_name,SUM(stats_value) AS total\
-				FROM ffgame_stats.master_player_stats a\
-				INNER JOIN ffgame.game_fixtures b\
-				ON a.game_id = b.game_id\
-				WHERE a.player_id=?\
-				AND EXISTS(\
-				SELECT 1 FROM ffgame.game_team_players c\
-				WHERE c.game_team_id=?\
-				AND c.player_id = a.player_id\
-				LIMIT 1)\
-				AND EXISTS(\
-				SELECT 1 FROM ffgame_stats.game_match_player_points d\
-				WHERE d.game_team_id=? AND d.game_id = a.game_id AND d.player_id = a.player_id LIMIT 1\
-				)\
-				GROUP BY stats_name;";
+		sql = "SELECT stats_name,stats_category,SUM(stats_value) AS total,SUM(a.points) as points\
+				FROM ffgame_stats.game_team_player_weekly a\
+				WHERE a.player_id=? AND a.game_team_id=?\
+				GROUP BY a.stats_name LIMIT 20000;";
 	}else{
-		sql = "SELECT stats_name,SUM(stats_value) AS total\
+		sql = "SELECT stats_name,'' as stats_category,SUM(stats_value) AS total,0 as points\
 				FROM ffgame_stats.master_player_stats a\
 				INNER JOIN ffgame.game_fixtures b\
 				ON a.game_id = b.game_id\
@@ -392,7 +381,6 @@ function getPlayerOverallStats(game_team_id,player_id,callback){
 		conn.query(sql,
 				[player_id,game_team_id,game_team_id],
 				function(err,rs){
-					
 					conn.end(function(e){
 						callback(err,rs);	
 					});
@@ -404,13 +392,17 @@ function getPlayerOverallStats(game_team_id,player_id,callback){
 * get player's team stats
 */
 function getPlayerTeamStats(game_team_id,player_id,callback){
-	sql = "SELECT a.game_id,a.points,a.performance,b.matchday\
-			FROM ffgame_stats.game_match_player_points a\
-			INNER JOIN\
-			ffgame.game_fixtures b\
-			ON a.game_id = b.game_id\
-			WHERE a.game_team_id = ?\
-			AND a.player_id = ? ORDER BY a.game_id LIMIT 300;";
+
+	sql = "SELECT a.game_id,SUM(b.points) AS points,a.performance,b.matchday\
+	FROM ffgame_stats.game_match_player_points a\
+	INNER JOIN\
+	ffgame_stats.game_team_player_weekly b\
+	ON a.game_id = b.game_id  \
+	AND a.player_id = b.player_id\
+	AND a.game_team_id = b.game_team_id\
+	WHERE a.game_team_id = ?\
+	AND a.player_id = ? \
+	ORDER BY a.game_id LIMIT 300;";
 	prepareDb(function(conn){
 		conn.query(sql,
 				[game_team_id,player_id],
@@ -442,27 +434,15 @@ function getPlayerDailyTeamStats(game_team_id,player_id,player_pos,done){
 		break;
 	}
 	if(game_team_id!=0){
-		sql = "SELECT a.game_id,stats_name,SUM(stats_value) AS total\
-				FROM ffgame_stats.master_player_stats a \
-				INNER JOIN ffgame.game_fixtures b\
-				ON a.game_id = b.game_id\
-				WHERE a.player_id=?\
-				AND EXISTS(\
-					SELECT 1\
-					FROM ffgame.game_team_players c\
-					WHERE c.game_team_id=?\
-					AND c.player_id = a.player_id\
-					LIMIT 1\
-				)\
-				AND EXISTS(\
-					SELECT 1 FROM ffgame_stats.game_match_player_points d\
-					WHERE d.game_team_id=? AND d.game_id = a.game_id \
-					AND d.player_id = a.player_id LIMIT 1\
-				)\
-				GROUP BY a.game_id,stats_name \
-				ORDER BY game_id ASC LIMIT 20000;";
+		sql = "SELECT a.game_id,stats_name,stats_category,SUM(stats_value) AS total,\
+				SUM(points) as points\
+				FROM ffgame_stats.game_team_player_weekly a\
+				WHERE a.player_id=? AND a.game_team_id=?\
+				GROUP BY a.game_id,a.stats_name\
+				ORDER BY a.game_id ASC LIMIT 20000;";
 	}else{
-		sql = "SELECT a.game_id,stats_name,SUM(stats_value) AS total\
+		sql = "SELECT a.game_id,stats_name,'' as stats_category,SUM(stats_value) AS total,\
+				0 as points\
 				FROM ffgame_stats.master_player_stats a \
 				INNER JOIN ffgame.game_fixtures b\
 				ON a.game_id = b.game_id\
@@ -504,24 +484,26 @@ function getPlayerDailyTeamStats(game_team_id,player_id,player_pos,done){
 								mistakes_and_errors:0
 							};
 						}
-						//distributed the counts for each categories
-						for(var category in player_stats_category){
-							for(var j in player_stats_category[category]){
+						if(result[i].stats_category!=''){
+							
+							daily[result[i].game_id][result[i].stats_category] += result[i].points;
 
-								if(player_stats_category[category][j] == result[i].stats_name){
-									if(category=='goalkeeper'){
-										console.log(result[i].game_id,category,result[i].stats_name,(parseInt(result[i].total) 
-																		  * getModifierValue(modifiers,
-																		  					result[i].stats_name,
-																		  					pos)));
+						}else{
+							//distributed the counts for each categories
+							for(var category in player_stats_category){
+								for(var j in player_stats_category[category]){
+
+									if(player_stats_category[category][j] == result[i].stats_name){
+										
+										daily[result[i].game_id][category] += (parseInt(result[i].total) 
+																			  * getModifierValue(modifiers,
+																			  					result[i].stats_name,
+																			  					pos));
 									}
-									daily[result[i].game_id][category] += (parseInt(result[i].total) 
-																		  * getModifierValue(modifiers,
-																		  					result[i].stats_name,
-																		  					pos));
 								}
 							}
 						}
+						
 					}
 				}
 				console.log(daily);

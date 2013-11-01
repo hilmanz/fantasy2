@@ -79,8 +79,8 @@ class UpdaterShell extends AppShell{
     	foreach($users as $user){
     		$response = $this->Game->getTeamPoints($user['User']['fb_id']);
 
-    		$response['points'] = intval($response['points']);
-        $response['extra_points'] = intval($response['extra_points']);
+    		$response['points'] = floatval($response['points']);
+        $response['extra_points'] = floatval($response['extra_points']);
       
 
         if($user['Team']['id']>0){
@@ -93,6 +93,7 @@ class UpdaterShell extends AppShell{
           points = VALUES(points),
           extra_points = VALUES(extra_points);
           ";
+          $this->out($sql);
           try{
       		  $this->Team->query($sql);
           }catch(Exception $e){

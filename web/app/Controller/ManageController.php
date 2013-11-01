@@ -179,6 +179,7 @@ class ManageController extends AppController {
 
 		//weekly points and weekly ranks
 		//for weekly points, make sure the points from other player are included
+
 		$this->Weekly_point->virtualFields['TotalPoints'] = 'SUM(Weekly_point.points)';
 		$options = array('fields'=>array('Weekly_point.id', 'Weekly_point.team_id', 
 							'Weekly_point.game_id', 'Weekly_point.matchday', 'Weekly_point.matchdate', 
@@ -271,6 +272,7 @@ class ManageController extends AppController {
 								WHERE d.game_id = a.game_id 
 								AND d.game_team_id = {$this->userData['team']['id']} LIMIT 1)
 					ORDER BY a.game_id";
+
 			$rs = $this->Game->query($sql);
 			
 
@@ -520,9 +522,10 @@ class ManageController extends AppController {
 
 
 		$players = $this->Session->read('PlayerStats_Matchinfo_'.$game_id);
-
+		
 		if(!isset($players)){
 			$players = $this->Game->getMatchDetailsByGameTeamId($userData['team']['id'],$game_id);
+
 		}
 		$data = $players['data'][$player_id];
 
