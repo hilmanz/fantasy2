@@ -23,6 +23,7 @@ var xmlparser = require('xml2json');
 var master = require('./libs/master');
 var async = require('async');
 var mysql = require('mysql');
+
 /////DECLARATIONS/////////
 var FILE_PREFIX = config.updater_file_prefix+config.competition.id+'-'+config.competition.year;
 var stat_maps = require('./libs/stats_map').getStats();
@@ -31,7 +32,7 @@ var stat_maps = require('./libs/stats_map').getStats();
 var match_results = require('./libs/match_results');
 var lineup_stats = require('./libs/gamestats/lineup_stats');
 var business_stats = require('./libs/gamestats/business_stats');
-
+var ranks = require(path.resolve('./libs/gamestats/ranks'));
 
 /////THE LOGICS///////////////
 var conn = mysql.createConnection({
@@ -101,12 +102,27 @@ function process_report(game_id,done){
 						}
 					},
 					function(err){
-						console.log('updating business stats');
-						business_stats.update(game_id,0,function(err){
-							console.log('business stats update completed');
-							console.log('all batches has been processed');
+						async.waterfall([
+							function(n){
+								console.log('updating business stats');
+								business_stats.update(game_id,0,function(err){
+									console.log('business stats update completed');
+									console.log('all batches has been processed');
+									n(err);
+								});
+							},
+							function(n){
+								//i dont think its a good idea to run rank update after  each game complete
+								//if we run many matchresultsupdater instances, the race condition will be occur.
+								ranks.update(function(err,rs){
+									n(err,rs);
+								});
+							}
+						],
+						function(err,rs){
 							callback(err,'done');
 						});
+						
 					}
 				);
 			}else{

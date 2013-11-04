@@ -158,6 +158,13 @@ function updatePoints(conn,team,stats,done){
 			if(typeof stats !== 'undefined'){
 				var points = (typeof stats.points !== 'undefined') ? stats.points : 0;
 				var extra_points = (typeof stats.extra_points !== 'undefined') ? stats.extra_points : 0;
+
+				if(points == null){
+					points = 0;
+				}
+				if(extra_points == null){
+					extra_points = 0;
+				}
 				//update overall points
 				if(team.team_id > 0){
 					console.log(team.team_id,' overall points.');

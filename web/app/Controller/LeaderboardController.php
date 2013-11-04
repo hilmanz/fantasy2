@@ -88,7 +88,7 @@ class LeaderboardController extends AppController {
 	        'limit' => 100,
 	        'group' => 'Weekly_point.team_id',
 	        'order' => array(
-	            'TotalPoints' => 'desc'
+	            'TotalPoints' => 'desc',
 	        )
 	    );
 
@@ -219,7 +219,7 @@ class LeaderboardController extends AppController {
 	    $this->paginate = array(
 	        'limit' => 100,
 	        'order' => array(
-	            'Point.TotalPoints' => 'desc'
+	            'Point.rank' => 'asc'
 	        )
 	    );
 
