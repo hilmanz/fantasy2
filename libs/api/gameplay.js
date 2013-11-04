@@ -689,6 +689,23 @@ function next_match(team_id,done){
 							",[team_id,team_id],function(err,rs){
 								callback(err,rs);
 							});
+				},
+				function(rs,callback){
+					try{
+						conn.query("SELECT match_date \
+									FROM \
+									ffgame.game_fixtures \
+									WHERE matchday = ? \
+									ORDER BY match_date DESC \
+									LIMIT 1;",
+									[(rs[0].matchday - 1)],
+									function(err,last_match){
+										rs[0].last_match = last_match[0].match_date;
+										callback(err,rs);
+									});
+					}catch(e){
+						callback(null,rs);
+					}
 				}
 			],
 			function(err,result){

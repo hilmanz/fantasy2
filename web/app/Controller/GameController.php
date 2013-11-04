@@ -84,22 +84,27 @@ class GameController extends AppController {
 		$time_limit = $this->closeTime['ts'];
 
 		if(time() < $time_limit || Configure::read('debug') > 0){
-			$userData = $this->getUserData();
-			$formation = $this->request->data['formation'];
-			$players = array();
-			foreach($this->request->data as $n=>$v){
-				if(eregi('player-',$n)&&$v!=0){
-					$players[] = array('player_id'=>str_replace('player-','',$n),'no'=>intval($v));
+			if(time() > $this->openTime){
+				$userData = $this->getUserData();
+				$formation = $this->request->data['formation'];
+				$players = array();
+				foreach($this->request->data as $n=>$v){
+					if(eregi('player-',$n)&&$v!=0){
+						$players[] = array('player_id'=>str_replace('player-','',$n),'no'=>intval($v));
+					}
 				}
-			}
-			$lineup = $this->Game->setLineup($userData['team']['id'],$formation,$players);
+				$lineup = $this->Game->setLineup($userData['team']['id'],$formation,$players);
 
-			header('Content-type: application/json');
+				header('Content-type: application/json');
 
-			if(@$lineup['status']==1){
-				$msg = "@p1_".$this->userDetail['User']['id']." telah menentukan formasinya.";
-				$this->Info->write('set formation',$msg);
+				if(@$lineup['status']==1){
+					$msg = "@p1_".$this->userDetail['User']['id']." telah menentukan formasinya.";
+					$this->Info->write('set formation',$msg);
+				}
+			}else{
+				$lineup['status'] = 0;
 			}
+			
 		}else{
 			$lineup['status'] = 0;
 		}
@@ -191,7 +196,8 @@ class GameController extends AppController {
 				$this->Info->write('sale player',$msg);
 			}
 		}else{
-			$rs = array('status'=>3,'message'=>'Transfer window is closed');
+			$rs = array('status'=>3,'message'=>'Transfer window is closed','open'=>strtotime(@$window['tw_open']),
+						'close'=> strtotime(@$window['tw_close']), 'now'=>time());
 		}
 		
 		header('Content-type: application/json');
@@ -216,6 +222,7 @@ class GameController extends AppController {
 		if(time()<strtotime($this->userDetail['User']['register_date'])+(24*60*60)){
 			$is_new_user = true;
 		}
+
 		if(!$is_new_user){
 			if(strtotime(@$window['tw_open']) <= time() && strtotime(@$window['tw_close'])>=time()){
 				$can_transfer = true;

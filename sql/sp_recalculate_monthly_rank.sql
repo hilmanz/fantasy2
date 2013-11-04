@@ -17,7 +17,7 @@ DECLARE curs CURSOR FOR
 	FROM (SELECT team_id,YEAR(matchdate) AS thn,MONTH(matchdate) AS bln, (points + extra_points) AS points
 	FROM weekly_points) g 
 	WHERE bln = mth AND thn = yr
-	GROUP BY thn,bln,team_id ORDER BY total_points DESC;
+	GROUP BY thn,bln,team_id ORDER BY total_points DESC,team_id ASC;
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET isDone = TRUE;
 OPEN curs;
 	SET isDone = FALSE;

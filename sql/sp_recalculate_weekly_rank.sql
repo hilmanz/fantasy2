@@ -18,7 +18,7 @@ DECLARE curs CURSOR FOR
 	ON a.team_id = b.id 
 	WHERE a.matchday=matchday
 	GROUP BY a.team_id
-	ORDER BY SUM(a.points+a.extra_points) DESC;
+	ORDER BY SUM(a.points+a.extra_points) DESC,a.team_id ASC;
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET isDone = TRUE;
 OPEN curs;
 	SET isDone = FALSE;

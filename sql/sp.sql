@@ -15,7 +15,7 @@ DECLARE curs CURSOR FOR
 	FROM points a
 	INNER JOIN teams b
 	ON a.team_id = b.id 
-	ORDER BY (a.points+a.extra_points) DESC;
+	ORDER BY (a.points+a.extra_points) DESC,a.team_id ASC;
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET isDone = TRUE;
 OPEN curs;
 	SET isDone = FALSE;

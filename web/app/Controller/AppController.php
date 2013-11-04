@@ -103,6 +103,8 @@ class AppController extends Controller {
 				$this->set('USER_POINTS',$this->userPoints);
 
 				$this->nextMatch = $this->Game->getNextMatch(@$this->userData['team']['team_id']);
+				$this->nextMatch['match']['last_match_ts'] = strtotime($this->nextMatch['match']['last_match']);
+				
 				$this->nextMatch['match']['match_date_ts'] = strtotime(@$this->nextMatch['match']['match_date']);
 				
 				$this->set('match_date_ts',$this->nextMatch['match']['match_date_ts']);
@@ -150,6 +152,11 @@ class AppController extends Controller {
 				$this->closeTime = $close_time;
 
 				$this->set('close_time',$close_time);
+
+				//formation open time
+				$open_time = $this->nextMatch['match']['last_match_ts'] + (24*60*60);
+				$this->openTime = $open_time;
+				$this->set('open_time',$open_time);
 
 				//news ticker
 				$this->set('tickers',$this->Ticker->find('all',array('limit'=>5)));

@@ -176,7 +176,13 @@ class ApiController extends AppController {
 
 		//close time
 		$response['close_time'] = $this->closeTime;
-
+		//can updte formation
+		if($this->closeTime > time() && $this->openTime < time()){
+			$response['can_update_formation'] = 1;	
+		}else{
+			$response['can_update_formation'] = 0;
+		}
+		
 		$this->set('response',array('status'=>1,'data'=>$response));
 		$this->render('default');
 	}
@@ -341,6 +347,7 @@ class ApiController extends AppController {
 		$next_match = $this->Game->getNextMatch($game_team['team_id']);
 		$next_match['match']['home_original_name'] = $next_match['match']['home_name'];
 		$next_match['match']['away_original_name'] = $next_match['match']['away_name'];
+
 		if($next_match['match']['home_id']==$game_team['team_id']){
 			$next_match['match']['home_name'] = $club['Team']['team_name'];
 		}else{
@@ -348,6 +355,8 @@ class ApiController extends AppController {
 		}
 
 		$next_match['match']['match_date_ts'] = strtotime($next_match['match']['match_date']);
+		$next_match['match']['last_match_ts'] = strtotime($next_match['match']['last_match']);
+
 		$this->getCloseTime($next_match);
 
 		$response['next_match'] = array('game_id'=>$next_match['match']['game_id'],
@@ -989,7 +998,7 @@ class ApiController extends AppController {
 			$close_time = array("datetime"=>$previous_close_dt,
 							"ts"=>strtotime($previous_close_dt));
 		}
-	
+		$this->openTime = $this->nextMatch['match']['last_match_ts'];
 		$this->closeTime = $close_time;
 	}
 
