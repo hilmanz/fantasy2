@@ -1,5 +1,5 @@
 /**
-* module for updating the match results across all users's lineups
+* module for updating the match results across all users's lineups - used by updater_worker.js
 *
 * we only calculate unprocessed team.
 * the processed team will have an entry in game_team_lineups_history.
@@ -30,7 +30,7 @@ var punishment = require(path.resolve('./libs/gamestats/punishment_rules'));
 var player_stats_category = require(path.resolve('./libs/game_config')).player_stats_category;
 
 console.log('lineup_stats - creating pool');
-exports.update = function(game_id,start,done){
+exports.update = function(queue_id,game_id,since_id,until_id,done){
 	//the updates will run for each 100 entries.
 	
 	var limit = 100;
@@ -39,14 +39,14 @@ exports.update = function(game_id,start,done){
 	async.waterfall(
 		[
 			function(callback){
-				get_user_teams(start,limit,function(err,team){
+				get_user_teams_by_idRange(since_id,until_id,limit,function(err,team){
 					//if there's no more data. we stop :)
 					console.log(team);
 					if(team.length<limit){
 						is_complete = true;
 						console.log("NO MORE TEAM TO PROCESS");
 					}else{
-						start+=limit;
+						//start+=limit;
 					}
 					callback(err,team);
 				});	
@@ -62,19 +62,20 @@ exports.update = function(game_id,start,done){
 				})
 			},
 			function(game_id,team,player_stats,team_summary,callback){
-				update_team_stats(game_id,team,player_stats,team_summary,function(err){
+				update_team_stats(queue_id,game_id,team,player_stats,team_summary,function(err){
 					callback(err,'ok');
 				});
 			},
 			function(result,callback){
-				update_team_points(function(err){
-					callback(err,'ok');
-				})
+				//update_team_points(function(err){
+				//	console.log('update team points done');
+				//	callback(err,'ok');
+				//});
+				callback(null,'ok');
 			}
 		],
 		function(err,result){
-			
-			done(err,is_complete,start);
+			done(err,is_complete);
 		}
 	);	
 		
@@ -135,8 +136,8 @@ function get_user_teams(start,limit,done){
 function get_user_teams_by_idRange(since_id,until_id,limit,done){
 	pool.getConnection(function(err,conn){
 		if(err) console.log(err.message);
-		conn.query("SELECT * FROM ffgame.game_teams WHERE id BETWEEN ? AND ? ORDER BY id ASC LIMIT ?,?",
-				[since_id,until_id,start,limit],
+		conn.query("SELECT * FROM ffgame.game_teams WHERE id BETWEEN ? AND ? ORDER BY id ASC LIMIT ?",
+				[since_id,until_id,limit],
 		function(err,rs){
 			if(err){console.log(err.message);}
 			conn.end(function(err){
@@ -145,7 +146,7 @@ function get_user_teams_by_idRange(since_id,until_id,limit,done){
 		});
 	});
 }
-function update_team_stats(game_id,team,player_stats,team_summary,done){
+function update_team_stats(queue_id,game_id,team,player_stats,team_summary,done){
 	//console.log(team,player_stats,team_summary);
 	console.log('team_summary',team_summary);
 	var summary = {}; //team summary, this will be used for player's performance change modifier.
@@ -469,7 +470,12 @@ function update_team_stats(game_id,team,player_stats,team_summary,done){
 									}
 								],
 								function(err,wf_result){
-									callback();
+									conn.query("UPDATE ffgame_stats.job_queue SET current_id=?,n_done=n_done+1\
+												WHERE id = ?",
+												[item.id,queue_id],function(err,rs){
+													callback();
+												});
+									
 								});
 							
 						},

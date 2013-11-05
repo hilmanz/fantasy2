@@ -14,6 +14,6 @@ exports.config = {
 		host:'localhost',
 		port:6379
 	},
-	environment: 'development' //change to production when go live.
-	
+	environment: 'development', //change to production when go live.
+	job_server:{host:'localhost',port:3099}
 };

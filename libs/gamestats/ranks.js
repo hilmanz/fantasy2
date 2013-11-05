@@ -215,10 +215,11 @@ function updatePoints(conn,team,stats,done){
 			});
 		},
 		function(modifier,cb){
-			generate_summary(conn,team,modifier,function(err){
+			/*generate_summary(conn,team,modifier,function(err){
 				console.log('generate summary for team #',team.team_id,' -> DONE');
 				cb(err,null);
-			});
+			});*/
+			cb(null,null);
 		}
 	],
 	function(err,rs){
