@@ -49,7 +49,7 @@ http.request(options, function(response){
 	response.on('end',function(){
 		var resp = JSON.parse(str);
 		console.log(resp);
-		resp.status=1;
+		//resp.status=1;
 		if(resp.status==1){
 			update_points_and_ranks(conn,function(err){
 				console.log('Update Completed');

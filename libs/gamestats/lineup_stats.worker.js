@@ -162,18 +162,18 @@ function update_team_stats(queue_id,game_id,team,player_stats,team_summary,done)
 							async.waterfall([
 									function(next){
 										update_individual_team_stats(game_id,item,summary,player_stats,
-											function(err){
-											next(err);	
+											function(err,matched_players){
+											next(err,matched_players);	
 										});
 									},
-									function(next){
+									function(matched_players,next){
 										console.log('ISSUE1','check penalty if the club rooster is unbalance');
 										punishment.check_violation(conn,game_id,item.id,item.team_id,
 											function(err,rs){
-												next(err);
+												next(err,matched_players);
 										});
 									},
-									function(next){
+									function(matched_players,next){
 										console.log('ISSUE1','Lets process the extra points if the week has ended....')
 										//check the game's matchday
 										conn.query("SELECT matchday \
@@ -187,11 +187,11 @@ function update_team_stats(queue_id,game_id,team,player_stats,team_summary,done)
 														if(!err){
 															matchday = r[0].matchday;
 														}
-														next(err,matchday);
+														next(err,matched_players,matchday);
 													});
 										
 									},
-									function(matchday,next){
+									function(matched_players,matchday,next){
 										async.waterfall([
 												function(cb){
 													console.log('ISSUE1','checking for #',team);
@@ -233,15 +233,26 @@ function update_team_stats(queue_id,game_id,team,player_stats,team_summary,done)
 														if(lp.position_no>11){
 															is_sub = true;
 														}
-														getPlayerDailyTeamStats(conn,
-																			item.id,
-																			lp.player_id,
-																			lp.position,
-																			matchday,
-																			lp.position_no,
-																			function(err,rs){
-																nx();
-														});
+														var found_matched = false;
+														for(var i in matched_players){
+															if(lp.player_id==matched_players[i]){
+																console.log('UPDATE #',item.id,'-',lp.player_id)
+																getPlayerDailyTeamStats(conn,
+																		item.id,
+																		lp.player_id,
+																		lp.position,
+																		matchday,
+																		lp.position_no,
+																		function(err,rs){
+																			nx();
+																});
+																found_matched = true;
+															}
+														}
+														if(!found_matched){
+															nx();
+														}
+														
 													},function(err){
 														cb(err,matchday);
 													});
@@ -514,20 +525,7 @@ function getPlayerDailyTeamStats(conn,game_team_id,player_id,player_pos,matchday
 			INNER JOIN ffgame.game_fixtures b\
 			ON a.game_id = b.game_id\
 			WHERE a.player_id=? AND b.matchday=?\
-			AND EXISTS(\
-				SELECT 1\
-				FROM ffgame.game_team_players c\
-				WHERE c.game_team_id=?\
-				AND c.player_id = a.player_id\
-				LIMIT 1\
-			)\
-			AND EXISTS(\
-				SELECT 1 FROM ffgame_stats.game_match_player_points d\
-				WHERE d.game_team_id=? AND d.game_id = a.game_id \
-				AND d.player_id = a.player_id LIMIT 1\
-			)\
 			LIMIT 500;";
-	
 	
 	async.waterfall([
 		function(callback){
@@ -675,7 +673,8 @@ function update_individual_team_stats(game_id,team,summary,player_stats,done){
 				
 			],
 				function(err,result){
-					done(err);
+					//returns matched_players 
+					done(err,result);
 				}
 			);
 	
@@ -814,6 +813,7 @@ function getTeamLineups(game_id,team,done){
 }
 function updateLineupStats(game_id,lineups,summary,player_stats,in_game,done){
 	console.log('player stats : ',player_stats);
+	var matched_players = [];
 	pool.getConnection(function(err,conn){
 		async.eachSeries(lineups,
 						function(item,callback){
@@ -843,6 +843,7 @@ function updateLineupStats(game_id,lineups,summary,player_stats,in_game,done){
 									function(isStarter,callback){
 										for(var i in player_stats){
 											if(item.player_id==player_stats[i].player_id){
+												matched_players.push(item.player_id);
 												stats.points = player_stats[i].points;
 												//if(!isStarter){
 												//	console.log('points reduced to 75%',(stats.points*0.75));
@@ -889,7 +890,7 @@ function updateLineupStats(game_id,lineups,summary,player_stats,in_game,done){
 						},
 						function(err){
 							conn.end(function(err){
-								done(null,[]);	
+								done(null,matched_players);	
 							});
 						});
 	});
