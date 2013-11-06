@@ -99,12 +99,216 @@ class PlayersController extends AppController {
 			$squad[$n]['total_plays'] = intval($r[0][0]['total']);
 		}
 
+
+		//previous matches
+		$previous_matches = $this->getPreviousMatches($team_data[0]['b']['id'],$team_data[0]['b']['team_id']);
+		$this->set('previous_matches',$previous_matches);
 		$this->set('budget',$budget[0][0]['current_budget']);
 		$this->set('total_matches',$matches[0][0]['total_matches']);
 		$this->set('team_data',$team_data[0]);
 		$this->set('user',$user);
 		$this->set('point',@$point['Point']);
 		$this->set('squad',$squad);
+	}
+	public function view_match($user_id,$game_id){
+		$this->loadModel('User');
+		$this->loadModel('Point');
+		$this->loadModel('Game');
+		$user = $this->User->findById($user_id);
+		$point = $this->Point->findByTeam_id($user['Team']['id']);
+		$team_data = $this->User->query("SELECT * FROM ffgame.game_users a
+											INNER JOIN ffgame.game_teams b
+											ON a.id = b.user_id
+											INNER JOIN ffgame.master_team c
+											ON b.team_id = c.uid
+											WHERE fb_id='{$user['User']['fb_id']}';");
+
+		$budget = $this->User->query("SELECT (SUM(budget + expense)) AS current_budget
+										FROM (
+										SELECT budget,0 AS expense
+										FROM ffgame.game_team_purse 
+										WHERE game_team_id={$team_data[0]['b']['id']}
+										UNION ALL
+										SELECT 0,SUM(amount) AS total_balance 
+										FROM ffgame.game_team_expenditures 
+										WHERE game_team_id={$team_data[0]['b']['id']})
+										a;");
+
+		$matches = $this->User->query("SELECT COUNT(game_id) AS total_matches FROM 
+										(SELECT game_id 
+											FROM ffgame_stats.game_match_player_points 
+											WHERE game_team_id={$team_data[0]['b']['id']} 
+											GROUP BY game_id) a;");
+		
+		$game_team_id = $team_data[0]['b']['id'];
+		
+		$match_detail = $this->getMatchDetail($game_team_id,$team_data[0]['b']['team_id'],$game_id);
+		$this->set('match_detail',$match_detail);
+		$this->set('budget',$budget[0][0]['current_budget']);
+		$this->set('total_matches',$matches[0][0]['total_matches']);
+		$this->set('team_data',$team_data[0]);
+		$this->set('user',$user);
+		$this->set('point',@$point['Point']);
+		
+	}
+	private function getMatchDetail($game_team_id,$original_team_id,$game_id){
+		$q = $this->Game->query("SELECT a.*,b.name as home_name,c.name as away_name,a.matchday
+									FROM ffgame.game_fixtures a
+									INNER JOIN ffgame.master_team b
+									ON a.home_id = b.uid
+									INNER JOIN ffgame.master_team c
+									ON a.away_id = c.uid
+									WHERE game_id = '{$game_id}'
+									LIMIT 1;
+									",false);
+		if($q[0]['a']['home_id']!=$original_team_id){
+			$against = $q[0]['b']['home_name'];
+		}else{
+			$against = $q[0]['c']['away_name'];
+		}
+		$home_score = $q[0]['a']['home_score'];
+		$away_score = $q[0]['a']['away_score'];
+		//get the points
+		$score = $this->Game->query("SELECT SUM(points) AS total 
+										FROM ffgame_stats.game_team_player_weekly 
+										WHERE game_team_id = {$game_team_id} 
+										AND matchday = {$q[0]['a']['matchday']};",false);
+		
+		//get ticket sold attribute
+		$money = $this->Game->query("SELECT item_name,amount 
+									FROM ffgame.game_team_expenditures a
+									WHERE game_team_id={$game_team_id} 
+									AND item_name IN ('tickets_sold','ticket_sold_penalty') 
+									AND game_id='{$game_id}';",false);
+		$tickets_sold = 0;
+		$ticket_sold_penalty = 0;
+
+		if(sizeof($money)>0){
+			foreach($money as $m){
+				if($m['a']['item_name']=='tickets_sold'){
+					$tickets_sold = $m['a']['amount'];
+				}elseif($m['a']['item_name']=='ticket_sold_penalty'){
+					$ticket_sold_penalty = $m['a']['amount'];
+				}else{
+
+				}
+			}
+		}
+		//get squads
+		$squads = $this->Game->query("SELECT a.player_id,a.matchday,b.name,b.position,a.position_no,
+										a.stats_category,a.stats_name,a.stats_value,a.points 
+										FROM ffgame_stats.game_team_player_weekly a
+										INNER JOIN ffgame.master_player b 
+										ON a.player_id = b.uid
+										WHERE game_team_id={$game_team_id} AND matchday={$q[0]['a']['matchday']} 
+										LIMIT 10000;");
+		$lineups = $this->formatLineupStats($squads);
+
+		$squads = null;
+		unset($squads);
+		
+		$match_details = array('game_id'=>$game_id,
+								'against'=>$against,
+								'home_score'=>$home_score,
+								'away_score'=>$away_score,
+								'ticket_sold'=>$tickets_sold,
+								'ticket_sold_penalty'=>$ticket_sold_penalty,
+								'points'=>$score[0][0]['total'],
+								'lineups'=>$lineups);
+		return $match_details;
+	}
+	private function formatLineupStats($squads){
+		$lineup = array();
+		foreach($squads as $s){
+			$player_id = $s['a']['player_id'];
+			if(!isset($lineup[$player_id])){
+				$lineup[$player_id] = array(
+					'name'=>$s['b']['name'],
+					'position'=>$s['b']['position'],
+					'position_no'=>$s['a']['position_no'],
+					'stats'=>array()
+				);
+			}
+			$stats_category = $s['a']['stats_category'];
+			$can_has_stats = true;
+			if($stats_category=='goalkeeper' && $s['b']['position']!='Goalkeeper'){
+				$can_has_stats = false;
+			}
+
+			if($can_has_stats){
+				if(!isset($lineup[$player_id]['stats'][$stats_category])){
+					$lineup[$player_id]['stats'][$stats_category] = array();
+				}
+				$lineup[$player_id]['stats'][$stats_category][] = array('stats_name'=>$s['a']['stats_name'],
+																		'stats_value'=>$s['a']['stats_value'],
+																		'points'=>$s['a']['points']);	
+			}
+			
+		}
+		unset($squads);
+		$squads = null;
+		return $lineup;
+	}
+	private function getPreviousMatches($game_team_id,$original_team_id){
+		$rs = $this->Game->query("SELECT DISTINCT matchday 
+								  FROM ffgame_stats.game_team_player_weekly a
+								  WHERE game_team_id={$game_team_id} ORDER BY matchday LIMIT 400;",false);
+		$matches = array();
+		foreach($rs as $r){
+			
+			$q = $this->Game->query("SELECT a.*,b.name as home_name,c.name as away_name
+									FROM ffgame.game_fixtures a
+									INNER JOIN ffgame.master_team b
+									ON a.home_id = b.uid
+									INNER JOIN ffgame.master_team c
+									ON a.away_id = c.uid
+									WHERE matchday = {$r['a']['matchday']}
+									AND (home_id = '{$original_team_id}' OR away_id = '{$original_team_id}')
+									LIMIT 1;
+									",false);
+			if($q[0]['a']['home_id']!=$original_team_id){
+				$against = $q[0]['b']['home_name'];
+			}else{
+				$against = $q[0]['c']['away_name'];
+			}
+			$home_score = $q[0]['a']['home_score'];
+			$away_score = $q[0]['a']['away_score'];
+			//get the points
+			$score = $this->Game->query("SELECT SUM(points) AS total 
+											FROM ffgame_stats.game_team_player_weekly 
+											WHERE game_team_id = {$game_team_id} 
+											AND matchday = {$r['a']['matchday']};",false);
+			
+			//get ticket sold attribute
+			$money = $this->Game->query("SELECT item_name,amount 
+										FROM ffgame.game_team_expenditures a
+										WHERE game_team_id={$game_team_id} 
+										AND item_name IN ('tickets_sold','ticket_sold_penalty') 
+										AND game_id='{$q[0]['a']['game_id']}';",false);
+			$tickets_sold = 0;
+			$ticket_sold_penalty = 0;
+
+			if(sizeof($money)>0){
+				foreach($money as $m){
+					if($m['a']['item_name']=='tickets_sold'){
+						$tickets_sold = $m['a']['amount'];
+					}elseif($m['a']['item_name']=='ticket_sold_penalty'){
+						$ticket_sold_penalty = $m['a']['amount'];
+					}else{
+
+					}
+				}
+			}
+
+			$matches[] = array('game_id'=>$q[0]['a']['game_id'],
+								'against'=>$against,
+								'home_score'=>$home_score,
+								'away_score'=>$away_score,
+								'ticket_sold'=>$tickets_sold,
+								'ticket_sold_penalty'=>$ticket_sold_penalty,
+								'points'=>$score[0][0]['total']);
+		}
+		return $matches;
 	}
 	private function getTeamPlayerDetail($game_team_id,$player_id){
 		$stats = $this->User->query("SELECT COUNT(DISTINCT game_id) AS total_plays,SUM(points) AS total_points,

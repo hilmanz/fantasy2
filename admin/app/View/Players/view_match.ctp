@@ -35,76 +35,41 @@
 			</tr>
 		</tbody>
 </table>
-<h3 class="titles">Squad</h3>
+<a href="<?=$this->Html->url('/players/view/'.$user['User']['id'])?>" class="button">BACK TO PREVIOUS PAGE</a>
+<h3 class="titles">Vs. <?=$match_detail['against']?> (<?=ceil($match_detail['points'])?>)</h3>
+<?php foreach($match_detail['lineups'] as $lineup):?>
+	<h3 class="titles">
+		<?=h($lineup['name'])?>
+		<?php
+			if($lineup['position_no']<=11):
+		?>
+			(Starter)
+		<?php else:?>
+			(Subs)
+		<?php endif;?>
+	</h3>
+	<?php foreach($lineup['stats'] as $category=>$stats):?>
 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="dataTable">
 		<thead>
 			<tr>
 				<tr>
-					<th>No.</th>
-					<th>Name</th>
-					<th>Position</th>
-					<th>Plays</th>
-					<th>Current Points</th>
-					<!--<th>Last Week Performance (compare to overall team points)</th>-->
-					<th>Basic Value</th>
-					<th>Current Value</th>
-				</tr>
-		</thead>
-		<tbody>
-				<?php
-					foreach($squad as $n=>$s):
-						if($s['points']!=0){
-						  $last_performance = floatval($s['last_performance']);
-						  $performance_bonus = getTransferValueBonus($last_performance,intval($s['transfer_value']));
-						}else{
-						  $performance_bonus = 0;
-						}
-						$transfer_value = $s['transfer_value'] + $performance_bonus;
-						
-				?>
-				<tr>
-					<td><?=$n+1?></td>
-					<td><?=h($s['name'])?></td>
-					<td><?=$s['position']?></td>
-					<td><?=number_format(@$s['total_plays'])?></td>
-					<td><?=number_format(@$s['points'])?></td>
-					<!--<td><?=number_format(@$s['last_performance'])?></td>-->
-					<td><?=number_format($s['transfer_value'])?></td>
-					<td><?=number_format($transfer_value)?></td>
-				</tr>
-				<?php
-				endforeach;
-				?>
-		</tbody>
-</table>
-<h3 class="titles">Previous Matches</h3>
-
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="dataTable">
-		<thead>
-			<tr>
-				<tr>
-					<th>Against</th>
+					<th><?=$category?></th>
+					<th>Frequency</th>
 					<th>Points</th>
-					<th>Earnings</th>
 				</tr>
 		</thead>
 		<tbody>
 			<?php
-				foreach($previous_matches as $n=>$s):
-					
+				foreach($stats as $n=>$s):
+
 			?>
 				<tr>
 					<td>
-						<a href="<?=$this->Html->url('/players/view_match/'.$user['User']['id'].'/'.$s['game_id'])?>">
-							<?=$s['against']?>
-						</a>
+						<?=$s['stats_name']?>
 					</td>
-					<td><?=number_format(@$s['points'])?></td>
+					<td><?=number_format(@$s['stats_value'])?></td>
 					<td>
-						<?=number_format(@$s['ticket_sold'])?>
-						<?php if($s['ticket_sold_penalty']>0):?>
-							(<?=number_format(@$s['ticket_sold_penalty'])?>)
-						<?php endif;?>
+						<?=round($s['points']);?>
 					</td>
 				</tr>
 				<?php
@@ -112,3 +77,5 @@
 				?>
 		</tbody>
 </table>
+<?php endforeach;?>
+<?php endforeach;?>
