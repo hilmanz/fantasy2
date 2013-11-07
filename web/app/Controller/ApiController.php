@@ -1009,4 +1009,396 @@ class ApiController extends AppController {
 	private function getRingkasanClub(){
 
 	}
+
+	//transfer players stuffs//////
+	public function team_list(){
+		$teams = $this->Game->getMatchResultStats();
+
+		foreach($teams['data'] as $n=>$v){
+			$teams['data'][$n]['stats']['points_earned'] = ($v['stats']['wins'] * 3) + 
+															($v['stats']['draws']);
+		}
+		$rs = $this->sortTeamByPoints($teams['data']);
+		$this->set('response',array('status'=>1,'data'=>$rs));
+		$this->render('default');
+	}
+	private function sortTeamByPoints($teams){
+		
+		$changes = false;
+		$n = sizeof($teams);
+		for($i=1;$i<sizeof($teams);$i++){
+			$swap = false;
+			$p = $teams[$i-1];
+			$q = $teams[$i];
+			$p['stats']['goals'] = intval(@$p['stats']['goals']);
+			$p['stats']['conceded'] = intval(@$p['stats']['conceded']);
+
+			$q['stats']['goals'] = intval(@$q['stats']['goals']);
+			$q['stats']['conceded'] = intval(@$q['stats']['conceded']);
+
+			if($q['stats']['points_earned'] > $p['stats']['points_earned']){
+				$swap = true;
+			}else if($q['stats']['points_earned'] == $p['stats']['points_earned']){
+				//the most goals wins
+				if(($q['stats']['goals'] - $q['stats']['conceded']) > ($p['stats']['goals'] - $p['stats']['conceded'])){
+					$swap = true;
+				}else if(($q['stats']['goals'] - $q['stats']['conceded']) == ($p['stats']['goals'] - $p['stats']['conceded'])){
+					if($q['stats']['goals'] > $p['stats']['goals']){
+						$swap = true;
+					}
+				}
+			}
+			
+			if($swap){
+				$changes = true;
+				$teams[$i] = $p;
+				$teams[$i-1] = $q;
+			}
+
+		}
+		if($changes){
+			return $this->sortTeamByPoints($teams);
+		}
+		return $teams;
+
+	}
+
+	public function view_team($team_id){
+		$this->loadModel('User');
+		$api_session = $this->readAccessToken();
+		$fb_id = $api_session['fb_id'];
+		$userData = $this->User->findByFb_id($fb_id);
+
+		
+		$club = $this->Game->getClub($team_id);
+		
+		$players = $this->Game->getMasterTeam($team_id);
+
+		//list of players
+		$my_players = $this->Game->get_team_players($fb_id);
+		
+		$player_list = array();
+		while(sizeof($players)>0){
+			$p = array_shift($players);
+			$p['stats']['points'] = floatval($p['stats']['points']);
+			if(!$this->isMyPlayer($p['uid'],$my_players)){
+				$player_list[] = $p;
+			}
+		}
+		
+		$rs = array('club'=>$club,
+					'players'=>$player_list);
+
+		$this->set('response',array('status'=>1,'data'=>$rs));
+		$this->render('default');
+	}
+
+	private function isMyPlayer($player_id,$my_players){
+		foreach($my_players as $m){
+			if($m['uid']==$player_id){
+				return true;
+			}
+		}
+	}
+	public function view_player($player_id){
+		$this->loadModel('User');
+		$this->loadModel('Point');
+		$api_session = $this->readAccessToken();
+		$fb_id = $api_session['fb_id'];
+		$user = $this->User->findByFb_id($fb_id);
+	
+		
+		if(strlen($user['User']['avatar_img'])<2){
+			$user['User']['avatar_img'] = "http://graph.facebook.com/".$fb_id."/picture";
+		}else{
+			$user['User']['avatar_img'] = Configure::read('avatar_web_url').'120x120_'.$user['User']['avatar_img'];
+		}
+
+		$game_team = $this->Game->getTeam($fb_id);
+		
+		$response = array();
+		
+		
+
+		$point = $this->Point->findByTeam_id($user['Team']['id']);
+		$response['user'] = array('id'=>$user['User']['id'],
+									'fb_id'=>$user['User']['fb_id'],
+									'name'=>$user['User']['name'],
+									'avatar_img'=>$user['User']['avatar_img']);
+
+		$response['stats']['points'] = intval(@$point['Point']['points']) + intval(@$point['Point']['extra_points']);
+		$response['stats']['rank'] = intval(@$point['Point']['rank']);
+
+		//budget
+		$budget = $this->Game->getBudget($game_team['id']);
+		$response['budget'] = $budget;
+
+		//club
+		$club = $this->Team->findByUser_id($user['User']['id']);
+		$response['club'] = array('id'=>$club['Team']['id'],
+									'team_name'=>$club['Team']['team_name'],
+									'team_id'=>$club['Team']['team_id'],
+								  );
+
+		//get original club
+		$original_club = $this->Game->getClub($club['Team']['team_id']);
+		$this->set('original',$original_club);
+		$response['original_club'] = $original_club;
+
+
+		//player detail : 
+		$rs = $this->Game->get_player_info($player_id);
+		
+		
+		
+		
+		//stats modifier
+		$modifiers = $this->Game->query("SELECT * FROM ffgame.game_matchstats_modifier as Modifier");
+
+		if($rs['status']==1){
+
+			if(isset($rs['data']['daily_stats'])&&sizeof($rs['data']['daily_stats'])>0){
+				foreach($rs['data']['daily_stats'] as $n=>$v){
+					$fixture = $this->Team->query("SELECT matchday,match_date,
+										UNIX_TIMESTAMP(match_date) as ts
+										FROM ffgame.game_fixtures 
+										WHERE game_id='{$n}' 
+										LIMIT 1");
+					
+					$rs['data']['daily_stats'][$n]['fixture'] = $fixture[0]['game_fixtures'];
+					$rs['data']['daily_stats'][$n]['fixture']['ts'] = $fixture[0][0]['ts'];
+				}
+			}
+			
+			
+		}
+		$games = array(
+		        'game_started'=>'game_started',
+		        'sub_on'=>'total_sub_on'
+		    );
+
+		$passing_and_attacking = array(
+		        'Freekick Goal'=>'att_freekick_goal',
+		        'Goal inside the box'=>'att_ibox_goal',
+		        'Goal Outside the Box'=>'att_obox_goal',
+		        'Penalty Goal'=>'att_pen_goal',
+		        'Freekick Shots'=>'att_freekick_post',
+		        'On Target Scoring Attempt'=>'ontarget_scoring_att',
+		        'Shot From Outside the Box'=>'att_obox_target',
+		        'big_chance_created'=>'big_chance_created',
+		        'big_chance_scored'=>'big_chance_scored',
+		        'goal_assist'=>'goal_assist',
+		        'total_assist_attempt'=>'total_att_assist',
+		        'Second Goal Assist'=>'second_goal_assist',
+		        'final_third_entries'=>'final_third_entries',
+		        'fouled_final_third'=>'fouled_final_third',
+		        'pen_area_entries'=>'pen_area_entries',
+		        'won_contest'=>'won_contest',
+		        'won_corners'=>'won_corners',
+		        'penalty_won'=>'penalty_won',
+		        'last_man_contest'=>'last_man_contest',
+		        'accurate_corners_intobox'=>'accurate_corners_intobox',
+		        'accurate_cross_nocorner'=>'accurate_cross_nocorner',
+		        'accurate_freekick_cross'=>'accurate_freekick_cross',
+		        'accurate_launches'=>'accurate_launches',
+		        'long_pass_own_to_opp_success'=>'long_pass_own_to_opp_success',
+		        'successful_final_third_passes'=>'successful_final_third_passes',
+		        'accurate_flick_on'=>'accurate_flick_on'
+		    );
+
+
+		$defending = array(
+		        'aerial_won'=>'aerial_won',
+		        'ball_recovery'=>'ball_recovery',
+		        'duel_won'=>'duel_won',
+		        'effective_blocked_cross'=>'effective_blocked_cross',
+		        'effective_clearance'=>'effective_clearance',
+		        'effective_head_clearance'=>'effective_head_clearance',
+		        'interceptions_in_box'=>'interceptions_in_box',
+		        'interception_won' => 'interception_won',
+		        'possession_won_def_3rd' => 'poss_won_def_3rd',
+		        'possession_won_mid_3rd' => 'poss_won_mid_3rd',
+		        'possession_won_att_3rd' => 'poss_won_att_3rd',
+		        'won_tackle' => 'won_tackle',
+		        'offside_provoked' => 'offside_provoked',
+		        'last_man_tackle' => 'last_man_tackle',
+		        'outfielder_block' => 'outfielder_block'
+		    );
+
+		$goalkeeper = array(
+		                'dive_catch'=> 'dive_catch',
+		                'dive_save'=> 'dive_save',
+		                'stand_catch'=> 'stand_catch',
+		                'stand_save'=> 'stand_save',
+		                'cross_not_claimed'=> 'cross_not_claimed',
+		                'good_high_claim'=> 'good_high_claim',
+		                'punches'=> 'punches',
+		                'good_one_on_one'=> 'good_one_on_one',
+		                'accurate_keeper_sweeper'=> 'accurate_keeper_sweeper',
+		                'gk_smother'=> 'gk_smother',
+		                'saves'=> 'saves',
+		                'goals_conceded'=>'goals_conceded'
+		                    );
+
+
+		$mistakes_and_errors = array(
+		            'penalty_conceded'=>'penalty_conceded',
+		            'red_card'=>'red_card',
+		            'yellow_card'=>'yellow_card',
+		            'challenge_lost'=>'challenge_lost',
+		            'dispossessed'=>'dispossessed',
+		            'fouls'=>'fouls',
+		            'overrun'=>'overrun',
+		            'total_offside'=>'total_offside',
+		            'unsuccessful_touch'=>'unsuccessful_touch',
+		            'error_lead_to_shot'=>'error_lead_to_shot',
+		            'error_lead_to_goal'=>'error_lead_to_goal'
+		            );
+		$map = array('games'=>$games,
+		              'passing_and_attacking'=>$passing_and_attacking,
+		              'defending'=>$defending,
+		              'goalkeeper'=>$goalkeeper,
+		              'mistakes_and_errors'=>$mistakes_and_errors
+		             );
+		
+		$data = $rs['data'];
+
+		
+		switch($data['player']['position']){
+		    case 'Forward':
+		        $pos = "f";
+		    break;
+		    case 'Midfielder':
+		        $pos = "m";
+		    break;
+		    case 'Defender':
+		        $pos = "d";
+		    break;
+		    default:
+		        $pos = 'g';
+		    break;
+		}
+		$total_points = 0;
+		$main_stats_vals = array('games'=>0,
+		                            'passing_and_attacking'=>0,
+		                            'defending'=>0,
+		                            'goalkeeper'=>0,
+		                            'mistakes_and_errors'=>0,
+		                         );
+
+
+
+		if(isset($data['overall_stats'])){
+		    foreach($data['overall_stats'] as $stats){
+		        foreach($map as $mainstats=>$substats){
+		            foreach($substats as $n=>$v){
+		                
+		                if($v==$stats['stats_name']){
+		                    if(!isset($main_stats_vals[$mainstats])){
+		                        $main_stats_vals[$mainstats] = 0;
+		                        $main_stats_ori[$mainstats] = 0;
+		                    }
+		                    $main_stats_vals[$mainstats] += ($stats['total'] *
+		                                                    $this->getModifierValue($modifiers,
+		                                                                            $v,
+		                                                                            $pos));
+
+		                   
+		                }
+		            }
+		        }
+		    }
+		    foreach($main_stats_vals as $n){
+		        $total_points += $n;
+		    }
+
+			
+
+			$stats = array(
+				'games'=>$this->getStats('games',$pos,$modifiers,$map,$data['overall_stats']),
+				'passing_and_attacking'=>$this->getStats('passing_and_attacking',$pos,$modifiers,$map,$data['overall_stats']),
+				'defending'=>$this->getStats('defending',$pos,$modifiers,$map,$data['overall_stats']),
+				'goalkeeping'=>$this->getStats('goalkeeper',$pos,$modifiers,$map,$data['overall_stats']),
+				'mistakes_and_errors'=>$this->getStats('mistakes_and_errors',$pos,$modifiers,$map,$data['overall_stats']),
+
+			);
+			
+		}
+		$response['player'] = array('info'=>$data['player'],
+									 'summary'=>$main_stats_vals,
+										'stats'=>$stats);
+		
+		
+		$this->set('response',array('status'=>1,'data'=>$response));
+		$this->render('default');
+	}
+	/**
+	* buy a player
+	*/
+	public function buy(){
+		$this->loadModel('Team');
+		$this->loadModel('User');
+		$api_session = $this->readAccessToken();
+		$fb_id = $api_session['fb_id'];
+		$user = $this->User->findByFb_id($fb_id);
+		
+		
+		if(strlen($user['User']['avatar_img'])<2){
+			$user['User']['avatar_img'] = "http://graph.facebook.com/".$fb_id."/picture";
+		}else{
+			$user['User']['avatar_img'] = Configure::read('avatar_web_url').'120x120_'.$user['User']['avatar_img'];
+		}
+
+		$game_team = $this->Game->getTeam($fb_id);
+
+		$player_id = Sanitize::clean($this->request->data['player_id']);
+
+		$window = $this->Game->transfer_window();
+		$window_id = intval(@$window['id']);
+		
+		//check if the transfer window is opened, or the player is just registered within 24 hours
+		$is_new_user = false;
+		$can_transfer = false;
+
+		if(time()<strtotime($user['User']['register_date'])+(24*60*60)){
+			$is_new_user = true;
+		}
+
+		if(!$is_new_user){
+			if(strtotime(@$window['tw_open']) <= time() && strtotime(@$window['tw_close'])>=time()){
+				$can_transfer = true;
+				
+			}
+		}else{
+			$can_transfer = true;
+		}
+
+		if(strlen($player_id)<2){
+			
+			$rs = array('status'=>'0','error'=>'no data available');
+
+		}else{
+			if($can_transfer){
+				$rs = $this->Game->buy_player($window_id,$game_team['id'],$player_id);
+			
+				//reset financial statement
+				$this->Session->write('FinancialStatement',null);
+				
+
+				if(@$rs['status']==1){
+					$msg = "@p1_".$user['User']['id']." telah membeli {$rs['data']['name']} seharga SS$".number_format($rs['data']['transfer_value']);
+					
+				}else{
+					$rs = array('status'=>'0','error'=>'Transaction Failed');
+				}
+			}else{
+				$rs = array('status'=>3,'message'=>'Transfer window is closed');
+			}
+		}
+
+		
+
+		$this->set('response',$rs);
+		$this->render('default');
+	}
 }
