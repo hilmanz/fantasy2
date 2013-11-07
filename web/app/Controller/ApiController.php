@@ -1492,7 +1492,7 @@ class ApiController extends AppController {
 		$this->render('default');
 	}
 	//dummy for selling player
-	public function test_sale(){
+	public function test_buy(){
 		$game_team = $this->Game->getTeam($fb_id);
 
 		$player_id = Sanitize::clean($this->request->data['player_id']);
@@ -1542,7 +1542,7 @@ class ApiController extends AppController {
 	}
 
 	//dummy for buying player
-	public function test_buy(){
+	public function test_sale(){
 		$game_team = $this->Game->getTeam($fb_id);
 
 		$player_id = Sanitize::clean($this->request->data['player_id']);
