@@ -512,7 +512,7 @@ exports.buy = function(req,res){
 					res.send(200,{status:2,data:{player:{},stats:[]}});
 				}else if(err.message == 'INVALID_TRANSFER_WINDOW'){
 					res.send(200,{status:-1,
-									message:'you cannot sale a player who already bought from the same transfer window'});
+									message:'you cannot buy a player who already sold from the same transfer window'});
 				}else{
 					handleError(res);	
 				}
@@ -520,7 +520,7 @@ exports.buy = function(req,res){
 				if(result!=null){
 					res.send(200,{status:1,data:result,message:'the player has been successfully bought.'});
 				}else{
-					res.send(200,{status:0,message:'Oops, cannot sale the player.'});
+					res.send(200,{status:0,message:'Oops, cannot buy the player.'});
 				}	
 			}
 		}

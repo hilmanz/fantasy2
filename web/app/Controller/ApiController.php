@@ -1345,6 +1345,78 @@ class ApiController extends AppController {
 		$this->render('default');
 	}
 	/**
+	* sale a player
+	*/
+	public function sale(){
+		$this->loadModel('Team');
+		$this->loadModel('User');
+		$api_session = $this->readAccessToken();
+		$fb_id = $api_session['fb_id'];
+		$user = $this->User->findByFb_id($fb_id);
+		
+		
+		if(strlen($user['User']['avatar_img'])<2){
+			$user['User']['avatar_img'] = "http://graph.facebook.com/".$fb_id."/picture";
+		}else{
+			$user['User']['avatar_img'] = Configure::read('avatar_web_url').'120x120_'.$user['User']['avatar_img'];
+		}
+
+		$game_team = $this->Game->getTeam($fb_id);
+
+		$player_id = Sanitize::clean($this->request->data['player_id']);
+
+		$window = $this->Game->transfer_window();
+
+		//check if the transfer window is opened, or the player is just registered within 24 hours
+		$is_new_user = false;
+		$can_transfer = false;
+		if(time()<strtotime($this->user['User']['register_date'])+(24*60*60)){
+			$is_new_user = true;
+		}
+		if(!$is_new_user){
+			if(strtotime(@$window['tw_open']) <= time() && strtotime(@$window['tw_close'])>=time()){
+				$can_transfer = true;
+				
+			}
+		}else{
+			$can_transfer = true;
+		}
+		
+		if(strlen($player_id)<2){
+			
+			$rs = array('status'=>'0','error'=>'no data available');
+
+		}else{
+
+			if($can_transfer){
+				$window_id = $window['id'];
+				$rs = $this->Game->sale_player($window_id,$game_team['id'],$player_id);
+
+				//reset financial statement
+				$this->Session->write('FinancialStatement',null);
+				
+				
+				if(@$rs['status']==1){
+					//do nothing
+				}else if(@$rs['status']==2){
+					$rs = array('status'=>2,'message'=>'No Money');
+					
+				}else if(@$rs['status']==-1){
+					$rs = array('status'=>-1,'message'=>'you cannot sale a player who already bought from the same transfer window');
+					
+				}else if(isset($rs['error'])){
+					$rs = array('status'=>'0','error'=>'Transaction Failed');
+				}
+			}else{
+				$rs = array('status'=>3,'message'=>'Transfer window is closed','open'=>strtotime(@$window['tw_open']),
+							'close'=> strtotime(@$window['tw_close']), 'now'=>time());
+			}
+		}
+		
+		$this->set('response',$rs);
+		$this->render('default');
+	}
+	/**
 	* buy a player
 	*/
 	public function buy(){
@@ -1400,12 +1472,114 @@ class ApiController extends AppController {
 				if(@$rs['status']==1){
 					$msg = "@p1_".$user['User']['id']." telah membeli {$rs['data']['name']} seharga SS$".number_format($rs['data']['transfer_value']);
 					
-				}else{
+				}else if(@$rs['status']==2){
+					$rs = array('status'=>2,'message'=>'No Money');
+					
+				}else if(@$rs['status']==-1){
+					$rs = array('status'=>-1,'message'=>'you cannot buy a player who already sold from the same transfer window');
+					
+				}else if(isset($rs['error'])){
 					$rs = array('status'=>'0','error'=>'Transaction Failed');
 				}
 			}else{
 				$rs = array('status'=>3,'message'=>'Transfer window is closed');
 			}
+		}
+
+		
+
+		$this->set('response',$rs);
+		$this->render('default');
+	}
+	//dummy for selling player
+	public function test_sale(){
+		$game_team = $this->Game->getTeam($fb_id);
+
+		$player_id = Sanitize::clean($this->request->data['player_id']);
+		$call_status = $this->request->data['status'];
+		
+		if(strlen($player_id)<2){
+			
+			$rs = array('status'=>'0','error'=>'no data available');
+
+		}else{
+			switch($call_status){
+				case 1:
+					$rs = array('status'=>1,'data'=>array(
+									'name'=>'Michael Carrick',
+									'transfer_value'=>10111573,
+								),
+								'message'=>"the player has been successfully bought.");
+
+				break;
+				case 2:
+					$rs = array('status'=>2,'message'=>'no money');
+
+				break;
+				case -1:
+					$rs = array('status'=>-1,'message'=>'you cannot buy a player who already bought from the same transfer window');
+
+				break;
+				case 3:
+					$rs = array('status'=>3,'message'=>'Transfer window is closed');
+
+				break;
+				case 0:
+					$rs = array('status'=>0,'message'=>'Oops, cannot buy the player.');
+
+				break;
+				default:
+					$rs = array('status'=>'0','error'=>'no data available');
+				break;
+			}
+			
+		}
+
+		
+
+		$this->set('response',$rs);
+		$this->render('default');
+	}
+
+	//dummy for buying player
+	public function test_buy(){
+		$game_team = $this->Game->getTeam($fb_id);
+
+		$player_id = Sanitize::clean($this->request->data['player_id']);
+		$call_status = $this->request->data['status'];
+		
+		if(strlen($player_id)<2){
+			
+			$rs = array('status'=>'0','error'=>'no data available');
+
+		}else{
+			switch($call_status){
+				case 1:
+					$rs = array('status'=>1,'data'=>array(
+									'name'=>'Michael Carrick',
+									'transfer_value'=>10111573,
+								),
+								'message'=>"the player has been successfully sold.");
+
+				break;
+				
+				case -1:
+					$rs = array('status'=>-1,'message'=>'you cannot sale a player who already bought from the same transfer window');
+
+				break;
+				case 3:
+					$rs = array('status'=>3,'message'=>'Transfer window is closed');
+
+				break;
+				case 0:
+					$rs = array('status'=>0,'message'=>'Oops, cannot sale the player.');
+
+				break;
+				default:
+					$rs = array('status'=>0,'error'=>'no data available');
+				break;
+			}
+			
 		}
 
 		
