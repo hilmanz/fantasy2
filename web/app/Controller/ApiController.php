@@ -190,32 +190,38 @@ class ApiController extends AppController {
 		$this->loadModel('Team');
 		$this->loadModel('User');
 		$this->loadModel('Info');
-		if($this->request->is('post')){
-			$api_session = $this->readAccessToken();
-			$fb_id = $api_session['fb_id'];
-			$user = $this->User->findByFb_id($fb_id);
-			$game_team = $this->Game->getTeam($fb_id);
+		//can updte formation
+		if($this->closeTime > time() && $this->openTime < time()){
+			
+			if($this->request->is('post')){
+				$api_session = $this->readAccessToken();
+				$fb_id = $api_session['fb_id'];
+				$user = $this->User->findByFb_id($fb_id);
+				$game_team = $this->Game->getTeam($fb_id);
 
-			$formation = $this->request->data['formation'];
+				$formation = $this->request->data['formation'];
 
-			$players = array();
-			foreach($this->request->data as $n=>$v){
-				if(eregi('player-',$n)&&$v!=0){
-					$players[] = array('player_id'=>str_replace('player-','',$n),'no'=>intval($v));
+				$players = array();
+				foreach($this->request->data as $n=>$v){
+					if(eregi('player-',$n)&&$v!=0){
+						$players[] = array('player_id'=>str_replace('player-','',$n),'no'=>intval($v));
+					}
 				}
-			}
-			$lineup = $this->Game->setLineup($game_team['id'],$formation,$players);
-			
-			if($lineup['status']==1){
-				$msg = "@p1_".$user['User']['id']." telah menentukan formasinya.";
-				$this->Info->write('set formation',$msg);
-				$this->set('response',array('status'=>1,'message'=>'Formation is been saved successfully !'));
+				$lineup = $this->Game->setLineup($game_team['id'],$formation,$players);
+				
+				if($lineup['status']==1){
+					$msg = "@p1_".$user['User']['id']." telah menentukan formasinya.";
+					$this->Info->write('set formation',$msg);
+					$this->set('response',array('status'=>1,'message'=>'Formation is been saved successfully !'));
+				}else{
+					$this->set('response',array('status'=>0,'error'=>'There is an error in formation setup !'));
+				}
+				
 			}else{
-				$this->set('response',array('status'=>0,'error'=>'There is an error in formation setup !'));
+				$this->set('response',array('status'=>404,'error'=>'method not found'));
 			}
-			
 		}else{
-			$this->set('response',array('status'=>404,'error'=>'method not found'));
+			$this->set('response',array('status'=>0,'error'=>'you cannot update formation at these moment, please wait until the matches is over.'));
 		}
 
 		$this->render('default');
@@ -409,6 +415,12 @@ class ApiController extends AppController {
 		//close time
 		$response['close_time'] = $this->closeTime;
 
+		//can updte formation
+		if($this->closeTime > time() && $this->openTime < time()){
+			$response['can_update_formation'] = 1;	
+		}else{
+			$response['can_update_formation'] = 0;
+		}
 
 		//weekly points and weekly balances
 
