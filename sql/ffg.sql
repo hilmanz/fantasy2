@@ -182,3 +182,6 @@ CREATE TABLE ffg.team_summary (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQUE_TEAM` (`game_team_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `ffg`.`weekly_ranks` ADD INDEX `IDX_MATCHDAY` (`matchday`);

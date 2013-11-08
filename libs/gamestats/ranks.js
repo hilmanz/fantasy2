@@ -138,6 +138,7 @@ function recalculate_ranks(conn,done){
 	
 }
 function populate(conn,teams,done){
+	
 	async.eachSeries(teams,function(team,next){
 		//console.log(team.fb_id);
 		getUserTeamPoints(conn,team.fb_id,function(err,stats){
@@ -150,6 +151,19 @@ function populate(conn,teams,done){
 	},function(err){
 		done(null);	
 	});
+	/*
+	console.log('fiuh');
+	var team = {
+		fb_id:'100004502232155',
+		team_id:17466
+	}
+	getUserTeamPoints(conn,'100004502232155',function(err,stats){
+			//console.log(stats);
+			updatePoints(conn,team,stats,function(err){
+				done(null);
+			});
+		});
+	*/
 }
 function updatePoints(conn,team,stats,done){
 
@@ -283,6 +297,7 @@ function getUserTeamPoints(conn,fb_id,done){
 			},
 			function(rs,callback){
 				if(rs!=null&&rs.id!=null){
+					var original_team_id = rs.team_id;
 					//extra points
 					conn.query("SELECT SUM(extra_points) AS extra_point \
 								FROM ffgame_stats.game_team_extra_points \
@@ -294,13 +309,13 @@ function getUserTeamPoints(conn,fb_id,done){
 											rs.extra_points = r[0].extra_point;
 										}
 									}
-									callback(err,rs);
+									callback(err,original_team_id,rs);
 					});
 				}else{
-					callback(null,rs);
+					callback(null,original_team_id,rs);
 				}
 			},
-			function(rs,callback){
+			function(original_team_id,rs,callback){
 				if(rs!=null){
 					//get per game stats
 					if(rs.id!=null){
@@ -317,12 +332,67 @@ function getUserTeamPoints(conn,fb_id,done){
 									function(err,result){
 										//console.log(S(this.sql).collapseWhitespace().s);
 										rs.game_points = result;
-										callback(null,rs);
+										callback(null,original_team_id,rs);
 									});
 					}
 				}else{
+					callback(null,original_team_id,rs);
+				}
+			},
+			function(original_team_id,rs,callback){
+				var matchdays = {};
+
+				if(rs!=null && typeof rs.game_points !== 'undefined'){
+					for(var i in rs.game_points){
+						matchdays[rs.game_points[i].matchday] = 1;
+					}
+					var week = [];
+					for(var i in matchdays){
+						week.push(i);
+					}
+					console.log(week);
+					conn.query("SELECT game_id,matchday,match_date \
+								FROM ffgame.game_fixtures WHERE matchday=? AND (home_id = ? OR away_id=?)"
+								,[week,original_team_id,original_team_id],
+								function(err,matches){
+									console.log(S(this.sql).collapseWhitespace().s);
+									console.log(matches);
+									if(typeof rs.game_points!=='undefined' && matches!=null){
+										console.log(rs.game_points);
+										var other_games = [];
+										for(var i in matches){
+											var is_found = false;
+											for(var j in rs.game_points){
+												console.log(matches[i].game_id+'--'+rs.game_points[j].game_id);
+												if(rs.game_points[j].game_id == matches[i].game_id){
+													is_found = true;
+													break;
+												}
+											}
+											if(!is_found){
+												try{
+													other_games.push({
+													game_id:matches[i].game_id,
+													matchday:matches[i].matchday,
+													match_date:matches[i].match_date,
+													total_points:0,
+													extra_points:0
+													});	
+												}catch(e){}
+												
+											}
+										}
+										while(other_games.length>0){
+											rs.game_points.push(other_games.shift());
+										}
+									}
+									console.log(rs.game_points);
+									callback(err,rs);
+								});
+				}else{
 					callback(null,rs);
 				}
+				
 			},
 			function(rs,callback){
 				//extra weekly points

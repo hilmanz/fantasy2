@@ -113,6 +113,8 @@ function update_points_and_ranks(conn,done){
 	});
 }
 function update_team_points(conn,teams,done){
+	
+	
 	async.eachSeries(teams,function(item,next){
 		conn.query("INSERT INTO ffgame_stats.game_team_points\
 					(game_team_id,points)\
@@ -130,5 +132,6 @@ function update_team_points(conn,teams,done){
 	},function(err){
 		done(err);
 	});
+	
 	
 }
