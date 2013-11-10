@@ -1,6 +1,6 @@
 DELIMITER $$
 
-USE `ffg`$$
+USE `fantasy`$$
 
 DROP PROCEDURE IF EXISTS `recalculate_rank`$$
 
@@ -11,11 +11,15 @@ DECLARE i INT DEFAULT 1;
 DECLARE a BIGINT(11);
 DECLARE b INT(11);
 DECLARE curs CURSOR FOR 
-	SELECT a.team_id,(a.points + a.extra_points) AS points
-	FROM points a
-	INNER JOIN teams b
-	ON a.team_id = b.id 
-	ORDER BY (a.points+a.extra_points) DESC,a.team_id ASC;
+	SELECT c.team_id,(c.points + c.extra_points) AS points FROM (
+		SELECT team_id,points,extra_points FROM fantasy.points a
+		WHERE EXISTS (SELECT 1 FROM fantasy.weekly_points b 
+				  WHERE a.team_id = b.team_id LIMIT 1)
+		UNION ALL
+		SELECT team_id,-9999999 AS points,extra_points FROM fantasy.points a
+		WHERE NOT EXISTS (SELECT 1 FROM fantasy.weekly_points b 
+				  WHERE a.team_id = b.team_id LIMIT 1)) c
+	ORDER BY (c.points + c.extra_points) DESC,c.team_id ASC;
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET isDone = TRUE;
 OPEN curs;
 	SET isDone = FALSE;

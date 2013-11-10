@@ -35,6 +35,10 @@
                         <input type="text" name="email" value="<?=h($user['email'])?>"/>
                     </div><!-- end .row -->
                     <div class="row">
+                        <label>Nomor HP</label>
+                        <input type="text" name="phone_number" value="<?=h(@$user['phone_number'])?>"/>
+                    </div><!-- end .row -->
+                    <div class="row">
                         <label>Lokasi</label>
                         <input type="text" name="location" value="<?=h(@$user['location'])?>"/>
                     </div><!-- end .row -->

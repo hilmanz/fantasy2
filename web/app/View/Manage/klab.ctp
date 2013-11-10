@@ -165,7 +165,7 @@ function isStaffExist($staff_token,$name){
                     ?>
 									<tr id="p50004" class="odd">
 									  <td><a class="thumbClub" href="<?=$this->Html->url('/manage/matchinfo?game_id='.$game_id).'&r='.$hidden_params?>" title="<?=h($versus)?>"><img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=$versus_id?>.png"/></a></td>
-									  <td class="aligncenter"><?=round($points,1)?></td>
+									  <td class="aligncenter"><?=ceil($points)?></td>
 									  <td class="alignright"><?=number_format($income)?>
                       <?php if(!$is_home_game): echo "(Away)";endif;?>
                     </td>
@@ -239,7 +239,7 @@ function isStaffExist($staff_token,$name){
                                   $performance_bonus = 0;
                                 }
                               ?>
-					                    <td class="aligncenter"><?=number_format(intval($player['points']))?></td>
+					                    <td class="aligncenter"><?=(($player['points']))?></td>
 					                    <td class="alignright">ss$ <?=number_format(intval($player['transfer_value'])+$performance_bonus)?></td>
 					                    
 					                  </tr>
@@ -580,7 +580,7 @@ function isStaffExist($staff_token,$name){
                         $performance_bonus = 0;
                       }
                     ?>
-                    <td class="aligncenter"><?=(floatval($player['points']))?></td>
+                    <td class="aligncenter"><?=(($player['points']))?></td>
                     <td class="alignright">ss$ <?=number_format(intval($player['transfer_value'])+$performance_bonus)?></td>
                     <td width="10"><a data-team-name="<?=h($club['team_name'])?>" data-player-name="<?=$player['name']?>" data-price="<?=number_format(intval($player['transfer_value'])+$performance_bonus)?>" data-team="<?=$player['team_id']?>" data-player="<?=$player['uid']?>" id="btnSale" class="buttons" href="<?=$this->Html->url('/manage/player/'.$player['uid'])?>"><span>LIHAT</span></a></td>
                   </tr>

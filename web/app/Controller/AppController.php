@@ -64,7 +64,13 @@ class AppController extends Controller {
 			$this->ApiInit();
 			
 		}else{
+			$last_session = intval($this->Session->read('LastSession'));
 			
+			if($last_session < time()){
+				$this->Session->write('FinancialStatement',null);
+				$this->Session->write('LastSession',time()+60*15);//set 15 menit saja.
+				
+			}
 			
 
 			$this->set('FB_APP_ID',Configure::read('FB.APP_ID'));

@@ -65,6 +65,7 @@ http.request(options, function(response){
 function update_points_and_ranks(conn,done){
 	async.waterfall([
 		function(cb){
+			
 			console.log('updating game team points');
 			var since_id = 0;
 			var has_data = true;
@@ -96,7 +97,7 @@ function update_points_and_ranks(conn,done){
 					cb(err);
 				}
 			);
-			
+			//cb(null);
 			
 		},
 		function(cb){

@@ -85,8 +85,10 @@ class ProfileController extends AppController {
 			$data = array(
 				'name'=>$this->request->data['name'],
 				'email'=>$this->request->data['email'],
+				'phone_number'=>$_POST['phone_number'],
 				'location'=>$this->request->data['location']
 			);
+			
 			$userData = $this->getUserData();
 			$this->loadModel('User');
 			$user = $this->User->findByFb_id($userData['fb_id']);

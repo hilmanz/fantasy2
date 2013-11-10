@@ -36,7 +36,7 @@ var conn = mysql.createConnection({
 });
 
 var start = 0;
-var limit = 100;
+var limit = 1000;
 var doLoop = true;
 async.doWhilst(
 	function(callback){
@@ -135,18 +135,6 @@ function getPlayerDailyTeamStats(conn,game_team_id,player_id,player_pos,matchday
 			INNER JOIN ffgame.game_fixtures b\
 			ON a.game_id = b.game_id\
 			WHERE a.player_id=? AND b.matchday=?\
-			AND EXISTS(\
-				SELECT 1\
-				FROM ffgame.game_team_players c\
-				WHERE c.game_team_id=?\
-				AND c.player_id = a.player_id\
-				LIMIT 1\
-			)\
-			AND EXISTS(\
-				SELECT 1 FROM ffgame_stats.game_match_player_points d\
-				WHERE d.game_team_id=? AND d.game_id = a.game_id \
-				AND d.player_id = a.player_id LIMIT 1\
-			)\
 			LIMIT 500;";
 	
 	

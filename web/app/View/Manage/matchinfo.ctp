@@ -103,5 +103,5 @@ function getTotalPoints($str,$stats){
     </div>
 </div>
 <script>
-$(".totalpoin").html(<?=$overall_points?>);
+$(".totalpoin").html(<?=ceil($overall_points)?>);
 </script>
