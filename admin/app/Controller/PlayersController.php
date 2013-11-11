@@ -374,8 +374,89 @@ class PlayersController extends AppController {
 									FROM ffgame.game_fixtures Fixture 
 									WHERE period='FullTime'");
 		
-		$this->set('last_week',$rs[0][0]['last_week']);
-	}		
+		$week = intval($this->request->query['week']);
+		if(intval($week)>0){
+			$this->set('last_week',$week);
+		}else{
+			$this->set('last_week',$rs[0][0]['last_week']);	
+		}
+		
+	}
+	/**
+	* get player weekly details
+	* 
+	*/	
+	public function playerweekly_details($player_id,$week=1){
+		//$this->Game->query("");
+		$rs = $this->Game->get_player_info($player_id);
+		$player = $rs['data']['player'];
+		
+		$this->set('data',$rs['data']);
+		$this->set('week',$week);
+
+		//get game_ids
+		$games = $this->Game->query("SELECT game_id FROM ffgame.game_fixtures 
+										WHERE matchday={$week} LIMIT 10");
+		$game_id = array();
+		foreach($games as $game){
+			
+			$game_id[] = "'".$game['game_fixtures']['game_id']."'";
+		}
+		$str_ids = implode(',',$game_id);
+		$stats = $this->Game->query("SELECT * FROM 
+									 ffgame_stats.master_player_stats a
+									 WHERE player_id='{$player['player_id']}' 
+									 AND game_id IN ({$str_ids});
+									");
+		$a_stats = array();
+		foreach($stats as $s){
+			$a_stats[$s['a']['stats_name']] = $s['a']['stats_value'];
+		}
+
+		//modifiers
+		$modifier = $this->Game->query("SELECT * FROM ffgame.game_matchstats_modifier s");
+		$mods = array();
+		while(sizeof($modifier)>0){
+			$m = array_shift($modifier);
+			$mods[$m['s']['name']] = array('goalkeeper'=>$m['s']['g'],
+										'defender'=>$m['s']['d'],
+										'midfielder'=>$m['s']['m'],
+										'forward'=>$m['s']['f']);
+		}
+		//distributed into groups
+		$map = $this->getStatsCategories();
+		$statsgroup = array('games'=>array(),
+							'passing_and_attacking'=>array(),
+							'goalkeeping'=>array(),
+							'defending'=>array(),
+							'mistakes_and_errors'=>array(),
+							);
+		foreach($a_stats as $stats_name=>$stats_value){
+			$_stats = array(
+					'total'=>$stats_value,
+					'points'=>$mods[$stats_name][strtolower($player['position'])] * $stats_value
+				);
+			if($this->is_in_category($map,'games',$stats_name)){
+              	$statsgroup['games'][$stats_name] = $_stats;
+          	}
+          	if($this->is_in_category($map,'goalkeeping',$stats_name)){
+              	$statsgroup['goalkeeping'][$stats_name] = $_stats;
+          	}
+          	if($this->is_in_category($map,'passing_and_attacking',$stats_name)){
+              	$statsgroup['passing_and_attacking'][$stats_name] = $_stats;
+          	}
+          	if($this->is_in_category($map,'defending',$stats_name)){
+              	$statsgroup['defending'][$stats_name] = $_stats;
+          	}
+          	if($this->is_in_category($map,'mistakes_and_errors',$stats_name)){
+              	$statsgroup['mistakes_and_errors'][$stats_name] = $_stats;
+          	}
+          				
+		}
+		$this->set('stats',$statsgroup);
+	}
+
+
 	public function player_performances(){
 		$this->layout = 'ajax';
 		$data = array();

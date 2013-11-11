@@ -14,11 +14,19 @@
             <?php endforeach;endif;?>
           </ul><!-- end #newsticker -->
     </div>
-    <h4 id='ct1' class="fr countdown"><span class="yellow ctday">6</span> HARI  <span class="yellow cthour">0</span> JAM  <span class="yellow ctminute">0</span> MENIT ke penutupan</h4>
-    <h4 id='ct0' class="fr countdown" style="display:none;"><span class="yellow ctsec">0</span> DETIK ke penutupan</h4>
-    <h4 id='ct2' class="fr countdown" style="display:none;">
-    	<span class="yellow">Batas Waktu Set Formasi Sudah Lewat</span>
-    </h4>
+    <?php if(time() > $open_time):?>
+	    <h4 id='ct1' class="fr countdown"><span class="yellow ctday">6</span> HARI  <span class="yellow cthour">0</span> JAM  <span class="yellow ctminute">0</span> MENIT ke penutupan</h4>
+	    <h4 id='ct0' class="fr countdown" style="display:none;"><span class="yellow ctsec">0</span> DETIK ke penutupan</h4>
+	    <h4 id='ct2' class="fr countdown" style="display:none;">
+	    	<span class="yellow">Batas Waktu Set Formasi Sudah Lewat</span>
+	    </h4>
+    <?php else:?>
+	     <h4 id='ct3' class="fr countdown">
+	    	<span class="yellow">
+	    		Set Formasi akan dibuka ketika semua perhitungan Ranking dan Poin selesai.
+	    	</span>
+	    </h4>
+	<?php endif;?>
 </div><!-- end #info-bar -->
 <script>
 <?php

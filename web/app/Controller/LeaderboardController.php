@@ -233,6 +233,7 @@ class LeaderboardController extends AppController {
 	    $this->loadModel('User');
 	    $this->Point->virtualFields['TotalPoints'] = '(Point.points + Point.extra_points)';
 	    $this->paginate = array(
+	    	'conditions'=>array('NOT'=>array('rank'=>0)),
 	        'limit' => 100,
 	        'order' => array(
 	            'Point.rank' => 'asc'

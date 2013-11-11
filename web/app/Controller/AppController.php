@@ -160,7 +160,7 @@ class AppController extends Controller {
 				$this->set('close_time',$close_time);
 
 				//formation open time
-				$open_time = $this->nextMatch['match']['last_match_ts'] + (24*60*60);
+				$open_time = $this->nextMatch['match']['last_match_ts'] + (2*60*60);
 				$this->openTime = $open_time;
 				$this->set('open_time',$open_time);
 

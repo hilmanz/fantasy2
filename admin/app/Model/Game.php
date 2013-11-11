@@ -42,7 +42,13 @@ class Game extends AppModel {
 		$response = $this->api_call('/teams');
 		return $response;
 	}
-	
+	/*
+	* similar to get_team_player_info, but we dont care if the player is not ours
+	*/
+	public function get_player_info($player_id){
+		$response = $this->api_call('/player/'.$player_id);
+		return $response;
+	}
 	public function getMasterTeam($team_id){
 		$response = $this->api_call('/players/'.$team_id);
 		return $response;
