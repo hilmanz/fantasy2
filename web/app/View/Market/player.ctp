@@ -1,4 +1,6 @@
 <?php
+require_once APP . 'Vendor' . DS. 'stats.locale.php';
+
 $can_purchase = true;
 if(time() > $close_time['ts'] && Configure::read('debug') == 0){
     $can_purchase = false;
@@ -321,7 +323,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
 								$profileStats = getStats('games',$pos,$modifiers,$map,$data['overall_stats']);
 								if(isset($profileStats)):
 									foreach($profileStats as $statsName=>$statsVal):
-										$statsName = ucfirst(str_replace('_',' ',$statsName));
+										$statsName = stats_translated($statsName,'id');
 							?>
 							  <tr>
 								<td><p class="s-title"><?=$statsName?></p></td>
@@ -358,7 +360,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
 								$profileStats = getStats('passing_and_attacking',$pos,$modifiers,$map,$data['overall_stats']);
 								if(isset($profileStats)):
 									foreach($profileStats as $statsName=>$statsVal):
-										$statsName = ucfirst(str_replace('_',' ',$statsName));
+										$statsName = stats_translated($statsName,'id');
 							?>
 							  <tr>
 								<td><p class="s-title"><?=$statsName?></p></td>
@@ -397,7 +399,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                             $profileStats = getStats('defending',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
                                 foreach($profileStats as $statsName=>$statsVal):
-                                    $statsName = ucfirst(str_replace('_',' ',$statsName));
+                                    $statsName = stats_translated($statsName,'id');
                         ?>
                           <tr>
                             <td><p class="s-title"><?=$statsName?></p></td>
@@ -435,7 +437,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                             $profileStats = getStats('goalkeeper',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
                                 foreach($profileStats as $statsName=>$statsVal):
-                                    $statsName = ucfirst(str_replace('_',' ',$statsName));
+                                    $statsName = stats_translated($statsName,'id');
                         ?>
                           <tr>
                             <td><p class="s-title"><?=$statsName?></p></td>
@@ -473,7 +475,7 @@ function getStats($category,$pos,$modifiers,$map,$stats){
                             $profileStats = getStats('mistakes_and_errors',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
                                 foreach($profileStats as $statsName=>$statsVal):
-                                    $statsName = ucfirst(str_replace('_',' ',$statsName));
+                                    $statsName = stats_translated($statsName,'id');
                         ?>
                           <tr>
                             <td><p class="s-title"><?=$statsName?></p></td>

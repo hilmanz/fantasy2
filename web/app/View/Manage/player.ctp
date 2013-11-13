@@ -23,6 +23,7 @@ var daily_stats = {};
 
 </script>
 <?php
+require_once APP . 'Vendor' . DS. 'stats.locale.php';
 //mapping statistics
 $games = array(
         'game_started'=>'game_started',
@@ -359,7 +360,8 @@ $weekly_performance = null;
 								$profileStats = getStats('games',$pos,$modifiers,$map,$data['overall_stats']);
 								if(isset($profileStats)):
 									foreach($profileStats as $statsName=>$statsVal):
-										$statsName = ucfirst(str_replace('_',' ',$statsName));
+										//$statsName = ucfirst(str_replace('_',' ',$statsName));
+                                        $statsName = stats_translated($statsName,'id');
 							?>
 							  <tr>
 								<td><p class="s-title"><?=$statsName?></p></td>
@@ -396,7 +398,7 @@ $weekly_performance = null;
 								$profileStats = getStats('passing_and_attacking',$pos,$modifiers,$map,$data['overall_stats']);
 								if(isset($profileStats)):
 									foreach($profileStats as $statsName=>$statsVal):
-										$statsName = ucfirst(str_replace('_',' ',$statsName));
+										$statsName = stats_translated($statsName,'id');
 							?>
 							  <tr>
 								<td><p class="s-title"><?=$statsName?></p></td>
@@ -435,7 +437,7 @@ $weekly_performance = null;
                             $profileStats = getStats('defending',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
                                 foreach($profileStats as $statsName=>$statsVal):
-                                    $statsName = ucfirst(str_replace('_',' ',$statsName));
+                                    $statsName = stats_translated($statsName,'id');
                         ?>
                           <tr>
                             <td><p class="s-title"><?=$statsName?></p></td>
@@ -473,7 +475,7 @@ $weekly_performance = null;
                             $profileStats = getStats('goalkeeper',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
                                 foreach($profileStats as $statsName=>$statsVal):
-                                    $statsName = ucfirst(str_replace('_',' ',$statsName));
+                                     $statsName = stats_translated($statsName,'id');
                         ?>
                           <tr>
                             <td><p class="s-title"><?=$statsName?></p></td>
@@ -511,7 +513,7 @@ $weekly_performance = null;
                             $profileStats = getStats('mistakes_and_errors',$pos,$modifiers,$map,$data['overall_stats']);
                             if(isset($profileStats)):
                                 foreach($profileStats as $statsName=>$statsVal):
-                                    $statsName = ucfirst(str_replace('_',' ',$statsName));
+                                    $statsName = stats_translated($statsName,'id');
                         ?>
                           <tr>
                             <td><p class="s-title"><?=$statsName?></p></td>
