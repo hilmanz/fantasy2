@@ -46,6 +46,9 @@
 								<li>
 									<a href="<?=$this->Html->url('/sponsors')?>">Sponsors</a>
 								</li>
+                                <li>
+                                    <a href="<?=$this->Html->url('/events')?>">Events</a>
+                                </li>
 							</ul>
                         </li>
                     	<li><a href="#">OPTA</a>

@@ -17,7 +17,7 @@ function stats_translated($stats_name,$locale='id'){
 	    'On Target Scoring Attempt'=>'Melakukan tendangan dengan akurat',
 	    'Shot From Outside the Box'=>'Melakukan tendangan dengan akurat dari luar kotak pinalti',
 	    'big_chance_created'=>'Berperan menciptakan sebuah peluang matang',
-	    'big_chance_scored'=>'Berperan menciptakan sebuah peluang matang yang akhirnya menjadi gol',
+	    'big_chance_scored'=>'Berperan menciptakan atau menyelesaikan sebuah peluang matang yang akhirnya menjadi gol',
 	    'goal_assist'=>'Melakukan assist',
 	    'total_assist_attempt'=>'Melahirkan peluang yang berakhir dengan tendangan ke gawang',
 	    'Second Goal Assist'=>'Mengawali serangan yang berakhir dengan terjadinya sebuah gol',
@@ -35,6 +35,7 @@ function stats_translated($stats_name,$locale='id'){
 	    'long_pass_own_to_opp_success'=>'Meluncurkan serangan dari dalam daerah pertahanan',
 	    'successful_final_third_passes'=>'Melakukan umpan akurat di dalam daerah pertahanan lawan',
 	    'accurate_flick_on'=>'Meneruskan umpan udara dengan menggunakan sundulan',
+	    
 	    //defending
 	    'aerial_won'=>'Memenangi duel di udara',
         'ball_recovery'=>'Menguasai bola liar / lepas',
