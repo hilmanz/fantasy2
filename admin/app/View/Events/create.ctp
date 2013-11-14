@@ -245,6 +245,14 @@
 		</tr>
 		<tr>
 			<td valign="top">
+				The Name to be appear on Report
+			</td>
+			<td>
+				<?=$data['name_appear_on_report']?>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
 				Email Subject
 			</td>
 			<td>
