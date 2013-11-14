@@ -1491,6 +1491,45 @@ class ApiController extends AppController {
 		$this->set('response',$rs);
 		$this->render('default');
 	}
+	public function transfer_status(){
+		$this->loadModel('Team');
+		$this->loadModel('User');
+		$api_session = $this->readAccessToken();
+		$fb_id = $api_session['fb_id'];
+		$user = $this->User->findByFb_id($fb_id);
+	
+
+		$window = $this->Game->transfer_window();
+		$window_id = intval(@$window['id']);
+		
+		//check if the transfer window is opened, or the player is just registered within 24 hours
+		$is_new_user = false;
+		$can_transfer = false;
+		
+		if(time()<strtotime($user['User']['register_date'])+(24*60*60)){
+			$is_new_user = true;
+		}
+
+		if(!$is_new_user){
+			if(strtotime(@$window['tw_open']) <= time() && strtotime(@$window['tw_close'])>=time()){
+				$can_transfer = true;
+				
+			}
+		}else{
+			$can_transfer = true;
+		}
+
+		
+		if($can_transfer){
+			$rs = array('status'=>1,'message'=>'Transfer window is open');
+		}else{
+			$rs = array('status'=>0,'message'=>'Transfer window is closed');
+		}
+
+	
+		$this->set('response',$rs);
+		$this->render('default');
+	}
 	//dummy for selling player
 	public function test_buy(){
 		$game_team = $this->Game->getTeam($fb_id);

@@ -48,19 +48,6 @@ function(err){
 	})
 });
 
-
-
-
-
-
-	
-	
-
-
-	
-	
-
-
 //process the queue in event_immediate table
 //foreach queue add money to game_team_expenditures and use event's name as its item name
 
