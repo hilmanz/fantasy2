@@ -47,7 +47,7 @@ var conn = mysql.createConnection({
 
 var bot_id = (typeof argv.bot_id !=='undefined') ? argv.bot_id : Math.round(1000+(Math.random()*999999));
 
-//The url we want is: 'www.random.org/integers/?num=1&min=1&max=10&col=1&base=10&format=plain&rnd=new'
+
 var options = {
   host: config.job_server.host,
   port: config.job_server.port,

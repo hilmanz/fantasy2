@@ -109,6 +109,14 @@
 	<table width="100%">
 		<tr>
 			<td valign="top">
+				Name Appear on Report
+			</td>
+			<td>
+				<input type="text" name="name_appear_on_report" value=""/>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
 				Email Subject
 			</td>
 			<td>

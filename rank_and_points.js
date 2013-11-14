@@ -65,7 +65,6 @@ http.request(options, function(response){
 function update_points_and_ranks(conn,done){
 	async.waterfall([
 		function(cb){
-			
 			console.log('updating game team points');
 			var since_id = 0;
 			var has_data = true;
@@ -115,8 +114,15 @@ function update_points_and_ranks(conn,done){
 }
 function update_team_points(conn,teams,done){
 	
-	
 	async.eachSeries(teams,function(item,next){
+		async.waterfall([
+			function(callback){
+				
+			}
+		],
+		function(err,rs){
+			next();
+		})
 		conn.query("INSERT INTO ffgame_stats.game_team_points\
 					(game_team_id,points)\
 					SELECT game_team_id,SUM(points) AS total_points\
@@ -127,7 +133,7 @@ function update_team_points(conn,teams,done){
 					[item.game_team_id],
 					function(err,rs){
 						console.log(S(this.sql).collapseWhitespace().s);
-						next();
+						
 					});
 
 	},function(err){

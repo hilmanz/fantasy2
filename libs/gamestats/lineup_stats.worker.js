@@ -546,6 +546,25 @@ function getPlayerDailyTeamStats(conn,game_team_id,player_id,player_pos,matchday
 			});
 		},
 		function(modifiers,result,callback){
+			//get event related points 
+			conn.query("SELECT amount FROM ffgame.job_event_master_player a\
+						INNER JOIN ffgame.master_events b\
+						ON a.master_event_id = b.id\
+						WHERE player_id=? AND affected_item = 2\
+						AND matchday=? AND a.n_status = 0 LIMIT 1;",[player_id,matchday],
+						function(err,rs){
+							console.log('EVENT APPLIED POINTS',S(this.sql).collapseWhitespace().s);
+							if(rs!=null && rs.length > 0){
+								console.log('EVENT APPLIED POINTS',rs);
+								var percentage = rs[0].amount/100;
+								console.log('point X ',percentage);
+								callback(err,percentage,modifiers,result);
+							}else{
+								callback(err,1,modifiers,result);
+							}
+						});
+		},
+		function(percentage,modifiers,result,callback){
 			//mapping
 			var weekly = [];
 			var point_modifier = 1.0;
@@ -563,6 +582,7 @@ function getPlayerDailyTeamStats(conn,game_team_id,player_id,player_pos,matchday
 								var points =  (parseInt(result[i].stats_value) * getModifierValue(modifiers,
 																	  					result[i].stats_name,
 																	  					pos));
+								console.log('EVENT APPLIED POINTS',points,'*',point_modifier,'*',percentage);
 								weekly.push({
 									game_id:result[i].game_id,
 									category:category,
@@ -571,7 +591,7 @@ function getPlayerDailyTeamStats(conn,game_team_id,player_id,player_pos,matchday
 									matchday:matchday,
 									stats_name:result[i].stats_name,
 									stats_value:result[i].stats_value,
-									points: (points * point_modifier),
+									points: ((points * point_modifier) * percentage),
 									position_no: position_no
 
 								});
