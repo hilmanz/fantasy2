@@ -778,3 +778,47 @@ CREATE TABLE ffgame.sponsor_banner_logs (
 ALTER TABLE `ffgame`.`email_queue`     CHANGE `n_status` `n_status` TINYINT(3) DEFAULT '0' NULL  COMMENT '0->pending, 1->sending, 2->OK, 3->FAILED';
 
 ALTER TABLE `ffgame`.`email_queue`     ADD COLUMN `subject` VARCHAR(140) NULL AFTER `id`;
+
+CREATE TABLE ffgame.job_event_immediate (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `master_event_id` bigint(21) DEFAULT NULL,
+  `game_team_id` bigint(21) DEFAULT NULL,
+  `apply_date` datetime DEFAULT NULL,
+  `n_status` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IDX_EVENT` (`master_event_id`,`game_team_id`),
+  KEY `IDX_STATUS` (`n_status`)
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+
+CREATE TABLE ffgame.job_event_master_player (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `master_event_id` bigint(21) DEFAULT NULL,
+  `player_id` varchar(32) DEFAULT NULL,
+  `matchday` int(11) DEFAULT '0',
+  `apply_date` datetime DEFAULT NULL,
+  `n_status` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IDX_EVENT` (`master_event_id`,`player_id`,`matchday`),
+  KEY `IDX_STATUS` (`n_status`)
+) ENGINE=InnoDB AUTO_INCREMENT=232 DEFAULT CHARSET=utf8;
+
+CREATE TABLE ffgame.master_events (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `event_name` varchar(140) DEFAULT NULL,
+  `event_type` tinyint(3) DEFAULT '1' COMMENT '1-> affects player data, 2-> affect master data',
+  `target_type` tinyint(3) DEFAULT '1' COMMENT '1-> individual team 2-> all teams 3-> by tier 4-> individual player teams',
+  `target_value` longtext COMMENT 'serialized value of the affected targets',
+  `affected_item` tinyint(3) DEFAULT '1' COMMENT '1-> Money 2-> points',
+  `amount` int(11) DEFAULT '0',
+  `created_dt` datetime DEFAULT NULL,
+  `schedule_dt` datetime DEFAULT NULL,
+  `apply_dt` datetime DEFAULT NULL,
+  `name_appear_on_report` varchar(140) DEFAULT NULL,
+  `email_subject` varchar(140) DEFAULT NULL,
+  `email_body_txt` longtext,
+  `email_body_img` varchar(140) DEFAULT NULL,
+  `n_status` tinyint(3) DEFAULT '0' COMMENT '0->pending 1->applied',
+  PRIMARY KEY (`id`),
+  KEY `IDX_STATUS` (`n_status`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+
