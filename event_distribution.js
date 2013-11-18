@@ -59,10 +59,11 @@ function(err){
 
 
 function getAllEventsWhichWillHappenToday(cb){
+	//the yesterday's unexecuted events should be able to processed also.
 	pool.getConnection(function(err,conn){
 		conn.query("SELECT * FROM ffgame.master_events \
 					WHERE n_status=0 \
-					AND DATE(schedule_dt) = DATE(NOW()) \
+					AND DATE(schedule_dt) <= DATE(NOW()) \
 					LIMIT 20;",
 					[],function(err,rs){
 						conn.end(function(e){
@@ -184,7 +185,7 @@ function distributeEachTeam(conn,schedule,targets,cb){
 					//queue email notification
 					async.waterfall([
 						function(c){
-							conn.query("SELECT a.name,a.email FROM "+dbschema+".users a\
+							conn.query("SELECT a.id,c.id as game_team_id,a.name,a.email FROM "+dbschema+".users a\
 										INNER JOIN ffgame.game_users b\
 										ON a.fb_id = b.fb_id\
 										INNER JOIN ffgame.game_teams c\
@@ -205,7 +206,7 @@ function distributeEachTeam(conn,schedule,targets,cb){
 										(?,?,?,?,NOW(),0);",[
 											schedule.email_subject,
 											user.email,
-											schedule.email_body_txt,
+											schedule.email_body_plain,
 											schedule.email_body_txt
 										],
 										function(err,ins){
@@ -215,6 +216,23 @@ function distributeEachTeam(conn,schedule,targets,cb){
 								c(null,null);
 							}
 							
+						},
+						function(user,c){
+							if(typeof user !== 'undefined'){
+								conn.query("INSERT INTO "+dbschema+".notifications\
+											(content,url,dt,game_team_id)\
+											VALUES\
+											(?,'#',NOW(),?)"
+											,[
+												shedule.email_body_plain,
+												user.game_team_id
+											]
+											,function(err,ins){
+												c(err,ins);
+											});
+							}else{
+								c(null,null);
+							}
 						}
 					],
 					function(err,r){
@@ -472,7 +490,9 @@ function distributeMasterEvents(targets,schedule,cb){
 function sendNotificationEmails(schedule,cb){
 	pool.getConnection(function(err,conn){
 		//send email to all users
-		conn.query("INSERT INTO ffgame.email_queue\
+		async.waterfall([
+			function(done){
+				conn.query("INSERT INTO ffgame.email_queue\
 					(subject,email,plain_txt,html_text,queue_dt,n_status)\
 					SELECT ? AS subject,email,? AS plain_txt,? AS html_text,\
 					NOW() AS queue_dt,0 AS n_status \
@@ -480,10 +500,27 @@ function sendNotificationEmails(schedule,cb){
 					[schedule.email_subject,schedule.email_body_txt,schedule.email_body_txt],
 					function(err,rs){
 						console.log(S(this.sql).collapseWhitespace().s);
-						conn.end(function(err){
-							cb(err);
-						});
+						done(err);
 					});
+			},
+			function(done){
+				conn.query("INSERT INTO "+dbschema+".notifications\
+					(content,url,dt,game_team_id)\
+					SELECT ? AS content,'#',NOW(),id \
+					FROM ffgame.game_teams a;",
+					[schedule.email_body_plain],
+					function(err,rs){
+						console.log(S(this.sql).collapseWhitespace().s);
+						done(err);
+					});
+			}
+		],
+
+		function(err,r){
+			conn.end(function(err){
+				cb(err);
+			});
+		});
 	});
 	
 					
@@ -568,7 +605,7 @@ function addMoney(conn,queue,cb){
 				(game_team_id,item_name,item_type,amount,game_id,match_day,item_total,base_price)\
 				VALUES\
 				(?,?,?,?,?,?,?,?);",
-				[queue.game_team_id,queue.name_appear_on_report,transaction_type,
+				[queue.game_team_id,'other_'+queue.name_appear_on_report,transaction_type,
 				  queue.amount,next_match.game_id,next_match.matchday,1,1],
 				function(err,rs){
 					console.log(S(this.sql).collapseWhitespace().s);

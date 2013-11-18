@@ -822,3 +822,4 @@ CREATE TABLE ffgame.master_events (
   KEY `IDX_STATUS` (`n_status`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
+ALTER TABLE `ffgame`.`master_events`     ADD COLUMN `email_body_plain` LONGTEXT NULL COMMENT 'plain text version' AFTER `email_body_txt`,    CHANGE `email_body_txt` `email_body_txt` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL  COMMENT 'html version';

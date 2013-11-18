@@ -25,6 +25,21 @@ $sponsor = 0;
 $sponsor += intval(@$finance['Joining_Bonus']);
 $sponsor += intval(@$finance['sponsorship']);
 
+//income from other events
+$other = 0;
+foreach($finance as $item_name => $item_value){
+  if($item_value > 0 && @eregi('other_',$item_name)){
+    $other += $item_value;
+  }
+}
+//expenses from other events
+$other_expenses = 0;
+foreach($finance as $item_name => $item_value){
+  if($item_value < 0 && @eregi('other_',$item_name)){
+    $other_expenses += abs($item_value);
+  }
+}
+$total_expenses -= $other_expenses;
 $finance['total_earnings'] += $sponsor;
 /*
 $penalty_expenses = intval(@$finance['compensation_fee']) + 
@@ -357,6 +372,13 @@ function isStaffExist($staff_token,$name){
                         <td align="right">ss$ <?=number_format(abs(@$finance['win_bonus']))?></td>
                       </tr>
                       <?php endif;?>
+                      <?php if($other > 0):?>
+                      <tr>
+                        <td>Bonus</td>
+                        <td>Lain - Lain</td>
+                        <td align="right">ss$ <?=number_format(abs(@$other))?></td>
+                      </tr>
+                      <?php endif;?>
                       <tr class="head">
                         <td colspan="2">Total Perolehan</td>
                         <td align="right">ss$ <?=number_format(abs(@$finance['total_earnings']))?></td>
@@ -509,7 +531,14 @@ function isStaffExist($staff_token,$name){
                       <?php
                       endif;
                       ?>
+                      <?php if($other_expenses > 0):?>
+                      <tr>
 
+                        <td>Pengeluaran Lainnya</td>
+                        <td></td>
+                        <td align="right">ss$ <?=number_format(abs(@$other_expenses))?></td>
+                      </tr>
+                      <?php endif;?>
                       <tr class="head">
                         <td colspan="2">Total Pengeluaran</td>
                         <td align="right">ss$ <?=number_format(@$total_expenses)?></td>

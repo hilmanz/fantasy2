@@ -280,7 +280,7 @@ class SponsorsController extends AppController {
 										FROM ffgame.game_users a
 										INNER JOIN ffgame.game_teams b
 										ON a.id = b.user_id
-										INNER JOIN ffg.users c
+										INNER JOIN users c
 										ON a.fb_id = c.fb_id LIMIT {$start},20;
 										");
 			$total_scan = sizeof($rs);
@@ -370,7 +370,7 @@ class SponsorsController extends AppController {
 			rank > {$start_rank} 
 			AND rank <={$end_rank}
 			LIMIT {$start},20;";
-
+			
 			$rs = $this->Game->query($sql);
 
 			$total_scan = sizeof($rs);
@@ -424,10 +424,22 @@ class SponsorsController extends AppController {
 					$body = $view->element('html_email',array('subject'=>$subject,'body'=>$plain));
 					
 					$body = mysql_escape_string($body);
+
+					//queue email
 					$this->Sponsorship->query("INSERT INTO ffgame.email_queue
 												(subject,email,plain_txt,html_text,queue_dt,send_dt,n_status)
 												VALUES
 												('{$subject}','{$email}','{$body}','{$body}',NOW(),NULL,0);");
+
+					//add to notification
+					$notif_msg = mysql_escape_string(str_replace("{{APPLY_LINK}}",
+											Configure::read('WWW_URL').$apply_link,
+											$sponsor['invitation_email']));
+
+					$this->Game->query("INSERT INTO notifications
+												(content,url,dt,game_team_id)
+												VALUES
+												('{$notif_msg}','#',NOW(),{$game_team_id});");
 					return 1;
 				}else{
 					return 0;
@@ -468,7 +480,7 @@ class SponsorsController extends AppController {
 					}else{
 						$plain = str_replace("{{APPLY_LINK}}",Configure::read('WWW_URL').$apply_link,$sponsor['win_bonus_email']);
 					}
-					$plain = mysql_escape_string($plain);
+					//$plain = mysql_escape_string($plain);
 					$this->Sponsorship->query("INSERT INTO ffgame.email_queue
 												(email,plain_txt,html_text,queue_dt,send_dt,n_status)
 												VALUES

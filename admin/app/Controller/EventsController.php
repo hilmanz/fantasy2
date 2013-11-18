@@ -90,8 +90,14 @@ class EventsController extends AppController {
 				$register_data = $this->Session->read('register_event_data');
 				$register_data['email_body_img'] = $img_name;
 				$register_data['name_appear_on_report'] = $this->request->data['name_appear_on_report'];				
-				$register_data['email_subject'] = $this->request->data['email_subject'];				
-				$register_data['email_body_txt'] = $this->request->data['email_body_txt'];
+				$register_data['email_subject'] = $this->request->data['email_subject'];
+				//html body
+				$view = new View($this, false);
+				$body = $view->element('html_email',array('subject'=>$this->request->data['email_subject'],'body'=>$this->request->data['email_body_txt']));					
+				//$body = mysql_escape_string($body);
+				//-->html body			
+				$register_data['email_body_txt'] = $body;
+				$register_data['email_body_plain'] = strip_tags(str_replace("<br/>","\n",$this->request->data['email_body_txt']));
 				$register_data['schedule_dt'] = $this->formatScheduleDate($this->request->data['scheduledt']);
 				$this->set('data',$register_data);
 

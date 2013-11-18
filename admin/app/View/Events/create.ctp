@@ -272,7 +272,7 @@
 				Email Body
 			</td>
 			<td>
-				<?=$data['email_body_txt']?>
+				<?=$data['email_body_plain']?>
 			</td>
 		</tr>
 		<tr>

@@ -328,8 +328,12 @@ class ManageController extends AppController {
 										intval(@$report['marketing_manager_bonus'])+
 										intval(@$report['public_relation_officer_bonus'])+
 										intval(@$report['win_bonus'])+
-										intval(@$report['player_sold'])
-										;
+										intval(@$report['player_sold']);
+			foreach($report as $item_name=>$price){
+				if($price > 0 && @eregi('other_',$item_name)){
+					$report['total_earnings'] += intval($price);
+				}
+			}
 			$this->finance_total_items_raw = $total_items;
 			return $report;
 		}
