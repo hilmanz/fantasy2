@@ -61,6 +61,7 @@ class PagesController extends AppController {
 
 		$count = count($path);
 		if (!$count) {
+
 			$this->redirect('/');
 		}
 		$page = $subpage = $title_for_layout = null;
@@ -98,7 +99,15 @@ class PagesController extends AppController {
 		//-->
 
 		if($path[0]=='home'&&$this->userDetail['Team']['id']>0){
-			$this->redirect('/manage/team');
+			if($this->Session->read('pending_redirect')!=null){
+				
+				$redirect_url = $this->Session->read('pending_redirect');
+				$this->redirect($redirect_url);
+				$this->Session->write('pending_redirect',null);
+			}else{
+				$this->redirect('/manage/team');
+			}
+			
 		}else if($path[0]=='mobile'){
 			$this->layout="mobile";
 		}

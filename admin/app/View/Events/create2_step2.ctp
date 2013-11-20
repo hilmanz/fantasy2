@@ -44,7 +44,70 @@ if($data['event_type']==1 || $data['event_type']==2):
 	</tr>
 </table>
 <?php else:?>
+<div class="progress">Loading </div>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="dataTable dataTableTeam" id="tbl">
 
+</table>
+<table width="100%">
+	
+	<tr>
+		<td colspan="2">
+			<input type="hidden" name="step" value="3"/>
+			<input type="submit" name="btn" value="NEXT"/>
+		</td>
+	</tr>
+</table>
+<?php echo $this->Html->script('jquery.dataTables.min');?>
+<script>
+	var start = 0;
+	var data = [];
+	function getdata(){
+		api_call("<?=$this->Html->url('/events/master_players/?start=')?>"+start,
+			function(response){
+				if(response.status==1){
+					if(response.data.length > 0){
+						for(var i in response.data){
+							data.push([
+									response.data[i].name,
+									response.data[i].known_name,
+									response.data[i].position,
+									response.data[i].team_name,
+									response.data[i].transfer_value,
+									'<input class="selectbox" type="radio" name="offered_player_id" value="'+
+											response.data[i].id+'"/>'
+								]);
+						}
+						start = response.next_offset;
+						$(".progress").html($(".progress").html()+'.');
+						getdata();
+					}else{
+						//draw table
+						draw_table();
+						$(".progress").hide();
+						
+					}
+				}
+			});
+	}
+	function draw_table(){
+		$('#tbl').dataTable( {
+			"fnDrawCallback":function(){
+				//initClickEvents();
+			},
+
+			"aaData": data,
+			"aoColumns": [
+				{ "sTitle": "Name" },
+				{ "sTitle": "Known Name" },
+				{ "sTitle": "Position" },
+				{ "sTitle": "Club" },
+				{ "sTitle": "Base Transfer" },
+				{ "sTitle": "Select"}
+			]
+		} );
+	}
+	getdata();
+</script>
 <?php endif;?>
 </form>
 </div>

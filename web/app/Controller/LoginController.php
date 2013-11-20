@@ -99,9 +99,19 @@ class LoginController extends AppController {
 			}else if($user_session['team']!=null&&$user_session['register_completed']==0){
 				$this->redirect('/profile/register_staff');
 			}else{
-				
+				//check if there's pending redirect url		
 				$this->ActivityLog->writeLog($rs['User']['id'],'LOGIN');
-				$this->redirect('/manage/team');
+				if($this->Session->read('pending_redirect')!=null){
+					//prepare the redirect_url from session
+					$redirect_url = $this->Session->read('pending_redirect');
+					//we no longer need it
+					$this->Session->write('pending_redirect',null); 
+					//redirect the page
+					$this->redirect($redirect_url);
+				}else{
+					
+					$this->redirect('/manage/team');
+				}
 			}
 		}else{
 			$this->redirect('/profile/register');

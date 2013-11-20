@@ -46,6 +46,13 @@ class AppController extends Controller {
 	
 	
 	public function beforeFilter(){
+		if(isset($this->request->query['email'])
+			&& isset($this->request->query['osign'])){
+			$this->Session->write('pending_redirect',
+					'/events/redeem?osign='.$this->request->query['osign']);
+		
+		}
+
 		/*if($this->request->is('mobile') &&
 			$this->request->params['pass'][0]!='mobile'){
 			$this->redirect('/pages/mobile');

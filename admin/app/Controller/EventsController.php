@@ -135,18 +135,34 @@ class EventsController extends AppController {
 
 			break;
 			case 3:
+
 				$this->setupRewards($this->request->data);
+				$this->setupTransferOffer($this->request->data);
 				$this->render('create2_step3');
 
 			break;
 			case 4:
 				$this->TriggeredEvents->create();
+
 				$rs = $this->TriggeredEvents->save($this->Session->read('register_event_data'));
+			
 				if($rs){
+					
+					$offer_url = Configure::read('WWW_URL').'/?email=true&osign='.encrypt_param(serialize(
+						array(
+						'offer_id'=>$rs['TriggeredEvents']['id'],
+						'ts'=>time()
+						)
+					));
+					$this->TriggeredEvents->id = $rs['TriggeredEvents']['id'];
+					$this->TriggeredEvents->save(array(
+						'offer_url'=>$offer_url
+					));
 					$this->Session->setFlash('New Triggered Events has been created successfully !');	
 				}else{
 					$this->Session->setFlash('Sorry ! New Triggered Events cannot be created.');
 				}
+				
 				$this->redirect('/events');
 				
 			break;
@@ -159,22 +175,35 @@ class EventsController extends AppController {
 	}
 	private function setupRewards($data){
 		$register_data = $this->Session->read('register_event_data');
-		switch($data['reward_type']){
-			case 1:
-				$register_data['money_reward'] = $data['money_reward'];
-			break;
-			case 2:
-				$register_data['points_reward'] = $data['points_reward'];
-			break;
-			case 3:
-				$register_data['point_mod_reward'] = $data['point_mod_reward'];
-			break;
-			default:
-			break;
+		if(isset($data['reward_type'])){
+			switch($data['reward_type']){
+				case 1:
+					$register_data['money_reward'] = $data['money_reward'];
+				break;
+				case 2:
+					$register_data['points_reward'] = $data['points_reward'];
+				break;
+				case 3:
+					$register_data['point_mod_reward'] = $data['point_mod_reward'];
+				break;
+				default:
+				break;
+			}
+			$this->set('data',$register_data);
+			$this->Session->write('register_event_data',$register_data);
+		}
+	}
+	private function setupTransferOffer($data){
+		$this->loadModel('Events');
+		$register_data = $this->Session->read('register_event_data');
+		if(isset($data['offered_player_id'])){
+			$register_data['offered_player_id'] = $data['offered_player_id'];
+			$register_data['offered_player_name'] = $this->getMasterPlayerName(json_encode(array(
+														$data['offered_player_id']
+													)));
 		}
 		$this->set('data',$register_data);
 		$this->Session->write('register_event_data',$register_data);
-		
 
 	}
 	private function formatScheduleDate($dt){
@@ -284,7 +313,8 @@ class EventsController extends AppController {
 		$limit = 20;
 		
 		$rs = $this->Events->query("SELECT a.uid AS id,a.name,a.position,
-									a.first_name,a.last_name,a.known_name,b.name AS club 
+									a.first_name,a.last_name,a.known_name,b.name AS club,
+									a.transfer_value
 									FROM ffgame.master_player a
 									INNER JOIN ffgame.master_team b
 									ON a.team_id = b.uid 
