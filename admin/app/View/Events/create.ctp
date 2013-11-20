@@ -1,4 +1,3 @@
-
 <h3>
 	Create New Event
 </h3>

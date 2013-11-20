@@ -17,10 +17,12 @@ class EventsController extends AppController {
 	
 	public function index(){
 		$this->loadModel('Events');
+		$this->loadModel('TriggeredEvents');
 		$this->paginate = array('limit'=>25);
 		$events = $this->paginate('Events');
-
+		$triggered = $this->paginate('TriggeredEvents');
 		$this->set('rs',$events);
+		$this->set('triggered',$triggered);
 	}
 	public function create(){
 		$this->loadModel('Events');
@@ -34,6 +36,7 @@ class EventsController extends AppController {
 				$register_data = array(
 					'event_name'=>$this->request->data['event_name'],
 					'event_type'=>$this->request->data['event_type'],
+
 				);
 				$this->set('data',$register_data);
 				$this->Session->write('register_event_data',$register_data);
@@ -114,6 +117,65 @@ class EventsController extends AppController {
 
 		//set steps
 		$this->set('step',$step);
+	}
+	public function create2(){
+		
+		$this->loadModel('TriggeredEvents');
+		$step = intval(@$this->request->data['step']);
+		if($step==0){
+			$step = 1;
+		}
+		switch($step){
+			case 2:
+				$register_data = $this->request->data;
+				$register_data['schedule_dt'] = $this->formatScheduleDate($register_data['schedule_dt']);
+				$this->set('data',$register_data);
+				$this->Session->write('register_event_data',$register_data);
+				$this->render('create2_step2');
+
+			break;
+			case 3:
+				$this->setupRewards($this->request->data);
+				$this->render('create2_step3');
+
+			break;
+			case 4:
+				$this->TriggeredEvents->create();
+				$rs = $this->TriggeredEvents->save($this->Session->read('register_event_data'));
+				if($rs){
+					$this->Session->setFlash('New Triggered Events has been created successfully !');	
+				}else{
+					$this->Session->setFlash('Sorry ! New Triggered Events cannot be created.');
+				}
+				$this->redirect('/events');
+				
+			break;
+			default:
+				$this->render('create2');
+			break;
+		}
+		//set steps
+		$this->set('step',$step);
+	}
+	private function setupRewards($data){
+		$register_data = $this->Session->read('register_event_data');
+		switch($data['reward_type']){
+			case 1:
+				$register_data['money_reward'] = $data['money_reward'];
+			break;
+			case 2:
+				$register_data['points_reward'] = $data['points_reward'];
+			break;
+			case 3:
+				$register_data['point_mod_reward'] = $data['point_mod_reward'];
+			break;
+			default:
+			break;
+		}
+		$this->set('data',$register_data);
+		$this->Session->write('register_event_data',$register_data);
+		
+
 	}
 	private function formatScheduleDate($dt){
 		$a = explode("/",$dt);

@@ -3,7 +3,9 @@
 </h3>
 <div class="row">
 	<a href="<?=$this->Html->url('/events/create')?>" class="button">Create Event</a>
+	
 </div>
+<h4>Standard Events</h4>
 <div class="row">
 	<table width="100%">
 		<tr>
@@ -84,4 +86,49 @@
 		</tr>
 		<?php endforeach;endif;?>
 	</table>
+</div>
+
+<h4>Triggered Events</h4>
+<div class="row">
+<a href="<?=$this->Html->url('/events/create2')?>" class="button">Create User-Triggered Event</a>
+</div>
+<div class="row">
+<?php
+$event_type = array('',
+						'Mengeluarkan/Membayarkan sejumlah uang untuk mendapatkan sejumlah uang setelah proses match weekend',
+						'Mengeluarkan/Membayarkan sejumlah uang untuk menghindari penalty uang 	 atau point (% dari pemain single/multiple) setelah proses match
+      				weekend.',
+						'Offer Beli satu orang pemain (dengan catatan dia blm punya pemain tersebut)',
+						'Offer Jual satu orang pemain (dengan catatan di sudah punya pemain tersebut)');
+
+$recipient_type = array('All Teams',
+						 'Tier 1',
+						 'Tier 2',
+						 'Tier 3');
+$n_status = array('Pending','Applied','Canceled');
+
+?>
+
+<table width="100%">
+	<tr>
+		<td>Event</td>
+		<td>Type</td>
+		<td>Recipient</td>
+		<td>Schedule</td>
+		<td>Cost</td>
+		<td>Status</td>
+		<td>Action</td>
+	</tr>
+	<?php foreach($triggered as $t):?>
+	<tr>
+		<td><?=h($t['Events']['name'])?></td>
+		<td><?=h($event_type[$t['Events']['event_type']])?></td>
+		<td><?=h($recipient_type[$t['Events']['recipient_type']])?></td>
+		<td><?=h($t['Events']['schedule_dt'])?></td>
+		<td><?=h(number_format($t['Events']['money_cost']))?></td>
+		<td><?=h($n_status[$t['Events']['n_status']])?></td>
+		<td><a href="#" class="button">Edit</a></td>
+	</tr>
+	<?php endforeach;?>
+</table>
 </div>
