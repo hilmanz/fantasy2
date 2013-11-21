@@ -25,22 +25,36 @@ $sponsor = 0;
 $sponsor += intval(@$finance['Joining_Bonus']);
 $sponsor += intval(@$finance['sponsorship']);
 
+
+
 //income from other events
 $other = 0;
 foreach($finance as $item_name => $item_value){
   if($item_value > 0 && @eregi('other_',$item_name)){
     $other += $item_value;
   }
+  if($item_value > 0 && @eregi('perk',$item_name)){
+    $other += $item_value;
+  }
 }
+
 //expenses from other events
 $other_expenses = 0;
 foreach($finance as $item_name => $item_value){
   if($item_value < 0 && @eregi('other_',$item_name)){
     $other_expenses += abs($item_value);
   }
+  if($item_value < 0 && @eregi('transaction_fee',$item_name)){
+    $other_expenses += abs($item_value);
+  }
 }
 $total_expenses -= $other_expenses;
+
+
+
 $finance['total_earnings'] += $sponsor;
+$finance['total_earnings'] += $other;
+
 /*
 $penalty_expenses = intval(@$finance['compensation_fee']) + 
                     intval(@$finance['ticket_sold_penalty']) + 

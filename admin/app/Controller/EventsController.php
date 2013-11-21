@@ -166,7 +166,7 @@ class EventsController extends AppController {
 
 					//html body
 					$view = new View($this, false);
-					$body = $view->element('html_email',
+					$body = $view->element('html_email_trigger_events',
 											array('subject'=>$register_data['email_subject'],
 												'body'=>$register_data['email_body_txt'],
 												'offer_url'=>$offer_url));					

@@ -790,17 +790,6 @@ CREATE TABLE ffgame.job_event_immediate (
   KEY `IDX_STATUS` (`n_status`)
 ) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
 
-CREATE TABLE ffgame.job_event_master_player (
-  `id` bigint(21) NOT NULL AUTO_INCREMENT,
-  `master_event_id` bigint(21) DEFAULT NULL,
-  `player_id` varchar(32) DEFAULT NULL,
-  `matchday` int(11) DEFAULT '0',
-  `apply_date` datetime DEFAULT NULL,
-  `n_status` tinyint(3) DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `IDX_EVENT` (`master_event_id`,`player_id`,`matchday`),
-  KEY `IDX_STATUS` (`n_status`)
-) ENGINE=InnoDB AUTO_INCREMENT=232 DEFAULT CHARSET=utf8;
 
 CREATE TABLE ffgame.master_events (
   `id` bigint(21) NOT NULL AUTO_INCREMENT,
@@ -815,11 +804,69 @@ CREATE TABLE ffgame.master_events (
   `apply_dt` datetime DEFAULT NULL,
   `name_appear_on_report` varchar(140) DEFAULT NULL,
   `email_subject` varchar(140) DEFAULT NULL,
-  `email_body_txt` longtext,
+  `email_body_txt` longtext COMMENT 'html version',
+  `email_body_plain` longtext COMMENT 'plain text version',
   `email_body_img` varchar(140) DEFAULT NULL,
+  `prequisite_event_id` bigint(21) DEFAULT '0',
   `n_status` tinyint(3) DEFAULT '0' COMMENT '0->pending 1->applied',
   PRIMARY KEY (`id`),
   KEY `IDX_STATUS` (`n_status`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `ffgame`.`master_events`     ADD COLUMN `email_body_plain` LONGTEXT NULL COMMENT 'plain text version' AFTER `email_body_txt`,    CHANGE `email_body_txt` `email_body_txt` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL  COMMENT 'html version';
+
+CREATE TABLE ffgame.game_perks (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `event_id` bigint(21) DEFAULT NULL,
+  `game_team_id` bigint(21) DEFAULT NULL,
+  `matchday` int(5) DEFAULT '0',
+  `name` varchar(64) DEFAULT NULL,
+  `apply_dt` datetime DEFAULT NULL,
+  `money_reward` int(11) DEFAULT '0',
+  `points_reward` int(11) DEFAULT NULL,
+  `additional_points_modifier` float(11,2) DEFAULT '0.00' COMMENT 'all player points on the week will be increased by n%',
+  `n_status` tinyint(3) DEFAULT '0' COMMENT '0->pending, 1->applied, 2->rejected',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE_PERK` (`event_id`,`game_team_id`,`matchday`),
+  KEY `IDX_STATUS` (`n_status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE ffgame.master_triggered_events (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `name` varchar(140) DEFAULT NULL,
+  `event_type` tinyint(3) DEFAULT '0',
+  `recipient_type` tinyint(3) DEFAULT '0' COMMENT '1->tier 1, 2->tier 2, 3->tier 3, 4->tier 4, 0-> all teams',
+  `money_cost` int(11) DEFAULT '0',
+  `point_cost` int(11) DEFAULT '0',
+  `email_subject` varchar(140) DEFAULT NULL,
+  `email_body_txt` longtext COMMENT 'html text',
+  `email_body_plain` text COMMENT 'plain text',
+  `points_reward` int(11) DEFAULT '0',
+  `money_reward` int(11) DEFAULT '0',
+  `point_mod_reward` float(11,2) DEFAULT '0.00' COMMENT 'additional point modifier reward that will be applied on overall match points.',
+  `offered_player_id` varchar(32) DEFAULT NULL,
+  `created_dt` datetime DEFAULT NULL,
+  `processed_dt` datetime DEFAULT NULL,
+  `schedule_dt` datetime DEFAULT NULL,
+  `expired_dt` datetime DEFAULT NULL,
+  `yes_txt` varchar(140) DEFAULT NULL,
+  `no_txt` varchar(140) DEFAULT NULL,
+  `offer_url` longtext,
+  `n_status` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `IDX_PLAYER_ID` (`offered_player_id`),
+  KEY `IDX_STATUS` (`n_status`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+
+CREATE TABLE ffgame.job_event_master_player (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `master_event_id` bigint(21) DEFAULT NULL,
+  `game_team_id` bigint(21) DEFAULT NULL,
+  `player_id` varchar(32) DEFAULT NULL,
+  `matchday` int(11) DEFAULT '0',
+  `apply_date` datetime DEFAULT NULL,
+  `n_status` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IDX_EVENT` (`master_event_id`,`game_team_id`,`player_id`,`matchday`),
+  KEY `IDX_STATUS` (`n_status`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;

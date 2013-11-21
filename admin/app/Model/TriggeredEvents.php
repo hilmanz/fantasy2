@@ -29,6 +29,7 @@ class TriggeredEvents extends AppModel {
 		$rs = $this->query("SELECT * 
 							FROM ffgame.master_triggered_events Events
 							LIMIT {$start},{$limit}",false);
+		
 		return $rs;
 	}
 	

@@ -244,8 +244,7 @@ class ManageController extends AppController {
 									intval(@$weekly_statement['marketing_manager_bonus'])+
 									intval(@$weekly_statement['public_relation_officer_bonus'])+
 									intval(@$weekly_statement['win_bonus'])+
-									intval(@$weekly_statement['player_sold'])
-									;
+									intval(@$weekly_statement['player_sold']);
 		return array('transaction'=>$weekly_statement,'total_items'=>$total_items);
 	}
 	private function getMatches($arr,$expenditures,$tickets_sold){
@@ -331,7 +330,12 @@ class ManageController extends AppController {
 										intval(@$report['player_sold']);
 			foreach($report as $item_name=>$price){
 				if($price > 0 && @eregi('other_',$item_name)){
-					$report['total_earnings'] += intval($price);
+					//$report['total_earnings'] += intval($price);
+					
+				}
+				if($price > 0 && @eregi('perk-',$item_name)){
+					//$report['total_earnings'] += intval($price);
+
 				}
 			}
 			$this->finance_total_items_raw = $total_items;
