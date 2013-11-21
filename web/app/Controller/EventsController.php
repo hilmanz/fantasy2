@@ -386,7 +386,7 @@ class EventsController extends AppController {
 				//deduct the price
 				$this->Game->query("INSERT INTO ffgame.game_team_expenditures
 											(game_team_id,item_name,item_type,amount,game_id,match_day)
-											VALUES\
+											VALUES
 											({$game_team_id},'player_sold',1,{$item['money_cost']},
 											  '{$game_id}',{$matchday})
 											ON DUPLICATE KEY UPDATE

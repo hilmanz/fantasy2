@@ -102,8 +102,8 @@ class PagesController extends AppController {
 			if($this->Session->read('pending_redirect')!=null){
 				
 				$redirect_url = $this->Session->read('pending_redirect');
-				$this->redirect($redirect_url);
 				$this->Session->write('pending_redirect',null);
+				$this->redirect($redirect_url);
 			}else{
 				$this->redirect('/manage/team');
 			}

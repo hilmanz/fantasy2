@@ -413,10 +413,10 @@ function distributeMasterEventToPlayer(schedule,cb){
 	var targets = JSON.parse(schedule.target_value);
 	distributeMasterEvents(targets,schedule,function(err){
 		
-		sendNotificationEmails(schedule,function(err){
+		//sendNotificationEmails(schedule,function(err){
 			console.log('finished');
 			cb(err);
-		});
+		//});
 	});
 }
 function distributeMasterEventToTeam(schedule,cb){
@@ -440,9 +440,9 @@ function distributeMasterEventToTeam(schedule,cb){
 	},function(err){
 		console.log(players);
 		distributeMasterEvents(players,schedule,function(err){
-			sendNotificationEmails(schedule,function(err){
+			//sendNotificationEmails(schedule,function(err){
 				cb(err);
-			});
+			//});
 			
 		});
 		
@@ -465,15 +465,13 @@ function distributeMasterEvents(targets,schedule,cb){
 								});
 				},
 				function(matchday,callback){
-					conn.query("INSERT IGNORE INTO ffgame.job_event_master_player\
-								(master_event_id,player_id,matchday,apply_date,n_status)\
-								VALUES\
-								(?,?,?,NOW(),0);",
-					[schedule.id,target,matchday],
-					function(err,rs){
-						console.log(S(this.sql).collapseWhitespace().s);
-						callback(err,rs);
-					});
+					//get all the players and queue one by one.
+					//since the player is a massive 50k++ 
+					//we need to do it in batches
+					processAllUsersForMaster(conn,target,schedule,matchday,
+											function(err){
+												callback(err,matchday);	
+											});
 				}
 			],
 			function(err,rs){
@@ -487,6 +485,111 @@ function distributeMasterEvents(targets,schedule,cb){
 		});
 	});
 }
+function processAllUsersForMaster(conn,target,schedule,matchday,done){
+	var has_data = true;
+	var since_id = 0;
+	async.whilst(
+		function(){
+			return has_data;
+		},
+		function(next){
+			conn.query("SELECT \
+						a.id,\
+						a.fb_id,\
+						a.email,\
+						a.name,\
+						c.id AS game_team_id,\
+						c.team_id AS original_team_id\
+						FROM "+dbschema+".users a \
+						INNER JOIN \
+						ffgame.game_users b\
+						ON a.fb_id = b.fb_id\
+						INNER JOIN \
+						ffgame.game_teams c\
+						ON c.user_id = b.id \
+						WHERE a.id > ? AND EXISTS\
+						(SELECT 1 FROM ffgame.game_team_players d \
+						 WHERE d.game_team_id = c.id AND d.player_id = ? LIMIT 1)\
+						ORDER BY id\
+						LIMIT 100;",[since_id,target],function(err,rs){
+							console.log(S(this.sql).collapseWhitespace().s);
+							try{
+								if(rs!=null && rs.length > 0){
+									since_id = rs[ (rs.length - 1) ].id;
+									populate_job_event_master_player(conn,target,schedule,matchday,rs,function(err){
+										next();
+									});
+								}else{
+									has_data = false;
+									next();
+								}
+							}catch(e){
+								has_data = false;
+								next();
+							}
+						});
+		},
+		function(err){
+			done(err);
+		}
+	);
+}
+function populate_job_event_master_player(conn,target,schedule,matchday,teams,done){
+	console.log('distributed to ',teams);
+	async.eachSeries(teams,function(team,next){
+		console.log('send event to #',team.game_team_id);
+		async.waterfall([
+			function(cb){
+				conn.query("INSERT IGNORE INTO ffgame.job_event_master_player\
+								(master_event_id,game_team_id,player_id,matchday,apply_date,n_status)\
+								VALUES\
+								(?,?,?,?,NOW(),0);",
+					[schedule.id,team.game_team_id,target,matchday],
+					function(err,rs){
+						console.log('----------------');
+						console.log(S(this.sql).collapseWhitespace().s);
+						if(err) console.log(err.message);
+						cb(err,rs);
+					});
+			},
+			function(result,cb){
+				//send email notifications
+				conn.query("INSERT INTO ffgame.email_queue\
+					(subject,email,plain_txt,html_text,queue_dt,n_status)\
+					VALUES\
+					(?,?,?,?,NOW(),0);",
+					[schedule.email_subject,team.email,schedule.email_body_txt,schedule.email_body_txt],
+					function(err,rs){
+						console.log('----------------');
+						console.log(S(this.sql).collapseWhitespace().s);
+						if(err) console.log(err.message);
+						cb(err);
+					});
+			},function(cb){
+				//send message to inbox
+				conn.query("INSERT INTO "+dbschema+".notifications\
+					(content,url,dt,game_team_id)\
+					VALUES\
+					(?,'#',NOW(),?);",
+					[schedule.email_body_plain,team.game_team_id],
+					function(err,rs){
+						console.log('----------------');
+						console.log(S(this.sql).collapseWhitespace().s);
+						if(err) console.log(err.message);
+						cb(err);
+					});
+			}
+		],
+		function(err){
+			if(err){console.log(err.message);}
+			next();
+		});
+	},
+	function(err){
+		done(err);
+	});
+}
+/*
 function sendNotificationEmails(schedule,cb){
 	pool.getConnection(function(err,conn){
 		//send email to all users
@@ -525,7 +628,7 @@ function sendNotificationEmails(schedule,cb){
 	
 					
 }
-
+*/
 //process the immediate events,
 //at the moment, we only send or deduct the money.
 function processImmediateEvents(cb){

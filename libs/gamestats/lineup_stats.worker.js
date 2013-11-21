@@ -546,23 +546,39 @@ function getPlayerDailyTeamStats(conn,game_team_id,player_id,player_pos,matchday
 			});
 		},
 		function(modifiers,result,callback){
-			//get event related points 
-			conn.query("SELECT amount FROM ffgame.job_event_master_player a\
+			//get event related points
+			var percentage = 1;
+			async.waterfall([
+				function(cb){
+					conn.query("SELECT a.id,amount FROM ffgame.job_event_master_player a\
 						INNER JOIN ffgame.master_events b\
 						ON a.master_event_id = b.id\
-						WHERE player_id=? AND affected_item = 2\
-						AND matchday=? AND a.n_status = 0 LIMIT 1;",[player_id,matchday],
+						WHERE game_team_id = ? AND player_id=? AND affected_item = 2\
+						AND matchday=? AND a.n_status = 0 LIMIT 1;",[game_team_id,player_id,matchday],
 						function(err,rs){
 							console.log('EVENT APPLIED POINTS',S(this.sql).collapseWhitespace().s);
+							var id = 0;
 							if(rs!=null && rs.length > 0){
 								console.log('EVENT APPLIED POINTS',rs);
-								var percentage = rs[0].amount/100;
-								console.log('point X ',percentage);
-								callback(err,percentage,modifiers,result);
-							}else{
-								callback(err,1,modifiers,result);
+								percentage = rs[0].amount/100;
+								console.log('EVENT APPLIED POINTS','point X ',percentage);
+								id = rs[0].id;
 							}
+							cb(err,id);
 						});
+				},function(job_id,cb){
+					//flag to done
+					conn.query("UPDATE ffgame.job_event_master_player SET n_status=1 WHERE id = ?",
+								[job_id],function(err,rs){
+									console.log('EVENT APPLIED POINTS','event flagged as applied');
+								cb(err);
+					});
+				}
+			],
+			function(err){
+				callback(err,percentage,modifiers,result);
+			});
+			
 		},
 		function(percentage,modifiers,result,callback){
 			//mapping
@@ -604,7 +620,6 @@ function getPlayerDailyTeamStats(conn,game_team_id,player_id,player_pos,matchday
 			callback(null,weekly);
 		},
 		function(weekly,callback){
-
 			async.eachSeries(weekly,function(w,next){
 				conn.query("INSERT INTO ffgame_stats.game_team_player_weekly\
 						(game_id,game_team_id,matchday,player_id,stats_category,stats_name,stats_value,points,position_no)\
