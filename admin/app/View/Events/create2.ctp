@@ -55,6 +55,14 @@
 	</tr>
 	<tr>
 		<td valign="top">
+			Expiry Date
+		</td>
+		<td>
+			<input type="text" id="datepicker2" name="expired_dt"/>
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">
 		Recipients
 		</td>
 		<td>
@@ -129,5 +137,8 @@
   	$( "#datepicker" ).datepicker();
     $( "#datepicker" ).datepicker("option", "dateFormat", "dd/mm/yy");
      $( "#datepicker" ).datepicker("hide");
+     $( "#datepicker2" ).datepicker();
+    $( "#datepicker2" ).datepicker("option", "dateFormat", "dd/mm/yy");
+     $( "#datepicker2" ).datepicker("hide");
   });
   </script>

@@ -45,9 +45,12 @@ class EventsController extends AppController {
 				$register_data = $this->Session->read('register_event_data');
 				$register_data['target_type'] = $this->request->data['target_type'];
 				$register_data['affected_item'] = $this->request->data['affected_item'];
-
 				$this->set('data',$register_data);
 				$this->Session->write('register_event_data',$register_data);
+
+				$this->loadModel('TriggeredEvents');
+				$triggered = $this->TriggeredEvents->find('all',array('limit'=>'100','order'=>'id DESC'));
+				$this->set('triggered',$triggered);
 			break;
 			case 4:
 				$register_data = $this->Session->read('register_event_data');
@@ -69,7 +72,9 @@ class EventsController extends AppController {
 					$register_data['target_str'] = $this->getTargetNameForMasterEvent($register_data['target_type'],
 													$register_data['target_value']);
 				}
-				
+				if(isset($this->request->data['prequisite_event_id'])){
+					$register_data['prequisite_event_id'] = intval($this->request->data['prequisite_event_id']);
+				}
 				$this->set('data',$register_data);
 				$this->Session->write('register_event_data',$register_data);
 				
@@ -129,6 +134,10 @@ class EventsController extends AppController {
 			case 2:
 				$register_data = $this->request->data;
 				$register_data['schedule_dt'] = $this->formatScheduleDate($register_data['schedule_dt']);
+				$register_data['expired_dt'] = $this->formatScheduleDate($register_data['expired_dt']);
+				$register_data['email_body_plain'] = strip_tags($register_data['email_body_txt']);
+				
+
 				$this->set('data',$register_data);
 				$this->Session->write('register_event_data',$register_data);
 				$this->render('create2_step2');
@@ -143,8 +152,8 @@ class EventsController extends AppController {
 			break;
 			case 4:
 				$this->TriggeredEvents->create();
-
-				$rs = $this->TriggeredEvents->save($this->Session->read('register_event_data'));
+				$register_data = $this->Session->read('register_event_data');
+				$rs = $this->TriggeredEvents->save($register_data);
 			
 				if($rs){
 					
@@ -154,13 +163,26 @@ class EventsController extends AppController {
 						'ts'=>time()
 						)
 					));
+
+					//html body
+					$view = new View($this, false);
+					$body = $view->element('html_email',
+											array('subject'=>$register_data['email_subject'],
+												'body'=>$register_data['email_body_txt'],
+												'offer_url'=>$offer_url));					
+					//-->html body			
 					$this->TriggeredEvents->id = $rs['TriggeredEvents']['id'];
 					$this->TriggeredEvents->save(array(
-						'offer_url'=>$offer_url
+						'offer_url'=>$offer_url,
+						'email_body_txt'=>$body
 					));
+
 					$this->Session->setFlash('New Triggered Events has been created successfully !');	
+
 				}else{
+
 					$this->Session->setFlash('Sorry ! New Triggered Events cannot be created.');
+
 				}
 				
 				$this->redirect('/events');

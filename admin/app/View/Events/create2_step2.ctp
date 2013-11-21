@@ -10,6 +10,7 @@
 <?php
 if($data['event_type']==1 || $data['event_type']==2):
 ?>
+
 <table width="100%">
 	<tr>
 		<td valign="top">
@@ -34,8 +35,17 @@ if($data['event_type']==1 || $data['event_type']==2):
 			</div>
 		</td>
 	</tr>
-	
-	
+	<tr>
+		<td colspan="2">Choose Required Player to be exists in the team (optional)</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<div class="progress">Loading </div>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="dataTable dataTableTeam" id="tbl">
+
+			</table>
+		</td>
+	</tr>
 	<tr>
 		<td colspan="2">
 			<input type="hidden" name="step" value="3"/>
@@ -57,7 +67,18 @@ if($data['event_type']==1 || $data['event_type']==2):
 		</td>
 	</tr>
 </table>
-<?php echo $this->Html->script('jquery.dataTables.min');?>
+
+<?php endif;?>
+</form>
+</div>
+ <script>
+  $(document).ready(function() {
+  	$( "#datepicker" ).datepicker();
+    $( "#datepicker" ).datepicker("option", "dateFormat", "dd/mm/yy");
+     $( "#datepicker" ).datepicker("hide");
+  });
+  </script>
+ <?php echo $this->Html->script('jquery.dataTables.min');?>
 <script>
 	var start = 0;
 	var data = [];
@@ -108,13 +129,3 @@ if($data['event_type']==1 || $data['event_type']==2):
 	}
 	getdata();
 </script>
-<?php endif;?>
-</form>
-</div>
- <script>
-  $(document).ready(function() {
-  	$( "#datepicker" ).datepicker();
-    $( "#datepicker" ).datepicker("option", "dateFormat", "dd/mm/yy");
-     $( "#datepicker" ).datepicker("hide");
-  });
-  </script>

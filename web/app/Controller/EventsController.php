@@ -62,11 +62,14 @@ class EventsController extends AppController {
 							LIMIT 1",false);
 		$event_next_matchday = $closest_fixture[0]['game_fixtures']['matchday'];
 		
-		//also make sure that the user hasnt answer the offer yet.
-		$perks = $this->Game->query("SELECT * FROM ffgame.game_perks
+		if(isset($offer['TriggeredEvents']['id'])){
+			//also make sure that the user hasnt answer the offer yet.
+			$perks = $this->Game->query("SELECT * FROM ffgame.game_perks
 									 WHERE event_id={$offer['TriggeredEvents']['id']}
 									 AND game_team_id={$game_team_id}
 									 LIMIT 1;");
+		}
+		
 		
 		if(sizeof($perks)==0){
 			$can_apply = true;
@@ -123,9 +126,11 @@ class EventsController extends AppController {
 
 		//and finally, make sure that people can only get the perk if the match is not started yet
 		//or the formation update is not closed yet.
+		//UPDATE 21/11/2013, now we set the expired date
 
+		
 		if( ($event_next_matchday >= $this->nextMatch['match']['matchday'])
-			&& ($this->closeTime['ts'] > time())
+			&& (strtotime($offer['TriggeredEvents']['expired_dt']) > time())
 			&& $can_apply){
 			
 			//assign it into the view
@@ -136,11 +141,13 @@ class EventsController extends AppController {
 			$this->set('week',$event_next_matchday);
 			$this->set('offer_valid',true);
 		}else{
+			$this->set('offer',$offer['TriggeredEvents']);
+
 			$this->set('week',$event_next_matchday);
 			$this->set('offer_valid',false);
 			$this->set('can_apply',$can_apply);
 			$this->set('tier_fault',@$tier_fault);
-			$this->set('tier',$tier);
+			$this->set('tier',@$tier);
 		}
 		
 		
@@ -226,9 +233,9 @@ class EventsController extends AppController {
 		}
 		//and offcourse the budget is must be sufficient to pay the cost
 
-
+		
 		if( ($event_next_matchday >= $this->nextMatch['match']['matchday'])
-			&& ($this->closeTime['ts'] > time())
+			&& (strtotime($offer['TriggeredEvents']['expired_dt']) > time())
 			&& $can_apply){
 			//ok we save to apply the perks
 			$item = $offer['TriggeredEvents'];
@@ -321,6 +328,7 @@ class EventsController extends AppController {
 			}
 
 		}else{
+			$this->set('offer',$offer['TriggeredEvents']);
 			$this->set('week',$event_next_matchday);
 			$this->set('offer_valid',false);
 			$this->set('can_apply',$can_apply);

@@ -14,6 +14,21 @@
 		</td>
 	</tr>
 	<tr>
+		<td valign="top">
+			Apply only to team who has completing the following events : 
+		</td>
+		<td>
+			<select name='prequisite_event_id'>
+				<option value='0'>None</option>
+				<?php foreach($triggered as $t):?>
+				<option value='<?=$t['TriggeredEvents']['id']?>'>
+					<?=$t['TriggeredEvents']['id']?># <?=$t['TriggeredEvents']['name']?>
+				</option>
+				<?php endforeach;?>
+			</select>
+		</td>
+	</tr>
+	<tr>
 		<td colspan="2">
 			<input type="hidden" name="targets" value=""/>
 			<input type="hidden" name="step" value="4"/>

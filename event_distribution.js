@@ -30,7 +30,13 @@ var pool  = mysql.createPool({
 
 
 async.waterfall([
-	//get all events which will happen today and still not been processed.
+	//process triggered events first
+	function(callback){
+		processTriggeredEvents(function(err,rs){
+			callback(err);
+		});
+	},
+	//get all standard events which will happen today and still not been processed.
 	function(callback){
 		getAllEventsWhichWillHappenToday(function(err,rs){
 			callback(err,rs);
@@ -46,7 +52,6 @@ async.waterfall([
 		processImmediateEvents(function(err){
 			callback(err);
 		});
-		
 	}
 ],
 function(err){
@@ -55,9 +60,358 @@ function(err){
 	})
 });
 
+//TRIGGERED EVENTS
+function processTriggeredEvents(done){
+	pool.getConnection(function(err,conn){
+		console.log('process triggered events');
+		async.waterfall([
+			function(cb){
+				//get triggered events that happen today
+				getAllTriggeredEventsThatHappenToday(conn,function(err,rs){
+					cb(err,rs);
+				});
+			},
+			function(events,cb){
+				processTriggeredEventsSchedule(conn,events,function(err,rs){
+					cb(err,rs);
+				});
+			}
+		],
+		function(err,rs){
+			conn.end(function(err){
+				done(err);
+			});
+		});
+	});
+}
+
+function getAllTriggeredEventsThatHappenToday(conn,done){
+	conn.query("SELECT * \
+				FROM ffgame.master_triggered_events \
+				WHERE n_status=0 AND DATE(schedule_dt) = DATE(NOW()) \
+				LIMIT 20;",
+				[],
+				function(err,rs){
+					console.log(S(this.sql).collapseWhitespace().s);
+					done(err,rs);
+				});
+}
+function processTriggeredEventsSchedule(conn,schedules,done){
+	async.eachSeries(schedules,
+		function(schedule,next){
+			if(schedule.event_type == 1 || schedule.event_type == 2){
+				if(schedule.recipient_type == 0){
+					if(schedule.offered_player_id==0){
+						sendTriggeredEventsToAllTeams(conn,schedule,function(err){
+							flagTriggeredEvent(conn,schedule.id,1,function(err){
+								next();
+							});
+							
+						});
+					}else{
+						sendTriggeredEventsToAllTeamsWithPlayerIdExist(conn,schedule,function(err){
+							flagTriggeredEvent(conn,schedule.id,1,function(err){
+								next();
+							});
+							
+						});
+					}
+					
+				}else{
+					if(schedule.offered_player_id == 0){
+						getTeamsRangeInTier(conn,schedule.recipient_type,
+							function(err,start_rank,end_rank){
+								sendTriggeredEventsToTeamInRank(conn,schedule,start_rank,end_rank,function(err){
+									flagTriggeredEvent(conn,schedule.id,1,function(err){
+										next();
+									});
+								});
+						});
+					}else{
+						getTeamsRangeInTier(conn,schedule.recipient_type,
+							function(err,start_rank,end_rank){
+								sendTriggeredEventsToTeamInRank_WithPlayerIdExists(conn,schedule,start_rank,end_rank,function(err){
+									flagTriggeredEvent(conn,schedule.id,1,function(err){
+										next();
+									});
+								});
+						});
+					}
+					
+				}
+			}
+	},function(err){
+		done(err);
+	});
+}
+function flagTriggeredEvent(conn,event_id,flag,done){
+	conn.query("UPDATE ffgame.master_triggered_events SET n_status = 1 \
+				WHERE id = ?",[event_id],function(err,rs){
+					done(err);
+				});
+}
+function sendTriggeredEventsToAllTeamsWithPlayerIdExist(conn,schedule,done){
+	var has_data = true;
+	var since_id = 0;
+	async.whilst(
+		function(){
+			return has_data;
+		},
+		function(next){
+			conn.query("SELECT \
+						a.id,\
+						a.fb_id,\
+						a.email,\
+						a.name,\
+						c.id AS game_team_id,\
+						c.team_id AS original_team_id\
+						FROM "+dbschema+".users a \
+						INNER JOIN \
+						ffgame.game_users b\
+						ON a.fb_id = b.fb_id\
+						INNER JOIN \
+						ffgame.game_teams c\
+						ON c.user_id = b.id \
+						WHERE a.id > ? \
+						AND EXISTS\
+						(\
+							SELECT 1 FROM ffgame.game_team_players d \
+							WHERE d.game_team_id = c.id AND d.player_id=?\
+							LIMIT 1\
+						)\
+						LIMIT 100;",
+				[since_id,schedule.offered_player_id],
+				function(err,rs){
+					console.log(S(this.sql).collapseWhitespace().s);
+					if(rs!=null && rs.length>0){
+						since_id = rs[ (rs.length-1) ].id;
+						sendTriggeredNotificationToUsers(conn,schedule,rs,function(err){
+							next();
+						});
+					}else{
+						has_data = false;
+						next();
+					}
+				});
+		},
+		function(err){
+			done(err);
+		}
+	);
+}
+function sendTriggeredEventsToAllTeams(conn,schedule,done){
+	var has_data = true;
+	var since_id = 0;
+	async.whilst(
+		function(){
+			return has_data;
+		},
+		function(next){
+			conn.query("SELECT \
+				a.id,\
+				a.fb_id,\
+				a.email,\
+				a.name,\
+				c.id AS game_team_id,\
+				c.team_id AS original_team_id\
+				FROM "+dbschema+".users a \
+				INNER JOIN \
+				ffgame.game_users b\
+				ON a.fb_id = b.fb_id\
+				INNER JOIN \
+				ffgame.game_teams c\
+				ON c.user_id = b.id \
+				WHERE a.id > ? LIMIT 100;",
+				[since_id],
+				function(err,rs){
+					console.log(S(this.sql).collapseWhitespace().s);
+					if(rs!=null && rs.length>0){
+						since_id = rs[ (rs.length-1) ].id;
+						sendTriggeredNotificationToUsers(conn,schedule,rs,function(err){
+							next();
+						});
+					}else{
+						has_data = false;
+						next();
+					}
+				});
+		},
+		function(err){
+			done(err);
+		}
+	);
+}
+function sendTriggeredEventsToTeamInRank_WithPlayerIdExists(conn,schedule,start_rank,end_rank,done){
+	var has_data = true;
+	var since_id = 0;
+	async.whilst(
+		function(){
+			return has_data;
+		},
+		function(next){
+			conn.query("SELECT e.id,c.email,e.id AS game_team_id \
+							FROM "+dbschema+".points a\
+							INNER JOIN "+dbschema+".teams b\
+							ON a.team_id = b.id\
+							INNER JOIN "+dbschema+".users c\
+							ON c.id = b.user_id\
+							INNER JOIN ffgame.game_users d\
+							ON d.fb_id = c.fb_id\
+							INNER JOIN ffgame.game_teams e\
+							ON e.user_id = d.id\
+							WHERE a.id > ? AND rank > ? AND rank <= ? \
+							AND EXISTS\
+							(\
+								SELECT 1 FROM ffgame.game_team_players f\
+								WHERE f.game_team_id = e.id AND f.player_id = ?\
+								LIMIT 1\
+							)\
+							ORDER BY a.id ASC \
+							LIMIT 100;",
+				[since_id,start_rank,end_rank,schedule.offered_player_id],
+				function(err,rs){
+					console.log(S(this.sql).collapseWhitespace().s);
+					if(rs!=null && rs.length>0){
+						since_id = rs[ (rs.length-1) ].id;
+						sendTriggeredNotificationToUsers(conn,schedule,rs,function(err){
+							next();
+						});
+					}else{
+						has_data = false;
+						next();
+					}
+				});
+		},
+		function(err){
+			done(err);
+		}
+	);
+}
+function sendTriggeredEventsToTeamInRank(conn,schedule,start_rank,end_rank,done){
+	var has_data = true;
+	var since_id = 0;
+	async.whilst(
+		function(){
+			return has_data;
+		},
+		function(next){
+			conn.query("SELECT e.id,c.email,e.id AS game_team_id \
+							FROM "+dbschema+".points a\
+							INNER JOIN "+dbschema+".teams b\
+							ON a.team_id = b.id\
+							INNER JOIN "+dbschema+".users c\
+							ON c.id = b.user_id\
+							INNER JOIN ffgame.game_users d\
+							ON d.fb_id = c.fb_id\
+							INNER JOIN ffgame.game_teams e\
+							ON e.user_id = d.id\
+							WHERE a.id > ? AND rank > ? AND rank <= ? \
+							ORDER BY a.id ASC \
+							LIMIT 100;",
+				[since_id,start_rank,end_rank],
+				function(err,rs){
+					console.log(S(this.sql).collapseWhitespace().s);
+					if(rs!=null && rs.length>0){
+						since_id = rs[ (rs.length-1) ].id;
+						sendTriggeredNotificationToUsers(conn,schedule,rs,function(err){
+							next();
+						});
+					}else{
+						has_data = false;
+						next();
+					}
+				});
+		},
+		function(err){
+			done(err);
+		}
+	);
+}
+function sendTriggeredNotificationToUsers(conn,schedule,users,cb){
+	async.eachSeries(users,function(user,next){
+		async.waterfall([
+			function(done){
+				conn.query("INSERT INTO ffgame.email_queue\
+					(subject,email,plain_txt,html_text,queue_dt,n_status)\
+					VALUES\
+					(?,?,?,?,NOW(),0);",
+					[schedule.email_subject,user.email,schedule.email_body_txt,schedule.email_body_txt],
+					function(err,rs){
+						console.log(S(this.sql).collapseWhitespace().s);
+						done(err);
+					});
+			},
+			function(done){
+				conn.query("INSERT INTO "+dbschema+".notifications\
+					(content,url,dt,game_team_id)\
+					VALUES\
+					(?,'#',NOW(),?)",
+					[ '<a href="'+schedule.offer_url+'">'+nl2br(schedule.email_body_plain)+'</a>',
+					 user.game_team_id ],
+					function(err,rs){
+						console.log(S(this.sql).collapseWhitespace().s);
+						done(err);
+					});
+			}
+		],
+		function(err,r){
+			next();
+		});
+	},function(err){
+		cb(err);
+	});		
+}
+function getTeamsRangeInTier(conn,tier,done){
+	async.waterfall([
+		function(callback){
+			conn.query("SELECT MAX(rank) AS max_rank FROM "+dbschema+".points;",
+						[],
+						function(err,rs){
+				callback(err,rs[0].max_rank);
+			});
+		},
+		function(max_rank,callback){
+			console.log('max_rank',max_rank);
+			tier = parseInt(tier);
+			switch(tier){
+				case 1:
+					start_rank = 0;
+					end_rank 	= Math.floor(0.25 * max_rank);
+				break;
+				case 2:
+					start_rank = Math.ceil(0.25 * max_rank);
+					end_rank 	= Math.floor(0.5 * max_rank);
+				break;
+				case 3:
+					start_rank = Math.ceil(0.5 * max_rank);
+					end_rank 	= Math.floor(0.75 * max_rank);
+				break;
+				case 4:
+					start_rank = Math.ceil(0.75 * max_rank);
+					end_rank 	= Math.floor(1.0 * max_rank);
+				break;
+				default:
+					start_rank = 0;
+					end_rank 	= 0;
+				break;
+			}
+			callback(null,start_rank,end_rank);
+		},
+	],
+	function(err,start_rank,end_rank){
+		done(err,start_rank,end_rank);
+	});
+}
 
 
 
+
+
+
+
+
+
+//STANDARD EVENTS
 function getAllEventsWhichWillHappenToday(cb){
 	//the yesterday's unexecuted events should be able to processed also.
 	pool.getConnection(function(err,conn){
@@ -104,7 +458,6 @@ function processSchedule(schedules,cb){
 	},function(err){
 		cb(err);
 	});
-
 }
 
 function processPlayerEvent(schedule,cb){
@@ -344,7 +697,9 @@ function distributeEventByTier(schedule,cb){
 							ON d.fb_id = c.fb_id\
 							INNER JOIN ffgame.game_teams e\
 							ON e.user_id = d.id\
-							WHERE e.id > ? AND rank > ? AND rank <= ? LIMIT 100;",
+							WHERE a.id > ? AND rank > ? AND rank <= ? \
+							ORDER BY a.id ASC\
+							LIMIT 100;",
 						[since_id,start_rank,end_rank],
 						function(err,teams){
 							console.log(S(this.sql).collapseWhitespace().s);
@@ -468,10 +823,18 @@ function distributeMasterEvents(targets,schedule,cb){
 					//get all the players and queue one by one.
 					//since the player is a massive 50k++ 
 					//we need to do it in batches
-					processAllUsersForMaster(conn,target,schedule,matchday,
+					if(schedule.prequisite_event_id == 0){
+						processAllUsersForMaster(conn,target,schedule,matchday,
 											function(err){
 												callback(err,matchday);	
 											});
+					}else{
+						processAllUsersForMasterByPrequisite(conn,target,schedule,matchday,
+											function(err){
+												callback(err,matchday);	
+											});
+					}
+					
 				}
 			],
 			function(err,rs){
@@ -512,6 +875,62 @@ function processAllUsersForMaster(conn,target,schedule,matchday,done){
 						 WHERE d.game_team_id = c.id AND d.player_id = ? LIMIT 1)\
 						ORDER BY id\
 						LIMIT 100;",[since_id,target],function(err,rs){
+							console.log(S(this.sql).collapseWhitespace().s);
+							try{
+								if(rs!=null && rs.length > 0){
+									since_id = rs[ (rs.length - 1) ].id;
+									populate_job_event_master_player(conn,target,schedule,matchday,rs,function(err){
+										next();
+									});
+								}else{
+									has_data = false;
+									next();
+								}
+							}catch(e){
+								has_data = false;
+								next();
+							}
+						});
+		},
+		function(err){
+			done(err);
+		}
+	);
+}
+function processAllUsersForMasterByPrequisite(conn,target,schedule,matchday,done){
+	var has_data = true;
+	var since_id = 0;
+	async.whilst(
+		function(){
+			return has_data;
+		},
+		function(next){
+			conn.query("SELECT \
+						a.id,\
+						a.fb_id,\
+						a.email,\
+						a.name,\
+						c.id AS game_team_id,\
+						c.team_id AS original_team_id\
+						FROM "+dbschema+".users a \
+						INNER JOIN \
+						ffgame.game_users b\
+						ON a.fb_id = b.fb_id\
+						INNER JOIN \
+						ffgame.game_teams c\
+						ON c.user_id = b.id \
+						WHERE a.id > ? \
+						AND EXISTS\
+						(SELECT 1 FROM ffgame.game_team_players d \
+						 WHERE d.game_team_id = c.id AND d.player_id = ? LIMIT 1)\
+						AND EXISTS\
+						(SELECT 1 FROM ffgame.game_perks e WHERE e.event_id = ? \
+						 AND e.game_team_id =  c.id \
+						 AND e.n_status <> 2 LIMIT 1\
+						 ) \
+						ORDER BY id\
+						LIMIT 100;",
+						[since_id,target,schedule.prequisite_event_id],function(err,rs){
 							console.log(S(this.sql).collapseWhitespace().s);
 							try{
 								if(rs!=null && rs.length > 0){
@@ -782,4 +1201,26 @@ function next_match(conn,game_team_id,done){
 		}
 	);
 	
+}
+
+function nl2br (str, is_xhtml) {
+  // http://kevin.vanzonneveld.net
+  // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+  // +   improved by: Philip Peterson
+  // +   improved by: Onno Marsman
+  // +   improved by: Atli Þór
+  // +   bugfixed by: Onno Marsman
+  // +      input by: Brett Zamir (http://brett-zamir.me)
+  // +   bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+  // +   improved by: Brett Zamir (http://brett-zamir.me)
+  // +   improved by: Maximusya
+  // *     example 1: nl2br('Kevin\nvan\nZonneveld');
+  // *     returns 1: 'Kevin<br />\nvan<br />\nZonneveld'
+  // *     example 2: nl2br("\nOne\nTwo\n\nThree\n", false);
+  // *     returns 2: '<br>\nOne<br>\nTwo<br>\n<br>\nThree<br>\n'
+  // *     example 3: nl2br("\nOne\nTwo\n\nThree\n", true);
+  // *     returns 3: '<br />\nOne<br />\nTwo<br />\n<br />\nThree<br />\n'
+  var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br ' + '/>' : '<br>'; // Adjust comment to avoid issue on phpjs.org display
+
+  return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
 }
