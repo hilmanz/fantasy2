@@ -64,12 +64,21 @@ class EventsController extends AppController {
 				$register_data['amount'] = $this->request->data['amount'];	
 
 				if($register_data['event_type']==1){
-					//string representations of target values in player data
-					$register_data['target_str'] = $this->getTargetNameForPlayerEvent($register_data['target_type'],
-													$this->request->data['targets']);
+					if($register_data['target_type']==4){
+						$register_data['target_str'] = $this->getTargetNameForMasterEvent(
+													$register_data['target_type'],
+													$register_data['target_value']);
+					}else{
+						//string representations of target values in player data
+						$register_data['target_str'] = $this->getTargetNameForPlayerEvent(
+															$register_data['target_type'],
+															$this->request->data['targets']);	
+					}
+					
 				}else{
 					//string representations of target values in master data
-					$register_data['target_str'] = $this->getTargetNameForMasterEvent($register_data['target_type'],
+					$register_data['target_str'] = $this->getTargetNameForMasterEvent(
+													$register_data['target_type'],
 													$register_data['target_value']);
 				}
 				if(isset($this->request->data['prequisite_event_id'])){
@@ -81,6 +90,7 @@ class EventsController extends AppController {
 			break;
 			case 5:
 				$img_name = '';
+
 				if(isset($_FILES['email_img']['name'])){
 					if(eregi("\.jpg",$_FILES['email_img']['name'])){
 						$img_name = 'events_'.md5($_FILES['email_img']['name']).".jpg";	
@@ -96,6 +106,7 @@ class EventsController extends AppController {
 					
 				}
 				$register_data = $this->Session->read('register_event_data');
+
 				$register_data['email_body_img'] = $img_name;
 				$register_data['name_appear_on_report'] = $this->request->data['name_appear_on_report'];				
 				$register_data['email_subject'] = $this->request->data['email_subject'];

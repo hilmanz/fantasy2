@@ -32,7 +32,11 @@ function getLineup(game_team_id,callback){
 					FROM ffgame.game_team_lineups a\
 					INNER JOIN ffgame.master_player b\
 					ON a.player_id = b.uid\
-					WHERE a.game_team_id=? LIMIT 17",
+					WHERE a.game_team_id=? \
+					AND EXISTS ( SELECT 1 FROM ffgame.game_team_players c \
+								WHERE c.game_team_id = a.game_team_id \
+									AND c.player_id = a.player_id LIMIT 1)\
+					LIMIT 16",
 					[game_team_id],
 					function(err,rs){
 							callback(err,rs);	
@@ -80,7 +84,7 @@ function setLineup(game_team_id,setup,formation,done){
 								WHERE a.game_team_id = ? AND a.player_id IN (?) LIMIT 16",
 								[game_team_id,players],
 								function(err,rs){
-									//console.log(this.sql);
+									console.log(S(this.sql).collapseWhitespace().s);
 									console.log(rs);
 									callback(null,rs);
 								});

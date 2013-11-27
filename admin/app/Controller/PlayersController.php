@@ -395,22 +395,32 @@ class PlayersController extends AppController {
 		$this->set('week',$week);
 
 		//get game_ids
-		$games = $this->Game->query("SELECT game_id FROM ffgame.game_fixtures 
-										WHERE matchday={$week} LIMIT 10");
+		if($week>0){
+			$games = $this->Game->query("SELECT game_id FROM ffgame.game_fixtures 
+										WHERE matchday={$week} LIMIT 10",false);	
+		}else{
+			$games = $this->Game->query("SELECT game_id FROM ffgame.game_fixtures LIMIT 400",false);	
+		}
+		
 		$game_id = array();
 		foreach($games as $game){
 			
 			$game_id[] = "'".$game['game_fixtures']['game_id']."'";
 		}
 		$str_ids = implode(',',$game_id);
-		$stats = $this->Game->query("SELECT * FROM 
+		$stats = $this->Game->query("SELECT stats_name,SUM(stats_value) as stats_value 
+									FROM 
 									 ffgame_stats.master_player_stats a
 									 WHERE player_id='{$player['player_id']}' 
-									 AND game_id IN ({$str_ids});
+									 AND game_id IN ({$str_ids}) GROUP BY stats_name;
 									");
+		
 		$a_stats = array();
 		foreach($stats as $s){
-			$a_stats[$s['a']['stats_name']] = $s['a']['stats_value'];
+			if(!isset($a_stats[$s['a']['stats_name']])){
+				$a_stats[$s['a']['stats_name']] = 0;
+			}
+			$a_stats[$s['a']['stats_name']] += $s[0]['stats_value'];
 		}
 
 		//modifiers

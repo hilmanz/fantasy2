@@ -24,7 +24,7 @@ function getdata(){
 						var team_id = response.data[i].team_id.split('t').join('');
 						data.push([
 								'<a class="thumbPlayer"><img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description='+team_id+'&dimensions=103x155&id='+uid+'"/></a>',
-								response.data[i].name,
+								'<a href="<?=$this->Html->url('/players/playerweekly_details/')?>'+response.data[i].uid+'/0">'+response.data[i].name+'</a>',
 								response.data[i].position,
 								response.data[i].team_name,
 								response.data[i].stats.games,

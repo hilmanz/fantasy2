@@ -1,8 +1,14 @@
 <div class="theContainer">
+
+<?php if($week > 0):?>
 <h3 class="titles"><?=$data['player']['name']?> |  Week <?=intval($week)?> Statistics</h3>
 
 <a href="<?=$this->Html->url('/players/playerweekly/?week='.$week)?>" class="button">BACK TO PREVIOUS PAGE</a>
+<?php else: ?>
+<h3 class="titles"><?=$data['player']['name']?> | Overall Statistics</h3>
 
+<a href="<?=$this->Html->url('/players/playerstats')?>" class="button">BACK TO PREVIOUS PAGE</a>
+<?php endif;?>
 <?php
 $games = 0;
 $passing_and_attacking = 0;

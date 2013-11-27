@@ -53,6 +53,7 @@
 					<option value="1">Individual Team</option>
 					<option value="2">all teams</option>
 					<option value="3">by Ranking Tier</option>
+					<option value="4">by Original Player</option>
 				</select>
 				<?php else:?>
 				<select name="target_type">
@@ -93,6 +94,8 @@
 		echo $this->element('events_create_step3_tier',array('data'=>$data));
 	}elseif($data['event_type']==1 && $data['target_type']==2){
 		echo $this->element('events_create_step3_all_team',array('data'=>$data));
+	}elseif($data['event_type']==1 && $data['target_type']==4){
+		echo $this->element('events_create_step3_original_player',array('data'=>$data));
 	}elseif($data['event_type']==2 && $data['target_type']==4){
 		echo $this->element('events_create_step3_master_player',array('data'=>$data));
 	}elseif($data['event_type']==2 && $data['target_type']==1){

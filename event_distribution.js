@@ -492,6 +492,16 @@ function processPlayerEvent(schedule,cb){
 				});
 			});
 		break;
+		case 4:
+			//if by original player, then we query all teams that has that player in their team,
+			//then insert them into event_immediate table. 
+			//and then queue the email notifications
+			distributeEventByOriginalPlayer(schedule,function(err){
+				flagSchedule(schedule,1,function(err,rs){
+					cb(err);
+				});
+			});
+		break;
 		default:
 			//do nothing, something is not right here.
 			cb(null);
@@ -544,15 +554,17 @@ function distributeEachTeam(conn,schedule,targets,cb){
 										INNER JOIN ffgame.game_teams c\
 										ON c.user_id = b.id\
 										WHERE c.id = ? LIMIT 1",[target],function(err,r){
+											console.log(S(this.sql).collapseWhitespace().s);
 											try{
 												c(err,r[0]);
 											}catch(e){
-												c(null,'');
+												c(null,null);
 											}
 										});
 						},
 						function(user,c){
 							if(typeof user !== 'undefined'){
+								
 								conn.query("INSERT INTO ffgame.email_queue\
 										(subject,email,plain_txt,html_text,queue_dt,n_status)\
 										VALUES\
@@ -563,7 +575,8 @@ function distributeEachTeam(conn,schedule,targets,cb){
 											schedule.email_body_txt
 										],
 										function(err,ins){
-											c(err,ins);
+											console.log(S(this.sql).collapseWhitespace().s);
+											c(err,user);
 										});
 							}else{
 								c(null,null);
@@ -571,16 +584,18 @@ function distributeEachTeam(conn,schedule,targets,cb){
 							
 						},
 						function(user,c){
-							if(typeof user !== 'undefined'){
+							console.log(user);
+							if(user!=null){
 								conn.query("INSERT INTO "+dbschema+".notifications\
 											(content,url,dt,game_team_id)\
 											VALUES\
 											(?,'#',NOW(),?)"
 											,[
-												shedule.email_body_plain,
+												schedule.email_body_plain,
 												user.game_team_id
 											]
 											,function(err,ins){
+												console.log(S(this.sql).collapseWhitespace().s);
 												c(err,ins);
 											});
 							}else{
@@ -634,7 +649,45 @@ function distributeEventToAllTeams(schedule,cb){
 		});
 	});
 }
+function distributeEventByOriginalPlayer(schedule,cb){
+	console.log('distirbuteEventByOriginalPlayer');
+	var players = JSON.parse(schedule.target_value);
+	pool.getConnection(function(err,conn){
+		var has_data = true;
+		var since_id = 0;
+		async.whilst(function(){
+			return has_data;
+		},function(next){
+			console.log(since_id);
+			conn.query("SELECT game_team_id FROM ffgame.game_team_players \
+						WHERE game_team_id > ? AND player_id IN (?)\
+						GROUP BY game_team_id\
+						ORDER BY game_team_id ASC\
+						LIMIT 100;",[since_id,players],
+			function(err,teams){
+				console.log('distributeEventByOriginalPlayer',S(this.sql).collapseWhitespace().s);
+				if(teams.length>0){
+					var targets = [];
+					for(var i in teams){
+						targets.push(teams[i].game_team_id);
+					}
+					since_id = teams[teams.length-1].game_team_id;
 
+					distributeEachTeam(conn,schedule,targets,function(err){
+						next();
+					});
+				}else{
+					has_data = false;
+					next();
+				}
+			});
+		},function(err){
+			conn.end(function(e){
+				cb(err);
+			});
+		});
+	});
+}
 function distributeEventByTier(schedule,cb){
 	console.log('distributeEventByTier');
 	var targets = JSON.parse(schedule.target_value);
@@ -1121,6 +1174,7 @@ function addMoney(conn,queue,cb){
 				if(queue.amount>0){
 					transaction_type = 1;
 				}else{
+					//soalnya gak mungkin ss$ 0 kan, jadi selain diatas 0 kita anggap negatif
 					transaction_type = 2;
 				}
 				conn.query("INSERT IGNORE INTO ffgame.game_team_expenditures\

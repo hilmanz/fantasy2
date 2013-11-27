@@ -1,10 +1,11 @@
 <?php
 require_once APP . 'Vendor' . DS. 'stats.locale.php';
-
+/*
 $can_purchase = true;
 if(time() > $close_time['ts'] && Configure::read('debug') == 0){
     $can_purchase = false;
 }
+*/
 ?>
 <script>
 function profileLoaded(widget, data, id){

@@ -117,6 +117,7 @@ class MarketController extends AppController {
 			}
 	}
 	public function player($player_id){
+
 		$userData = $this->userData;
 		//user data
 		$user = $this->User->findByFb_id($userData['fb_id']);
@@ -133,8 +134,33 @@ class MarketController extends AppController {
 		//player detail : 
 		$rs = $this->Game->get_player_info($player_id);
 		
+
+		//can transfer ?
+		$window = $this->Game->transfer_window();
+		$window_id = intval(@$window['id']);
 		
+		//check if the transfer window is opened, or the player is just registered within 24 hours
+		$is_new_user = false;
+		$can_transfer = false;
 		
+		if(time()<strtotime($this->userDetail['User']['register_date'])+(24*60*60)){
+			$is_new_user = true;
+			
+		}
+
+		if(!$is_new_user){
+			
+			if(strtotime(@$window['tw_open']) <= time() && strtotime(@$window['tw_close'])>=time()){
+				$can_transfer = true;
+				
+			}
+		}else{
+			$can_transfer = true;
+			
+		}
+		
+		$this->set('can_purchase',$can_transfer);
+		//-->
 
 
 		if($rs['status']==1){
