@@ -710,6 +710,40 @@ function next_match(team_id,done){
 					}catch(e){
 						callback(null,rs);
 					}
+				},
+				function(rs,callback){
+					//get the manual formation closing time.
+					try{
+						conn.query("SELECT * \
+									FROM \
+									ffgame.master_matchdays \
+									WHERE matchday = ? \
+									LIMIT 1;",
+									[(rs[0].matchday)],
+									function(err,setup){
+										rs[0].matchday_setup = setup[0];
+										callback(err,rs);
+									});
+					}catch(e){
+						callback(null,rs);
+					}
+				},
+				function(rs,callback){
+					//get the manual formation closing time for previous match.
+					try{
+						conn.query("SELECT * \
+									FROM \
+									ffgame.master_matchdays \
+									WHERE matchday = ? \
+									LIMIT 1;",
+									[(rs[0].matchday - 1)],
+									function(err,setup){
+										rs[0].previous_setup = setup[0];
+										callback(err,rs);
+									});
+					}catch(e){
+						callback(null,rs);
+					}
 				}
 			],
 			function(err,result){

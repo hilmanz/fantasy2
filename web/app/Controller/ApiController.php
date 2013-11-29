@@ -454,6 +454,7 @@ class ApiController extends AppController {
 		$response['weekly_stats']['balances'] = $financial_statement['weekly_balances'];
 		$response['weekly_stats']['points'] = $weekly_team_points;
 
+
 		//matches
 		$matches = $this->getMatches($game_team['id'],$game_team['team_id'],
 										$weekly_team_points,
@@ -795,6 +796,7 @@ class ApiController extends AppController {
 			foreach($rs as $n=>$r){
 				$points = 0;
 				$balance = 0;
+				$income = 0;
 				foreach($arr as $a){
 					if($r['a']['matchday']==$a['matchday']){
 						$points = $a['points'];
@@ -808,7 +810,8 @@ class ApiController extends AppController {
 					}
 				}
 				$match = $r['a'];
-				if($r['b']['home_id']==$team_id){
+				
+				if($r['a']['home_id'] == $team_id){
 					$match['against'] = $r['c']['away_name'];
 				}else{
 					$match['against'] = $r['b']['home_name'];
@@ -992,7 +995,7 @@ class ApiController extends AppController {
 	private function getCloseTime($nextMatch){
 		
 		$this->nextMatch = $nextMatch;
-
+		/*
 		$previous_close_dt = date("Y-m-d", strtotime("previous Saturday"))." 17:00:00";
 		
 
@@ -1012,6 +1015,50 @@ class ApiController extends AppController {
 		}
 		$this->openTime = $this->nextMatch['match']['last_match_ts'];
 		$this->closeTime = $close_time;
+		*/
+		$previous_match = $this->nextMatch['match']['previous_setup'];
+				
+		$upcoming_match = $this->nextMatch['match']['matchday_setup'];
+		
+		//get close time and open time compare to previous match
+		if(
+			(time() < strtotime($previous_match['start_dt']))
+			||
+			(time() <= strtotime($previous_match['end_dt']))
+
+		  ){
+			$close_time = array("datetime"=>$previous_match['start_dt'],
+							"ts"=>strtotime($previous_match['start_dt']));
+
+			$open_time = strtotime($previous_match['end_dt']);
+
+		}else{
+			if(time() < strtotime($upcoming_match['start_dt'])){
+				//jika pertandingan belum di mulai.. maka open time itu diset berdasarkan
+				//opentime minggu lalu
+				$open_time = strtotime($previous_match['end_dt']);
+			}else{
+				//jika tidak, menggunakan open time berikutnya
+				$open_time = strtotime($upcoming_match['end_dt']);
+			}
+
+			
+			$close_time = array("datetime"=>$upcoming_match['start_dt'],
+							"ts"=>strtotime($upcoming_match['start_dt']));
+
+			
+			
+		}
+
+
+		$this->closeTime = $close_time;
+
+		
+
+		//formation open time
+		
+		$this->openTime = $open_time;
+				
 	}
 
 	public function test(){

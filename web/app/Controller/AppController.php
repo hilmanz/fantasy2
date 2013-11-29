@@ -116,61 +116,63 @@ class AppController extends Controller {
 				$this->set('USER_POINTS',$this->userPoints);
 
 				$this->nextMatch = $this->Game->getNextMatch(@$this->userData['team']['team_id']);
+
+				
+
 				$this->nextMatch['match']['last_match_ts'] = strtotime($this->nextMatch['match']['last_match']);
 				
 				$this->nextMatch['match']['match_date_ts'] = strtotime(@$this->nextMatch['match']['match_date']);
 				
 				$this->set('match_date_ts',$this->nextMatch['match']['match_date_ts']);
 
-				$previous_close_dt = date("Y-m-d", strtotime("previous Saturday"))." 17:00:00";
-				
-				$current_dt = date("Y-m-d", strtotime("Saturday"))." 17:00:00";
-
-				$close_dt = date("Y-m-d", strtotime("next Saturday"))." 17:00:00";
 				
 				$next_match_ts = $this->nextMatch['match']['match_date_ts'];
 				
 				$last_matchday = $this->nextMatch['match']['matchday'] - 1;
-				$last_games = $this->Game->query("SELECT COUNT(*) as total 
-													FROM ffgame.game_fixtures 
-													WHERE matchday=".$last_matchday."
-													AND is_processed = 1 AND period='FullTime'");
-				$total_last_game = $last_games[0][0]['total'];
-				unset($last_games);
 				
-				if(date_default_timezone_get()=='Asia/Jakarta'){
-				    $next_match_ts += 6*60*60;
-				}
+				$previous_match = $this->nextMatch['match']['previous_setup'];
 				
-				if($total_last_game < 10){
-					$next_match_ts = $previous_close_dt;
-				}
+				$upcoming_match = $this->nextMatch['match']['matchday_setup'];
+				
+				//get close time and open time compare to previous match
+				if(
+					(time() < strtotime($previous_match['start_dt']))
+					||
+					(time() <= strtotime($previous_match['end_dt']))
 
-				if($next_match_ts > strtotime($current_dt)){
-					//these saturday
-					$close_time = array("datetime"=>$current_dt,
-									"ts"=>strtotime($current_dt));
+				  ){
+					$close_time = array("datetime"=>$previous_match['start_dt'],
+									"ts"=>strtotime($previous_match['start_dt']));
 
-				}else if($next_match_ts > strtotime($close_dt)){
-					//next saturday
-					$close_time = array("datetime"=>$close_dt,
-									"ts"=>strtotime($close_dt));
+					$open_time = strtotime($previous_match['end_dt']);
+		
 				}else{
-					//last saturday
-					$close_time = array("datetime"=>$previous_close_dt,
-									"ts"=>strtotime($previous_close_dt));
+					if(time() < strtotime($upcoming_match['start_dt'])){
+						//jika pertandingan belum di mulai.. maka open time itu diset berdasarkan
+						//opentime minggu lalu
+						$open_time = strtotime($previous_match['end_dt']);
+					}else{
+						//jika tidak, menggunakan open time berikutnya
+						$open_time = strtotime($upcoming_match['end_dt']);
+					}
+
+					
+					$close_time = array("datetime"=>$upcoming_match['start_dt'],
+									"ts"=>strtotime($upcoming_match['start_dt']));
+
+					
+					
 				}
-				
-				
+
+
 				$this->closeTime = $close_time;
 
 				$this->set('close_time',$close_time);
 
 				//formation open time
-				$open_time = $this->nextMatch['match']['last_match_ts'] + (2*60*60);
+				
 				$this->openTime = $open_time;
 				$this->set('open_time',$open_time);
-
 				//news ticker
 				$this->set('tickers',$this->Ticker->find('all',array('limit'=>5)));
 				

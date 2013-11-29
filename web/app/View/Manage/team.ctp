@@ -5,9 +5,11 @@ if(time() > $close_time['ts'] && Configure::read('debug') == 0){
     $can_update_formation = false;
 }else{
     if(time() < $open_time){
+        
         $can_update_formation = false;
     }
 }
+
 if(isset($first_time) && $first_time==true):
 ?>
 <div id="bgPopup"></div>
