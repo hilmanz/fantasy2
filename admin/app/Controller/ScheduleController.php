@@ -54,4 +54,23 @@ class ScheduleController extends AppController {
 
 		$this->set('rs',$rs[0]);
 	}
+
+	public function matchday(){
+		$this->loadModel('MasterMatchday');
+		$rs = $this->MasterMatchday->find('all',array('order'=>array('matchday'=>'ASC')));
+		$this->set('match',$rs);
+	}
+	public function edit_matchday($id){
+		
+		$this->loadModel('MasterMatchday');
+		$this->MasterMatchday->id = $id;
+		if($this->request->is('post')){
+			$this->MasterMatchday->save($this->request->data);
+		}
+
+		$rs = $this->MasterMatchday->findById($id);
+		
+
+		$this->set('rs',$rs);
+	}
 }

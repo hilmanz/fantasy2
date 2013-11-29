@@ -37,6 +37,9 @@
 								<li>
 									<a href="<?=$this->Html->url('/schedule')?>">Schedule</a>
 								</li>
+                                <li>
+                                    <a href="<?=$this->Html->url('/schedule/matchday')?>">Matchday Setup</a>
+                                </li>
 								<li>
 									<a href="<?=$this->Html->url('/players/overall')?>">Players</a>
 								</li>
