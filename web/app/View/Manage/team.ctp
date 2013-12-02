@@ -2,10 +2,15 @@
 $can_update_formation = true;
 
 if(time() > $close_time['ts'] && Configure::read('debug') == 0){
+    
     $can_update_formation = false;
+    if(time() > $open_time){
+       
+        $can_update_formation = true;
+    }
 }else{
     if(time() < $open_time){
-        
+       
         $can_update_formation = false;
     }
 }

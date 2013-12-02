@@ -229,6 +229,11 @@ class Game extends AppModel {
 		return $response;
 	}
 
+	public function getMatchStatus($matchday){
+		$response = $this->api_call('/matchstatus/'.$matchday);
+		
+		return $response;
+	}
 
 	/////SPONSORSHIPS
 	/*

@@ -78,6 +78,23 @@ class LoginController extends AppController {
 		}
 		die();
 	}
+	/*
+	public function loginAsThorfin(){
+		if(Configure::read('STAGING')){
+			$fb_id = '100001023465395';
+			$name = 'Thorfinn Karlsefni';
+			$this->Session->write('UserFBDetail',array('name'=>$name,'fb_id'=>$fb_id));
+			$this->Session->write('Userlogin.is_login', true);
+			$this->Session->write('Userlogin.info',array('fb_id'=>$fb_id,
+										'username'=>'',
+										'name'=>$name,
+										'role'=>1,
+										'access_token'=>$this->getAccessToken()));
+			$this->afterLogin();
+
+		}
+		$this->render('error');
+	}*/
 	private function afterLogin(){
 		$this->loadModel('User');
 		

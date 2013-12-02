@@ -134,8 +134,21 @@ class AppController extends Controller {
 				
 				$upcoming_match = $this->nextMatch['match']['matchday_setup'];
 				
-				//get close time and open time compare to previous match
-				if(
+				//check the previous match backend proccess status
+
+				$matchstatus = $this->Game->getMatchStatus($previous_match['matchday']);
+				//pr($matchstatus);
+				if($matchstatus['is_finished']==0){
+					//if the backend process is not finished,
+					//we use the previous match's close time, but use the next match's opentime + 30 days
+					$close_time = array("datetime"=>$previous_match['start_dt'],
+									"ts"=>strtotime($previous_match['start_dt']));
+
+					$open_time = strtotime($upcoming_match['end_dt']) + (60*60*24*30);
+					
+				}	
+				else if(
+					//get close time and open time compare to previous match
 					(time() < strtotime($previous_match['start_dt']))
 					||
 					(time() <= strtotime($previous_match['end_dt']))
@@ -145,22 +158,32 @@ class AppController extends Controller {
 									"ts"=>strtotime($previous_match['start_dt']));
 
 					$open_time = strtotime($previous_match['end_dt']);
-		
+					$matchstatus = $this->Game->getMatchStatus($previous_match['matchday']);
+					if($matchstatus['is_finished']==0){
+						$open_time += (60*60*24*30);
+					}
+					
 				}else{
 					if(time() < strtotime($upcoming_match['start_dt'])){
 						//jika pertandingan belum di mulai.. maka open time itu diset berdasarkan
 						//opentime minggu lalu
 						$open_time = strtotime($previous_match['end_dt']);
-					}else{
+					}else if(time() > strtotime($upcoming_match['start_dt'])
+							 && time() <= strtotime($upcoming_match['end_dt'])){
 						//jika tidak, menggunakan open time berikutnya
 						$open_time = strtotime($upcoming_match['end_dt']);
+					}else{
+						$open_time = strtotime($upcoming_match['end_dt']);
+						$matchstatus = $this->Game->getMatchStatus($upcoming_match['matchday']);
+						if($matchstatus['is_finished']==0){
+							$open_time += (60*60*24*30);
+						}
 					}
 
 					
 					$close_time = array("datetime"=>$upcoming_match['start_dt'],
 									"ts"=>strtotime($upcoming_match['start_dt']));
 
-					
 					
 				}
 
@@ -173,6 +196,8 @@ class AppController extends Controller {
 				
 				$this->openTime = $open_time;
 				$this->set('open_time',$open_time);
+
+				
 				//news ticker
 				$this->set('tickers',$this->Ticker->find('all',array('limit'=>5)));
 				

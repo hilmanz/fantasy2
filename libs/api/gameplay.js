@@ -1568,6 +1568,67 @@ function leaderboard(done){
 	});
 	
 }
+/**
+* get match status. return 1 if its finished, return 0 if its not finished yet.
+*/
+function matchstatus(matchday,done){
+	var async = require('async');
+	prepareDb(function(conn){
+		async.waterfall(
+			[
+				function(callback){
+					//get team list
+					conn.query("SELECT game_id FROM ffgame.game_fixtures WHERE matchday=? LIMIT 10;",
+						[matchday],function(err,rs){
+						var matches = [];
+						if(rs!=null && rs.length > 0){
+							for(var i in rs){
+								matches.push(rs[i].game_id);
+							}
+						}
+						callback(err,matches);
+					});
+				},
+				function(matches,callback){
+					//check the finished match
+					conn.query("SELECT COUNT(*) AS total FROM\
+						(SELECT game_id FROM ffgame_stats.job_queue \
+						WHERE game_id IN (?)\
+						AND  \
+						n_status = 2 GROUP BY game_id) a;",[matches],function(err,rs){
+						console.log(S(this.sql).collapseWhitespace().s);
+						callback(err,matches,rs[0].total);
+					});
+				},
+				function(matches,total_done,callback){
+					//check the in-queue match
+					conn.query("SELECT COUNT(*) AS total FROM\
+						(SELECT game_id FROM ffgame_stats.job_queue \
+						WHERE game_id IN (?)\
+						AND  \
+						n_status IN (0,1) GROUP BY game_id) a;",[matches],function(err,rs){
+						console.log(S(this.sql).collapseWhitespace().s);
+						callback(err,matches,total_done,rs[0].total);
+					});
+				},
+				function(matches,total_done,total_queue,callback){
+					var rs = 0;
+					if(total_queue==0 && total_done==10){
+						rs = 1;
+					}
+					callback(null,rs);
+				}
+			],
+			function(err,result){
+				console.log('rs -> '+result);
+				conn.end(function(e){
+					done(err,result);
+				});
+			}
+		);
+	});
+	
+}
 function getTeamResultStats(conn,team_id,callback){
 	var stats = {
 		games:0,
@@ -1698,6 +1759,7 @@ exports.sale = sale;
 exports.buy = buy;
 exports.getWeeklyFinance = getWeeklyFinance;
 exports.getTransferWindow = getTransferWindow;
+exports.matchstatus = matchstatus;
 exports.setPool = function(p){
 	pool = p;
 	match.setPool(pool);

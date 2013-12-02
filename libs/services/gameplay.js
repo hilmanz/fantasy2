@@ -469,6 +469,15 @@ exports.get_venue = function(req,res){
 		}
 	});
 }
+exports.matchstatus = function(req,res){
+	gameplay.matchstatus(req.params.matchday,function(err,rs){
+		if(!err){
+			res.json(200,{status:1,is_finished:rs});
+		}else{
+			res.send(200,{status:0});
+		}
+	});
+}
 function handleError(res){
 	res.send(501,{error:'no data available'});
 }
