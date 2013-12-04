@@ -842,17 +842,41 @@ class ApiController extends AppController {
 			$report = array('total_matches' => $finance['data']['total_matches'],
 							'budget' => $finance['data']['budget']);
 			$total_items = array();
+			$report['total_earnings'] = 0;
+			$report['other_income'] = 0;
+			$report['other_expenses'] = 0;
 			foreach($finance['data']['report'] as $n=>$v){
 				$report[$v['item_name']] = $v['total'];
 				$total_items[$v['item_name']] = $v['item_total'];
+
+				if($v['total'] > 0 && @eregi('other_',$v['item_name'])){
+					$report['other_income']+= intval($v['total']);
+					unset($report[$v['item_name']]);
+				}
+				if($v['total'] > 0 && @eregi('perk-',$v['item_name'])){
+					$report['other_income']+= intval($v['total']);
+					unset($report[$v['item_name']]);
+				}
+				if($v['total'] < 0 && @eregi('other_',$v['item_name'])){
+					$report['other_expenses']+= intval($v['total']);
+					unset($report[$v['item_name']]);
+				}
+				if($v['total'] < 0 && @eregi('perk-',$v['item_name'])){
+					$report['other_expenses']+= intval($v['total']);
+					unset($report[$v['item_name']]);
+				}
+				if($v['total'] < 0 && @eregi('transaction_fee_',$v['item_name'])){
+					$report['other_expenses']+= intval($v['total']);
+					unset($report[$v['item_name']]);
+				}
+				if($v['total'] > 0){
+					$report['total_earnings'] += $v['total'];
+				}
 			}
-			$report['total_earnings'] = intval(@$report['tickets_sold'])+
-										intval(@$report['commercial_director_bonus'])+
-										intval(@$report['marketing_manager_bonus'])+
-										intval(@$report['public_relation_officer_bonus'])+
-										intval(@$report['win_bonus'])+
-										intval(@$report['player_sold'])
-										;
+			if(isset($report['Joining_Bonus'])){
+				$report['sponsorship'] = $report['Joining_Bonus'];
+				unset($report['Joining_Bonus']);
+			}
 			$this->finance_total_items_raw = $total_items;
 			return $report;
 		}
