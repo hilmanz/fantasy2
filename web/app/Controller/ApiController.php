@@ -748,24 +748,7 @@ class ApiController extends AppController {
 			return $report;
 		}
 	}*/
-	private function getWeeklyFinancialStatement($weekly_finance){
-		$weekly_statement = array();
-		$total_items = array();
-		while(sizeof($weekly_finance['transactions'])>0){
-			$p = array_shift($weekly_finance['transactions']);
-			$weekly_statement[$p['item_name']] = $p['amount'];
-			$total_items[$p['item_name']] = $p['item_total'];
-		}
-
-		$weekly_statement['total_earnings'] = intval(@$weekly_statement['tickets_sold'])+
-									intval(@$weekly_statement['commercial_director_bonus'])+
-									intval(@$weekly_statement['marketing_manager_bonus'])+
-									intval(@$weekly_statement['public_relation_officer_bonus'])+
-									intval(@$weekly_statement['win_bonus'])+
-									intval(@$weekly_statement['player_sold'])
-									;
-		return array('transaction'=>$weekly_statement,'total_items'=>$total_items);
-	}
+	
 	private function getMatches($game_team_id,$team_id,$arr,$expenditures,$tickets_sold){
 		
 		$matches = array();
@@ -828,6 +811,68 @@ class ApiController extends AppController {
 			unset($rs);
 		}
 		return $matches;
+	}
+	public function weekly_finance($week=1){
+		$this->loadModel('Point');
+
+		$api_session = $this->readAccessToken();
+		$fb_id = $api_session['fb_id'];
+		
+		$user = $this->User->findByFb_id($fb_id);
+		
+		
+		$game_team = $this->Game->getTeam($fb_id);
+
+		$this->set('active_tab',1);
+		$weekly_finance = $this->Game->weekly_finance($fb_id,$week);
+		$weekly_statement = $this->getWeeklyFinancialStatement($weekly_finance);
+		$response['status'] = 1;
+		$response['data'] = $weekly_statement;
+		$this->set('response',$response);
+		$this->render('default');
+	}
+	private function getWeeklyFinancialStatement($weekly_finance){
+		$weekly_statement = array();
+		$total_items = array();
+		$weekly_statement['total_earnings'] = 0;
+		$weekly_statement['other_income'] = 0;
+		$weekly_statement['other_expenses'] = 0;
+		while(sizeof($weekly_finance['transactions'])>0){
+			$p = array_shift($weekly_finance['transactions']);
+			$weekly_statement[$p['item_name']] = $p['amount'];
+
+			$total_items[$p['item_name']] = $p['item_total'];
+			if($p['amount'] > 0 && @eregi('other_',$p['item_name'])){
+				$weekly_statement['other_income']+= intval($p['amount']);
+				unset($weekly_statement[$p['item_name']]);
+			}
+			if($p['amount'] > 0 && @eregi('perk-',$p['item_name'])){
+				$weekly_statement['other_income']+= intval($p['amount']);
+				unset($weekly_statement[$p['item_name']]);
+			}
+			if($p['amount'] < 0 && @eregi('other_',$p['item_name'])){
+				$weekly_statement['other_expenses']+= intval($p['amount']);
+				unset($weekly_statement[$p['item_name']]);
+			}
+			if($p['amount'] < 0 && @eregi('perk-',$v['item_name'])){
+				$weekly_statement['other_expenses']+= intval($p['amount']);
+				unset($weekly_statement[$p['item_name']]);
+			}
+			if($p['amount'] < 0 && @eregi('transaction_fee_',$p['item_name'])){
+				$weekly_statement['other_expenses']+= intval($p['amount']);
+				unset($weekly_statement[$p['item_name']]);
+			}
+			if($p['amount'] > 0){
+				$weekly_statement['total_earnings'] += $p['amount'];
+			}
+		}
+		if(isset($weekly_statement['Joining_Bonus'])){
+			$weekly_statement['sponsorship'] = $weekly_statement['Joining_Bonus'];
+			unset($weekly_statement['Joining_Bonus']);
+		}
+		
+
+		return array('transaction'=>$weekly_statement,'total_items'=>$total_items);
 	}
 	private function getFinancialStatements($fb_id){
 		$finance = $this->Game->financial_statements($fb_id);
