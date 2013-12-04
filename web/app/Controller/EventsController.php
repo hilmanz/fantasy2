@@ -117,6 +117,16 @@ class EventsController extends AppController {
 						$tier_fault = true;
 					}
 				break;
+				case 5:
+
+					//if 5, we compare the team_id, if match, then it can apply
+					$can_apply = $this->isTeamMatched($offer['TriggeredEvents']['target_team']);
+					if($can_apply){
+						$wrong_offer = false;
+					}else{
+						$wrong_offer = true;
+					}
+				break;
 				default:
 					$can_apply = false;
 				break;
@@ -142,7 +152,7 @@ class EventsController extends AppController {
 			$this->set('offer_valid',true);
 		}else{
 			$this->set('offer',$offer['TriggeredEvents']);
-
+			$this->set('wrong_offer',@$wrong_offer);
 			$this->set('week',$event_next_matchday);
 			$this->set('offer_valid',false);
 			$this->set('can_apply',$can_apply);
@@ -151,6 +161,14 @@ class EventsController extends AppController {
 		}
 		
 		
+	}
+	private function isTeamMatched($target_team){
+		$userData = $this->getUserData();
+		$original_team_id = $userData['team']['team_id'];
+
+		if($target_team == $original_team_id){
+			return true;
+		}
 	}
 	public function confirm($flag=0){
 		$this->loadModel('GamePerk');
@@ -224,6 +242,11 @@ class EventsController extends AppController {
 						
 						$tier_fault = true;
 					}
+				break;
+				case 5:
+					//if 5, we compare the team_id, if match, then it can apply
+
+					$can_apply = $this->isTeamMatched($offer['TriggeredEvents']['target_team']);
 				break;
 				default:
 					$can_apply = false;

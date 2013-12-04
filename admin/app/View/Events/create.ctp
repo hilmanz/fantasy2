@@ -54,6 +54,7 @@
 					<option value="2">all teams</option>
 					<option value="3">by Ranking Tier</option>
 					<option value="4">by Original Player</option>
+					<option value="5">by Original Team</option>
 				</select>
 				<?php else:?>
 				<select name="target_type">
@@ -96,6 +97,8 @@
 		echo $this->element('events_create_step3_all_team',array('data'=>$data));
 	}elseif($data['event_type']==1 && $data['target_type']==4){
 		echo $this->element('events_create_step3_original_player',array('data'=>$data));
+	}elseif($data['event_type']==1 && $data['target_type']==5){
+		echo $this->element('events_create_step3_original_team',array('data'=>$data));
 	}elseif($data['event_type']==2 && $data['target_type']==4){
 		echo $this->element('events_create_step3_master_player',array('data'=>$data));
 	}elseif($data['event_type']==2 && $data['target_type']==1){
@@ -291,6 +294,14 @@
 			</td>
 			<td>
 				<?=date("d/m/Y",strtotime($data['schedule_dt'].' 00:00:00'))?>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
+				Prequisite Event Id
+			</td>
+			<td>
+				<?=intval(@$data['prequisite_event_id'])?>
 			</td>
 		</tr>
 		<tr>

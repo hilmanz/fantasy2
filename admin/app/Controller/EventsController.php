@@ -68,6 +68,10 @@ class EventsController extends AppController {
 						$register_data['target_str'] = $this->getTargetNameForMasterEvent(
 													$register_data['target_type'],
 													$register_data['target_value']);
+					}else if($register_data['target_type']==5){
+						$register_data['target_str'] = $this->getTargetNameForMasterEvent(
+													$register_data['target_type'],
+													$register_data['target_value']);
 					}else{
 						//string representations of target values in player data
 						$register_data['target_str'] = $this->getTargetNameForPlayerEvent(
@@ -89,6 +93,7 @@ class EventsController extends AppController {
 				
 			break;
 			case 5:
+
 				$img_name = '';
 
 				if(isset($_FILES['email_img']['name'])){
@@ -105,6 +110,7 @@ class EventsController extends AppController {
 						
 					
 				}
+
 				$register_data = $this->Session->read('register_event_data');
 
 				$register_data['email_body_img'] = $img_name;
@@ -155,9 +161,10 @@ class EventsController extends AppController {
 
 			break;
 			case 3:
-
+				
 				$this->setupRewards($this->request->data);
 				$this->setupTransferOffer($this->request->data);
+				$this->setupTeamSelection($this->request->data);
 				$this->render('create2_step3');
 
 			break;
@@ -225,6 +232,19 @@ class EventsController extends AppController {
 			$this->set('data',$register_data);
 			$this->Session->write('register_event_data',$register_data);
 		}
+	}
+	private function setupTeamSelection($data){
+		$this->loadModel('Events');
+		$register_data = $this->Session->read('register_event_data');
+		if(isset($data['the_target'])){
+			$register_data['target_team'] = $data['the_target'];
+			$register_data['target_team_name'] = $this->getMasterTeamName(json_encode(array(
+														$data['the_target']
+													)));
+		}
+		$this->set('data',$register_data);
+		$this->Session->write('register_event_data',$register_data);
+
 	}
 	private function setupTransferOffer($data){
 		$this->loadModel('Events');

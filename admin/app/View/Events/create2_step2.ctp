@@ -35,6 +35,19 @@ if($data['event_type']==1 || $data['event_type']==2):
 			</div>
 		</td>
 	</tr>
+	<?php if($data['recipient_type']==5):?>
+	<tr>
+		<td colspan="2">Choose Required Team</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<div class="progress">Loading </div>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="dataTable dataTableTeam" id="tbl">
+
+			</table>
+		</td>
+	</tr>
+	<?php else:?>
 	<tr>
 		<td colspan="2">Choose Required Player to be exists in the team (optional)</td>
 	</tr>
@@ -46,6 +59,7 @@ if($data['event_type']==1 || $data['event_type']==2):
 			</table>
 		</td>
 	</tr>
+	<?php endif;?>
 	<tr>
 		<td colspan="2">
 			<input type="hidden" name="step" value="3"/>
@@ -79,6 +93,7 @@ if($data['event_type']==1 || $data['event_type']==2):
   });
   </script>
  <?php echo $this->Html->script('jquery.dataTables.min');?>
+<?php if($data['recipient_type'] != 5):?>
 <script>
 	var start = 0;
 	var data = [];
@@ -129,3 +144,79 @@ if($data['event_type']==1 || $data['event_type']==2):
 	}
 	getdata();
 </script>
+<?php endif;?>
+
+<?php if($data['recipient_type']==5):?>
+<script>
+	var start = 0;
+	var data = [];
+	function getdata(){
+		api_call("<?=$this->Html->url('/events/master_teams/?start=')?>"+start,
+			function(response){
+				if(response.status==1){
+					if(response.data.length > 0){
+						for(var i in response.data){
+							data.push([
+									response.data[i].name,
+									'<input class="selectbox" type="checkbox" name="the_target" value="'+
+											response.data[i].uid+'"/>'
+								]);
+						}
+						start = response.next_offset;
+						$(".progress").html($(".progress").html()+'.');
+						getdata();
+					}else{
+						//draw table
+						draw_table();
+						$(".progress").hide();
+						
+					}
+				}
+			});
+	}
+	function draw_table(){
+		$('#tbl').dataTable( {
+			"fnDrawCallback":function(){
+				initClickEvents();
+			},
+
+			"aaData": data,
+			"aoColumns": [
+				{ "sTitle": "Name" },
+				{ "sTitle": "Select"}
+			]
+		} );
+	}
+	function initClickEvents(){
+		
+		
+		console.log('attach events');
+		//unbind previous events
+		$(".selectbox").unbind("click");
+		//attach click events
+		$(".selectbox").click(function(e){
+			console.log('click');
+			var s = $('input[name="targets"]').val();
+			//if the id is exists, we remove it at once.
+			//because it means that the checkbox were untoggled.
+			if(s.match($(this).val())){
+				s = s.replace(','+$(this).val(),'');
+				s = s.replace($(this).val(),'');
+				
+			}else{
+				if(s.length!=0){
+					s+=',';
+				}
+				s+=$(this).val();
+			}
+			
+			$('input[name="targets"]').val(s);
+			e.stopPropagation();
+			
+		});
+		
+		
+	}
+	getdata();
+</script>
+<?php endif;?>

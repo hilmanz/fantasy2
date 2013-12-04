@@ -20,7 +20,9 @@
 	$recipient_type = array('All Teams',
 							 'Tier 1',
 							 'Tier 2',
-							 'Tier 3');
+							 'Tier 3',
+							 'Tier 4',
+							 'By Original Team');
 	foreach($data as $name=>$val):
 		if($name!=='step' && $name!=='btn'):
 			if($name=='event_type'){

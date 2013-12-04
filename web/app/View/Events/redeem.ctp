@@ -24,6 +24,9 @@
 		<?php if(isset($tier_fault)):?>
 		<h1 class="yellow">ACCESS DENIED !</h1>
 		<h2>Maaf, penawaran ini hanya berlaku untuk tim yang berada di tier <?=$tier?></h2>
+		<?php elseif(isset($wrong_offer)):?>
+		<h1 class="yellow">WRONG OFFER</h1>
+		<h2>Penawaran ini tidak ditujukan kepada klab anda !</h2>
 		<?php else:?>
 		<h1 class="yellow">OFFER IS EXPIRED </h1>
 		<h2>Lo sudah pernah menjawab penawaran ini.</h2>

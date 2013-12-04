@@ -870,3 +870,5 @@ CREATE TABLE ffgame.job_event_master_player (
   UNIQUE KEY `IDX_EVENT` (`master_event_id`,`game_team_id`,`player_id`,`matchday`),
   KEY `IDX_STATUS` (`n_status`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+
+ALTER TABLE `ffgame`.`master_triggered_events`     ADD COLUMN `target_team` VARCHAR(32) NULL AFTER `offered_player_id`;

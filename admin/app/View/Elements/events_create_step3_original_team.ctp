@@ -4,25 +4,16 @@
 
 </table>
 <table width="100%">
-	<?php if($data['affected_item']==1):?>
+	
 	<tr>
 		<td valign="top">
-			Money Reward / Reductions
+			Money Penalty / Award
 		</td>
 		<td>
-			ss$ <input type="text" name="amount" value="0"/> 
+			ss$ <input type="text" name="amount" value="0"/>
 		</td>
 	</tr>
-	<?php else:?>
-	<tr>
-		<td valign="top">
-			Points Penalty / Award
-		</td>
-		<td>
-			<input type="text" name="amount" value="0"/> % from Original Points.
-		</td>
-	</tr>
-	<?php endif;?>
+	
 	<tr>
 		<td valign="top">
 			Apply only to team who has completing the following events : 
@@ -38,6 +29,7 @@
 			</select>
 		</td>
 	</tr>
+	
 	<tr>
 		<td colspan="2">
 			<input type="hidden" name="targets" value=""/>

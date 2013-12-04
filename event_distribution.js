@@ -88,7 +88,7 @@ function processTriggeredEvents(done){
 function getAllTriggeredEventsThatHappenToday(conn,done){
 	conn.query("SELECT * \
 				FROM ffgame.master_triggered_events \
-				WHERE n_status=0 AND DATE(schedule_dt) = DATE(NOW()) \
+				WHERE n_status=0 AND DATE(schedule_dt) <= DATE(NOW()) \
 				LIMIT 20;",
 				[],
 				function(err,rs){
@@ -117,6 +117,12 @@ function processTriggeredEventsSchedule(conn,schedules,done){
 						});
 					}
 					
+				}else if(schedule.recipient_type == 5){
+					sendTriggeredEventsByOriginalTeam(conn,schedule,function(err){
+						flagTriggeredEvent(conn,schedule.id,1,function(err){
+							next();
+						});
+					});
 				}else{
 					if(schedule.offered_player_id == 0){
 						getTeamsRangeInTier(conn,schedule.recipient_type,
@@ -149,6 +155,50 @@ function flagTriggeredEvent(conn,event_id,flag,done){
 				WHERE id = ?",[event_id],function(err,rs){
 					done(err);
 				});
+}
+function sendTriggeredEventsByOriginalTeam(conn,schedule,done){
+	var has_data = true;
+	var since_id = 0;
+	async.whilst(
+		function(){
+			return has_data;
+		},
+		function(next){
+			conn.query("SELECT \
+						a.id,\
+						a.fb_id,\
+						a.email,\
+						a.name,\
+						c.id AS game_team_id,\
+						c.team_id AS original_team_id\
+						FROM ffg.users a \
+						INNER JOIN \
+						ffgame.game_users b\
+						ON a.fb_id = b.fb_id\
+						INNER JOIN \
+						ffgame.game_teams c\
+						ON c.user_id = b.id \
+						WHERE a.id > ?\
+						AND c.team_id=?\
+						LIMIT 100;",
+				[since_id,schedule.target_team],
+				function(err,rs){
+					console.log('sendTriggeredEventsByOriginalTeam',S(this.sql).collapseWhitespace().s);
+					if(rs!=null && rs.length>0){
+						since_id = rs[ (rs.length-1) ].id;
+						sendTriggeredNotificationToUsers(conn,schedule,rs,function(err){
+							next();
+						});
+					}else{
+						has_data = false;
+						next();
+					}
+				});
+		},
+		function(err){
+			done(err);
+		}
+	);
 }
 function sendTriggeredEventsToAllTeamsWithPlayerIdExist(conn,schedule,done){
 	var has_data = true;
@@ -502,6 +552,24 @@ function processPlayerEvent(schedule,cb){
 				});
 			});
 		break;
+		case 5:
+			//if by original team, we query all team that play as the original team,
+			//then insert them into event_immediate table, and then queue the email.
+			if(schedule.prequisite_event_id==0){
+				distributeEventByOriginalTeam(schedule,function(err){
+					flagSchedule(schedule,1,function(err,rs){
+						cb(err);
+					});
+				});	
+			}else{
+				distributeEventByOriginalTeamPrequisite(schedule,function(err){
+					flagSchedule(schedule,1,function(err,rs){
+						cb(err);
+					});
+				});	
+			}
+			
+		break;
 		default:
 			//do nothing, something is not right here.
 			cb(null);
@@ -633,6 +701,89 @@ function distributeEventToAllTeams(schedule,cb){
 						targets.push(teams[i].id);
 					}
 					since_id = teams[teams.length-1].id;
+
+					distributeEachTeam(conn,schedule,targets,function(err){
+						next();
+					});
+				}else{
+					has_data = false;
+					next();
+				}
+			});
+		},function(err){
+			conn.end(function(e){
+				cb(err);
+			});
+		});
+	});
+}
+function distributeEventByOriginalTeam(schedule,cb){
+	console.log('distirbuteEventByOriginalTeam');
+	var the_targets = JSON.parse(schedule.target_value);
+	pool.getConnection(function(err,conn){
+		var has_data = true;
+		var since_id = 0;
+		async.whilst(function(){
+			return has_data;
+		},function(next){
+			console.log(since_id);
+			conn.query("SELECT id as game_team_id FROM ffgame.game_teams \
+						WHERE id > ? AND team_id IN (?)\
+						ORDER BY id ASC\
+						LIMIT 100;",[since_id,the_targets],
+
+			function(err,teams){
+				console.log('distributeEventByOriginalTeam',S(this.sql).collapseWhitespace().s);
+				if(teams.length>0){
+					var targets = [];
+					for(var i in teams){
+						targets.push(teams[i].game_team_id);
+					}
+					since_id = teams[teams.length-1].game_team_id;
+
+					distributeEachTeam(conn,schedule,targets,function(err){
+						next();
+					});
+				}else{
+					has_data = false;
+					next();
+				}
+			});
+		},function(err){
+			conn.end(function(e){
+				cb(err);
+			});
+		});
+	});
+}
+function distributeEventByOriginalTeamPrequisite(schedule,cb){
+	console.log('distributeEventByOriginalTeamPrequisite');
+	var the_targets = JSON.parse(schedule.target_value);
+	pool.getConnection(function(err,conn){
+		var has_data = true;
+		var since_id = 0;
+		async.whilst(function(){
+			return has_data;
+		},function(next){
+			console.log(since_id);
+			conn.query("SELECT id AS game_team_id \
+			FROM ffgame.game_teams a\
+			WHERE id > ? AND team_id IN (?)\
+			AND EXISTS\
+			(SELECT 1 FROM ffgame.game_perks e WHERE e.event_id = ? AND e.game_team_id =  a.id \
+			 AND e.n_status <> 2 LIMIT 1\
+			 ) \
+			ORDER BY id ASC\
+			LIMIT 100;",[since_id,the_targets,schedule.prequisite_event_id],
+
+			function(err,teams){
+				console.log('distributeEventByOriginalTeam by prequisite',S(this.sql).collapseWhitespace().s);
+				if(teams.length>0){
+					var targets = [];
+					for(var i in teams){
+						targets.push(teams[i].game_team_id);
+					}
+					since_id = teams[teams.length-1].game_team_id;
 
 					distributeEachTeam(conn,schedule,targets,function(err){
 						next();
@@ -804,11 +955,20 @@ function processMasterEvent(schedule,cb){
 			//if individual players, then queue all teams who has the selected players on their team rooster and
 			//scheduled it for the next match_day
 			//and then queue the email notifications
-			distributeMasterEventToPlayer(schedule,function(err){
-				flagSchedule(schedule,1,function(err,rs){
-					cb(err);
+			if(schedule.prequisite_event_id > 0){
+				distributeMasterEventToPlayerPrequisite(schedule,function(err){
+					flagSchedule(schedule,1,function(err,rs){
+						cb(err);
+					});
 				});
-			});
+			}else{
+				distributeMasterEventToPlayer(schedule,function(err){
+					flagSchedule(schedule,1,function(err,rs){
+						cb(err);
+					});
+				});
+			}
+			
 		break;		
 		default:
 			//do nothing, something is not right here.

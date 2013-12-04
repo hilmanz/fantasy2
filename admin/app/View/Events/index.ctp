@@ -104,7 +104,9 @@ $event_type = array('',
 $recipient_type = array('All Teams',
 						 'Tier 1',
 						 'Tier 2',
-						 'Tier 3');
+						 'Tier 3',
+						 'Tier 4',
+						 'Original Team');
 $n_status = array('Pending','Applied','Canceled');
 
 ?>
