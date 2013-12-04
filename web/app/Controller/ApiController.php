@@ -84,7 +84,7 @@ class ApiController extends AppController {
 									'name'=>$user['User']['name'],
 									'avatar_img'=>$user['User']['avatar_img']);
 
-		$response['stats']['points'] = intval(@$point['Point']['points']);
+		$response['stats']['points'] = ceil(floatval(@$point['Point']['points']));
 		$response['stats']['rank'] = intval(@$point['Point']['rank']);
 
 
@@ -147,7 +147,7 @@ class ApiController extends AppController {
 			$this->set('best_match','N/A');
 			$response['stats']['best_match'] = 'N/A';
 		}else{
-			$best_match['data']['points'] = number_format($best_match['data']['points']);
+			$best_match['data']['points'] = ceil($best_match['data']['points']);
 			if($best_match['data']['match']['home_id']==$team_id){
 				$against = $best_match['data']['match']['away_name'];
 			}else if($best_match['data']['match']['away_id']==$team_id){
@@ -251,7 +251,7 @@ class ApiController extends AppController {
 									'name'=>$user['User']['name'],
 									'avatar_img'=>$user['User']['avatar_img']);
 
-		$response['stats']['points'] = intval(@$point['Point']['points']) + intval(@$point['Point']['extra_points']);
+		$response['stats']['points'] = ceil(floatval(@$point['Point']['points']) + floatval(@$point['Point']['extra_points']));
 		$response['stats']['rank'] = intval(@$point['Point']['rank']);
 
 		//budget
@@ -385,7 +385,7 @@ class ApiController extends AppController {
 			$this->set('best_match','N/A');
 			$response['stats']['best_match'] = 'N/A';
 		}else{
-			$best_match['data']['points'] = number_format($best_match['data']['points']);
+			$best_match['data']['points'] = ceil($best_match['data']['points']);
 			if($best_match['data']['match']['home_id']==$team_id){
 				$against = $best_match['data']['match']['away_name'];
 			}else if($best_match['data']['match']['away_id']==$team_id){
@@ -468,6 +468,107 @@ class ApiController extends AppController {
 		$this->render('default');
 	}
 
+	public function matchinfo($game_id){
+		$game_id = Sanitize::paranoid($game_id);
+
+		$api_session = $this->readAccessToken();
+
+		$fb_id = $api_session['fb_id'];
+		
+		$user = $this->User->findByFb_id($fb_id);
+		
+		
+		$game_team = $this->Game->getTeam($fb_id);
+		$response = array();
+		
+		//match details
+
+		$players = $this->Game->getMatchDetailsByGameTeamId($game_team['id'],$game_id);
+
+		
+		
+		
+		//poin modifiers
+		$rs = $this->Team->query("SELECT name,
+										g as Goalkeeper,
+										d as Defender,
+										m as Midfielder,
+										f as Forward
+										FROM ffgame.game_matchstats_modifier as stats;");
+
+		$modifier = array();
+		foreach($rs as $r){
+			$modifier[$r['stats']['name']] = $r['stats'];
+		}
+		$rs = null;
+		unset($rs);
+
+		$fixture  = $this->Game->query("SELECT a.*,b.name as home_name,c.name as away_name
+										FROM ffgame.game_fixtures a
+										INNER JOIN ffgame.master_team b
+										ON a.home_id = b.uid
+										INNER JOIN ffgame.master_team c
+										ON a.away_id = c.uid
+										WHERE a.game_id='{$game_id}'
+										LIMIT 1");
+		$match = $fixture[0]['a'];
+		$match['home_name'] = $fixture[0]['b']['home_name'];
+		$match['away_name'] = $fixture[0]['c']['away_name'];
+		
+		if($user['Team']['team_id'] == $match['home_id']){
+		    $home = $user['Team']['team_name'];
+		    $away = $match['away_name'];
+		}else{
+		    $away = $user['Team']['team_name'];
+		    $home = $match['home_name'];
+		}
+
+		$response['home'] = $home;
+		$response['away'] = $away;
+		$response['players'] = $this->compilePlayerPerformance($players['data']);
+		$this->set('response',array('status'=>1,'data'=>$response));
+		$this->render('default');
+	
+	}
+	private function compilePlayerPerformance($players){
+		$overall_points = 0;
+
+        foreach($players as $player_id=>$detail){
+            $games = $this->getTotalPoints('game_started,total_sub_on',$detail['ori_stats']);
+
+            
+            $attacking_and_passing = $this->getTotalPoints('att_freekick_goal,att_ibox_goal,att_obox_goal,att_pen_goal,att_freekick_post,ontarget_scoring_att,att_obox_target,big_chance_created,big_chance_scored,goal_assist,total_att_assist,second_goal_assist,final_third_entries,fouled_final_third,pen_area_entries,won_contest,won_corners,penalty_won,last_man_contest,accurate_corners_intobox,accurate_cross_nocorner,accurate_freekick_cross,accurate_launches,long_pass_own_to_opp_success,successful_final_third_passes,accurate_flick_on',
+                                    $detail['ori_stats']);
+            $defending = $this->getTotalPoints('aerial_won,ball_recovery,duel_won,effective_blocked_cross,effective_clearance,effective_head_clearance,interceptions_in_box,interception_won,poss_won_def_3rd,poss_won_mid_3rd,poss_won_att_3rd,won_tackle,offside_provoked,last_man_tackle,outfielder_block',$detail['ori_stats']);
+
+            $goalkeeping = $this->getTotalPoints('dive_catch,dive_save,stand_catch,stand_save,cross_not_claimed,good_high_claim,punches,good_one_on_one,accurate_keeper_sweeper,gk_smother,saves,goals_conceded',$detail['ori_stats']);
+            $mistakes_and_errors = $this->getTotalPoints('penalty_conceded,red_card,yellow_card,challenge_lost,dispossessed,fouls,overrun,total_offside,unsuccessful_touch,error_lead_to_shot,error_lead_to_goal',$detail['ori_stats']);
+
+            $total_poin = $games + $attacking_and_passing + $defending +
+                          $goalkeeping + $mistakes_and_errors;
+
+            $overall_points += $total_poin;
+            $players[$player_id]['statistics'] = array('games'=>$games,
+            											'attacking_and_passing'=>$attacking_and_passing,
+            											'defending'=>$defending,
+            											'goalkeeping'=>$goalkeeping,
+            											'mistakes_and_errors'=>$mistakes_and_errors,
+            											'total_poin'=>$total_poin);
+        }
+        return $players;
+	}
+	private function getPoin($position,$stats_name,$modifier){
+   
+	    return intval(@$modifier[$stats_name][$position]);
+	}
+	private function getTotalPoints($str,$stats){
+	    $arr = explode(",",$str);
+	    $total = 0;
+	    foreach($arr as $a){
+	        $total += floatval(@$stats[$a]['points']);
+	    }
+	    return $total;
+	}
 	public function player($player_id){
 		$this->loadModel('Point');
 
@@ -492,7 +593,7 @@ class ApiController extends AppController {
 									'name'=>$user['User']['name'],
 									'avatar_img'=>$user['User']['avatar_img']);
 
-		$response['stats']['points'] = intval(@$point['Point']['points']) + intval(@$point['Point']['extra_points']);
+		$response['stats']['points'] = ceil(floatval(@$point['Point']['points']) + floatval(@$point['Point']['extra_points']));
 		$response['stats']['rank'] = intval(@$point['Point']['rank']);
 
 		//budget
@@ -1254,7 +1355,7 @@ class ApiController extends AppController {
 									'name'=>$user['User']['name'],
 									'avatar_img'=>$user['User']['avatar_img']);
 
-		$response['stats']['points'] = intval(@$point['Point']['points']) + intval(@$point['Point']['extra_points']);
+		$response['stats']['points'] = ceil(floatval(@$point['Point']['points']) + floatval(@$point['Point']['extra_points']));
 		$response['stats']['rank'] = intval(@$point['Point']['rank']);
 
 		//budget
