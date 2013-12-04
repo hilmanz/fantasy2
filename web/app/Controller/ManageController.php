@@ -227,6 +227,8 @@ class ManageController extends AppController {
 		}
 		$this->set('long_banner',$long_banner);
 
+		
+
 		//render time !
 		$this->render('klab');
 	}
@@ -322,12 +324,15 @@ class ManageController extends AppController {
 				$report[$v['item_name']] = $v['total'];
 				$total_items[$v['item_name']] = $v['item_total'];
 			}
+			
 			$report['total_earnings'] = intval(@$report['tickets_sold'])+
 										intval(@$report['commercial_director_bonus'])+
 										intval(@$report['marketing_manager_bonus'])+
 										intval(@$report['public_relation_officer_bonus'])+
 										intval(@$report['win_bonus'])+
+										
 										intval(@$report['player_sold']);
+
 			foreach($report as $item_name=>$price){
 				if($price > 0 && @eregi('other_',$item_name)){
 					//$report['total_earnings'] += intval($price);

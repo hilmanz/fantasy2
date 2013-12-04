@@ -26,11 +26,13 @@ $sponsor += intval(@$finance['Joining_Bonus']);
 $sponsor += intval(@$finance['sponsorship']);
 
 
-
 //income from other events
 $other = 0;
 foreach($finance as $item_name => $item_value){
   if($item_value > 0 && @eregi('other_',$item_name)){
+    $other += $item_value;
+  }
+  if($item_value > 0 && @eregi('event',$item_name)){
     $other += $item_value;
   }
   if($item_value > 0 && @eregi('perk',$item_name)){
