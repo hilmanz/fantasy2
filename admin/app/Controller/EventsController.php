@@ -169,10 +169,12 @@ class EventsController extends AppController {
 
 			break;
 			case 4:
-				$this->TriggeredEvents->create();
+				
 				$register_data = $this->Session->read('register_event_data');
+				
+				$this->TriggeredEvents->create();
 				$rs = $this->TriggeredEvents->save($register_data);
-			
+				
 				if($rs){
 					
 					$offer_url = Configure::read('WWW_URL').'/?email=true&osign='.encrypt_param(serialize(

@@ -171,7 +171,7 @@ function sendTriggeredEventsByOriginalTeam(conn,schedule,done){
 						a.name,\
 						c.id AS game_team_id,\
 						c.team_id AS original_team_id\
-						FROM ffg.users a \
+						FROM "+dbschema+".users a \
 						INNER JOIN \
 						ffgame.game_users b\
 						ON a.fb_id = b.fb_id\
