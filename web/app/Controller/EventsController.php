@@ -73,8 +73,10 @@ class EventsController extends AppController {
 		
 		if(sizeof($perks)==0){
 			$can_apply = true;
+			
 		}else{
 			$can_apply = false;
+
 		}
 
 		//make sure that the tier is right
@@ -120,11 +122,14 @@ class EventsController extends AppController {
 				case 5:
 
 					//if 5, we compare the team_id, if match, then it can apply
-					$can_apply = $this->isTeamMatched($offer['TriggeredEvents']['target_team']);
-					if($can_apply){
-						$wrong_offer = false;
-					}else{
+					$is_team_matched = $this->isTeamMatched($offer['TriggeredEvents']['target_team']);
+					if(!$is_team_matched){
+						$can_apply = false;
 						$wrong_offer = true;
+						$this->set('wrong_offer',@$wrong_offer);
+					}else{
+						$wrong_offer = false;
+
 					}
 				break;
 				default:
@@ -152,7 +157,7 @@ class EventsController extends AppController {
 			$this->set('offer_valid',true);
 		}else{
 			$this->set('offer',$offer['TriggeredEvents']);
-			$this->set('wrong_offer',@$wrong_offer);
+			
 			$this->set('week',$event_next_matchday);
 			$this->set('offer_valid',false);
 			$this->set('can_apply',$can_apply);
@@ -245,8 +250,15 @@ class EventsController extends AppController {
 				break;
 				case 5:
 					//if 5, we compare the team_id, if match, then it can apply
+					$is_team_matched = $this->isTeamMatched($offer['TriggeredEvents']['target_team']);
+					if(!$is_team_matched){
+						$can_apply = false;
+						$wrong_offer = true;
+						$this->set('wrong_offer',@$wrong_offer);
+					}else{
+						$wrong_offer = false;
 
-					$can_apply = $this->isTeamMatched($offer['TriggeredEvents']['target_team']);
+					}
 				break;
 				default:
 					$can_apply = false;
