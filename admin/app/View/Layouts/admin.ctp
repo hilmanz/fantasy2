@@ -52,6 +52,9 @@
                                 <li>
                                     <a href="<?=$this->Html->url('/events')?>">Events</a>
                                 </li>
+                                <li>
+                                    <a href="<?=$this->Html->url('/merchandises')?>">Merchandise</a>
+                                </li>
 							</ul>
                         </li>
                     	<li><a href="#">OPTA</a>
