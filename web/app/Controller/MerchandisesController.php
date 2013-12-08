@@ -83,6 +83,11 @@ class MerchandisesController extends AppController {
 									);
 		}
 
+
+		//get previous orders
+		$orders = $this->getPreviousOrders();
+		$this->set('orders',$orders);
+
 		//retrieve the paginated results.
 		$rs = $this->paginate('MerchandiseItem');
 
@@ -93,6 +98,22 @@ class MerchandisesController extends AppController {
 		
 
 
+	}
+	private function getPreviousOrders(){
+		$this->loadModel('MerchandiseOrder');
+		$game_team_id = $this->userDetail['Team']['id'];
+
+		//we need to link the order with the item
+		$this->MerchandiseOrder->bindModel(
+			array('belongsTo'=>array('MerchandiseItem'))
+		);
+		$orders = $this->MerchandiseOrder->find('all',
+					array('conditions'=>array(
+								'game_team_id'=>$game_team_id
+							),
+							'order'=>array('MerchandiseOrder.id'=>'DESC'),
+						  	'limit'=>1000));
+		return $orders;
 	}
 	/**
 	*	get the list of child categories, 1 level under only.

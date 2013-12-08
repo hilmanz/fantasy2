@@ -83,6 +83,21 @@ if(isset($category_name)){
 						</ul>
 					</div><!-- end .widget -->
 					<?php endif;?>
+					<?php if(isset($orders) && sizeof($orders) > 0 ):?>
+					<div class="widget tr catalog-list">
+						<h2>Your Order(s) : </h2>
+						<ul>
+							<?php foreach($orders as $order):?>
+							<li>
+								<a href="#">
+									<?=h($order['MerchandiseOrder']['po_number'])?> 
+									- <?=h($order['MerchandiseItem']['name'])?>
+								</a>
+							</li>
+							<?php endforeach;?>
+						</ul>
+					</div><!-- end .widget -->
+					<?php endif;?>
 				</div><!-- end .box4 -->
             </div><!-- end .row-3 -->
         </div><!-- end .content -->
