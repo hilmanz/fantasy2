@@ -2125,3 +2125,81 @@ table.dataTable{
 #tablePoint td:first-child{
 	text-align:left;
 }
+
+#catalogPage .titlePage h1,
+#catalogPage .titlePage h4{
+	margin:0;
+}
+#catalogPage .rowd{
+	clear:both;
+	padding:20px 0 0 0;
+	overflow:hidden;
+}
+#catalogPage .col-content{
+	width:68%;
+}
+.catalog-list a{
+	color:#fdcb02;
+	display:block;
+	line-height:25px;
+}
+.imagesCatalog{
+	width:300px;
+	float:left;
+	margin:0 20px 20px 0;
+}
+.imagesCatalog img{
+	width:100%;
+}
+.detailCatalog,.desc{
+	float:left;
+	width:310px;
+}
+.detailCatalog h4{
+	margin:0;
+	font-size:22px;
+}
+.detailCatalog .price{
+	font-size:20px;
+	color:#fdcb02;
+}
+.idrprice{
+	color:#fff;
+}
+.buyBtn{
+	margin:10px 0;
+}
+.pagings{
+	padding:10px;
+	overflow:hidden;
+	border-radius:5px;
+	clear:both;
+}
+.catalog-categories form{
+	min-height:30px;
+}
+.order-detail{
+	width:270px;
+	float:right;
+}
+.order-detail h4{
+	margin:0;
+	color:#fdcb02;
+}
+.order-detail .price{
+	font-size:18px;
+	color:#fff;
+	margin:0 0 20px 0;
+}
+.order-detail .imagesCatalog{
+	width:auto;
+	margin:0;
+}
+.shipaddress .button{
+	margin:0 10px 0 0;
+}
+.shipaddress h3{
+	font-size:24px;
+	margin:0;
+	color:#fdcb02;
+}

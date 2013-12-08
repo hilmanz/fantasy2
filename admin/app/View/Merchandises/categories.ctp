@@ -29,6 +29,16 @@
 			method="post" 
 			enctype="application/x-www-form-urlencoded">
 			<input type="text" name="name" value="" placeholder="New Category"/>
+			<select name="parent_id">
+				<option value="0">Parent Category</option>
+				<?php if(isset($rs)): foreach($rs as $r):
+					$data = $r['MerchandiseCategory'];
+					//sementara di lock jadi 2 level dulu category-nya.
+					if($data['parent_id']==0):
+				?>
+				<option value="<?=$data['id']?>"><?=h($data['name'])?></option>
+				<?php endif;endforeach;endif;?>
+			</select>
 			<input type="submit" name="btn" value="Add"/>
 	</form>
 </div>
