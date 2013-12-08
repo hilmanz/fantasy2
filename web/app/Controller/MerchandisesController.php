@@ -193,16 +193,18 @@ class MerchandisesController extends AppController {
 			$this->set('item',$item['MerchandiseItem']);	
 		}
 		
-
+		//these is our flags
 		$is_transaction_ok = true;
-		//make sure the csrf token still valid
+		$no_fund = false;
 
+		//make sure the csrf token still valid
 		if(
 			(strlen($this->request->data['ct']) > 0)
 				&& ($this->Session->read('po_csrf') == $this->request->data['ct'])
 		  ){
-		
-			//if valid, save the order to database
+
+			//if valid, 
+			//save the order to database
 			//at these time, we assume that user will pay with in-game funds
 			$data = $this->request->data;
 			$data['merchandise_item_id'] = $this->Session->read('po_item_id');
@@ -212,20 +214,58 @@ class MerchandisesController extends AppController {
 			$data['n_status'] = 0;
 			$data['order_date'] = date("Y-m-d H:i:s");
 			$data['po_number'] = $item_id.'-'.$data['game_team_id'].'-'.date("ymdhis");
+
+			//oops, before that, we need to know if user has sufficient funds
+			
+
+			$finance = $this->Game->financial_statements($this->userData['fb_id']);
+			
+			if(intval($finance['data']['budget']) > 
+					intval($item['MerchandiseItem']['price_currency'])){
+				$no_fund = false;
+			}else{
+				$no_fund = true;
+			}
+			
+
 			$this->loadModel('MerchandiseOrder');
-			$this->MerchandiseOrder->create();
-			$rs = $this->MerchandiseOrder->save($data);
-			if($rs){
-				$is_transaction_ok = true;
+			
+			if(!$no_fund){
+				//ok the user has enough fund... purchase it now.
+				$this->MerchandiseOrder->create();
+				$rs = $this->MerchandiseOrder->save($data);	
+
+				if($rs){
+					//get next match's id
+					//pr($this->nextMatch);
+					$match = $this->nextMatch['match'];
+					$game_id = $match['game_id'];
+					$matchday = $match['matchday'];
+					//time to deduct the money
+					$this->Game->query("
+					INSERT IGNORE INTO ffgame.game_team_expenditures
+					(game_team_id,item_name,item_type,
+					 amount,game_id,match_day,item_total,base_price)
+					VALUES
+					({$data['game_team_id']},'purchase merchandise - {$data['po_number']}',
+					  2,-{$item['MerchandiseItem']['price_currency']},
+					  '{$game_id}',{$matchday},1,1);");
+					
+					$is_transaction_ok = true;
+
+				}else{
+					$is_transaction_ok = false;
+				}
 			}else{
 				$is_transaction_ok = false;
+				$no_fund = true;
 			}
 		}else{
 			$is_transaction_ok = false;
 		}
 
 		$this->set('is_transaction_ok',$is_transaction_ok);
-
+		$this->set('no_fund',$no_fund);
 		//reset the csrf token
 		$this->Session->write('po_csrf',null);
 		//-->
