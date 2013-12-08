@@ -168,4 +168,42 @@ class MerchandisesController extends AppController {
 
 		$dir->chmod($thumb_dir,0755,false);
 	}
+	public function orders(){
+		//i dunno what to do yet.
+	}
+	
+	public function get_orders(){
+		$this->layout = 'ajax';
+		$this->loadModel('MerchandiseOrder');
+		$start = intval(@$this->request->query['start']);
+		$limit = 20;
+		$this->MerchandiseOrder->bindModel(
+			array('belongsTo'=>array('MerchandiseItem'))
+		);
+		$rs = $this->MerchandiseOrder->find('all',array('offset'=>$start,'limit'=>$limit));
+		
+		$this->set('response',array('status'=>1,'data'=>$rs,'next_offset'=>$start+$limit,'rows_per_page'=>$limit));
+		$this->render('response');
+	}
+	private function refund(){
+		//make sure that the transaction is not yet canceled
+
+
+		//make sure that the deducted fund is exists
+		//$this->validatePurchaseFund($game_team_id,$po_number);
+
+
+		//if everything is fine, then we process the refund
+
+		//then set n_status of order to 4 (canceled)
+	}
+	private function validatePurchaseFund($game_team_id,$po_number){
+		$sql = "SELECT id FROM ffgame.game_team_expenditures a
+				WHERE game_team_id={$game_team_id} AND 
+				item_name ='purchase merchandise - {$po_number}' LIMIT 1;";
+		$rs = $this->Game->query($sql);
+		if(intval($rs[0]['a']['id']) > 0){
+			return true;
+		}
+	}
 }
