@@ -285,6 +285,12 @@ class ApiController extends AppController {
 
 		$response['players'] = $players;
 		
+		$best_players = subval_rsort($players,'points');
+
+		if($best_players[0]['points'] == 0){
+			$best_players = array();
+		}
+		$response['best_players'] = $best_players;
 
 		//players weekly salaries
 		$weekly_salaries = 0;
@@ -913,7 +919,62 @@ class ApiController extends AppController {
 		}
 		return $matches;
 	}
+	public function finance(){
+		$this->loadModel('Point');
+
+		$api_session = $this->readAccessToken();
+		$fb_id = $api_session['fb_id'];
+		
+		$user = $this->User->findByFb_id($fb_id);		
+		
+		$game_team = $this->Game->getTeam($fb_id);
+
+		$response['status'] = 1;
+		
+
+		//financial statements
+		$finance = $this->getFinancialStatements($fb_id);
+		$financial_statement['transaction'] = $finance;
+		$financial_statement['weekly_balances'] = $this->weekly_balances;
+		$financial_statement['total_items'] = $this->finance_total_items_raw;
+		$financial_statement['tickets_sold'] = $this->tickets_sold;
+
+		//last earnings
+		$rs = $this->Game->getLastEarnings($game_team['id']);
+		
+		if($rs['status']==1){
+			$financial_statement['last_earning'] = intval($rs['data']['total_earnings']);
+		}else{
+			$financial_statement['last_earning'] = 0;
+		}
+
+		//last expenses
+		$rs = $this->Game->getLastExpenses($game_team['id']);
+		if($rs['status']==1){
+			$financial_statement['last_expenses'] = $rs['data']['total_expenses'];
+		}else{
+			$financial_statement['last_expenses'] = 0;
+		}
+		
+		$financial_statement['expenditures'] = $this->expenditures;
+		$financial_statement['starting_budget'] = $this->starting_budget;
+
+		$financial_statement['budget'] = $financial_statement['transaction']['budget'];
+		$financial_statement['total_matches'] = $financial_statement['transaction']['total_matches'];
+
+		unset($financial_statement['transaction']['budget']);
+		unset($financial_statement['transaction']['total_matches']);
+
+		$response['data'] = $financial_statement;
+
+
+
+
+		$this->set('response',$response);
+		$this->render('default');
+	}
 	public function weekly_finance($week=1){
+
 		$this->loadModel('Point');
 
 		$api_session = $this->readAccessToken();
@@ -931,6 +992,8 @@ class ApiController extends AppController {
 		$response['data'] = $weekly_statement;
 		$this->set('response',$response);
 		$this->render('default');
+
+
 	}
 	private function getWeeklyFinancialStatement($weekly_finance){
 		$weekly_statement = array();

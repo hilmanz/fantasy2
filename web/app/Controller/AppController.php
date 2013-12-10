@@ -127,75 +127,84 @@ class AppController extends Controller {
 
 				
 				$next_match_ts = $this->nextMatch['match']['match_date_ts'];
+				try{
+					$last_matchday = @$this->nextMatch['match']['matchday'] - 1;
 				
-				$last_matchday = $this->nextMatch['match']['matchday'] - 1;
-				
-				$previous_match = $this->nextMatch['match']['previous_setup'];
-				
-				$upcoming_match = $this->nextMatch['match']['matchday_setup'];
-				
-				//check the previous match backend proccess status
-
-				$matchstatus = $this->Game->getMatchStatus($previous_match['matchday']);
-				//pr($matchstatus);
-				if($matchstatus['is_finished']==0){
-					//if the backend process is not finished,
-					//we use the previous match's close time, but use the next match's opentime + 30 days
-					$close_time = array("datetime"=>$previous_match['start_dt'],
-									"ts"=>strtotime($previous_match['start_dt']));
-
-					$open_time = strtotime($upcoming_match['end_dt']) + (60*60*24*30);
+					$previous_match = @$this->nextMatch['match']['previous_setup'];
 					
-				}	
-				else if(
-					//get close time and open time compare to previous match
-					(time() < strtotime($previous_match['start_dt']))
-					||
-					(time() <= strtotime($previous_match['end_dt']))
+					$upcoming_match = @$this->nextMatch['match']['matchday_setup'];
+				}catch(Exception $e){
+					$last_matchday = 0;
+					$previous_match = null;
+					$upcoming_match = null;
+				}
+				
+				if($previous_match!=null && $upcoming_match !=null){
+					//check the previous match backend proccess status
 
-				  ){
-					$close_time = array("datetime"=>$previous_match['start_dt'],
-									"ts"=>strtotime($previous_match['start_dt']));
-
-					$open_time = strtotime($previous_match['end_dt']);
 					$matchstatus = $this->Game->getMatchStatus($previous_match['matchday']);
+					//pr($matchstatus);
 					if($matchstatus['is_finished']==0){
-						$open_time += (60*60*24*30);
-					}
-					
-				}else{
-					if(time() < strtotime($upcoming_match['start_dt'])){
-						//jika pertandingan belum di mulai.. maka open time itu diset berdasarkan
-						//opentime minggu lalu
+
+						//if the backend process is not finished,
+						//we use the previous match's close time, but use the next match's opentime + 30 days
+						$close_time = array("datetime"=>$previous_match['start_dt'],
+										"ts"=>strtotime($previous_match['start_dt']));
+
+						$open_time = strtotime($upcoming_match['end_dt']) + (60*60*24*30);
+						
+					}	
+					else if(
+						//get close time and open time compare to previous match
+						(time() < strtotime($previous_match['start_dt']))
+						||
+						(time() <= strtotime($previous_match['end_dt']))
+
+					  ){
+						$close_time = array("datetime"=>$previous_match['start_dt'],
+										"ts"=>strtotime($previous_match['start_dt']));
+
 						$open_time = strtotime($previous_match['end_dt']);
-					}else if(time() > strtotime($upcoming_match['start_dt'])
-							 && time() <= strtotime($upcoming_match['end_dt'])){
-						//jika tidak, menggunakan open time berikutnya
-						$open_time = strtotime($upcoming_match['end_dt']);
-					}else{
-						$open_time = strtotime($upcoming_match['end_dt']);
-						$matchstatus = $this->Game->getMatchStatus($upcoming_match['matchday']);
+						$matchstatus = $this->Game->getMatchStatus($previous_match['matchday']);
 						if($matchstatus['is_finished']==0){
 							$open_time += (60*60*24*30);
 						}
+						
+					}else{
+						if(time() < strtotime($upcoming_match['start_dt'])){
+							//jika pertandingan belum di mulai.. maka open time itu diset berdasarkan
+							//opentime minggu lalu
+							$open_time = strtotime($previous_match['end_dt']);
+						}else if(time() > strtotime($upcoming_match['start_dt'])
+								 && time() <= strtotime($upcoming_match['end_dt'])){
+							//jika tidak, menggunakan open time berikutnya
+							$open_time = strtotime($upcoming_match['end_dt']);
+						}else{
+							$open_time = strtotime($upcoming_match['end_dt']);
+							$matchstatus = $this->Game->getMatchStatus($upcoming_match['matchday']);
+							if($matchstatus['is_finished']==0){
+								$open_time += (60*60*24*30);
+							}
+						}
+
+						
+						$close_time = array("datetime"=>$upcoming_match['start_dt'],
+										"ts"=>strtotime($upcoming_match['start_dt']));
+
+						
 					}
 
-					
-					$close_time = array("datetime"=>$upcoming_match['start_dt'],
-									"ts"=>strtotime($upcoming_match['start_dt']));
 
+					$this->closeTime = $close_time;
 					
+					$this->set('close_time',$close_time);
+
+					//formation open time
+									
+					$this->openTime = $open_time;
+					$this->set('open_time',$open_time);
 				}
-
-
-				$this->closeTime = $close_time;
-
-				$this->set('close_time',$close_time);
-
-				//formation open time
 				
-				$this->openTime = $open_time;
-				$this->set('open_time',$open_time);
 
 				
 				//news ticker

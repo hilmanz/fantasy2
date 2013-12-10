@@ -375,6 +375,7 @@ class ProfileController extends AppController {
 					}else{
 						$this->User->create();
 						$rs = $this->User->save($data);
+						
 						if(isset($rs['User'])){
 
 							//register user into gameAPI.

@@ -285,5 +285,8 @@ class MerchandisesController extends AppController {
 		return array('first_name'=>$first_name,
 					 'last_name'=>$last_name);
 	}
+	public function status($order_id){
+
+	}
 
 }
