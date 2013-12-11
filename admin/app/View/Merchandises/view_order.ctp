@@ -19,7 +19,20 @@ $pic = Configure::read('avatar_web_url')."merchandise/thumbs/1_".$rs['Merchandis
 	</div><!-- end .row -->
 	<div class="row">
 		<label>Price</label>
-		ss$ <?=h($rs['MerchandiseItem']['price_currency'])?>
+		<p>ss$ <?=h($rs['MerchandiseItem']['price_currency'])?></p>
+		
+		
+	</div><!-- end .row -->
+	<div class="row">
+		<label>Price</label>
+		
+		<p><?=h($rs['MerchandiseItem']['price_credit'])?> Coins</p>
+		
+	</div><!-- end .row -->
+	<div class="row">
+		<label>Price</label>
+		
+		<p>IDR <?=h($rs['MerchandiseItem']['price_money'])?></p>
 	</div><!-- end .row -->
 	<div class="row">
 		<label>Stock</label>

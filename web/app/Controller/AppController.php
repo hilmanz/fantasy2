@@ -107,6 +107,10 @@ class AppController extends Controller {
 				$point = $this->Point->findByTeam_id(@$this->userDetail['Team']['id']);
 				$this->userPoints = @$point['Point']['points'] + @$point['Point']['extra_points'];
 				$this->userRank = @$point['Point']['rank'];
+
+				//get recent cash
+				$this->cash = intval($this->Game->getCash($this->userData['team']['id']));
+				
 				//temporary patch.  remove it after next match.
 				if($this->userPoints==0){
 					$this->userRank = 0;
@@ -114,7 +118,8 @@ class AppController extends Controller {
 				//======>
 				$this->set('USER_RANK',$this->userRank);
 				$this->set('USER_POINTS',$this->userPoints);
-
+				$this->set('USER_COINS',$this->cash);
+				
 				$this->nextMatch = $this->Game->getNextMatch(@$this->userData['team']['team_id']);
 
 				

@@ -36,6 +36,16 @@ exports.getTransferWindow = function(req,res){
 		}
 	});
 }
+exports.getCash = function(req,res){
+	gameplay.getCash(req.params.game_team_id,function(err,rs){
+		if(rs!=null){
+			
+			res.json(200,rs);
+		}else{
+			res.send(200,[]);
+		}
+	});
+}
 exports.setLineup = function(req,res){
 	
 	gameplay.setLineup(req.body.team_id,

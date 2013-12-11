@@ -1730,10 +1730,33 @@ function getTeamResultStats(conn,team_id,callback){
 		}
 	);
 }
-
+function getCash(game_team_id,done){
+	prepareDb(function(conn){
+		async.waterfall([
+			function(callback){
+				conn.query("SELECT cash FROM ffgame.game_team_cash \
+							WHERE game_team_id=? LIMIT 1;",
+				[game_team_id],
+				function(err,rs){
+					try{
+						callback(err,{status:1,cash:rs[0].cash});
+					}catch(e){
+						callback(err,{status:1,cash:0});
+					}
+				});
+			},
+		],
+		function(err,result){
+			conn.end(function(e){
+				done(err,result);	
+			});
+		});
+	});
+}
 var match = require(path.resolve('./libs/api/match'));
 var officials = require(path.resolve('./libs/api/officials'));
 var sponsorship = require(path.resolve('./libs/api/sponsorship'));
+exports.getCash = getCash;
 exports.leaderboard = leaderboard;
 exports.best_player = best_player;
 exports.last_earning = last_earning;

@@ -71,6 +71,12 @@ class Game extends AppModel {
 			return $response['officials'];
 		}
 	}
+	public function getCash($team_id){
+		$response = $this->api_call('/cash/'.$team_id);
+		if($response['status']==1){
+			return $response['cash'];
+		}
+	}
 	public function hire_staff($team_id,$official_id){
 		$response = $this->api_post('/official/hire',array(
 			'team_id'=>$team_id,

@@ -22,6 +22,8 @@ var pool  = mysql.createPool({
    password : config.database.password,
 });
 var punishment = require(path.resolve('./libs/gamestats/punishment_rules'));
+var cash = require(path.resolve('./libs/gamestats/game_cash'));
+
 var frontend_schema = config.database.frontend_schema;
 var total_teams = 0;
 console.log('ranks updater : pool opened');
@@ -60,7 +62,12 @@ exports.update = function(done){
 			},
 			function(cb){
 				recalculate_ranks(conn,function(err){
-					cb(null,null);
+					cb(err);
+				});
+			},
+			function(cb){
+				give_weekly_cash(conn,function(err){
+					cb(err,true);
 				});
 			}
 		],
@@ -665,6 +672,112 @@ function generate_summary(conn,user,modifier,done){
 	});
 }
 
+function give_weekly_cash(conn,done){
+	var has_data = true;
+	since_id = 0;
+	async.whilst(function(){
+		return has_data;
+	},function(callback){
+		conn.query("SELECT a.id AS game_team_id,b.fb_id \
+					FROM ffgame.game_teams a\
+					INNER JOIN ffgame.game_users b\
+					ON a.user_id = b.id\
+					WHERE a.id > ?\
+					ORDER BY a.id ASC\
+					LIMIT 100;",[since_id],function(err,rs){
+						console.log(S(this.sql).collapseWhitespace().s);
+						if(rs!=null && rs.length > 0){
+							since_id = rs[rs.length-1].id;
+							distribute_weekly_cash(conn,rs,function(err){
+								callback();
+							});
+						}else{
+							has_data = false;
+							callback();
+						}
+					});
+	},function(err){
+		done(err);
+	});
+}
+function distribute_weekly_cash(conn,teams,done){
+	async.waterfall([
+		function(cb){
+			//get the latest matchday
+			conn.query("SELECT matchday \
+						FROM ffgame_stats.game_team_player_weekly \
+						ORDER BY id DESC LIMIT 1",
+						[],
+			function(err,rs){
+				console.log(S(this.sql).collapseWhitespace().s);
+				cb(err,rs[0].matchday);
+			});
+		},
+		function(last_matchday,cb){
+			async.eachSeries(teams,function(team,next){
+				//process each team
+				async.waterfall([
+					function(c){
+						//get the week total points + extra points
+						conn.query("SELECT matchday,SUM(points + extra_points) AS total_points \
+									FROM "+frontend_schema+".users a\
+									INNER JOIN "+frontend_schema+".teams b\
+									ON a.id = b.user_id\
+									INNER JOIN "+frontend_schema+".weekly_points c\
+									ON b.id = c.team_id\
+									WHERE a.fb_id= ?\
+									AND c.matchday = ?;",
+									[team.fb_id,last_matchday],
+									function(err,rs){
+										console.log(S(this.sql).collapseWhitespace().s);
+										if(rs!=null && rs.length == 1){
+											c(err,rs[0]);	
+										}else{
+											c(err,{total_points:0});
+										}
+										
+									});
+					},
+					function(points,c){
+						console.log('Weekly_cash','adding #',team.game_team_id,' matchday#',last_matchday,
+									 'points:',points.total_points);
+						if(points.total_points == null){
+							points.total_points = 0;
+						}
+						//adding cash
+						cash.adding_cash(conn,
+							team.game_team_id,
+							team.game_team_id+'_matchday_'+last_matchday,
+							Math.round(parseFloat(points.total_points)),
+							'weekly cash',
+							function(err,rs){
+								if(err){
+									console.log(team.game_team_id,'--->',err);
+								}
+								c(null);
+							}
+						);
+					},
+					function(c){
+						console.log('Weekly_cash','updating #',team.game_team_id,' matchday#',last_matchday);
+						//updating the team's cash
+						cash.update_cash_summary(conn,team.game_team_id,function(err,rs){
+							c(err);
+						});
+					}
+				],
+				function(err){
+					next();
+				});
+			},function(err){
+				cb(err);
+			});
+		}
+	],
+	function(err){
+		done(err);
+	});
+}
 function getStatsGroupValues(conn,game_team_id,modifier,done){
 
     var stats = {

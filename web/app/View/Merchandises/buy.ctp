@@ -64,7 +64,7 @@ $pic = Configure::read('avatar_web_url').
 					<div class="tr widget order-detail">
 						<h2>Your Order</h2>
 						<h4><?=h($item['name'])?></h4>
-						<p class="price">ss$<?=number_format($item['price_currency'])?></p>
+						<p class="price"><?=number_format($item['price_credit'])?> Coins</p>
 						<div class="imagesCatalog tr widget">
 							  <img src="<?=$pic?>" />
 						</div>

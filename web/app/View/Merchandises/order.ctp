@@ -30,7 +30,7 @@ funds.</br> Thanks for your purchase!</h3>
 					<div class="tr widget order-detail">
 						<h2>Your Order</h2>
 						<h4><?=h($item['name'])?></h4>
-						<p class="price">ss$<?=number_format($item['price_currency'])?></p>
+						<p class="price"><?=number_format($item['price_credit'])?> Coins</p>
 						<div class="imagesCatalog tr widget">
 							  <img src="<?=$pic?>" />
 						</div>
@@ -52,7 +52,7 @@ funds.</br> Thanks for your purchase!</h3>
 					<div class="tr widget">
 						<h1>Your order cannot be processed.</h1>
 						<?php if($no_fund):?>
-						<h3>Budget loe gak cukup untuk melakukan transaksi ini.</h3>
+						<h3>Coins loe gak cukup untuk melakukan transaksi ini.</h3>
 						<?php else:?>
 						<h3>Please try again later !</h3>
 						<?php endif;?>
@@ -64,7 +64,7 @@ funds.</br> Thanks for your purchase!</h3>
 					<div class="tr widget order-detail">
 						<h2>Your Order</h2>
 						<h4><?=h($item['name'])?></h4>
-						<p class="price">ss$<?=number_format($item['price_currency'])?></p>
+						<p class="price"><?=number_format($item['price_credit'])?> Coins</p>
 						<div class="imagesCatalog tr widget">
 							  <img src="<?=$pic?>" />
 						</div>

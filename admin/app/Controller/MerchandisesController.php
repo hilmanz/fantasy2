@@ -224,42 +224,103 @@ class MerchandisesController extends AppController {
 
 		//make sure that the transaction is not yet canceled
 		if($order['MerchandiseOrder']['n_status']!=4){
-			//make sure that the deducted fund is exists
-			$statement = $this->getPurchaseStatement($order['MerchandiseOrder']['game_team_id'],
-											$order['MerchandiseOrder']['po_number']);
-				
-			if(intval($statement['id']) > 0){
-				//if everything is fine, then we process the refund
-				$rs = $this->Game->query("
-					INSERT IGNORE INTO ffgame.game_team_expenditures
-					(game_team_id,item_name,item_type,
-					 amount,game_id,match_day,item_total,base_price)
-					VALUES
-					({$order['MerchandiseOrder']['game_team_id']},
-					  'purchase merchandise - {$order['MerchandiseOrder']['po_number']} - refunded',
-					  1,
-					  {$order['MerchandiseItem']['price_currency']},
-					  '{$statement['game_id']}',
-					  {$statement['match_day']},1,1);",false);
-				//then set n_status of order to 4 (canceled)
-				$refund_stmt = $this->getPurchaseStatement($order['MerchandiseOrder']['game_team_id'],
-											$order['MerchandiseOrder']['po_number']);
-				if(intval($refund_stmt['id']) > 0){
-					$refund_ok = true;	
-				}
-				
-				
+			if($order['MerchandiseOrder']['order_type']==0){
+				$refund_ok = $this->refund_game_funds($order);	
+			}else if($order['MerchandiseOrder']['order_type']==1){
+
+				$refund_ok = $this->refund_game_cash($order);	
+			}else{
+				$refund_ok = true;
 			}
+			
 		}
 
-		
+		return $refund_ok;
+	}
+	private function refund_game_cash($order){
+		$refund_ok = false;
+		//make sure that the deducted fund is exists
+		$statement = $this->getCashPurchaseStatement($order['MerchandiseOrder']['game_team_id'],
+										$order['MerchandiseOrder']['po_number']);
+			
+		if(intval($statement['id']) > 0){
 
+			//if everything is fine, then we process the refund
+			$rs = $this->Game->query("
+				INSERT IGNORE INTO ffgame.game_transactions
+				(game_team_id,transaction_name,transaction_dt,
+				 amount,details)
+				VALUES
+				({$order['MerchandiseOrder']['game_team_id']},
+				  'purchase_{$order['MerchandiseOrder']['po_number']} - refunded',
+				  NOW(),
+				  {$order['MerchandiseItem']['price_credit']},
+				  'purchase merchandise - {$order['MerchandiseOrder']['po_number']} - refunded'
+				  );",false);
+			//then set n_status of order to 4 (canceled)
+			$refund_stmt = $this->getCashRefundedStatement($order['MerchandiseOrder']['game_team_id'],
+										$order['MerchandiseOrder']['po_number']);
+			if(intval($refund_stmt['id']) > 0){
+				$refund_ok = true;	
+			}
+		}
+		return $refund_ok;
+	}
+	private function refund_game_funds($order){
+		$refund_ok = false;
+		//make sure that the deducted fund is exists
+		$statement = $this->getPurchaseStatement($order['MerchandiseOrder']['game_team_id'],
+										$order['MerchandiseOrder']['po_number']);
+			
+		if(intval($statement['id']) > 0){
+			//if everything is fine, then we process the refund
+			$rs = $this->Game->query("
+				INSERT IGNORE INTO ffgame.game_team_expenditures
+				(game_team_id,item_name,item_type,
+				 amount,game_id,match_day,item_total,base_price)
+				VALUES
+				({$order['MerchandiseOrder']['game_team_id']},
+				  'purchase merchandise - {$order['MerchandiseOrder']['po_number']} - refunded',
+				  1,
+				  {$order['MerchandiseItem']['price_currency']},
+				  '{$statement['game_id']}',
+				  {$statement['match_day']},1,1);",false);
+			//then set n_status of order to 4 (canceled)
+			$refund_stmt = $this->getRefundedStatement($order['MerchandiseOrder']['game_team_id'],
+										$order['MerchandiseOrder']['po_number']);
+			if(intval($refund_stmt['id']) > 0){
+				$refund_ok = true;	
+			}
+		}
 		return $refund_ok;
 	}
 	private function getPurchaseStatement($game_team_id,$po_number){
 		$sql = "SELECT * FROM ffgame.game_team_expenditures a
 				WHERE game_team_id={$game_team_id} AND 
 				item_name ='purchase merchandise - {$po_number}' LIMIT 1;";
+		$rs = $this->Game->query($sql,false);
+		if(sizeof($rs)>0){
+			return $rs[0]['a'];
+		}else{
+			return array('id'=>0);
+		}
+	}
+	private function getCashPurchaseStatement($game_team_id,$po_number){
+		$sql = "SELECT * FROM ffgame.game_transactions a
+				WHERE game_team_id={$game_team_id} AND 
+				transaction_name ='purchase_{$po_number}' LIMIT 1;";
+				
+		$rs = $this->Game->query($sql,false);
+		if(sizeof($rs)>0){
+			return $rs[0]['a'];
+		}else{
+			return array('id'=>0);
+		}
+	}
+	private function getCashRefundedStatement($game_team_id,$po_number){
+		$sql = "SELECT * FROM ffgame.game_transactions a
+				WHERE game_team_id={$game_team_id} AND 
+				transaction_name ='purchase_{$po_number} - refunded' LIMIT 1;";
 		$rs = $this->Game->query($sql,false);
 		if(sizeof($rs)>0){
 			return $rs[0]['a'];

@@ -35,7 +35,10 @@
                                     <?php endif;?>
                                 </a> |
                                  <a class="logout" href="<?=$this->Html->url('/profile/logout')?>">Keluar</a></h3>
-                                <span class="points red"><?=number_format(ceil($USER_POINTS))?> Pts</span>
+                                <span class="points red">
+                                    <?=number_format(ceil($USER_POINTS))?> Pts | <?=number_format(ceil($USER_COINS))?> Coins
+                                </span>
+                                
                             </div><!-- end .entry -->
                         </div>
            			 </div><!-- end #header -->
@@ -63,6 +66,9 @@
                         </li>
                     	<li>
                         	<a href="<?=$this->Html->url('/market')?>">Bursa Transfer</a>
+                        </li>
+                        <li>
+                            <a href="<?=$this->Html->url('/merchandises')?>">Online Catalog</a>
                         </li>
                     	<li><a href="<?=$this->Html->url('/pages/faq')?>">Bantuan & FAQ</a></li>
                     </ul>

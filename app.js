@@ -84,6 +84,7 @@ app.get('/user/financial_statement',user.list);
 app.get('/game/rank',user.list);
 app.post('/sale',[auth.canAccess],gameplay.sale);
 app.post('/buy',[auth.canAccess],gameplay.buy);
+app.get('/cash/:game_team_id', [auth.canAccess],gameplay.getCash);
 
 app.get('/transfer_window',[auth.canAccess],gameplay.getTransferWindow);
 

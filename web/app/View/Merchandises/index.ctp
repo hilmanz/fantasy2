@@ -29,7 +29,7 @@ if(isset($category_name)){
 					</div>
 					<div class="detailCatalog">
 						<h4><?=h($r['MerchandiseItem']['name'])?></h4>
-						<p class="price">ss$ <?=number_format($r['MerchandiseItem']['price_currency'])?></p>
+						<p class="price"><?=number_format($r['MerchandiseItem']['price_credit'])?> Coins</p>
 						<!--<p class="idrprice">(or buy now for IDR <?=number_format($r['MerchandiseItem']['price_money'])?>)</p>-->
 						<a class="buyBtn button" href="<?=$buy_url?>">BUY</a>
 					</div>
