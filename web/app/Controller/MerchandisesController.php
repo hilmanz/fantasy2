@@ -50,6 +50,13 @@ class MerchandisesController extends AppController {
 			$category_id = 0;
 		}
 		
+		$merchandise = $this->MerchandiseItem->find('count');
+		if($merchandise > 0){
+			$this->set('has_merchandise',true);	
+		}else{
+			$this->set('has_merchandise',false);
+		}
+		
 
 		//bind the model's association first.
 		//i'm too lazy to create a new Model Class :P

@@ -17,8 +17,9 @@ if(isset($category_name)){
             </div>
             <div class="rowd">
 				<div class="col-content fr tr widget">
+					<?php if($has_merchandise):?>
 					<?php 
-						foreach($rs as $r):
+							foreach($rs as $r):
 						$pic = Configure::read('avatar_web_url').
 										"merchandise/thumbs/0_".
 										$r['MerchandiseItem']['pic'];
@@ -47,6 +48,11 @@ if(isset($category_name)){
 			                                      array('class' => 'next'));
 			              ?>
 					</div><!-- end .col-content -->
+					<?php else:?>
+					<div class="desc">
+						Saat ini belum ada merchandise yang dapat di beli
+					</div>
+					<?php endif;?>
 				</div><!-- end .box4 -->
 				<div class="box4 fr">
 					<div class="widget tr catalog-categories">
