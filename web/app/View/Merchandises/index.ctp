@@ -13,7 +13,7 @@ if(isset($category_name)){
 				<h1 class="red">
 					Online Catalog <?=$subtitle?>
 				</h1>
-				<h4>Use your club's funds and buy rare in-game items, rare jerseys and others cool soccer stuff!</h4>
+				<h4>Tukarkan coin elo dan dapatkan merchandise seru dari Supersoccer Football Manager</h4>
             </div>
             <div class="rowd">
 				<div class="col-content fr tr widget">

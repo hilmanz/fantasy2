@@ -32,6 +32,8 @@
  */
 	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
 
+	//merchandises
+	Router::connect('/merchandise/*', array('controller' => 'merchandises'));
 /**
  * Load all plugin routes. See the CakePlugin documentation on
  * how to customize the loading of plugin routes.
