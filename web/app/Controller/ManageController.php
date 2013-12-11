@@ -272,7 +272,7 @@ class ManageController extends AppController {
 					AND EXISTS (SELECT 1 FROM ffgame_stats.game_match_player_points d
 								WHERE d.game_id = a.game_id 
 								AND d.game_team_id = {$this->userData['team']['id']} LIMIT 1)
-					ORDER BY a.game_id";
+					ORDER BY a.matchday DESC";
 
 			$rs = $this->Game->query($sql);
 			

@@ -62,7 +62,6 @@ exports.update = function(done){
 				recalculate_ranks(conn,function(err){
 					cb(null,null);
 				});
-				
 			}
 		],
 		function(err,isDone){
