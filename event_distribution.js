@@ -1297,7 +1297,7 @@ function processMoneyPerks(cb){
 			return has_data;
 		},function(next){
 			conn.query("SELECT * FROM ffgame.game_perks \
-						WHERE n_status=0 AND money_reward > 0\
+						WHERE n_status=0 AND money_reward <> 0\
 						ORDER BY id ASC LIMIT 100;",[],function(err,rs){
 				if(rs!=null && rs.length > 0){
 					async.eachSeries(rs,function(queue,nextQueue){
