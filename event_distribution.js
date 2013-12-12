@@ -52,6 +52,13 @@ async.waterfall([
 		processImmediateEvents(function(err){
 			callback(err);
 		});
+	},
+	function(callback){
+		//process money perks.
+		//as per 12/12/2013, every money event will be processed immediately.
+		processMoneyPerks(function(err){
+			callback(err);
+		});
 	}
 ],
 function(err){
@@ -766,15 +773,31 @@ function distributeEventByOriginalTeamPrequisite(schedule,cb){
 			return has_data;
 		},function(next){
 			console.log(since_id);
-			conn.query("SELECT id AS game_team_id \
-			FROM ffgame.game_teams a\
-			WHERE id > ? AND team_id IN (?)\
-			AND EXISTS\
-			(SELECT 1 FROM ffgame.game_perks e WHERE e.event_id = ? AND e.game_team_id =  a.id \
-			 AND e.n_status <> 2 LIMIT 1\
-			 ) \
-			ORDER BY id ASC\
-			LIMIT 100;",[since_id,the_targets,schedule.prequisite_event_id],
+			var sql = "";
+			if(schedule.prequisite_trigger_type==0){
+				sql = "SELECT id AS game_team_id \
+						FROM ffgame.game_teams a\
+						WHERE id > ? AND team_id IN (?)\
+						AND EXISTS\
+						(SELECT 1 FROM ffgame.game_perks e \
+						 WHERE e.event_id = ? AND e.game_team_id =  a.id \
+						 AND e.n_status <> 2 LIMIT 1\
+						 ) \
+						ORDER BY id ASC\
+						LIMIT 100;"
+			}else{
+				sql = "SELECT id AS game_team_id \
+						FROM ffgame.game_teams a\
+						WHERE id > ? AND team_id IN (?)\
+						AND EXISTS\
+						(SELECT 1 FROM ffgame.game_perks e \
+						 WHERE e.event_id = ? AND e.game_team_id =  a.id \
+						 AND e.n_status = 2 LIMIT 1\
+						 ) \
+						ORDER BY id ASC\
+						LIMIT 100;"
+			}
+			conn.query(sql,[since_id,the_targets,schedule.prequisite_event_id],
 
 			function(err,teams){
 				console.log('distributeEventByOriginalTeam by prequisite',S(this.sql).collapseWhitespace().s);
@@ -1261,6 +1284,44 @@ function sendNotificationEmails(schedule,cb){
 					
 }
 */
+
+
+/*
+* process all game_perks that rewards a money to user immediately
+*/
+function processMoneyPerks(cb){
+	pool.getConnection(function(err,conn){
+		var has_data = true;
+		async.whilst(
+		function(){
+			return has_data;
+		},function(next){
+			conn.query("SELECT * FROM ffgame.game_perks \
+						WHERE n_status=0 AND money_reward > 0\
+						ORDER BY id ASC LIMIT 100;",[],function(err,rs){
+				if(rs!=null && rs.length > 0){
+					async.eachSeries(rs,function(queue,nextQueue){
+						addMoneyPerk(conn,queue,function(err){
+							nextQueue();
+						});
+					},function(err){
+						next();
+					});
+					
+				}else{
+					has_data = false;
+					next();
+				}
+			});
+		},
+		function(err){
+			conn.end(function(e){
+				cb(e);
+			});
+		});	
+	});
+}
+
 //process the immediate events,
 //at the moment, we only send or deduct the money.
 function processImmediateEvents(cb){
@@ -1363,6 +1424,63 @@ function addMoney(conn,queue,cb){
 		cb(err);
 	});
 }
+function addMoneyPerk(conn,queue,cb){
+	console.log('addMoneyPerk',queue);
+
+	async.waterfall([
+		function(callback){
+			//get the next match's game_id
+			next_match(conn,queue.game_team_id,function(err,next_match){
+				if(next_match!=null && next_match.length > 0){
+					
+					callback(err,next_match[0]);	
+				}else{
+					callback(err,'');
+				}
+			});
+		},
+		function(next_match,callback){
+			if(next_match!=''){
+				if(queue.money_reward>0){
+					transaction_type = 1;
+				}else{
+					//soalnya gak mungkin ss$ 0 kan, jadi selain diatas 0 kita anggap negatif
+					transaction_type = 2;
+				}
+				conn.query("INSERT IGNORE INTO ffgame.game_team_expenditures\
+				(game_team_id,item_name,item_type,amount,game_id,match_day,item_total,base_price)\
+				VALUES\
+				(?,?,?,?,?,?,?,?);",
+				[queue.game_team_id,
+				 'perk-'+queue.event_id+' '+queue.name,
+				  transaction_type,
+				  queue.money_reward,
+				  next_match.game_id,
+				  next_match.matchday,
+				  1,
+				  1],
+				function(err,rs){
+					console.log('addMoneyPerk',S(this.sql).collapseWhitespace().s);
+					callback(err,rs);
+				});
+			}else{
+				callback(null,null);
+			}
+		},
+		function(isDone,callback){
+			conn.query("UPDATE ffgame.game_perks \
+						SET n_status=1,apply_dt=NOW() WHERE id=?",
+						[queue.id],
+						function(err,rs){
+							console.log('addMoneyPerk',S(this.sql).collapseWhitespace().s);
+							callback(err,rs);
+						});
+		}
+	],
+	function(err,rs){
+		cb(err);
+	});
+}
 
 function next_match(conn,game_team_id,done){
 	
@@ -1372,6 +1490,7 @@ function next_match(conn,game_team_id,done){
 			function(callback){
 				conn.query("SELECT team_id FROM ffgame.game_teams WHERE id = ? LIMIT 1",
 							[game_team_id],function(err,rs){
+								console.log('next_match',S(this.sql).collapseWhitespace().s);
 								callback(err,rs[0].team_id);
 							});
 			},

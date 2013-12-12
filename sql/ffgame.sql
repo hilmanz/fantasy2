@@ -872,3 +872,4 @@ CREATE TABLE ffgame.job_event_master_player (
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 ALTER TABLE `ffgame`.`master_triggered_events`     ADD COLUMN `target_team` VARCHAR(32) NULL AFTER `offered_player_id`;
+ALTER TABLE `ffgame`.`master_events`     ADD COLUMN `prequisite_trigger_type` TINYINT(3) DEFAULT '0' NULL COMMENT '0->only when answered yes, 1-> only when answered no' AFTER `prequisite_event_id`;
