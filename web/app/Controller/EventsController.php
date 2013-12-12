@@ -288,6 +288,7 @@ class EventsController extends AppController {
 			
 			//apply the perks
 			if($flag==1){
+				$this->set('success_message',$item['yes_txt']);
 				$can_spend = true;
 				if($item['event_type']!=4){
 					//can spend money ?
@@ -355,6 +356,7 @@ class EventsController extends AppController {
 			}else{
 
 				$perk['n_status'] = 2;
+				$this->set('success_message',$item['no_txt']);
 				$this->GamePerk->create();
 				$rs = $this->GamePerk->save($perk);
 				

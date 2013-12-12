@@ -9,10 +9,10 @@
 		Penawaran ini hanya berlaku sebelum tanggal <?=date("d/m/Y",strtotime($offer['expired_dt']))?>
 	</p>
 	<a class="backtohome button" href="<?=$this->Html->url('/events/confirm/1?osign='.$osign)?>">
-		TERIMA PENAWARAN <?php if(strlen($offer['yes_txt'])>0):?>(<?=h($offer['yes_txt'])?>)<?php endif;?>
+		TERIMA PENAWARAN 
 	</a>
 	<a class="backtohome button" href="<?=$this->Html->url('/events/confirm/0?osign='.$osign)?>">
-		TOLAK PENAWARAN <?php if(strlen($offer['no_txt'])>0):?>(<?=h($offer['no_txt'])?>)<?php endif;?>
+		TOLAK PENAWARAN
 	</a>
 </div><!-- end #logoutpage -->
 <?php else:?>

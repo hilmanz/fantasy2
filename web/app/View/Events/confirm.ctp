@@ -2,7 +2,13 @@
 <div id="maintenancePage">
 	<?php if($success):?>
 		<h1 class="yellow">SUCCESS !</h1>
+		<?php
+		if(isset($success_message)):
+		?>
+		<h2><?=$success_message?></h2>
+		<?php else:?>
 		<h2>Terima kasih atas kerjasama anda !</h2>
+		<?php endif;?>
 	<?php else:?>
 		<h1 class="yellow">GAGAL !</h1>
 		<?php if(@$event_type==3):?>
