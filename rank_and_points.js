@@ -200,10 +200,11 @@ function process_perks(conn,team,perks,game_id,done){
 			async.waterfall([
 				function(cb){
 					if(perk.money_reward > 0){
-						perk_money_reward(conn,team.game_team_id,perk,game_id,
-						function(err){
-							cb(err);
-						});
+						//perk_money_reward(conn,team.game_team_id,perk,game_id,
+						//function(err){
+						//	cb(err);
+						//});
+						cb(err);
 					}else{
 						cb(err);
 					}

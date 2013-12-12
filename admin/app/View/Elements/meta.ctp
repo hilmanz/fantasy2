@@ -1,4 +1,4 @@
-<head>
+
 	<meta charset="utf-8">
 	<!-- <title>SUPER SOCCER - FANTASY FOOTBALL LEAGUE</title> -->
 
@@ -21,6 +21,8 @@
 			'jquery-ui-1.10.3.custom.min',
 			'fancybox/jquery.fancybox.js?v=2.1.5',
 			'hoverIntent',
+			'tinymce/jquery.tinymce.min',
+          	'tinymce/tinymce.min',
 			'superfish',
 			'highcharts',
 			'underscore-min',
@@ -44,5 +46,3 @@
 	    }
 	  </style>
 	<![endif]-->
-	
-</head>

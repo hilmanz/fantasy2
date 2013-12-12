@@ -98,7 +98,7 @@
 			Email Body
 		</td>
 		<td>
-			<textarea name="email_body_txt" cols="100" rows="20"></textarea>
+			<textarea name="email_body_txt" class="wysiwyg" style="width:300px"></textarea>
 		</td>
 	</tr>
 	<tr>
@@ -145,3 +145,5 @@
      $( "#datepicker2" ).datepicker("hide");
   });
   </script>
+
+  <?php echo $this->element('misc'); ?>

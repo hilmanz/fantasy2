@@ -87,10 +87,15 @@ class EventsController extends AppController {
 				}
 				if(isset($this->request->data['prequisite_event_id'])){
 					$register_data['prequisite_event_id'] = intval($this->request->data['prequisite_event_id']);
+					$register_data['prequisite_trigger_type'] = 0;
+				}
+				if(isset($this->request->data['rejected_prequisite_event_id'])){
+					$register_data['prequisite_event_id'] = intval($this->request->data['rejected_prequisite_event_id']);
+					$register_data['prequisite_trigger_type'] = 1;
 				}
 				$this->set('data',$register_data);
 				$this->Session->write('register_event_data',$register_data);
-				
+				$this->set('USE_WYSIWYG',true);
 			break;
 			case 5:
 
@@ -122,7 +127,7 @@ class EventsController extends AppController {
 				//$body = mysql_escape_string($body);
 				//-->html body			
 				$register_data['email_body_txt'] = $body;
-				$register_data['email_body_plain'] = strip_tags(str_replace("<br/>","\n",$this->request->data['email_body_txt']));
+				$register_data['email_body_plain'] = strip_tags(str_replace(array("<br/>","<br />"),"\n",$this->request->data['email_body_txt']));
 				$register_data['schedule_dt'] = $this->formatScheduleDate($this->request->data['scheduledt']);
 				$this->set('data',$register_data);
 
@@ -141,7 +146,7 @@ class EventsController extends AppController {
 		$this->set('step',$step);
 	}
 	public function create2(){
-		
+		$this->set('USE_WYSIWYG',true);
 		$this->loadModel('TriggeredEvents');
 		$step = intval(@$this->request->data['step']);
 		if($step==0){
@@ -152,7 +157,8 @@ class EventsController extends AppController {
 				$register_data = $this->request->data;
 				$register_data['schedule_dt'] = $this->formatScheduleDate($register_data['schedule_dt']);
 				$register_data['expired_dt'] = $this->formatScheduleDate($register_data['expired_dt']);
-				$register_data['email_body_plain'] = strip_tags($register_data['email_body_txt']);
+				$register_data['email_body_plain'] = strip_tags(str_replace(array("<br/>","<br />"),"\n",$register_data['email_body_txt']));
+
 				
 
 				$this->set('data',$register_data);
@@ -214,6 +220,8 @@ class EventsController extends AppController {
 		}
 		//set steps
 		$this->set('step',$step);
+		
+
 	}
 	private function setupRewards($data){
 		$register_data = $this->Session->read('register_event_data');
