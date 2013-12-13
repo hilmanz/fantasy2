@@ -24,7 +24,6 @@
     "winston": "*",
     "string":"latest",
     "nodemailer":"latest",
-    "sleep":"latest",
-    
+    "sleep":"latest"
   }
 }
