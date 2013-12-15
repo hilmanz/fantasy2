@@ -7,6 +7,8 @@ var async = require('async');
 var xmlparser = require('xml2json');
 var config = require(path.resolve('./config')).config;
 var mysql = require('mysql');
+var S = require('string');
+
 var pool  = mysql.createPool({
    host     : config.database.host,
    user     : config.database.username,
@@ -469,6 +471,7 @@ function calculatePlayerPoints(conn,points,game_id,player,done){
 
 			conn.query(sql,data,function(err,rs){
 				//console.log('inserting player stats -> ',this.sql);
+				console.log(S(this.sql).collapseWhitespace().s);
 				if(err){
 					console.log(err.message);
 				}

@@ -55,10 +55,17 @@ pool.getConnection(function(err,conn){
 
 
 function generateReports(games){
+	console.log('processing : ');
+	for(var i in games){
+		console.log(games[i].game_id);
+	}
 	async.eachSeries(games,function(item,callback){
 		//console.log(item.game_id);
 		process_report(item.game_id,function(err,result){
-			callback(err);	
+			if(err){
+				console.log(err.message);
+			}
+			callback(null);	
 		});
 	},function(err){
 		console.log('Done updating master stats and distributing the job');
