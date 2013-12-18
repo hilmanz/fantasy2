@@ -63,4 +63,30 @@ class DashboardController extends AppController {
 		$this->Notification->delete($id);
 		$this->redirect('/dashboard');
 	}
+	public function users(){
+		$this->loadModel('Admin');
+		$this->paginate = array('limit'=>20);
+		$rs = $this->paginate('Admin');
+		$this->set('rs',$rs);
+	}
+	public function change_password($id){
+		$this->loadModel('Admin');
+		$rs = $this->Admin->findById($id);
+		$this->set('rs',$rs);
+		
+		if($this->request->is('post')){
+			
+			$username = $rs['Admin']['username'];
+			$password = $this->request->data['password'];
+			$secret = md5('booyah');
+			$hash = Security::hash($password.$secret);
+			$this->Admin->id = $rs['Admin']['id'];
+			$this->Admin->save(array(
+				'password'=>$hash,
+				'secret'=>$secret
+			));
+			$this->Session->setFlash('Password has changed successfully !');
+			$this->redirect('users');
+		}
+	}
 }
