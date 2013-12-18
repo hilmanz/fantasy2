@@ -99,9 +99,15 @@ if(isset($category_name)){
 						<ul>
 							<?php foreach($orders as $order):?>
 							<li>
-								<a href="#">
+								
+								<a href="#" title="<?=$order['MerchandiseOrder']['notes']?>">
 									<?=h($order['MerchandiseOrder']['po_number'])?> 
-									- <?=h($order['MerchandiseItem']['name'])?>
+									-
+									<?php
+									$status = array('Pending','Processing / On Delivery','Delivered','Closed',
+													'Canceled');
+									echo $status[$order['MerchandiseOrder']['n_status']];
+									?>
 								</a>
 							</li>
 							<?php endforeach;?>

@@ -108,8 +108,8 @@ class MerchandisesController extends AppController {
 	}
 	private function getPreviousOrders(){
 		$this->loadModel('MerchandiseOrder');
-		$game_team_id = $this->userDetail['Team']['id'];
-
+		$game_team_id = $this->userData['team']['id'];
+		
 		//we need to link the order with the item
 		$this->MerchandiseOrder->bindModel(
 			array('belongsTo'=>array('MerchandiseItem'))
@@ -120,6 +120,7 @@ class MerchandisesController extends AppController {
 							),
 							'order'=>array('MerchandiseOrder.id'=>'DESC'),
 						  	'limit'=>1000));
+		
 		return $orders;
 	}
 	/**

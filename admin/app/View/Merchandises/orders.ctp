@@ -49,6 +49,7 @@ $view_url = $this->Html->url('/merchandises/view_order/');
 								break;
 							}
 							data.push([
+									response.data[i].MerchandiseOrder.order_date,
 									response.data[i].MerchandiseOrder.po_number,
 									response.data[i].MerchandiseOrder.first_name+' '+response.data[i].MerchandiseOrder.last_name,
 									status,
@@ -75,7 +76,7 @@ $view_url = $this->Html->url('/merchandises/view_order/');
 
 			"aaData": data,
 			"aoColumns": [
-				
+				{ "sTitle": "Date" },
 				{ "sTitle": "PO" },
 				{ "sTitle": "Customer" },
 				{ "sTitle": "Status" },
