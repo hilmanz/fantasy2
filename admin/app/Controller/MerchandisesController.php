@@ -177,6 +177,7 @@ class MerchandisesController extends AppController {
 		if($this->request->is('post')){
 			if($this->request->data['n_status']==4){
 				if($this->refund($order_id)){
+					$this->restock($order_id);
 					$this->update_order($order_id);
 				}else{
 					$this->Session->setFlash('cannot update the order, please try again later !');
@@ -191,6 +192,16 @@ class MerchandisesController extends AppController {
 		);
 		$rs = $this->MerchandiseOrder->findById($order_id);
 		$this->set('rs',$rs);
+	}
+	private function restock($order_id){
+		$this->loadModel('MerchandiseItem');
+		$this->MerchandiseOrder->id = $order_id;
+		$this->MerchandiseOrder->bindModel(
+			array('belongsTo'=>array('MerchandiseItem'))
+		);
+		$order = $this->MerchandiseOrder->findById($order_id);
+		$this->MerchandiseItem->id = $order['MerchandiseItem']['id'];
+		$this->MerchandiseItem->save(array('stock'=>$order['MerchandiseItem']['stock'] + 1));
 	}
 	private function update_order($order_id){
 		$this->MerchandiseOrder->id = $order_id;
@@ -260,11 +271,26 @@ class MerchandisesController extends AppController {
 			//then set n_status of order to 4 (canceled)
 			$refund_stmt = $this->getCashRefundedStatement($order['MerchandiseOrder']['game_team_id'],
 										$order['MerchandiseOrder']['po_number']);
+
+			//recount the cash
+			$this->refresh_cash($order['MerchandiseOrder']['game_team_id']);
+
 			if(intval($refund_stmt['id']) > 0){
 				$refund_ok = true;	
 			}
 		}
 		return $refund_ok;
+	}
+	private function refresh_cash($game_team_id){
+		$sql = "INSERT INTO ffgame.game_team_cash
+				(game_team_id,cash)
+				SELECT game_team_id,SUM(amount) AS cash 
+				FROM ffgame.game_transactions
+				WHERE game_team_id = {$game_team_id}
+				GROUP BY game_team_id
+				ON DUPLICATE KEY UPDATE
+				cash = VALUES(cash);";
+		$this->Game->query($sql,false);
 	}
 	private function refund_game_funds($order){
 		$refund_ok = false;

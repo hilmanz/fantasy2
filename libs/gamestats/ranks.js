@@ -687,7 +687,7 @@ function give_weekly_cash(conn,done){
 					LIMIT 100;",[since_id],function(err,rs){
 						console.log(S(this.sql).collapseWhitespace().s);
 						if(rs!=null && rs.length > 0){
-							since_id = rs[rs.length-1].id;
+							since_id = rs[rs.length-1].game_team_id;
 							distribute_weekly_cash(conn,rs,function(err){
 								callback();
 							});

@@ -470,6 +470,10 @@ class ApiController extends AppController {
 		$response['previous_matches'] = $matches;
 
 
+		//user's coin
+		//get recent cash
+		$response['coins'] = intval($this->Game->getCash($game_team['id']));
+
 		$this->set('response',array('status'=>1,'data'=>$response));
 		$this->render('default');
 	}
@@ -1122,8 +1126,15 @@ class ApiController extends AppController {
 				$data = array(
 					'name'=>@$this->request->data['name'],
 					'email'=>@$this->request->data['email'],
-					'location'=>@$this->request->data['location']
+					'location'=>@$this->request->data['location'],
+					'phone_number'=>$this->request->data['handphone']
 				);
+				//update team name
+				$this->loadModel('Team');
+				$this->Team->id = intval($user['Team']['id']);
+				$this->Team->save(array(
+						'team_name' => $this->request->data['club']
+				));
 				$this->User->id = $user['User']['id'];
 				$rs = $this->User->save($data);
 				$rs['User']['next_match'] = array('game_id'=>$next_match['match']['game_id'],

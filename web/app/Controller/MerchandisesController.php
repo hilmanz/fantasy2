@@ -213,7 +213,10 @@ class MerchandisesController extends AppController {
 			$result = $this->pay_with_game_cash($item_id,$item);
 			$is_transaction_ok = $result['is_transaction_ok'];
 			$no_fund = $result['no_fund'];
-
+			if($is_transaction_ok == true){
+				//we reduce the stock in front
+				$this->ReduceStock($item_id,$item['MerchandiseItem']);
+			}
 		}else{
 			$is_transaction_ok = false;
 		}
@@ -226,6 +229,13 @@ class MerchandisesController extends AppController {
 
 		//reset the item_id in session
 		$this->Session->write('po_item_id',0);
+	}
+	private function ReduceStock($item_id,$item){
+		$item_id = intval($item_id);
+		if($item['stock']>0){
+			$this->MerchandiseItem->query("UPDATE merchandise_items SET stock = stock - 1 WHERE id = {$item_id}");	
+		}
+		
 	}
 	private function pay_with_ingame_funds($item_id,$item){
 		//if valid, 
