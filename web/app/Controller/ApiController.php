@@ -933,71 +933,349 @@ class ApiController extends AppController {
 		
 		$game_team = $this->Game->getTeam($fb_id);
 
-		$response['status'] = 1;
 		
+		
+		
+		//getting staffs
+		$officials = $this->Game->getAvailableOfficials($game_team['id']);
+		$staffs = array();
+		foreach($officials as $official){
+			if(isset($official['hired'])){
+				$staffs[] = $official;
+			}
+		}
+		unset($officials);
 
-		//financial statements
+
 		$finance = $this->getFinancialStatements($fb_id);
 		$financial_statement['transaction'] = $finance;
 		$financial_statement['weekly_balances'] = $this->weekly_balances;
 		$financial_statement['total_items'] = $this->finance_total_items_raw;
 		$financial_statement['tickets_sold'] = $this->tickets_sold;
-
-		//last earnings
-		$rs = $this->Game->getLastEarnings($game_team['id']);
 		
-		if($rs['status']==1){
-			$financial_statement['last_earning'] = intval($rs['data']['total_earnings']);
-		}else{
-			$financial_statement['last_earning'] = 0;
-		}
 
-		//last expenses
-		$rs = $this->Game->getLastExpenses($game_team['id']);
-		if($rs['status']==1){
-			$financial_statement['last_expenses'] = $rs['data']['total_expenses'];
-		}else{
-			$financial_statement['last_expenses'] = 0;
-		}
-		
-		$financial_statement['expenditures'] = $this->expenditures;
-		$financial_statement['starting_budget'] = $this->starting_budget;
-
-		$financial_statement['budget'] = $financial_statement['transaction']['budget'];
-		$financial_statement['total_matches'] = $financial_statement['transaction']['total_matches'];
-
-		unset($financial_statement['transaction']['budget']);
-		unset($financial_statement['transaction']['total_matches']);
-
-		$response['data'] = $financial_statement;
-
-
-
-
+		$response = $this->populateFinancialStatement(0,
+													$finance,
+													$staffs,
+													$this->weekly_balances,
+													$this->starting_budget,
+													$this->finance_total_items_raw);
 		$this->set('response',$response);
 		$this->render('default');
 	}
-	public function weekly_finance($week=1){
+	private function populateFinancialStatement($week,$finance,$staffs,$weekly_balances,
+												$starting_budget,$total_items){
 
+
+		$response['status'] = 1;
+		//financial statements
+		$total_expenses = $this->getFinanceTotalExpenses($finance);
+
+
+		$sponsor = 0;
+		$sponsor += intval(@$finance['Joining_Bonus']);
+		$sponsor += intval(@$finance['sponsorship']);
+
+
+		//income from other events
+		$other = $this->getFinanceOtherIncomes($finance);
+
+		//expenses from other events
+		$other_expenses = $this->getFinanceOtherExpenses($finance);
+		$total_expenses -= $other_expenses;
+
+
+		
+
+		//get starting balance and running balance
+		$balance_health = $this->getFinancialBalances($week,$weekly_balances,$starting_budget);
+		$running_balance = $balance_health['running_balance'];
+		$starting_balance = $balance_health['starting_balance'];
+		//---- end of starting and running balance
+
+		$staff_token = array();
+		foreach($staffs as $staff){
+		  $staff_token[] = str_replace(" ","_",strtolower($staff['name']));
+		}
+		
+
+		//render arrays
+		$income = $this->getFinanceIncomes($finance,$sponsor,$other,$total_items,$staff_token);
+		$expense = $this->getFinanceExpenses($finance,$other_expenses,$total_items,$staff_token);
+		$financial = array(
+			'last_week_balance'=>array(
+									'name'=>'Neraca Minggu Lalu',
+									'description'=>'',
+									'total'=>'ss$ '.number_format($starting_balance),
+								),
+			'incomes'=>$income,
+			'expenses'=>$expense,
+			'total_income'=>array(
+				'name'=>'Total Perolehan',
+				'description'=>'',
+				'total'=>'ss$ '.number_format(abs(@$finance['total_earnings']))
+			),
+			'total_expenses'=>array(
+				'name'=>'Total Pengeluaran',
+				'description'=>'',
+				'total'=>'ss$ '.number_format((@$total_expenses))
+			),
+			'running_balance'=>array(
+				'name'=>'Neraca Berjalan',
+				'description'=>'',
+				'total'=>'ss$ '.number_format(@$running_balance)
+			)
+		);
+
+
+		$response['data'] = $financial;
+
+		return $response;
+
+	}
+	private function getFinanceExpenses($finance,$other_expenses,$total_items,$staff_token){
+		$expenses = array();
+		array_push($expenses,array(
+					'name'=>'Biaya Operasional',
+					'description'=>'',
+					'total'=>'ss$ '.number_format(abs(@$finance['operating_cost']))
+			));
+
+		array_push($expenses,array(
+					'name'=>'Gaji Pemain',
+					'description'=>'',
+					'total'=>'ss$ '.number_format(abs(@$finance['player_salaries']))
+			));
+
+		if(isset($finance['compensation_fee'])){
+			array_push($expenses,array(
+					'name'=>'Biaya Kompesansi',
+					'description'=>'',
+					'total'=>'ss$ '.number_format(abs(@$finance['compensation_fee']))
+			));
+		}
+		if(isset($finance['ticket_sold_penalty'])){
+			array_push($expenses,array(
+					'name'=>'Pinalti hasil penjualan tiket',
+					'description'=>'',
+					'total'=>'ss$ '.number_format(abs(@$finance['ticket_sold_penalty']))
+			));
+		}
+		if(isset($finance['security_overtime_fee'])){
+			array_push($expenses,array(
+					'name'=>'Biaya Overtime Sekuriti',
+					'description'=>'',
+					'total'=>'ss$ '.number_format(abs(@$finance['security_overtime_fee']))
+			));
+		}
+		if(isset($finance['buy_player'])){
+			array_push($expenses,array(
+					'name'=>'Pembelian Pemain',
+					'description'=>'',
+					'total'=>'ss$ '.number_format(abs(@$finance['buy_player']))
+			));
+		}
+		if($other_expenses > 0){
+			array_push($expenses,array(
+					'name'=>'Pengeluaran Lainnya',
+					'description'=>'',
+					'total'=>'ss$ '.number_format(abs(@$other_expenses))
+			));
+		}
+		return $expenses;
+	}
+	private function getFinanceIncomes($finance,$sponsor,$other,$total_items,$staff_token){
+
+		$income = array(
+						array(
+							'name'=>'Tiket Terjual',
+							'description'=>'ss$'.round($finance['tickets_sold']/$total_items['tickets_sold'],2).
+											' x '.number_format(@$total_items['tickets_sold']),
+							'total'=>'ss$ '.number_format(@$finance['tickets_sold'])
+						),
+					);
+
+	  	if($this->isStaffExist($staff_token,'commercial_director')){
+		  	array_push($income,array(
+					'name'=>'Bonus Commercial Director',
+					'description'=>'',
+					'total'=>'ss$ '.number_format(abs(@$finance['commercial_director_bonus']))
+			));
+		}
+		if($this->isStaffExist($staff_token,'marketing_manager')){
+		  	array_push($income,array(
+					'name'=>'Bonus Marketing Manager',
+					'description'=>'',
+					'total'=>'ss$ '.number_format(abs(@$finance['marketing_manager_bonus']))
+			));
+		}
+		if($this->isStaffExist($staff_token,'public_relation_officer')){
+		  	array_push($income,array(
+					'name'=>'Bonus Public Relation Officer',
+					'description'=>'',
+					'total'=>'ss$ '.number_format(abs(@$finance['public_relation_officer_bonus']))
+			));
+		}
+
+       
+		//sponsor
+		array_push($income,array(
+					'name'=>'Sponsor',
+					'description'=>'',
+					'total'=>'ss$ '.number_format(abs(@$sponsor))
+			));
+
+		//player sold
+		if(isset($finance['player_sold'])){
+			array_push($income,array(
+					'name'=>'Penjualan Pemain',
+					'description'=>'',
+					'total'=>'ss$ '.number_format($finance['player_sold'])
+			));
+		}
+
+		if(isset($finance['win_bonus'])){
+			array_push($income,array(
+					'name'=>'Bonus',
+					'description'=>'Kemenangan',
+					'total'=>'ss$ '.number_format($finance['win_bonus'])
+			));
+		}
+		if($other > 0){
+			array_push($income,array(
+					'name'=>'Bonus',
+					'description'=>'Lain-lain',
+					'total'=>'ss$ '.number_format($other)
+			));
+		}
+		return $income;
+	}
+	private function getFinanceOtherIncomes($finance){
+		$other = 0;
+		foreach($finance as $item_name => $item_value){
+		  if($item_value > 0 && @eregi('other_',$item_name)){
+		    $other += $item_value;
+		  }
+		  if($item_value > 0 && @eregi('event',$item_name)){
+		    $other += $item_value;
+		  }
+		  if($item_value > 0 && @eregi('perk',$item_name)){
+		    $other += $item_value;
+		  }
+		}
+		return $other;
+	}
+	private function getFinancialBalances($week,$weekly_balances,$starting_budget){
+		
+		$first_week = $weekly_balances[0];
+		$my_balance = $weekly_balances;
+		$previous_balances = array();
+		for($i=1;$i<$first_week['week'];$i++){
+		  $previous_balances[] = array('week'=>$i,
+		                              'balance'=>intval(@$starting_budget));
+		}
+
+		
+		$weekly_balances = array_merge($previous_balances,$weekly_balances);
+
+		if($week<=1){
+		  $starting_balance = intval(@$starting_budget);
+		}else{
+		  $starting_balance = $weekly_balances[$week-2]['balance'];
+
+		}
+		if($week==0){
+		  $running_balance = intval(@$weekly_balances[sizeof($weekly_balances)-1]['balance']);
+		}else{
+		  $running_balance = intval(@$weekly_balances[$week-1]['balance']);  
+		}
+		return array(
+			'starting_balance'=>$starting_balance,
+			'running_balance'=>$running_balance
+		);
+	}
+	private function getFinanceOtherExpenses($finance){
+		$other_expenses = 0;
+		foreach($finance as $item_name => $item_value){
+		  if($item_value < 0 && @eregi('other_',$item_name)){
+		    $other_expenses += abs($item_value);
+		  }
+		  if($item_value < 0 && @eregi('transaction_fee',$item_name)){
+		    $other_expenses += abs($item_value);
+		  }
+		}
+		return $other_expenses;
+	}
+	private function getFinanceTotalExpenses($finance){
+		$total_expenses = 0;
+		$total_expenses+= intval(@$finance['operating_cost']);
+		$total_expenses+= intval(@$finance['player_salaries']);
+		$total_expenses+= intval(@$finance['commercial_director']);
+		$total_expenses+= intval(@$finance['marketing_manager']);
+		$total_expenses+= intval(@$finance['public_relation_officer']);
+		$total_expenses+= intval(@$finance['head_of_security']);
+		$total_expenses+= intval(@$finance['football_director']);
+		$total_expenses+= intval(@$finance['chief_scout']);
+		$total_expenses+= intval(@$finance['general_scout']);
+		$total_expenses+= intval(@$finance['finance_director']);
+		$total_expenses+= intval(@$finance['tax_consultant']);
+		$total_expenses+= intval(@$finance['accountant']);
+		$total_expenses+= intval(@$finance['buy_player']);
+
+		$total_expenses+= intval(@$finance['compensation_fee']);
+		$total_expenses+= intval(@$finance['ticket_sold_penalty']);
+		$total_expenses+= intval(@$finance['security_overtime_fee']);
+		return $total_expenses;
+	}
+	public function weekly_finance($week=1){
 		$this->loadModel('Point');
 
 		$api_session = $this->readAccessToken();
 		$fb_id = $api_session['fb_id'];
 		
-		$user = $this->User->findByFb_id($fb_id);
-		
+		$user = $this->User->findByFb_id($fb_id);		
 		
 		$game_team = $this->Game->getTeam($fb_id);
 
-		$this->set('active_tab',1);
+
+		
+		//get overall data first so that we can retrieve weekly_balances and starting budget
+		//getting staffs
+		$officials = $this->Game->getAvailableOfficials($game_team['id']);
+		$staffs = array();
+		foreach($officials as $official){
+			if(isset($official['hired'])){
+				$staffs[] = $official;
+			}
+		}
+		unset($officials);
+
+
+		$finance = $this->getFinancialStatements($fb_id);
+
+		
 		$weekly_finance = $this->Game->weekly_finance($fb_id,$week);
 		$weekly_statement = $this->getWeeklyFinancialStatement($weekly_finance);
-		$response['status'] = 1;
-		$response['data'] = $weekly_statement;
+
+
+		
+		$response = $this->populateFinancialStatement($week,
+													$weekly_statement['transaction'],
+													$staffs,
+													$this->weekly_balances,
+													$this->starting_budget,
+													$weekly_statement['total_items']);
 		$this->set('response',$response);
 		$this->render('default');
 
 
+	}
+	private function isStaffExist($staff_token,$name){ 
+	  foreach($staff_token as $token){
+	    if($token==$name){
+	      return true;
+	    }
+	  }
 	}
 	private function getWeeklyFinancialStatement($weekly_finance){
 		$weekly_statement = array();
@@ -1329,7 +1607,7 @@ class ApiController extends AppController {
 		
 		$changes = false;
 		$n = sizeof($teams);
-		for($i=1;$i<sizeof($teams);$i++){
+		for($i=1; $i < sizeof($teams); $i++){
 			$swap = false;
 			$p = $teams[$i-1];
 			$q = $teams[$i];
@@ -1385,10 +1663,25 @@ class ApiController extends AppController {
 			$p = array_shift($players);
 			$p['stats']['points'] = floatval($p['stats']['points']);
 			if(!$this->isMyPlayer($p['uid'],$my_players)){
-				$player_list[] = $p;
+				if($p['transfer_value']>0){
+					$player_list[] = $p;	
+				}
+				
 			}
 		}
-		
+		foreach($player_list as $n=>$player){
+                       
+            if($player['transfer_value']>0){
+            
+                if(intval(@$player['stats']['points'])!=0){
+                    $player['transfer_value'] = round($player['transfer_value'] + 
+                                                getTransferValueBonus(
+                                                    floatval(@$player['stats']['performance']),
+                                                    $player['transfer_value']));
+                }
+            }
+            $player_list[$n] = $player;
+        }
 		$rs = array('club'=>$club,
 					'players'=>$player_list);
 
@@ -1627,6 +1920,16 @@ class ApiController extends AppController {
 			);
 			
 		}
+		$performance = 0;
+        if(sizeof($data['stats'])>0){
+            if(intval(@$data['stats'][sizeof($data['stats'])-1]['points'])!=0){
+                $performance = getTransferValueBonus(
+                                                $data['stats'][sizeof($data['stats'])-1]['performance'],
+                                               $data['player']['transfer_value']);
+            }
+        }
+      
+        $data['player']['transfer_value'] = round($data['player']['transfer_value'] + $performance);
 		$response['player'] = array('info'=>$data['player'],
 									 'summary'=>$main_stats_vals,
 										'stats'=>$stats);
