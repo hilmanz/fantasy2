@@ -137,6 +137,26 @@ class EventsController extends AppController {
 				break;
 			}
 
+		}else{
+			
+			if(strlen($offer['TriggeredEvents']['offered_player_id']) > 0){
+				
+				//check apakah team punya pemain ini ?
+				$players = $this->Game->get_team_players($this->userData['fb_id']);
+				
+				$can_apply = false;
+				$wrong_offer = true;
+				if(sizeof($players)>0){
+					foreach($players as $player){
+						if(trim($player['uid'])==trim($offer['TriggeredEvents']['offered_player_id'])){
+							$can_apply = true;
+							$wrong_offer = false;
+						}
+					}
+					$this->set('wrong_offer',@$wrong_offer);
+				}
+			}
+			
 		}
 
 		//and finally, make sure that people can only get the perk if the match is not started yet
