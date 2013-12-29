@@ -628,6 +628,7 @@ class ApiController extends AppController {
 		//player detail : 
 		$rs = $this->Game->get_team_player_info($fb_id,$player_id);
 
+		
 		//stats modifier
 		$modifiers = $this->Game->query("SELECT * FROM ffgame.game_matchstats_modifier as Modifier");
 		
@@ -804,6 +805,21 @@ class ApiController extends AppController {
 			$stats = array();
 			$main_stats_vals = array();
 		}
+
+
+		$performance = 0;
+
+        if(sizeof($data['stats'])>0){
+            if(intval(@$data['stats'][sizeof($data['stats'])-1]['points'])!=0){
+
+            $performance = getTransferValueBonus(
+                                $data['stats'][sizeof($data['stats'])-1]['performance'],
+                                $data['player']['transfer_value']);
+            }  
+        }
+        
+        $data['player']['transfer_value'] = $data['player']['transfer_value'] + $performance;
+
 		$response['player'] = array('info'=>$data['player'],
 									 'summary'=>$main_stats_vals,
 										'stats'=>$stats);
@@ -1439,6 +1455,7 @@ class ApiController extends AppController {
 										'match_date_ts'=>strtotime($next_match['match']['match_date'])
 										);
 			$user['User']['close_time'] = $this->closeTime;
+			$user['User']['team_name'] = $user['Team']['team_name'];
 			$this->set('response',array('status'=>1,'data'=>$user['User']));
 		}
 		$this->render('default');

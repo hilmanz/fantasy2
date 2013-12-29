@@ -978,19 +978,19 @@ function processMasterEvent(schedule,cb){
 			//if individual players, then queue all teams who has the selected players on their team rooster and
 			//scheduled it for the next match_day
 			//and then queue the email notifications
-			if(schedule.prequisite_event_id > 0){
-				distributeMasterEventToPlayerPrequisite(schedule,function(err){
-					flagSchedule(schedule,1,function(err,rs){
-						cb(err);
-					});
-				});
-			}else{
+			//if(schedule.prequisite_event_id > 0){
+			//	distributeMasterEventToPlayerPrequisite(schedule,function(err){
+			//		flagSchedule(schedule,1,function(err,rs){
+			//			cb(err);
+			//		});
+			//	});
+			//}else{
 				distributeMasterEventToPlayer(schedule,function(err){
 					flagSchedule(schedule,1,function(err,rs){
 						cb(err);
 					});
 				});
-			}
+			//}
 			
 		break;		
 		default:
