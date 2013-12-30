@@ -190,14 +190,51 @@ class ApiController extends AppController {
 		$this->loadModel('Team');
 		$this->loadModel('User');
 		$this->loadModel('Info');
+
+		$api_session = $this->readAccessToken();
+		$fb_id = $api_session['fb_id'];
+		$user = $this->User->findByFb_id($fb_id);
+		$game_team = $this->Game->getTeam($fb_id);
+
+
 		//can updte formation
-		if($this->closeTime > time() && $this->openTime < time()){
+		$can_update_formation = true;
+
+
+		
+		$next_match = $this->Game->getNextMatch($game_team['team_id']);
+		$next_match['match']['home_original_name'] = $next_match['match']['home_name'];
+		$next_match['match']['away_original_name'] = $next_match['match']['away_name'];
+
+		if($next_match['match']['home_id']==$game_team['team_id']){
+			$next_match['match']['home_name'] = $club['Team']['team_name'];
+		}else{
+			$next_match['match']['away_name'] = $club['Team']['team_name'];
+		}
+		$next_match['match']['match_date_ts'] = strtotime($next_match['match']['match_date']);
+		$this->getCloseTime($next_match);
+
+
+		
+		if(time() > $this->closeTime['ts'] && Configure::read('debug') == 0){
+		    
+		    $can_update_formation = false;
+		    if(time() > $this->openTime){
+		       
+		        $can_update_formation = true;
+		    }
+		}else{
+		    if(time() < $this->openTime){
+		       
+		        $can_update_formation = false;
+		    }
+		}
+
+		if($can_update_formation){
 			
 			if($this->request->is('post')){
-				$api_session = $this->readAccessToken();
-				$fb_id = $api_session['fb_id'];
-				$user = $this->User->findByFb_id($fb_id);
-				$game_team = $this->Game->getTeam($fb_id);
+				
+				
 
 				$formation = $this->request->data['formation'];
 
@@ -580,6 +617,7 @@ class ApiController extends AppController {
 	    return $total;
 	}
 	public function player($player_id){
+		require_once APP . 'Vendor' . DS. 'stats.locale.php';
 		$this->loadModel('Point');
 
 		$api_session = $this->readAccessToken();
@@ -791,14 +829,46 @@ class ApiController extends AppController {
 		        $total_points += $n;
 		    }
 
-		
+			
+		    $profileStats = $this->getStats('games',$pos,$modifiers,$map,$data['overall_stats']);
+		    $games = array();
+		    foreach($profileStats as $statsName=>$statsVal){
+		    	$statsName = stats_translated($statsName,'id');
+		    	$games[$statsName] = $statsVal;
+		    }
+			$profileStats = $this->getStats('passing_and_attacking',$pos,$modifiers,$map,$data['overall_stats']);
+		    $passing_and_attacking = array();
+		    foreach($profileStats as $statsName=>$statsVal){
+		    	$statsName = stats_translated($statsName,'id');
+		    	$passing_and_attacking[$statsName] = $statsVal;
+		    }
+		    $profileStats = $this->getStats('defending',$pos,$modifiers,$map,$data['overall_stats']);
+		    $defending = array();
+		    foreach($profileStats as $statsName=>$statsVal){
+		    	$statsName = stats_translated($statsName,'id');
+		    	$defending[$statsName] = $statsVal;
+		    }
+           
+		    $profileStats = $this->getStats('goalkeeper',$pos,$modifiers,$map,$data['overall_stats']);
+		    $goalkeeper = array();
+		    foreach($profileStats as $statsName=>$statsVal){
+		    	$statsName = stats_translated($statsName,'id');
+		    	$goalkeeper[$statsName] = $statsVal;
+		    }
+
+		    $profileStats = $this->getStats('mistakes_and_errors',$pos,$modifiers,$map,$data['overall_stats']);
+		    $mistakes_and_errors = array();
+		    foreach($profileStats as $statsName=>$statsVal){
+		    	$statsName = stats_translated($statsName,'id');
+		    	$mistakes_and_errors[$statsName] = $statsVal;
+		    }
 
 			$stats = array(
-				'games'=>$this->getStats('games',$pos,$modifiers,$map,$data['overall_stats']),
-				'passing_and_attacking'=>$this->getStats('passing_and_attacking',$pos,$modifiers,$map,$data['overall_stats']),
-				'defending'=>$this->getStats('defending',$pos,$modifiers,$map,$data['overall_stats']),
-				'goalkeeping'=>$this->getStats('goalkeeper',$pos,$modifiers,$map,$data['overall_stats']),
-				'mistakes_and_errors'=>$this->getStats('mistakes_and_errors',$pos,$modifiers,$map,$data['overall_stats']),
+				'games'=>$games,
+				'passing_and_attacking'=>$passing_and_attacking,
+				'defending'=>$defending,
+				'goalkeeping'=>$goalkeeper,
+				'mistakes_and_errors'=>$mistakes_and_errors,
 
 			);
 		}else{
@@ -1534,61 +1604,80 @@ class ApiController extends AppController {
 	private function getCloseTime($nextMatch){
 		
 		$this->nextMatch = $nextMatch;
-		/*
-		$previous_close_dt = date("Y-m-d", strtotime("previous Saturday"))." 17:00:00";
 		
-
-		$close_dt = date("Y-m-d", strtotime("next Saturday"))." 17:00:00";
-		
-		$next_match_ts = $this->nextMatch['match']['match_date_ts'];
-		if(date_default_timezone_get()=='Asia/Jakarta'){
-		    $next_match_ts += 6*60*60;
-		}
-		
-		if($next_match_ts > strtotime($close_dt)){
-			$close_time = array("datetime"=>$close_dt,
-							"ts"=>strtotime($close_dt));
-		}else{
-			$close_time = array("datetime"=>$previous_close_dt,
-							"ts"=>strtotime($previous_close_dt));
-		}
-		$this->openTime = $this->nextMatch['match']['last_match_ts'];
-		$this->closeTime = $close_time;
-		*/
 		$previous_match = $this->nextMatch['match']['previous_setup'];
 				
 		$upcoming_match = $this->nextMatch['match']['matchday_setup'];
 		
-		//get close time and open time compare to previous match
-		if(
-			(time() < strtotime($previous_match['start_dt']))
-			||
-			(time() <= strtotime($previous_match['end_dt']))
-
-		  ){
-			$close_time = array("datetime"=>$previous_match['start_dt'],
-							"ts"=>strtotime($previous_match['start_dt']));
-
-			$open_time = strtotime($previous_match['end_dt']);
-
-		}else{
-			if(time() < strtotime($upcoming_match['start_dt'])){
-				//jika pertandingan belum di mulai.. maka open time itu diset berdasarkan
-				//opentime minggu lalu
-				$open_time = strtotime($previous_match['end_dt']);
-			}else{
-				//jika tidak, menggunakan open time berikutnya
-				$open_time = strtotime($upcoming_match['end_dt']);
-			}
-
+		try{
+			$last_matchday = @$this->nextMatch['match']['matchday'] - 1;
+		
+			$previous_match = @$this->nextMatch['match']['previous_setup'];
 			
-			$close_time = array("datetime"=>$upcoming_match['start_dt'],
-							"ts"=>strtotime($upcoming_match['start_dt']));
-
-			
-			
+			$upcoming_match = @$this->nextMatch['match']['matchday_setup'];
+		}catch(Exception $e){
+			$last_matchday = 0;
+			$previous_match = null;
+			$upcoming_match = null;
 		}
 
+
+
+		if($previous_match!=null && $upcoming_match !=null){
+			//check the previous match backend proccess status
+
+			$matchstatus = $this->Game->getMatchStatus($previous_match['matchday']);
+			
+			if($matchstatus['is_finished']==0){
+
+				//if the backend process is not finished,
+				//we use the previous match's close time, but use the next match's opentime + 30 days
+				$close_time = array("datetime"=>$previous_match['start_dt'],
+								"ts"=>strtotime($previous_match['start_dt']));
+
+				$open_time = strtotime($upcoming_match['end_dt']) + (60*60*24*30);
+				
+			}	
+			else if(
+				//get close time and open time compare to previous match
+				(time() < strtotime($previous_match['start_dt']))
+				||
+				(time() <= strtotime($previous_match['end_dt']))
+
+			  ){
+				$close_time = array("datetime"=>$previous_match['start_dt'],
+								"ts"=>strtotime($previous_match['start_dt']));
+
+				$open_time = strtotime($previous_match['end_dt']);
+				$matchstatus = $this->Game->getMatchStatus($previous_match['matchday']);
+				if($matchstatus['is_finished']==0){
+					$open_time += (60*60*24*30);
+				}
+				
+			}else{
+				if(time() < strtotime($upcoming_match['start_dt'])){
+					//jika pertandingan belum di mulai.. maka open time itu diset berdasarkan
+					//opentime minggu lalu
+					$open_time = strtotime($previous_match['end_dt']);
+				}else if(time() > strtotime($upcoming_match['start_dt'])
+						 && time() <= strtotime($upcoming_match['end_dt'])){
+					//jika tidak, menggunakan open time berikutnya
+					$open_time = strtotime($upcoming_match['end_dt']);
+				}else{
+					$open_time = strtotime($upcoming_match['end_dt']);
+					$matchstatus = $this->Game->getMatchStatus($upcoming_match['matchday']);
+					if($matchstatus['is_finished']==0){
+						$open_time += (60*60*24*30);
+					}
+				}
+
+				
+				$close_time = array("datetime"=>$upcoming_match['start_dt'],
+								"ts"=>strtotime($upcoming_match['start_dt']));
+
+				
+			}
+		}
 
 		$this->closeTime = $close_time;
 
@@ -1714,6 +1803,7 @@ class ApiController extends AppController {
 		}
 	}
 	public function view_player($player_id){
+		require_once APP . 'Vendor' . DS. 'stats.locale.php';
 		$this->loadModel('User');
 		$this->loadModel('Point');
 		$api_session = $this->readAccessToken();
@@ -1927,12 +2017,46 @@ class ApiController extends AppController {
 
 			
 
+			
+		    $profileStats = $this->getStats('games',$pos,$modifiers,$map,$data['overall_stats']);
+		    $games = array();
+		    foreach($profileStats as $statsName=>$statsVal){
+		    	$statsName = stats_translated($statsName,'id');
+		    	$games[$statsName] = $statsVal;
+		    }
+			$profileStats = $this->getStats('passing_and_attacking',$pos,$modifiers,$map,$data['overall_stats']);
+		    $passing_and_attacking = array();
+		    foreach($profileStats as $statsName=>$statsVal){
+		    	$statsName = stats_translated($statsName,'id');
+		    	$passing_and_attacking[$statsName] = $statsVal;
+		    }
+		    $profileStats = $this->getStats('defending',$pos,$modifiers,$map,$data['overall_stats']);
+		    $defending = array();
+		    foreach($profileStats as $statsName=>$statsVal){
+		    	$statsName = stats_translated($statsName,'id');
+		    	$defending[$statsName] = $statsVal;
+		    }
+           
+		    $profileStats = $this->getStats('goalkeeper',$pos,$modifiers,$map,$data['overall_stats']);
+		    $goalkeeper = array();
+		    foreach($profileStats as $statsName=>$statsVal){
+		    	$statsName = stats_translated($statsName,'id');
+		    	$goalkeeper[$statsName] = $statsVal;
+		    }
+
+		    $profileStats = $this->getStats('mistakes_and_errors',$pos,$modifiers,$map,$data['overall_stats']);
+		    $mistakes_and_errors = array();
+		    foreach($profileStats as $statsName=>$statsVal){
+		    	$statsName = stats_translated($statsName,'id');
+		    	$mistakes_and_errors[$statsName] = $statsVal;
+		    }
+
 			$stats = array(
-				'games'=>$this->getStats('games',$pos,$modifiers,$map,$data['overall_stats']),
-				'passing_and_attacking'=>$this->getStats('passing_and_attacking',$pos,$modifiers,$map,$data['overall_stats']),
-				'defending'=>$this->getStats('defending',$pos,$modifiers,$map,$data['overall_stats']),
-				'goalkeeping'=>$this->getStats('goalkeeper',$pos,$modifiers,$map,$data['overall_stats']),
-				'mistakes_and_errors'=>$this->getStats('mistakes_and_errors',$pos,$modifiers,$map,$data['overall_stats']),
+				'games'=>$games,
+				'passing_and_attacking'=>$passing_and_attacking,
+				'defending'=>$defending,
+				'goalkeeping'=>$goalkeeper,
+				'mistakes_and_errors'=>$mistakes_and_errors,
 
 			);
 			

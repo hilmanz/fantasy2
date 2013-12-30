@@ -220,6 +220,7 @@ function getPlayers(game_team_id,callback){
 								UNION ALL\
 								(SELECT 0,performance FROM ffgame_stats.game_match_player_points a\
 									WHERE game_team_id=? AND player_id=?\
+									AND performance <> 0\
 									AND EXISTS (SELECT 1 FROM ffgame.game_fixtures b \
 									WHERE b.game_id = a.game_id AND (b.home_id = ? OR b.away_id=?)\
 									LIMIT 1\
@@ -229,7 +230,8 @@ function getPlayers(game_team_id,callback){
 								",
 					[game_team_id,player.uid,game_team_id,player.uid,player.team_id,player.team_id],
 					function(err,rs){
-						//console.log(this.sql);
+						//console.log(S(this.sql).collapseWhitespace().s);
+						//console.log(rs[0]);
 						player.points = 0;
 						player.last_performance = 0;
 						if(!err){
@@ -406,12 +408,13 @@ function getPlayerTeamStats(game_team_id,player_id,callback){
 	AND a.game_team_id = b.game_team_id\
 	WHERE a.game_team_id = ?\
 	AND a.player_id = ? \
+	GROUP BY a.game_id\
 	ORDER BY a.game_id LIMIT 300;";
 	prepareDb(function(conn){
 		conn.query(sql,
 				[game_team_id,player_id],
 				function(err,rs){
-					//console.log(this.sql);
+					console.log(S(this.sql).collapseWhitespace().s);
 					conn.end(function(e){
 						callback(err,rs);	
 					});
