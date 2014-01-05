@@ -220,7 +220,7 @@ function getPlayers(game_team_id,callback){
 								UNION ALL\
 								(SELECT 0,performance FROM ffgame_stats.game_match_player_points a\
 									WHERE game_team_id=? AND player_id=?\
-									AND performance <> 0\
+									AND points <> 0\
 									AND EXISTS (SELECT 1 FROM ffgame.game_fixtures b \
 									WHERE b.game_id = a.game_id AND (b.home_id = ? OR b.away_id=?)\
 									LIMIT 1\

@@ -804,59 +804,42 @@ class ApiController extends AppController {
 		                         );
 
 
-
+		
 		if(isset($data['overall_stats'])){
-		    foreach($data['overall_stats'] as $stats){
-		        foreach($map as $mainstats=>$substats){
-		            foreach($substats as $n=>$v){
-		                
-		                if($v==$stats['stats_name']){
-		                    if(!isset($main_stats_vals[$mainstats])){
-		                        $main_stats_vals[$mainstats] = 0;
-		                        $main_stats_ori[$mainstats] = 0;
-		                    }
-		                    $main_stats_vals[$mainstats] += ($stats['total'] *
-		                                                    $this->getModifierValue($modifiers,
-		                                                                            $v,
-		                                                                            $pos));
-
-		                   
-		                }
-		            }
-		        }
+			foreach($data['overall_stats'] as $stats){
+		        $total_points += $stats['points'];
+		        $main_stats_vals[$stats['stats_category']]+= $stats['points'];
 		    }
-		    foreach($main_stats_vals as $n){
-		        $total_points += $n;
-		    }
+		    
 
 			
-		    $profileStats = $this->getStats('games',$pos,$modifiers,$map,$data['overall_stats']);
+		    $profileStats = $this->getStatsIndividual('games',$pos,$modifiers,$map,$data['overall_stats']);
 		    $games = array();
 		    foreach($profileStats as $statsName=>$statsVal){
 		    	$statsName = stats_translated($statsName,'id');
 		    	$games[$statsName] = $statsVal;
 		    }
-			$profileStats = $this->getStats('passing_and_attacking',$pos,$modifiers,$map,$data['overall_stats']);
+			$profileStats = $this->getStatsIndividual('passing_and_attacking',$pos,$modifiers,$map,$data['overall_stats']);
 		    $passing_and_attacking = array();
 		    foreach($profileStats as $statsName=>$statsVal){
 		    	$statsName = stats_translated($statsName,'id');
 		    	$passing_and_attacking[$statsName] = $statsVal;
 		    }
-		    $profileStats = $this->getStats('defending',$pos,$modifiers,$map,$data['overall_stats']);
+		    $profileStats = $this->getStatsIndividual('defending',$pos,$modifiers,$map,$data['overall_stats']);
 		    $defending = array();
 		    foreach($profileStats as $statsName=>$statsVal){
 		    	$statsName = stats_translated($statsName,'id');
 		    	$defending[$statsName] = $statsVal;
 		    }
            
-		    $profileStats = $this->getStats('goalkeeper',$pos,$modifiers,$map,$data['overall_stats']);
+		    $profileStats = $this->getStatsIndividual('goalkeeper',$pos,$modifiers,$map,$data['overall_stats']);
 		    $goalkeeper = array();
 		    foreach($profileStats as $statsName=>$statsVal){
 		    	$statsName = stats_translated($statsName,'id');
 		    	$goalkeeper[$statsName] = $statsVal;
 		    }
 
-		    $profileStats = $this->getStats('mistakes_and_errors',$pos,$modifiers,$map,$data['overall_stats']);
+		    $profileStats = $this->getStatsIndividual('mistakes_and_errors',$pos,$modifiers,$map,$data['overall_stats']);
 		    $mistakes_and_errors = array();
 		    foreach($profileStats as $statsName=>$statsVal){
 		    	$statsName = stats_translated($statsName,'id');
@@ -906,6 +889,25 @@ class ApiController extends AppController {
 	        }
 	    }
 	    return 0;
+	}
+	private function getStatsIndividual($category,$pos,$modifiers,$map,$stats){
+	    $collection = array();
+	    $statTypes = $map[$category];
+	    foreach($stats as $st){
+	        if($st['stats_category']==$category){
+	            foreach($statTypes as $n=>$v){
+	                if(!isset($collection[$n])){
+		                $collection[$n] = array('total'=>0,'points'=>0);
+		            }
+	                if($st['stats_name'] == $v){
+
+	                    $collection[$n] = array('total'=>$st['total'],
+	                                            'points'=>$st['points']);
+	                }
+	            }
+	        }
+	    }
+	    return $collection;
 	}
 	private function getStats($category,$pos,$modifiers,$map,$stats){
 	    
