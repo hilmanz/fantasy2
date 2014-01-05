@@ -1,6 +1,6 @@
 <div id="info-bar" class="tr2">
     <h4 class="date-now fl"><?=date("d/m/Y")?></h4>
-    <div id="newsticker">
+    <div id="newsticker" <?php if(time() > $open_time):?> <?php else:?> style="width:460px;" <?php endif;?>>
           <ul class="slides">
           	<?php 
           	if(isset($tickers)):
