@@ -34,7 +34,7 @@
                         if($player['transfer_value']>0):
                             $urlto = $this->Html->url('/market/player/'.$player['uid']);
                             
-                            if(intval(@$player['stats']['points'])!=0){
+                            if(intval(@$player['stats']['last_point'])!=0){
                                 $player['transfer_value'] = $player['transfer_value'] + 
                                                             getTransferValueBonus(
                                                                 floatval(@$player['stats']['performance']),

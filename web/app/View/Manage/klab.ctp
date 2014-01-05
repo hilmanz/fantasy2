@@ -49,8 +49,11 @@ foreach($finance as $item_name => $item_value){
   if($item_value < 0 && @eregi('transaction_fee',$item_name)){
     $other_expenses += abs($item_value);
   }
+  if($item_value < 0 && @eregi('perk',$item_name)){
+    $other_expenses += $item_value;
+  }
 }
-$total_expenses -= $other_expenses;
+$total_expenses -= abs($other_expenses);
 
 
 
@@ -547,7 +550,7 @@ function isStaffExist($staff_token,$name){
                       <?php
                       endif;
                       ?>
-                      <?php if($other_expenses > 0):?>
+                      <?php if(abs(@$other_expenses) > 0):?>
                       <tr>
 
                         <td>Pengeluaran Lainnya</td>

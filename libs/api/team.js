@@ -60,14 +60,17 @@ function getPlayers(team_uid,callback){
 					async.eachSeries(players,function(player,next){
 						
 						conn.query("SELECT SUM(total_points) AS points,\
-									SUM(performance) AS performance\
+									SUM(performance) AS performance,\
+									SUM(last_points) AS last_point\
 									FROM (\
-									(SELECT SUM(points) AS total_points ,0 AS performance\
+									(SELECT SUM(points) AS total_points ,\
+									0 AS performance, 0 AS last_points\
 									FROM ffgame_stats.master_player_performance \
 									WHERE player_id = ?)\
 									UNION ALL\
-									(SELECT 0,performance FROM ffgame_stats.master_player_performance a\
-										WHERE player_id=?\
+									(SELECT 0 ,performance,points \
+										FROM ffgame_stats.master_player_performance\
+										WHERE player_id= ?\
 										ORDER BY id DESC LIMIT 1)\
 									)a;\
 									",

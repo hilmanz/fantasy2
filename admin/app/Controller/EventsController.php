@@ -85,11 +85,13 @@ class EventsController extends AppController {
 													$register_data['target_type'],
 													$register_data['target_value']);
 				}
-				if(isset($this->request->data['prequisite_event_id'])){
+				if(isset($this->request->data['prequisite_event_id'])
+					&& intval($this->request->data['prequisite_event_id'])){
 					$register_data['prequisite_event_id'] = intval($this->request->data['prequisite_event_id']);
 					$register_data['prequisite_trigger_type'] = 0;
 				}
-				if(isset($this->request->data['rejected_prequisite_event_id'])){
+				if(isset($this->request->data['rejected_prequisite_event_id']) 
+					&& intval($this->request->data['rejected_prequisite_event_id'])>0){
 					$register_data['prequisite_event_id'] = intval($this->request->data['rejected_prequisite_event_id']);
 					$register_data['prequisite_trigger_type'] = 1;
 				}

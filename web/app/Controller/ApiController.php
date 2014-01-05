@@ -882,7 +882,7 @@ class ApiController extends AppController {
         if(sizeof($data['stats'])>0){
             if(intval(@$data['stats'][sizeof($data['stats'])-1]['points'])!=0){
 
-            $performance = getTransferValueBonus(
+            	$performance = getTransferValueBonus(
                                 $data['stats'][sizeof($data['stats'])-1]['performance'],
                                 $data['player']['transfer_value']);
             }  
@@ -1779,7 +1779,7 @@ class ApiController extends AppController {
                        
             if($player['transfer_value']>0){
             
-                if(intval(@$player['stats']['points'])!=0){
+                if(intval(@$player['stats']['last_point'])!=0){
                     $player['transfer_value'] = round($player['transfer_value'] + 
                                                 getTransferValueBonus(
                                                     floatval(@$player['stats']['performance']),

@@ -700,6 +700,11 @@ function give_weekly_cash(conn,done){
 		done(err);
 	});
 }
+
+// 02/01/2014
+// jumlah koin selalu 1 poin lebih besar daripada poin.
+// ini karena kita round. jadi otomatis ke atas ternyata.
+// jadinya kita set pembulatan ke bawah saja.
 function distribute_weekly_cash(conn,teams,done){
 	async.waterfall([
 		function(cb){
@@ -748,7 +753,7 @@ function distribute_weekly_cash(conn,teams,done){
 						cash.adding_cash(conn,
 							team.game_team_id,
 							team.game_team_id+'_matchday_'+last_matchday,
-							Math.round(parseFloat(points.total_points)),
+							Math.floor(parseFloat(points.total_points)),
 							'weekly cash',
 							function(err,rs){
 								if(err){
