@@ -33,7 +33,7 @@
                         	<a href="<?=$this->Html->url('/')?>">Dashboard</a>
                         </li>
                     	<li><a href="#">GAME</a>
-							<ul>
+							<ul style="z-index:9999">
 								<li>
 									<a href="<?=$this->Html->url('/schedule')?>">Schedule</a>
 								</li>
@@ -61,7 +61,7 @@
 							</ul>
                         </li>
                     	<li><a href="#">OPTA</a>
-							<ul>
+							<ul style="z-index:9999">
                             	<li><a href="<?=$this->Html->url('/pushlogs')?>">Push Logs</a></li>
                             	<li><a href="<?=$this->Html->url('/matches')?>">Match Results</a></li>
                             	<li><a href="<?=$this->Html->url('/stats')?>">Statistics</a></li>

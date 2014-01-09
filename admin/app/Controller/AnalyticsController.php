@@ -20,7 +20,55 @@ class AnalyticsController extends AppController {
 		$this->loadModel('Analytics');
 	}
 	public function index(){
-		
+		//get the top teams
+		$team_used = $this->Analytics->team_used();
+		$this->set('team_used',$team_used);
+
+		//get players ordered by the most usage
+		$player_used = $this->Analytics->player_used();
+		$this->set('player_used',$player_used);		
+
+		//get formation used
+		$formation_used = $this->Analytics->formation_used();
+		$this->set('formation_used',$formation_used);
+
+
+		//transfer window list
+		$transfer_window = $this->Analytics->transfer_window();
+		$this->set('transfer_window',$transfer_window);
+		/*
+		//most bought player
+		$most_buy = $this->Analytics->transfer_most_buy();
+		$this->set('most_buy',$most_buy);
+
+		//most sold player
+		$most_sold = $this->Analytics->transfer_most_sold();
+		$this->set('most_sold',$most_sold);
+		*/
+	}
+	//getting the most buy players
+	public function most_buy($tw_id){
+		$rs = $this->Analytics->transfer_most_buy($tw_id);
+		$transfer_window = $this->Analytics->getTransferWindowDetail($tw_id);
+		$this->layout = "ajax";
+		$this->set('response',
+					array('status'=>1,
+						  'data'=>$rs,
+						  'window'=>$transfer_window));
+
+		$this->render('response');
+	}
+	//getting the most sold players
+	public function most_sold($tw_id){
+		$rs = $this->Analytics->transfer_most_sold($tw_id);
+		$transfer_window = $this->Analytics->getTransferWindowDetail($tw_id);
+		$this->layout = "ajax";
+		$this->set('response',
+					array('status'=>1,
+						  'data'=>$rs,
+						  'window'=>$transfer_window));
+
+		$this->render('response');
 	}
 
 	//retrieving unique user daily stats.
@@ -71,6 +119,19 @@ class AnalyticsController extends AppController {
 					array('status'=>1,
 						  'data'=>array('categories'=>$categories,
 						  				'values'=>$xValue)));
+		$this->render('response');
+	}
+
+	/*
+	* team usage stats
+	*/
+	public function team_used(){
+		$rs = $this->Analytics->team_used();
+		
+		$this->layout = "ajax";
+		$this->set('response',
+					array('status'=>1,
+						  'data'=>$rs));
 		$this->render('response');
 	}
 }

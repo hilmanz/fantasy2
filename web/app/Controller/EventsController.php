@@ -321,10 +321,15 @@ class EventsController extends AppController {
 												FROM ffgame.game_team_expenditures 
 												WHERE game_team_id = {$game_team_id}) a;",
 												false);
-					
-					if($money[0][0]['money'] < $item['money_cost']){
-						$can_spend = false;
+					//ChangeLog
+					//BUG 09/01/2014  pemain yang duitnya minus, tidak bisa redeem event yang costnya 0.
+
+					if($item['money_cost']>0){
+						if($money[0][0]['money'] < $item['money_cost']){
+							$can_spend = false;
+						}	
 					}
+					
 				}
 				if($can_spend){
 					

@@ -52,7 +52,7 @@ class ManageController extends AppController {
 		$userData = $this->userData;
 		//user data
 		$user = $this->userDetail;
-
+		
 		$this->set('user',$user['User']);
 
 		//budget

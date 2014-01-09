@@ -29,7 +29,7 @@
                 if($USER_IS_LOGIN):
             ?>
                 <div id="navigation">
-                	<ul>
+                	<ul style="">
                     	<li>
                         	<a href="<?=$this->Html->url('/manage/team')?>">MANAGE TEAM</a>
                         </li>

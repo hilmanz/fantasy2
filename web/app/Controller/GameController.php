@@ -39,7 +39,7 @@ class GameController extends AppController {
  * @var string
  */
 	public $name = 'Game';
-	public $components = array('RequestHandler');
+	public $components = array('RequestHandler','ActivityLog');
 /**
  * This controller does not use a model
  *
@@ -99,6 +99,7 @@ class GameController extends AppController {
 
 				if(@$lineup['status']==1){
 					$msg = "@p1_".$this->userDetail['User']['id']." telah menentukan formasinya.";
+					$this->ActivityLog->writeLog($userData['User']['id'],'SAVE_FORMATION');
 					$this->Info->write('set formation',$msg);
 				}
 			}else{

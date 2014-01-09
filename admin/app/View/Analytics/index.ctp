@@ -21,16 +21,128 @@
 	<!-- end of unique player monthly -->
 </div>
 
+<div class="row">
+	<h4>
+		Team Distribution
+	</h4>
+	<table width="100%" class="table">
+		<?php foreach($team_used as $team):?>
+		<tr>
+			<td><?=$team['name']?></td><td><?=number_format($team['total'])?></td>
+		</tr>
+		<?php endforeach;?>
+	</table>
+</div>
+<div class="row">
+	<h4>
+		Top Player Distribution
+	</h4>
+	<table width="100%" class="table">
+		<?php foreach($player_used as $player):?>
+		<tr>
+			<td><?=$player['name']?></td><td><?=number_format($player['total'])?></td>
+		</tr>
+		<?php endforeach;?>
+	</table>
+</div>
+<div class="row">
+	<h4>
+		Formation Distribution
+	</h4>
+	<table width="100%" class="table">
+		<?php foreach($formation_used as $formation):?>
+		<tr>
+			<td><?=$formation['formation']?></td><td><?=number_format($formation['total'])?></td>
+		</tr>
+		<?php endforeach;?>
+	</table>
+</div>
 
+<div class="row">
+	<h4>
+		Most Buy
+	</h4>
+	<div>
+		<select name="most_buy">
+			<option value="0">Choose Transfer Window</option>
+			<?php foreach($transfer_window as $tw):?>
+			<option value="<?=h($tw['id'])?>"><?=h($tw['window_name'])?></option>
+			<?php endforeach;?>
+		</select>
+	</div>
+	<div class="most-buy-content">
+
+	</div>
+</div>
+<div class="row">
+	<h4>
+		Most Sale
+	</h4>
+	<div>
+		<select name="most_sale">
+			<option value="0">Choose Transfer Window</option>
+			<?php foreach($transfer_window as $tw):?>
+			<option value="<?=h($tw['id'])?>"><?=h($tw['window_name'])?></option>
+			<?php endforeach;?>
+		</select>
+	</div>
+	<div class="most-sold-content">
+
+	</div>
+</div>
+<script id="tpl_2col" type="text/template">
+<h4><%=window.window_name%></h4>
+<table width="100%" class="table">
+<% for(var i=0; i < data.length; i++){ %>
+	<tr>
+		<td><%=data[i].name%></td><td><%=number_format(data[i].total)%></td>
+	</tr>
+<% } %>
+</table>
+</script>
 <!--charts -->
 <script>
 $(function () {
 	unique_user_daily();
 	unique_user_weekly();
 	unique_user_monthly();
+
+	most_buy_player(<?=$transfer_window[0]['id']?>);
+	most_sold_player(<?=$transfer_window[0]['id']?>);
+
+	$("select[name='most_buy']").on('change',function(e){
+		console.log($(this).val());
+		most_buy_player($(this).val());
+	});
+	$("select[name='most_sale']").on('change',function(e){
+		console.log($(this).val());
+		most_sold_player($(this).val());
+	});
 	
 });
 
+function most_buy_player(window_id){
+	$(".most-buy-content").html('Loading...');
+	api_call("<?=$this->Html->url('/analytics/most_buy/')?>"+window_id,
+		function(response){
+			if(response.status==1){
+				render_view(tpl_2col,
+							".most-buy-content",
+							{window:response.window,data:response.data});
+			}
+	});
+}
+function most_sold_player(window_id){
+	$(".most-sold-content").html('Loading...');
+	api_call("<?=$this->Html->url('/analytics/most_sold/')?>"+window_id,
+		function(response){
+			if(response.status==1){
+				render_view(tpl_2col,
+							".most-sold-content",
+							{window:response.window,data:response.data});
+			}
+	});
+}
 function addChart(options){
 		console.log(options);
         $(options.target).highcharts({
