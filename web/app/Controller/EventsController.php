@@ -322,7 +322,7 @@ class EventsController extends AppController {
 												WHERE game_team_id = {$game_team_id}) a;",
 												false);
 					//ChangeLog
-					//BUG 09/01/2014  pemain yang duitnya minus, tidak bisa redeem event yang costnya 0.
+					//BUG https://code18.atlassian.net/browse/SSFM-158
 
 					if($item['money_cost']>0){
 						if($money[0][0]['money'] < $item['money_cost']){

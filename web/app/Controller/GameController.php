@@ -99,7 +99,8 @@ class GameController extends AppController {
 
 				if(@$lineup['status']==1){
 					$msg = "@p1_".$this->userDetail['User']['id']." telah menentukan formasinya.";
-					$this->ActivityLog->writeLog($userData['User']['id'],'SAVE_FORMATION');
+
+					$this->ActivityLog->writeLog($this->userDetail['User']['id'],'SAVE_FORMATION');
 					$this->Info->write('set formation',$msg);
 				}
 			}else{
@@ -194,6 +195,7 @@ class GameController extends AppController {
 			
 			if(@$rs['status']==1){
 				$msg = "@p1_".$this->userDetail['User']['id']." telah melepas {$rs['data']['name']} seharga SS$".number_format($rs['data']['transfer_value']);
+				$this->ActivityLog->writeLog($this->userDetail['User']['id'],'SOLD_PLAYER');
 				$this->Info->write('sale player',$msg);
 			}
 		}else{
@@ -242,6 +244,7 @@ class GameController extends AppController {
 
 			if(@$rs['status']==1){
 				$msg = "@p1_".$this->userDetail['User']['id']." telah membeli {$rs['data']['name']} seharga SS$".number_format($rs['data']['transfer_value']);
+				$this->ActivityLog->writeLog($this->userDetail['User']['id'],'PURCHASED_PLAYER');
 				$this->Info->write('buy player',$msg);
 			}
 		}else{

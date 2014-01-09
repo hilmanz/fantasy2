@@ -166,6 +166,7 @@ class AppController extends Controller {
 						(time() <= strtotime($previous_match['end_dt']))
 
 					  ){
+
 						$close_time = array("datetime"=>$previous_match['start_dt'],
 										"ts"=>strtotime($previous_match['start_dt']));
 
@@ -176,17 +177,22 @@ class AppController extends Controller {
 						}
 						
 					}else{
+
 						if(time() < strtotime($upcoming_match['start_dt'])){
 							//jika pertandingan belum di mulai.. maka open time itu diset berdasarkan
 							//opentime minggu lalu
 							$open_time = strtotime($previous_match['end_dt']);
+
 						}else if(time() > strtotime($upcoming_match['start_dt'])
 								 && time() <= strtotime($upcoming_match['end_dt'])){
 							//jika tidak, menggunakan open time berikutnya
 							$open_time = strtotime($upcoming_match['end_dt']);
+
 						}else{
+
 							$open_time = strtotime($upcoming_match['end_dt']);
 							$matchstatus = $this->Game->getMatchStatus($upcoming_match['matchday']);
+							
 							if($matchstatus['is_finished']==0){
 								$open_time += (60*60*24*30);
 							}
