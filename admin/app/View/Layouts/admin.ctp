@@ -55,6 +55,9 @@
                                 <li>
                                     <a href="<?=$this->Html->url('/merchandises')?>">Merchandise</a>
                                 </li>
+                                <li>
+                                    <a href="<?=$this->Html->url('/analytics')?>">User Analytics</a>
+                                </li>
 							</ul>
                         </li>
                     	<li><a href="#">OPTA</a>
