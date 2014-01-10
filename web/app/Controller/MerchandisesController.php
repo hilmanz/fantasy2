@@ -97,7 +97,15 @@ class MerchandisesController extends AppController {
 
 		//retrieve the paginated results.
 		$rs = $this->paginate('MerchandiseItem');
-
+		for($i=0;$i<sizeof($rs);$i++){
+			//get the available stock
+			// stock_available = stock - total_order
+			$total_order = $this->MerchandiseOrder->find('count',
+				array('conditions'=>array('merchandise_item_id'=>$rs[$i]['MerchandiseItem']['id'],
+										  'n_status <> 4')));
+			
+			$rs[$i]['MerchandiseItem']['available'] = $rs[$i]['MerchandiseItem']['stock'] - $total_order;
+		}
 		//assign it.
 		$this->set('rs',$rs);
 
@@ -216,7 +224,7 @@ class MerchandisesController extends AppController {
 			$no_fund = $result['no_fund'];
 			if($is_transaction_ok == true){
 				//we reduce the stock in front
-				$this->ReduceStock($item_id,$item['MerchandiseItem']);
+				//$this->ReduceStock($item_id,$item['MerchandiseItem']);
 			}
 		}else{
 			$is_transaction_ok = false;

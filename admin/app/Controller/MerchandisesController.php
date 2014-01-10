@@ -199,9 +199,15 @@ class MerchandisesController extends AppController {
 		$this->MerchandiseOrder->bindModel(
 			array('belongsTo'=>array('MerchandiseItem'))
 		);
+		/*
+		temporarily disabled these flow.
+		there's a bug when people has been canceled, and the order were more than the initial stock number.
+		the stock is increased while there's already n items delivered.
+		
 		$order = $this->MerchandiseOrder->findById($order_id);
 		$this->MerchandiseItem->id = $order['MerchandiseItem']['id'];
 		$this->MerchandiseItem->save(array('stock'=>$order['MerchandiseItem']['stock'] + 1));
+		*/
 	}
 	private function update_order($order_id){
 		$this->MerchandiseOrder->id = $order_id;

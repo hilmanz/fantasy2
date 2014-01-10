@@ -109,7 +109,7 @@ class AppController extends Controller {
 				$this->userRank = @$point['Point']['rank'];
 
 				//get recent cash
-				$this->cash = floatval($this->Game->getCash($this->userData['team']['id']));
+				$this->cash = floatval($this->Game->getCash(@$this->userData['team']['id']));
 				
 				//temporary patch.  remove it after next match.
 				if($this->userPoints==0){

@@ -38,7 +38,21 @@
 				</a>
 				<h3 class="yellow">Anda harus terdaftar terlebih dahulu di versi web</h3>
 			<?php else:?>
-				<h3 class="yellow">Maaf, aplikasi FM Supersoccer belum dapat digunakan oleh <nama_device> kamu. Tunggu release berikutnya dari kami.</h3>
+				<?php 
+				if(@eregi('Iphone',env('HTTP_USER_AGENT'))){
+					$device = "Iphone";
+				}else if(@eregi('Blackberry',env('HTTP_USER_AGENT'))){
+					$device = "Blackberry";
+				}else if(@eregi('Ipad',env('HTTP_USER_AGENT'))){
+					$device = "Ipad";
+				}else if(@eregi('Ipod',env('HTTP_USER_AGENT'))){
+					$device = "Ipod";
+				}else{
+					$device = "device";
+				}
+				?>
+				<h3 class="yellow">Maaf, aplikasi FM Supersoccer belum dapat digunakan oleh <?=h($device)?> kamu. Tunggu release berikutnya dari kami.</h3>
+				<h3 class="yellow">Silahkan bermain dengan menggunakan komputer desktop.</h3>
 			<?php endif;?>	
 		</div>
 		<!--
