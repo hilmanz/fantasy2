@@ -52,13 +52,13 @@ class AppController extends Controller {
 					'/events/redeem?osign='.$this->request->query['osign']);
 		
 		}
-
-		/*if($this->request->is('mobile') &&
+		
+		if($this->request->is('mobile') &&
 			$this->request->params['pass'][0]!='mobile'){
 			$this->redirect('/pages/mobile');
 			die();
 		}
-		*/
+		
 		$this->disableCache();
 		$this->response->disableCache();
 		

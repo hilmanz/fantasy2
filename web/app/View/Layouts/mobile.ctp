@@ -25,16 +25,27 @@
 </head>
 <body>
 	<div id="body">
+		
 		<a href="index.php" id="logo">
 			 <img src="<?=$this->Html->url('/images/mobile/logo.png')?>" />
 		</a>
 		<div id="container">
-			<h1>Mau Main di Android?</h1>
-			<h3>Download aplikasi Football Manager versi Android untuk mendapatkan pengalaman bermain terbaik</h3>
-			<a href="#" class="btn_android"> <img src="<?=$this->Html->url('/images/mobile/android_download.png')?>" /></a>
-			<h3 class="yellow">Anda harus terdaftar terlebih dahulu di versi web</h3>
+			<?php if(@eregi('Android',env('HTTP_USER_AGENT'))):?>
+				<h1>Mau Main di Android?</h1>
+				<h3>Download aplikasi Football Manager versi Android untuk mendapatkan pengalaman bermain terbaik</h3>
+				<a href="<?=$this->Html->url('/dl/FantasyFootball.apk')?>" class="btn_android"> 
+					<img src="<?=$this->Html->url('/images/mobile/android_download.png')?>" />
+				</a>
+				<h3 class="yellow">Anda harus terdaftar terlebih dahulu di versi web</h3>
+			<?php else:?>
+				<h3 class="yellow">Maaf, aplikasi FM Supersoccer belum dapat digunakan oleh <nama_device> kamu. Tunggu release berikutnya dari kami.</h3>
+			<?php endif;?>	
 		</div>
-		<a href="#" class="btnWeb"> <img src="<?=$this->Html->url('/images/mobile/web_btn.png')?>" /></a>
+		<!--
+		<a href="<?=$this->Html->url('/?use_web=1')?>" class="btnWeb"> 
+			<img src="<?=$this->Html->url('/images/mobile/web_btn.png')?>" />
+		</a>
+		-->
 	</div>
 </body>
 </html>
