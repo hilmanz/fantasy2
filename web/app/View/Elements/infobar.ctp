@@ -23,7 +23,7 @@
     <?php else:?>
 	     <h4 id='ct3' class="fr countdown">
 	    	<span class="yellow">
-	    		Set Formasi akan dibuka ketika semua perhitungan Ranking dan Poin selesai.
+	    		Saat ini penyusunan formasi sedang ditutup
 	    	</span>
 	    </h4>
 	<?php endif;?>
