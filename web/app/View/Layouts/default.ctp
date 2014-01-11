@@ -3,9 +3,31 @@
 <head>
 	<?php echo $this->Html->charset(); ?>
 	<?php echo $this->element('meta'); ?>
-	
+	<?php 
+        $FM_PAGE = '';
+       
+        if($this->request->controller=='manage'){
+            switch($this->request->action){
+                case 'club':
+                    $FM_PAGE = 'club';
+                break;
+                default:
+                    $FM_PAGE ='team';
+                break;
+            }
+        }else if($this->request->controller=='profile'){
+            $FM_PAGE = 'profile';
+        }else if($this->request->controller=='leaderboard'){
+            $FM_PAGE = 'leaderboard';
+        }else if($this->request->controller=='market'){
+            $FM_PAGE = 'market';
+        }else{
+            $FM_PAGE = $this->request->controller;
+        }
+
+    ?>
 </head>
-<body>
+<body class="page-<?=$FM_PAGE?>">
 	
 	<div id="fb-root"></div>
 	<div id="effect"></div>
