@@ -26,6 +26,9 @@ class ManageController extends AppController {
 	private $starting_budget = 0;
 	private $finance_total_items_raw = null;
 	private $tickets_sold;
+
+	public $components = array('ActivityLog');
+
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->loadModel('Team');
@@ -35,6 +38,7 @@ class ManageController extends AppController {
 		if(!$this->hasTeam()){
 			$this->redirect('/login/expired');
 		}
+		//$this->logTime($this->ActivityLog);
 	}
 	public function hasTeam(){
 		$userData = $this->userData;

@@ -28,31 +28,38 @@ $sponsor += intval(@$finance['sponsorship']);
 
 //income from other events
 $other = 0;
-foreach($finance as $item_name => $item_value){
-  if($item_value > 0 && @eregi('other_',$item_name)){
-    $other += $item_value;
+
+if(is_array($finance)){
+  foreach($finance as $item_name => $item_value){
+    if($item_value > 0 && @eregi('other_',$item_name)){
+      $other += $item_value;
+    }
+    if($item_value > 0 && @eregi('event',$item_name)){
+      $other += $item_value;
+    }
+    if($item_value > 0 && @eregi('perk',$item_name)){
+      $other += $item_value;
+    }
   }
-  if($item_value > 0 && @eregi('event',$item_name)){
-    $other += $item_value;
-  }
-  if($item_value > 0 && @eregi('perk',$item_name)){
-    $other += $item_value;
-  }
+
 }
 
 //expenses from other events
 $other_expenses = 0;
-foreach($finance as $item_name => $item_value){
-  if($item_value < 0 && @eregi('other_',$item_name)){
-    $other_expenses += abs($item_value);
-  }
-  if($item_value < 0 && @eregi('transaction_fee',$item_name)){
-    $other_expenses += abs($item_value);
-  }
-  if($item_value < 0 && @eregi('perk',$item_name)){
-    $other_expenses += $item_value;
+if(is_array($finance)){
+  foreach($finance as $item_name => $item_value){
+    if($item_value < 0 && @eregi('other_',$item_name)){
+      $other_expenses += abs($item_value);
+    }
+    if($item_value < 0 && @eregi('transaction_fee',$item_name)){
+      $other_expenses += abs($item_value);
+    }
+    if($item_value < 0 && @eregi('perk',$item_name)){
+      $other_expenses += $item_value;
+    }
   }
 }
+
 $total_expenses -= abs($other_expenses);
 
 
@@ -73,7 +80,12 @@ for($i=1;$i<$first_week['week'];$i++){
   $previous_balances[] = array('week'=>$i,
                               'balance'=>intval(@$starting_budget));
 }
-$weekly_balances = array_merge($previous_balances,$weekly_balances);
+if(is_array($weekly_balances)){
+  $weekly_balances = array_merge($previous_balances,$weekly_balances);  
+}else{
+  $weekly_balances = $previous_balances;
+}
+
 
 if($week<=1){
   $starting_balance = intval(@$starting_budget);

@@ -96,6 +96,7 @@ class LoginController extends AppController {
 		$this->render('error');
 	}*/
 	private function afterLogin(){
+		
 		$this->loadModel('User');
 		
 		$user_session = $this->Session->read('Userlogin.info');
@@ -111,6 +112,9 @@ class LoginController extends AppController {
 			$user_session['team'] = $this->Game->getTeam($user_session['fb_id']);
 			$this->Session->write('Userlogin.info',$user_session);
 
+			//log time
+			$this->ActivityLog->logTime($rs['User']['id'],$this->Session,true);
+
 			if($user_session['team']==null){
 				$this->redirect('/profile/register_team');
 			}else if($user_session['team']!=null&&$user_session['register_completed']==0){
@@ -118,6 +122,7 @@ class LoginController extends AppController {
 			}else{
 				//check if there's pending redirect url		
 				$this->ActivityLog->writeLog($rs['User']['id'],'LOGIN');
+
 				if($this->Session->read('pending_redirect')!=null){
 					//prepare the redirect_url from session
 					$redirect_url = $this->Session->read('pending_redirect');

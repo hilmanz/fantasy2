@@ -55,11 +55,11 @@
 				<h3 class="yellow">Silahkan bermain dengan menggunakan komputer desktop.</h3>
 			<?php endif;?>	
 		</div>
-		<!--
-		<a href="<?=$this->Html->url('/?use_web=1')?>" class="btnWeb"> 
+		
+		<a href="<?=$this->Html->url('/')?>" class="btnWeb"> 
 			<img src="<?=$this->Html->url('/images/mobile/web_btn.png')?>" />
 		</a>
-		-->
+		
 	</div>
 </body>
 </html>

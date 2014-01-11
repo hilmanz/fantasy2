@@ -3,7 +3,29 @@
 <head>
 	<?php echo $this->Html->charset(); ?>
 	<?php echo $this->element('meta'); ?>
-	
+	<?php 
+        $page = '';
+       
+        if($this->request->controller=='manage'){
+            switch($this->request->action){
+                case 'club':
+                    $page = 'club';
+                break;
+                default:
+                    $page ='team';
+                break;
+            }
+        }else if($this->request->controller=='profile'){
+            $page = 'profile';
+        }else if($this->request->controller=='leaderboard'){
+            $page = 'leaderboard';
+        }else if($this->request->controller=='market'){
+            $page = 'market';
+        }else{
+            $page = $this->request->controller;
+        }
+
+    ?>
 </head>
 <body>
 	

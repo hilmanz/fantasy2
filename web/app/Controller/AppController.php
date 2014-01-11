@@ -52,13 +52,13 @@ class AppController extends Controller {
 					'/events/redeem?osign='.$this->request->query['osign']);
 		
 		}
-		
+		/*
 		if($this->request->is('mobile') &&
 			$this->request->params['pass'][0]!='mobile'){
 			$this->redirect('/pages/mobile');
 			die();
 		}
-		
+		*/
 		$this->disableCache();
 		$this->response->disableCache();
 		
@@ -94,6 +94,8 @@ class AppController extends Controller {
 		
 			if($this->isUserLogin()){
 				$this->userData = $this->getUserData();
+				
+				//prepare everything up.
 				$this->set('USER_IS_LOGIN',true);
 				$this->set('USER_DATA',$this->userData);
 				$this->loadModel('User');
@@ -104,6 +106,7 @@ class AppController extends Controller {
 
 				$this->userDetail = $this->User->findByFb_id($this->userData['fb_id']);
 				
+
 				$point = $this->Point->findByTeam_id(@$this->userDetail['Team']['id']);
 				$this->userPoints = @$point['Point']['points'] + @$point['Point']['extra_points'];
 				$this->userRank = @$point['Point']['rank'];
@@ -233,6 +236,11 @@ class AppController extends Controller {
 		}
 		
 	}
+	protected function logTime($activityLog=null){
+		$initial_ts = intval($this->Session->read('track_time_initial_ts'));
+        $last_ts = intval($this->Session->read('track_time_initial_ts'));
+        $activityLog->logTime($this->userDetail['User']['id'],$this->Session,false);
+	}
 	private function ApiInit(){
 		require_once APP . 'Vendor' . DS. 'lib/Predis/Autoloader.php';
 		//tell the browser that we're outputing JSON data.
@@ -273,6 +281,7 @@ class AppController extends Controller {
 		}
 	}
 	public function isUserLogin(){
+		
 		if($this->Session->read('Userlogin.is_login')==true){
 	  		return true;
 	  	}
