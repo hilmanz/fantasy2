@@ -27,7 +27,7 @@
 
     ?>
 </head>
-<body>
+<body class="page-<?=$FM_PAGE?>">
 	
 	<div id="fb-root"></div>
 	<div id="effect"></div>
