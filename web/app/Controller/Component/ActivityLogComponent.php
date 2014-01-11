@@ -24,22 +24,33 @@ class ActivityLogComponent extends Component {
     // time_spent = last_ts - initial_ts
     // initial_ts is resetted when 'LOGIN' activity captured.
 
-    public function logTime($user_id,
+
+    public function logTime($user_id,$session,
                             $reset_time=false){
-        $initial_ts = Configure::read('track_time_initial_ts');
-        $last_ts = Configure::read('track_time_initial_ts');
+        $initial_ts = intval($session->read('track_time_initial_ts'));
+        $last_ts = intval($session->read('track_time_initial_ts'));
+        //pr('yippy');
         if($reset_time){
             //we save the time first to database ?
+            //only when the session is still active, and we have the diff_ts exists
             $diff_ts = $last_ts - $initial_ts;
             if($diff_ts > 0){
                 //save the time difference to database
                 $this->model->query("
-                    
-                ");
+                    INSERT IGNORE INTO user_time_spent
+                    (user_id,initial_ts,last_ts,time_spent)
+                    VALUES
+                    ({$user_id},{$initial_ts},{$last_ts},{$diff_ts})
+                    ");
             }
-            Configure::write('track_time_initial_ts',time());
+            $session->write('track_time_initial_ts',time());
         }else{
-            Configure::write('track_time_current_ts',time());
+
+            //if initial time is none, and last time logged is also none, we save the time now.
+            if($initial_ts==0 && $last_ts==0){
+                $session->write('track_time_initial_ts',time());
+            }
         }
+        $session->write('track_time_current_ts',time());
     }
 }

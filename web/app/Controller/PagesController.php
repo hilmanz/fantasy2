@@ -100,7 +100,6 @@ class PagesController extends AppController {
 
 		if($path[0]=='home'&&$this->userDetail['Team']['id']>0){
 			if($this->Session->read('pending_redirect')!=null){
-				
 				$redirect_url = $this->Session->read('pending_redirect');
 				$this->Session->write('pending_redirect',null);
 				$this->redirect($redirect_url);

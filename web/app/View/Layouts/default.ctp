@@ -4,30 +4,30 @@
 	<?php echo $this->Html->charset(); ?>
 	<?php echo $this->element('meta'); ?>
 	<?php 
-        $FM_PAGE = '';
+        $page = '';
        
         if($this->request->controller=='manage'){
             switch($this->request->action){
                 case 'club':
-                    $FM_PAGE = 'club';
+                    $page = 'club';
                 break;
                 default:
-                    $FM_PAGE ='team';
+                    $page ='team';
                 break;
             }
         }else if($this->request->controller=='profile'){
-            $FM_PAGE = 'profile';
+            $page = 'profile';
         }else if($this->request->controller=='leaderboard'){
-            $FM_PAGE = 'leaderboard';
+            $page = 'leaderboard';
         }else if($this->request->controller=='market'){
-            $FM_PAGE = 'market';
+            $page = 'market';
         }else{
-            $FM_PAGE = $this->request->controller;
+            $page = $this->request->controller;
         }
 
     ?>
 </head>
-<body class="page-<?=$FM_PAGE?>">
+<body>
 	
 	<div id="fb-root"></div>
 	<div id="effect"></div>
