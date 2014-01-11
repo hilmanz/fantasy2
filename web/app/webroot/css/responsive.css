@@ -1,0 +1,145 @@
+
+/* Responsive */
+
+@media only screen and (max-width: 880px) {
+	#universal{
+		width:90%;
+	}
+	#logo{
+		background-size:100% auto;
+		position:relative;
+		top:auto; left:auto;
+		margin:0 auto;
+		float:none;
+	}
+	#header{
+		padding:20px 0;
+		height:auto;
+		overflow:hidden;
+	}
+	#user-info{
+		float:none;
+		left:auto;
+		top:auto;
+		right:auto;
+		float:right;
+		margin:10px 0 0 20px;
+	}
+	#body{
+		background:none;
+	}
+	#navigation{
+		clear:both;
+	}
+	#navigation ul li{
+		margin:5px;
+	}
+	#slider{
+		width:auto;
+		height:auto;
+	}
+	#content{
+		width:100%;
+		float:none;
+	}
+	.imgSlide img{
+		width:100%;
+	}
+	#listBox .box{
+		padding:20px;
+		width:auto;
+		float:none;
+	}
+	#listBox .bannerBox{
+		width:auto; height:auto;
+		float:none; margin:20px 0;
+	}
+	.bannerBox a,.bannerBox img{
+		height:auto;
+	}
+	#sidebar{
+		width:100%;
+		height:auto;
+		float:none;
+	}
+	#videoIntro iframe{
+		height:300px !important;
+	}
+	.select-team{
+		text-align:center;
+	}
+	.teamBox{
+		margin:10px;
+		float:none;
+		display:inline-block;
+	}
+	.select-team h3{
+		text-align:left;
+	}
+	.playerlistbox{
+		width:auto;
+		float:none;
+	}
+	.thumbPlayers, .thumbPlayersSmall{
+		width:45px; height:45px;
+	}
+	.thumbPlayers img .thumbPlayersSmall img,.thumbPlayers img{
+		width:45px;
+		top:-10px;
+	}
+	td, th{
+		padding:5px;
+	}/* Force table to not be like tables anymore */
+	table, thead, tbody, th, td, tr { 
+		display: block; 
+	}
+	
+	/* Hide table headers (but not display: none;, for accessibility) */
+	thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	
+	tr { border: 1px solid #ccc; }
+	
+	td { 
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #666; 
+		position: relative;
+	}
+	
+	td:before { 
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%; 
+		padding-right: 10px; 
+		white-space: nowrap;
+	}
+	.col2{
+		width:100%;
+		float:none;
+		padding:0 0 20px 0;
+	}
+	.content{
+		padding:0;
+	}
+}
+
+@media only screen and (max-width: 667px) {
+}
+
+@media only screen and (max-width: 420px) {
+	.button{
+		float:none;
+		margin:0 0 10px 0;
+	}
+}
+
+@media only screen and (max-width: 320px) {
+	
+}
