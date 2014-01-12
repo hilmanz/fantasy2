@@ -4,25 +4,25 @@
 	<?php echo $this->Html->charset(); ?>
 	<?php echo $this->element('meta'); ?>
 	<?php 
-        $page = '';
+        $FM_PAGE = '';
        
         if($this->request->controller=='manage'){
             switch($this->request->action){
                 case 'club':
-                    $page = 'club';
+                    $FM_PAGE = 'club';
                 break;
                 default:
-                    $page ='team';
+                    $FM_PAGE ='team';
                 break;
             }
         }else if($this->request->controller=='profile'){
-            $page = 'profile';
+            $FM_PAGE = 'profile';
         }else if($this->request->controller=='leaderboard'){
-            $page = 'leaderboard';
+            $FM_PAGE = 'leaderboard';
         }else if($this->request->controller=='market'){
-            $page = 'market';
+            $FM_PAGE = 'market';
         }else{
-            $page = $this->request->controller;
+            $FM_PAGE = $this->request->controller;
         }
 
     ?>
