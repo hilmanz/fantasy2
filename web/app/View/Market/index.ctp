@@ -13,20 +13,20 @@
             <h3>Pilih Team</h3>
         </div>
         <div class="contents tr">
-        	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
+        	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable footable">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th data-class="expand"></th>
                         <th>Team Name</th>
-                        <th class="aligncenter">Games Played</th>
-                        <th class="aligncenter">Games Won</th>
-                        <th class="aligncenter">Games Drawn</th>
-                        <th class="aligncenter">Games Lost</th>
-                        <th class="aligncenter">Games Scored</th>
-                        <th class="aligncenter">Goal Conceded</th>
-                        <th class="aligncenter">Top Scorer</th>
-                        <th class="aligncenter">Top Assist</th>
-                        <th></th>
+                        <th data-hide="phone,tablet" class="aligncenter">Games Played</th>
+                        <th data-hide="phone,tablet" class="aligncenter">Games Won</th>
+                        <th data-hide="phone,tablet" class="aligncenter">Games Drawn</th>
+                        <th data-hide="phone,tablet" class="aligncenter">Games Lost</th>
+                        <th data-hide="phone,tablet" class="aligncenter">Games Scored</th>
+                        <th data-hide="phone,tablet" class="aligncenter">Goal Conceded</th>
+                        <th data-hide="phone,tablet" class="aligncenter">Top Scorer</th>
+                        <th data-hide="phone,tablet" class="aligncenter">Top Assist</th>
+                        <th data-hide="phone"></th>
                     </tr>
                 </thead>
                 <tbody>
