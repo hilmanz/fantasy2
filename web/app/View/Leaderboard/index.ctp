@@ -56,8 +56,8 @@ $overall = isset($overall) ? "selected='selected'":"";
                 </thead>
                 <tbody>
                   <?php
-                  $params = $this->Paginator->params('Weekly_point');
-                  
+                  $params = $this->Paginator->params();
+                
                     foreach($team as $n=>$t):
                       $no = $n+1 + (($params['page']-1) * $params['limit']);
 
