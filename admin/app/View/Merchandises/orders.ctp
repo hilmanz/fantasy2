@@ -20,6 +20,7 @@
 <?php
 $pic_dir = Configure::read('avatar_web_url')."merchandise/thumbs/2_";
 $view_url = $this->Html->url('/merchandises/view_order/');
+$item_url = $this->Html->url('/merchandises/edit/');
 ?>
 <script>
 	var start = 0;
@@ -51,6 +52,8 @@ $view_url = $this->Html->url('/merchandises/view_order/');
 							data.push([
 									response.data[i].MerchandiseOrder.order_date,
 									response.data[i].MerchandiseOrder.po_number,
+									response.data[i].MerchandiseItem.id,
+									'<a href="<?=$item_url?>'+response.data[i].MerchandiseItem.id+'">'+response.data[i].MerchandiseItem.name+'</a>',
 									response.data[i].MerchandiseOrder.first_name+' '+response.data[i].MerchandiseOrder.last_name,
 									status,
 									'<a href="<?=$view_url?>'+response.data[i].MerchandiseOrder.id+'">View</a>'
@@ -78,7 +81,8 @@ $view_url = $this->Html->url('/merchandises/view_order/');
 			"aoColumns": [
 				{ "sTitle": "Date" },
 				{ "sTitle": "PO" },
-				{ "sTitle": "Customer" },
+				{ "sTitle": "ItemId" },
+				{ "sTitle": "ItemName" },
 				{ "sTitle": "Status" },
 				{ "sTitle": "Action"}
 			]
