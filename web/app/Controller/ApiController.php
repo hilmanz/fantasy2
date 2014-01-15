@@ -40,7 +40,7 @@ class ApiController extends AppController {
 		$fb_id = $this->request->query('fb_id');
 		$user = $this->User->findByFb_id($fb_id);
 
-		if(isset($user['User'])){
+		if(strlen($fb_id)>2 && isset($user['User'])){
 			$rs = $this->Apikey->findByApi_key($this->request->query['api_key']);
 			if(isset($rs['Apikey']) && $rs['Apikey']['api_key']!=null){
 				$access_token = encrypt_param(serialize(array('api_key'=>$rs['Apikey']['api_key'],

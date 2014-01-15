@@ -42,7 +42,7 @@ Enter the list of user's IDs.
 					<td><?=h($team['teams']['team_name'])?></td>
 					<td><?=h($team['master_team']['name'])?></td>
 					<td><?=h($team['user']['email'])?></td>
-					<td>ss$ <input type="text" name="amount" value="0"/></td>
+					<td>ss$ <input type="text" name="amount_<?=$team['game_team']['id']?>" value="0"/></td>
 				</tr>
 				<?php endforeach;?>
 			</table>
