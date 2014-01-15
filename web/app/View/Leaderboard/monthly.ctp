@@ -65,13 +65,13 @@ function isMonthAvailable($available,$m,$y){
 
     <div id="thecontent">
         <div class="contents">
-        	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
+        	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable footable">
                 <thead>
                     <tr>
-                        <th>Peringkat</th>
+          				<th data-class="expand">Peringkat</th>
                         <th>Klab</th>
-                        <th>Manajer</th>
-                        <th class="alignright">Jumlah Poin</th>
+                        <th data-hide="phone,tablet">Manajer</th>
+                        <th data-hide="phone" class="alignright">Jumlah Poin</th>
                     </tr>
                 </thead>
                 <tbody>

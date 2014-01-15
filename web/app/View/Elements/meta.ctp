@@ -2,8 +2,7 @@
 	<meta charset="utf-8">
 	<title>SuperSoccer Football Manager - Show What You Know</title>
 
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	
+    <meta name="viewport" content = "width = device-width, initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no" />	
 	<?php echo $this->Html->meta('icon', '/images/favicon.ico');?>
 	<meta name="description" content="">
 	<meta name="author" content="">
@@ -56,7 +55,7 @@
 	<?php endif;?>
 	<!-- Le styles -->
 	<?php echo $this->Html->css(
-			  array('datatables/tables','ffl','superfish','fancybox/jquery.fancybox.css?v=2.1.5','responsive'),
+			  array('datatables/tables','ffl','superfish','fancybox/jquery.fancybox.css?v=2.1.5','responsive','footable-0.1'),
 		null,array('media'=>'all')); 
 	?>
 	<?php echo $this->Html->script(
@@ -68,8 +67,14 @@
 			'datatables/jquery.dataTables',
 			'datatables/DT_bootstrap',
 			'datatables/tables',
+			'footable',
 	  ));
 ?>
+    <script type="text/javascript">
+      $(function() {
+        $('table').footable();
+      });
+    </script>
 	<!--[if IE 6]>
 	<link rel="stylesheet" type="text/css" href="js/slider/themes/default/jquery.slider.ie6.css" />
 	<?php echo $this->Html->css(

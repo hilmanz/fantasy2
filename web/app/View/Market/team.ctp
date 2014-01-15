@@ -14,16 +14,16 @@
         	<div class="fr"><a href="<?=$this->Html->url('/market')?>" class="button">KEMBALI</a></div>
         </div>
         <div class="contents tr">
-        	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable">
+        	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable footable">
                 <thead>
                     <tr>
-                        <th width="1"></th>
+                        <th data-class="expand" width="1"></th>
                         <th>Name</th>
-                        <th class="aligncenter">Position</th>
-                        <th class="alignright">Gaji</th>
+                        <th data-hide="phone,tablet" class="aligncenter">Position</th>
+                        <th data-hide="phone,tablet" class="alignright">Gaji</th>
                        
-                        <th class="alignright">Nilai Transfer</th>
-                        <th width="1"></th>
+                        <th data-hide="phone,tablet" class="alignright">Nilai Transfer</th>
+                        <th data-hide="phone" width="1"></th>
                     </tr>
                 </thead>
                 <tbody>

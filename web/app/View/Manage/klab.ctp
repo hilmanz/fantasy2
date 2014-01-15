@@ -583,19 +583,19 @@ function isStaffExist($staff_token,$name){
               </div><!-- end #tabs-Keuagan -->
               <div id="tabs-Players">
                 <div class="player-list">
-                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" class="footable">
                 <thead>
                   <tr>
-                    <th></th>
+                    <th data-class="expand"></th>
                     <th width="210">Nama</th>
-                    <th class="aligncenter" width="5">Umur</th>
-                    <th width="64">Negara</th>
-                    <th width="70">Posisi</th>
+                    <th data-hide="phone,tablet" class="aligncenter" width="5">Umur</th>
+                    <th data-hide="phone,tablet" width="64">Negara</th>
+                    <th data-hide="phone,tablet" width="70">Posisi</th>
                    
-                    <th class="alignright" width="120">Gaji* (ss$)</th>
-                    <th class="aligncenter" width="5">Poin</th>
-                    <th class="alignright" width="120">Nilai (ss$)</th>
-                    <th style="text-align:center;">Tindakan</th>
+                    <th data-hide="phone,tablet" class="alignright" width="120">Gaji* (ss$)</th>
+                    <th data-hide="phone,tablet" class="aligncenter" width="5">Poin</th>
+                    <th data-hide="phone,tablet" class="alignright" width="120">Nilai (ss$)</th>
+                    <th data-hide="phone,tablet" style="text-align:center;">Tindakan</th>
                   </tr>
                  </thead>
                  <tbody  id="myplayerlist">
