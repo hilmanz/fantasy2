@@ -36,7 +36,9 @@
         <div id="universal">
 
                 <?php if($USER_IS_LOGIN):?>
-
+                     <?php
+                        $user_masked_id = intval(Configure::read('RANK_RANDOM_NUM')) + intval($USER_DATA['team']['id']);
+                     ?>
           			 <div id="header">
              		  	<a id="logo" href="<?=$this->Html->url('/manage/team')?>" title="SUPER SOCCER - FANTASY FOOTBALL LEAGUE">&nbsp;</a>
                         <div id="user-info">
@@ -58,7 +60,7 @@
                                 </a> |
                                  <a class="logout" href="<?=$this->Html->url('/profile/logout')?>">Keluar</a></h3>
                                 <span class="points red">
-                                    <?=number_format(ceil($USER_POINTS))?> Pts | <?=number_format(ceil($USER_COINS))?> Coins
+                                    ID: <?=$user_masked_id?> | <?=number_format(ceil($USER_POINTS))?> Pts | <?=number_format(ceil($USER_COINS))?> Coins
                                 </span>
                                 
                             </div><!-- end .entry -->

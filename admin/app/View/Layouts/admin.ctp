@@ -58,6 +58,9 @@
                                 <li>
                                     <a href="<?=$this->Html->url('/analytics')?>">User Analytics</a>
                                 </li>
+                                <li>
+                                    <a href="<?=$this->Html->url('/funds/add')?>">Add Funds</a>
+                                </li>
 							</ul>
                         </li>
                     	<li><a href="#">OPTA</a>
