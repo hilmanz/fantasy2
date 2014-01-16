@@ -1171,9 +1171,22 @@ function processAllUsersForMasterByPrequisite(conn,target,schedule,matchday,done
 							try{
 								if(rs!=null && rs.length > 0){
 									since_id = rs[ (rs.length - 1) ].id;
-									populate_job_event_master_player(conn,target,schedule,matchday,rs,function(err){
-										next();
-									});
+									if(schedule.affected_item == 2){
+										//point event
+										populate_job_event_master_player(conn,target,schedule,matchday,rs,function(err){
+											next();
+										});	
+									}else{
+										//money event
+										var team_targets = [];
+										for(var i=0;i<rs.length;i++){
+											team_targets.push(rs[0].game_team_id);
+										}
+										distributeEachTeam(conn,schedule,team_targets,function(err){
+											next();
+										});
+									}
+									
 								}else{
 									has_data = false;
 									next();

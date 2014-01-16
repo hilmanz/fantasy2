@@ -45,6 +45,8 @@ class EventsController extends AppController {
 				$register_data = $this->Session->read('register_event_data');
 				$register_data['target_type'] = $this->request->data['target_type'];
 				$register_data['affected_item'] = $this->request->data['affected_item'];
+
+				
 				$this->set('data',$register_data);
 				$this->Session->write('register_event_data',$register_data);
 

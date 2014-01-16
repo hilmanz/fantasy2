@@ -39,24 +39,48 @@ class ApiController extends AppController {
 	public function auth(){
 		$fb_id = $this->request->query('fb_id');
 		$user = $this->User->findByFb_id($fb_id);
+		$check_current_session = $this->Session->read('API_CURRENT_ACCESS_TOKEN');
+		if(strlen($fb_id) > 2 && $this->validateAPIAccessToken($check_current_session)){
+			$this->gameApiAccessToken = $check_current_session;
+			$api_session = $this->readAccessToken();
+			$session_fb_id = $api_session['fb_id'];
 
-		if(strlen($fb_id)>2 && isset($user['User'])){
-			$rs = $this->Apikey->findByApi_key($this->request->query['api_key']);
-			if(isset($rs['Apikey']) && $rs['Apikey']['api_key']!=null){
-				$access_token = encrypt_param(serialize(array('api_key'=>$rs['Apikey']['api_key'],
-														  'valid_until'=>time()+24*60*60)));
-
-				$this->redisClient->set($access_token,serialize(array('api_key'=>$rs['Apikey']['api_key'],
-																	  'fb_id'=>$fb_id)));
-				$this->redisClient->expire($access_token,24*60*60);//expires in 1 day
-				$this->set('response',array('status'=>1,'access_token'=>$access_token));
+			if($fb_id==$session_fb_id){
+				$this->set('response',array('status'=>1,'access_token'=>$check_current_session));	
 			}else{
-				$this->set('response',array('status'=>403,'error'=>'invalid api_key'));
+				$this->set('response',array('status'=>400,'error'=>'user not found'));
 			}
+			
 		}else{
-			$this->set('response',array('status'=>400,'error'=>'user not found'));
+			if(strlen($fb_id)>2 && isset($user['User'])){
+				$rs = $this->Apikey->findByApi_key($this->request->query['api_key']);
+				if(isset($rs['Apikey']) && $rs['Apikey']['api_key']!=null){
+					$access_token = encrypt_param(serialize(array('api_key'=>$rs['Apikey']['api_key'],
+															  'valid_until'=>time()+24*60*60)));
+
+					$this->redisClient->set($access_token,serialize(array('api_key'=>$rs['Apikey']['api_key'],
+																		  'fb_id'=>$fb_id)));
+					$this->redisClient->expire($access_token,24*60*60);//expires in 1 day
+					$this->Session->write('API_CURRENT_ACCESS_TOKEN',$access_token);
+					$this->set('response',array('status'=>1,'access_token'=>$access_token));
+				}else{
+					$this->set('response',array('status'=>403,'error'=>'invalid api_key'));
+				}
+			}else{
+				$this->set('response',array('status'=>400,'error'=>'user not found'));
+			}
 		}
-		
+		CakeLog::write('MOBILE', 'auth - '.$fb_id.' - '.$this->Session->read('API_CURRENT_ACCESS_TOKEN'));
+		$this->gameApiAccessToken = $this->Session->read('API_CURRENT_ACCESS_TOKEN');
+		$api_session = $this->readAccessToken();
+		$session_fb_id = $api_session['fb_id'];
+		if($fb_id!=$session_fb_id){
+			CakeLog::write('AUTH_ERROR', 'auth - '.$fb_id.' - '.$session_fb_id.' - '.$this->Session->read('API_CURRENT_ACCESS_TOKEN'));
+			$this->gameApiAccessToken = null;
+			$this->Session->write('API_CURRENT_ACCESS_TOKEN',null);
+			CakeLog::write('AUTH_ERROR', 'auth - '.$fb_id.' - '.$session_fb_id.' - '.$this->Session->read('API_CURRENT_ACCESS_TOKEN').' DELETED');
+
+		}
 		$this->render('default');
 	}
 	public function index(){
@@ -272,6 +296,9 @@ class ApiController extends AppController {
 		
 		$user = $this->User->findByFb_id($fb_id);
 		
+
+		CakeLog::write('AUTH_ERROR', 'browse - '.$fb_id.' - club - '.$this->request->query['access_token']);
+
 		if(strlen($user['User']['avatar_img'])<2){
 			$user['User']['avatar_img'] = "http://graph.facebook.com/".$fb_id."/picture";
 		}else{
@@ -2089,6 +2116,7 @@ class ApiController extends AppController {
 		$this->loadModel('User');
 		$api_session = $this->readAccessToken();
 		$fb_id = $api_session['fb_id'];
+
 		$user = $this->User->findByFb_id($fb_id);
 		
 		

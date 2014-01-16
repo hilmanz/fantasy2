@@ -259,7 +259,7 @@ class AppController extends Controller {
 		if($this->request->params['action']!='auth'){
 			$access_token = @$_REQUEST['access_token'];
 			
-			if(!$this->validateAPIAccessToken($access_token)){
+			if(!$this->validateAPIAccessToken($access_token) || strlen($access_token) < 2){
 				print json_encode(array('status'=>401,'error'=>'invalid access token !'));
 				die();
 			}
@@ -267,18 +267,32 @@ class AppController extends Controller {
 	}
 	protected function readAccessToken(){
 		$sessionContent = unserialize($this->redisClient->get($this->gameApiAccessToken));
-		return $sessionContent;
-	}
-	private function validateAPIAccessToken($access_token){
-		//$this->redisClient->get($access_token);
-		if($this->redisClient->ttl($access_token)>0){
-			$sessionContent = unserialize($this->redisClient->get($access_token));
-			$rs = $this->Apikey->findByApi_key($sessionContent['api_key']);
-			if(isset($rs['Apikey']) && $rs['Apikey']['api_key']==$sessionContent['api_key']){
-				$this->gameApiAccessToken = $access_token;
-				return true;
-			}
+		if(strlen($sessionContent['fb_id'])>0){
+			return $sessionContent;
 		}
+		
+	}
+	protected function validateAPIAccessToken($access_token){
+
+		//$this->redisClient->get($access_token);
+		if(strlen($access_token)>0){
+			if($this->redisClient->ttl($access_token)>0){
+				$sessionContent = unserialize($this->redisClient->get($access_token));
+				$rs = $this->Apikey->findByApi_key($sessionContent['api_key']);
+				if(isset($rs['Apikey']) 
+					&& strlen($rs['Apikey']['api_key']) > 0
+					&& strlen($sessionContent['api_key']) > 0
+					&& $rs['Apikey']['api_key'] == $sessionContent['api_key']){
+					$this->gameApiAccessToken = $access_token;
+					return true;
+				}
+			}else{
+				$this->Session->write('API_CURRENT_ACCESS_TOKEN',null);
+			}
+		}else{
+			$this->Session->write('API_CURRENT_ACCESS_TOKEN',null);
+		}
+		
 	}
 	public function isUserLogin(){
 		
