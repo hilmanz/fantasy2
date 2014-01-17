@@ -50,9 +50,20 @@ Enter the list of user's IDs.
 			</table>
 			<input name="name" type="text" placeholder="Type a reason here..." value=""/>
 			<div>
+				<label>Notification Message</label>
+				<input name="message" type="text" placeholder="Type a notification message here.." value=""/>
+			</div>
+			
+			<div>
 				ss$ <input type="text" name="amount" placeholder="" value="0"/>
 			</div>
+			<div>
+				<label>Authorization</label>
+				<input type='password' name="authcode" value=""/>
+			</div>
+			<div class="row">
 			<input type="submit" name="btn" value="Send Funds" class="button"/>
+			</div>
 	</form>
 </div>
 <script>
