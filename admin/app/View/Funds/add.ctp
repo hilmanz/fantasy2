@@ -33,7 +33,7 @@ Enter the list of user's IDs.
 					<td>Email</td>
 					<td>Amount</td>
 				</tr>
-				<?php foreach($teams as $team):?>
+				<?php if(isset($teams)):foreach($teams as $team):?>
 				<tr>
 					<td>
 						<?=intval($team['game_team']['id']) + intval(Configure::read('RANK_RANDOM_NUM'))?>
@@ -42,12 +42,17 @@ Enter the list of user's IDs.
 					<td><?=h($team['teams']['team_name'])?></td>
 					<td><?=h($team['master_team']['name'])?></td>
 					<td><?=h($team['user']['email'])?></td>
-					<td>ss$ <input type="text" name="amount_<?=$team['game_team']['id']?>" value="0"/></td>
+					<td>
+						<input type="checkbox" name="team_id[]" value="<?=intval($team['game_team']['id'])?>" checked='checked'/>
+					</td>
 				</tr>
-				<?php endforeach;?>
+				<?php endforeach;endif;?>
 			</table>
-			<input type="text" placeholder="Type a reason here..." value=""/>
-			<a href="#" class="button">Send Funds</a>
+			<input name="name" type="text" placeholder="Type a reason here..." value=""/>
+			<div>
+				ss$ <input type="text" name="amount" placeholder="" value="0"/>
+			</div>
+			<input type="submit" name="btn" value="Send Funds" class="button"/>
 	</form>
 </div>
 <script>

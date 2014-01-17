@@ -254,5 +254,42 @@ class Game extends AppModel {
 		));
 		return $response;
 	}
+
+
+	///TEAM EXPENDITURES HELPER
+	//it's a helper to insert data to ffgame.game_team_expenditures
+	public function addTeamExpenditures(
+		$game_team_id,
+		$item_name,
+		$item_type,
+		$amount,
+		$game_id,
+		$match_day,
+		$item_total=1,
+		$base_price=1){
+		$sql = "INSERT IGNORE INTO ffgame.game_team_expenditures
+				(game_team_id,
+				item_name,
+				item_type,
+				amount,
+				game_id,
+				match_day,
+				item_total,
+				base_price)
+				VALUES
+				(
+				{$game_team_id},
+				'{$item_name}',
+				{$item_type},
+				{$amount},
+				'{$game_id}',
+				{$match_day},
+				{$item_total},
+				{$base_price}
+				);";
+		return $this->query($sql,false);
+
+	}
+
 }
 

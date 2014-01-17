@@ -18,6 +18,12 @@ class FundsController extends AppController {
 	//all id_list are actually the masked user ids,
 	//to get the original id, we must substract the masked one with Configure::read('RANK_RANDOM_NUM')
 	public function add(){
+		if(isset($this->request->data['id_list'])){
+			$this->search_team();
+		}
+	}
+
+	private function search_team(){
 		$arr = explode(PHP_EOL,$this->request->data['id_list']);
 		$team_ids = array();
 		//assign real IDs
@@ -37,4 +43,75 @@ class FundsController extends AppController {
 		$this->set('teams',$teams);
 	}
 
+	public function bulk_send(){
+		if($this->request->is('post')){
+			
+			extract($this->request->data);
+			$expenditure_name = 'other_'.str_replace(" ","_",$name);
+			if($amount > 0){
+				$transfer_type = 1;
+			}else{
+				$transfer_type = 2;
+			}
+			$success = 0;
+			$success_id = array();
+			for($i=0;$i<sizeof($team_id);$i++){
+				$team = $this->Game->query("SELECT team_id 
+											FROM ffgame.game_teams a 
+											WHERE id = {$team_id[$i]} LIMIT 1");
+				$next_match = $this->Game->getNextMatch($team[0]['a']['team_id']);
+				if($next_match['status']==1){
+					$rs = $this->Game->addTeamExpenditures(
+											intval($team_id[$i]),
+											$expenditure_name,
+											$transfer_type,
+											$amount,
+											$next_match['match']['game_id'],
+											$next_match['match']['matchday'],
+											1,
+											1);
+					$last_transaction = $this->Game->getTransaction(
+											intval($team_id[$i]),
+														$expenditure_name,
+														$transfer_type,
+														$amount
+										);
+					if($last_transaction['id']>0){
+						$success++;
+						$success_id[] = $last_transaction['id'];
+
+					}
+				}
+				
+			}
+
+			if($success == sizeof($team_id)){
+				//update history
+				$this->Game->query(
+					"INSERT INTO ffgame.add_fund_history
+					(name,team_ids,amount,post_dt,n_status)
+					VALUES
+					('{$name}','".serialize($team_id)."',{$amount},NOW(),1)"
+				);
+				$this->set('transfer_ok',true);
+			}else{
+				//rollback now !
+				
+				for($i=0; $i<sizeof($success_id);$i++){
+					$this->Game->query("DELETE FROM ffgame.game_team_expenditures 
+										WHERE id={$success_id[$i]}");
+				}
+
+				//update history
+				$this->Game->query(
+					"INSERT INTO ffgame.add_fund_history
+					(name,team_ids,amount,post_dt,n_status)
+					VALUES
+					('{$name}','".serialize($team_id)."',{$amount},NOW(),0)"
+				);
+
+				$this->set('transfer_ok',false);
+			}
+		}
+	}
 }
