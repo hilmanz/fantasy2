@@ -384,11 +384,16 @@ function sendTriggeredEventsToTeamInRank(conn,schedule,start_rank,end_rank,done)
 		}
 	);
 }
+
+/*
+* 20/01/2014 - notifikasi cukup via inbox in-game saja.
+* email akan difokuskan untuk newsletter.
+*/
 function sendTriggeredNotificationToUsers(conn,schedule,users,cb){
 	async.eachSeries(users,function(user,next){
 		async.waterfall([
 			function(done){
-				conn.query("INSERT INTO ffgame.email_queue\
+				/*conn.query("INSERT INTO ffgame.email_queue\
 					(subject,email,plain_txt,html_text,queue_dt,n_status)\
 					VALUES\
 					(?,?,?,?,NOW(),0);",
@@ -397,6 +402,8 @@ function sendTriggeredNotificationToUsers(conn,schedule,users,cb){
 						console.log(S(this.sql).collapseWhitespace().s);
 						done(err);
 					});
+				*/
+				done(null);
 			},
 			function(done){
 				conn.query("INSERT INTO "+dbschema+".notifications\
@@ -639,7 +646,8 @@ function distributeEachTeam(conn,schedule,targets,cb){
 						},
 						function(user,c){
 							if(typeof user !== 'undefined'){
-								
+								//2014-01-20 - event tidak perlu ada notifikasi via email
+								/*
 								conn.query("INSERT INTO ffgame.email_queue\
 										(subject,email,plain_txt,html_text,queue_dt,n_status)\
 										VALUES\
@@ -653,6 +661,8 @@ function distributeEachTeam(conn,schedule,targets,cb){
 											console.log(S(this.sql).collapseWhitespace().s);
 											c(err,user);
 										});
+								*/
+								c(null,user);
 							}else{
 								c(null,null);
 							}
@@ -1221,6 +1231,8 @@ function populate_job_event_master_player(conn,target,schedule,matchday,teams,do
 					});
 			},
 			function(result,cb){
+				//2014-01-20 - event tidak perlu dikirimkan email.
+				/*
 				//send email notifications
 				conn.query("INSERT INTO ffgame.email_queue\
 					(subject,email,plain_txt,html_text,queue_dt,n_status)\
@@ -1233,6 +1245,8 @@ function populate_job_event_master_player(conn,target,schedule,matchday,teams,do
 						if(err) console.log(err.message);
 						cb(err);
 					});
+				*/
+				cb(null);
 			},function(cb){
 				//send message to inbox
 				conn.query("INSERT INTO "+dbschema+".notifications\

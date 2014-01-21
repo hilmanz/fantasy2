@@ -83,6 +83,7 @@ $item_url = $this->Html->url('/merchandises/edit/');
 				{ "sTitle": "PO" },
 				{ "sTitle": "ItemId" },
 				{ "sTitle": "ItemName" },
+				{ "sTitle": "User" },
 				{ "sTitle": "Status" },
 				{ "sTitle": "Action"}
 			]

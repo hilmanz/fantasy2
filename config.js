@@ -6,7 +6,7 @@ exports.config = {
 		username:'root',
 		password:'root',
 		database:'ffgame',
-		frontend_schema:'ffg',
+		frontend_schema:'fantasy',
 		optadb: 'optadb'
 	},
 	port: 3002,
@@ -15,5 +15,6 @@ exports.config = {
 		port:6379
 	},
 	environment: 'development', //change to production when go live.
+	job_server_rank:{host:'localhost',port:3098},
 	job_server:{host:'localhost',port:3099}
 };
