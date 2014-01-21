@@ -2143,24 +2143,37 @@ table.dataTable{
 	display:block;
 	line-height:25px;
 }
+.catalog-item {
+    float: left;
+    height: 500px;
+    margin: 0 46px 5px 0;
+    width: 185px;
+}
 .imagesCatalog{
-	width:300px;
+	width:100%;
 	float:left;
 	margin:0 20px 20px 0;
 }
 .imagesCatalog img{
 	width:100%;
 }
+.detailCatalog{
+	padding:0px 2px;
+}
+.detailCatalog .desc{
+	font-size:12px;
+}
 .detailCatalog,.desc{
 	float:left;
-	width:310px;
+	
 }
 .detailCatalog h4{
-	margin:0;
-	font-size:22px;
+	margin:0 0 10px;
+	font-size:17px;
+	height:34px;
 }
 .detailCatalog .price{
-	font-size:20px;
+	font-size:18px;
 	color:#fdcb02;
 }
 .idrprice{
