@@ -61,6 +61,9 @@
                                 <li>
                                     <a href="<?=$this->Html->url('/funds/add')?>">Add Funds</a>
                                 </li>
+                                <li>
+                                    <a href="<?=$this->Html->url('/newsletter')?>">Newsletter</a>
+                                </li>
 							</ul>
                         </li>
                     	<li><a href="#">OPTA</a>
