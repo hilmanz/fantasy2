@@ -6,7 +6,7 @@ exports.config = {
 		username:'root',
 		password:'root',
 		database:'ffgame',
-		frontend_schema:'ffg',
+		frontend_schema:'fantasy',
 		optadb: 'optadb'
 	},
 	port: 3002,
