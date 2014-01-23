@@ -10,6 +10,7 @@ var xmlparser = require('xml2json');
 var master = require('./libs/master');
 var async = require('async');
 var mysql = require('mysql');
+var S = require('string');
 /////DECLARATIONS/////////
 var FILE_PREFIX = config.updater_file_prefix+config.competition.id+'-'+config.competition.year;
 
@@ -41,7 +42,7 @@ function getRandomInt(category) {
 }
 async.waterfall([
 	function(callback){
-		open_file('wages_no_salary2.csv',function(err,content){
+		open_file('wages_no_salary3.csv',function(err,content){
 			callback(err,content.toString());
 		});
 	},
@@ -80,7 +81,7 @@ async.waterfall([
 				conn.query("UPDATE ffgame.master_player SET salary = ? WHERE uid = ?",
 							[item.salary,item.player_id],
 							function(err,rs){
-								console.log(this.sql);
+								console.log(S(this.sql).collapseWhitespace().s);
 								if(!err&&rs.length>0){
 									total_found++;
 								}else{

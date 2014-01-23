@@ -67,7 +67,15 @@
 				Stock
 			</td>
 			<td>
-				<input type="text" name="stock" value="<?=$rs['MerchandiseItem']['stock']?>"/>
+				<h3><?=intval($current_stock)?></h3>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
+				Add New Stock
+			</td>
+			<td>
+				<input type="text" name="new_stock" value="0"/>
 			</td>
 		</tr>
 		<tr>

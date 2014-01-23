@@ -37,7 +37,7 @@ $edit_url = $this->Html->url('/merchandises/edit/');
 									response.data[i].MerchandiseItem.price_currency,
 									response.data[i].MerchandiseItem.price_credit,
 									response.data[i].MerchandiseItem.price_money,
-									response.data[i].MerchandiseItem.stock,
+									response.data[i].stock,
 									'<a href="<?=$edit_url?>'+response.data[i].MerchandiseItem.id+'">Edit</a>'
 								]);
 						}

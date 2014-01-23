@@ -9,6 +9,7 @@ var xmlparser = require('xml2json');
 var master = require('./libs/master');
 var async = require('async');
 var mysql = require('mysql');
+var S = require('string');
 /////DECLARATIONS/////////
 var FILE_PREFIX = config.updater_file_prefix+config.competition.id+'-'+config.competition.year;
 
@@ -25,6 +26,7 @@ var price_range = {
 	High:[7000000,7500000,8000000,8500000,9000000,9500000,10000000],
 	Low:[1000000,1500000,2000000],
 	Middle:[4000000,4500000,5000000,5500000,6000000,6500000,7000000],
+	Medium:[4000000,4500000,5000000,5500000,6000000,6500000,7000000],
 }
 function getRandomInt(category) {
 	var min = 0;
@@ -33,7 +35,7 @@ function getRandomInt(category) {
 }
 async.waterfall([
 	function(callback){
-		open_file('transfer_value_random.csv',function(err,content){
+		open_file('transfer_value_random2.csv',function(err,content){
 			callback(err,content.toString());
 		});
 	},
@@ -48,10 +50,15 @@ async.waterfall([
 				
 				var a = lines[i].split(';');
 				
-				data.push({
-					player_id:a[1],
-					transfer_value:getRandomInt(a[4])
-				});
+				try{
+					data.push({
+						player_id:a[1],
+						transfer_value:getRandomInt(a[4])
+					});
+				}catch(e){
+					console.log('-->'+a[1]);
+				}
+				
 				
 			}
 		}
@@ -70,6 +77,7 @@ async.waterfall([
 				conn.query("UPDATE ffgame.master_player SET transfer_value = ? WHERE uid = ?",
 							[item.transfer_value,item.player_id],
 							function(err,rs){
+								console.log(S(this.sql).collapseWhitespace().s);
 								if(!err&&rs.length>0){
 									total_found++;
 								}else{
