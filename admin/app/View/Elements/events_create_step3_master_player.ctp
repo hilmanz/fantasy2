@@ -3,8 +3,18 @@
 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="dataTable dataTableTeam" id="tbl">
 
 </table>
+
 <table width="100%">
-	
+	<?php if($data['affected_item']==1):?>
+	<tr>
+		<td valign="top">
+			Money Penalty / Award
+		</td>
+		<td>
+			SS$ <input type="text" name="amount" value="0"/> 
+		</td>
+	</tr>
+	<?php else:?>
 	<tr>
 		<td valign="top">
 			Points Penalty / Award
@@ -13,6 +23,7 @@
 			<input type="text" name="amount" value="0"/> % from Original Points.
 		</td>
 	</tr>
+	<?php endif;?>
 	<tr>
 		<td valign="top">
 			Apply only to team who has completing the following events : 

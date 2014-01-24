@@ -189,7 +189,8 @@
  */
 	Configure::write('Session', array(
 		'defaults' => 'php',
-		'cookieTimeout'	=> 0
+		'cookieTimeout'	=> 0,
+		'timeout'=>60*60*5
 	));
 
 /**
@@ -366,3 +367,4 @@ Configure::write('avatar_web_dir','/files/');
 Configure::write('avatar_web_url','http://localhost/fantasy/files/');
 Configure::write('OPTA_CUSTOMER_ID','c8bb60c8f6d0184c33a87e6f3041b9cc');
 Configure::write('STAGING',true);
+Configure::write('RANK_RANDOM_NUM',139670);

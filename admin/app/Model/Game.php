@@ -171,4 +171,64 @@ class Game extends AppModel {
 			return array();
 		}
 	}
+
+
+	///TEAM EXPENDITURES HELPER
+	//it's a helper to insert data to ffgame.game_team_expenditures
+	public function addTeamExpenditures(
+		$game_team_id,
+		$item_name,
+		$item_type,
+		$amount,
+		$game_id,
+		$match_day,
+		$item_total=1,
+		$base_price=1){
+		$sql = "INSERT IGNORE INTO ffgame.game_team_expenditures
+				(game_team_id,
+				item_name,
+				item_type,
+				amount,
+				game_id,
+				match_day,
+				item_total,
+				base_price)
+				VALUES
+				(
+				{$game_team_id},
+				'{$item_name}',
+				{$item_type},
+				{$amount},
+				'{$game_id}',
+				{$match_day},
+				{$item_total},
+				{$base_price}
+				);";
+		$rs = $this->query($sql,false);
+		
+		return $this->getLastInsertID();
+
+	}
+	public function transaction_exists($game_team_id,
+		$item_name,
+		$item_type,
+		$amount){
+		$sql = "SELECT * FROM ffgame.game_team_expenditures a
+				WHERE game_team_id={$game_team_id} AND item_name='{$item_name}'
+				AND item_type='{$item_type}' LIMIT 1";
+		$rs = $this->query($sql);
+		if($rs[0]['a']['amount']==$amount){
+			return true;
+		}
+	}
+	public function getTransaction($game_team_id,
+		$item_name,
+		$item_type,
+		$amount){
+		$sql = "SELECT * FROM ffgame.game_team_expenditures Transaction
+				WHERE game_team_id={$game_team_id} AND item_name='{$item_name}'
+				AND item_type='{$item_type}' LIMIT 1";
+		$rs = $this->query($sql);
+		return $rs[0]['Transaction'];
+	}
 }

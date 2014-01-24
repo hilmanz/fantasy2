@@ -31,6 +31,7 @@ class MerchandisesController extends AppController {
 	public function get_items(){
 		$this->layout = 'ajax';
 		$this->loadModel('MerchandiseItem');
+		$this->loadModel('MerchandiseOrder');
 		$start = intval(@$this->request->query['start']);
 		$limit = 20;
 		$this->MerchandiseItem->bindModel(
@@ -38,24 +39,60 @@ class MerchandisesController extends AppController {
 		);
 		$rs = $this->MerchandiseItem->find('all',array('offset'=>$start,'limit'=>$limit));
 		
+		//for each items, we need to calculate its stock availability.
+		//so we need the total purchased item so far each.
+		for($i=0; $i<sizeof($rs);$i++){
+			$total_item = $this->MerchandiseOrder->find('count',
+											array('conditions'=>
+											array('merchandise_item_id'=>$rs[$i]['MerchandiseItem']['id'],
+													'n_status <> 4'))
+											);
+			$available_item = $rs[$i]['MerchandiseItem']['stock'] - $total_item;
+			$rs[$i]['stock'] = $available_item;
+		}
+
+
 		$this->set('response',array('status'=>1,'data'=>$rs,'next_offset'=>$start+$limit,'rows_per_page'=>$limit));
 		$this->render('response');
 		
 	}
 	public function edit($id){
 		$this->loadModel('MerchandiseItem');
+		$this->loadModel('MerchandiseOrder');
 		
+		$rs = $this->MerchandiseItem->findById($id);
 
+		$total_item = $this->MerchandiseOrder->
+									find('count',
+										array('conditions'=>
+												array('merchandise_item_id'=>
+															$rs['MerchandiseItem']['id'],
+														'n_status <> 4'))
+										);
+		$available_item = $rs['MerchandiseItem']['stock'] - $total_item;
 		if($this->request->is('post')){
 			$this->MerchandiseItem->id = $id;
-			$this->MerchandiseItem->save($this->request->data);
+			if((intval($this->request->data['new_stock']) + $available_item) >= 0){
+				//add stock with additional new stock.
+				$this->request->data['stock'] = $rs['MerchandiseItem']['stock'] + 
+												intval($this->request->data['new_stock']);
+
+
+
+			}
 			if(isset($_FILES['pic']['name'])){
 				$this->update_pic($id);
 			}
 			$this->Session->setFlash('Update Completed !');
+			$this->MerchandiseItem->save($this->request->data);
+			$this->redirect('/merchandises/');
 		}
-		$rs = $this->MerchandiseItem->findById($id);
+		
+
+		
+
 		$this->set('rs',$rs);
+		$this->set('current_stock',$available_item);
 		$this->loadModel('MerchandiseCategory');
 		$categories = $this->MerchandiseCategory->find('all',array('limit'=>100));
 		$this->set('categories',$categories);

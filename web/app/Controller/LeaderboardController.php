@@ -77,21 +77,9 @@ class LeaderboardController extends AppController {
 		}else{
 			$matchday = intval($this->request->query['week']);
 		}
+		
 		$this->Weekly_point->virtualFields['TotalPoints'] = 'SUM(Weekly_point.points + Weekly_point.extra_points)';
-		/*
-		$this->paginate = array(
-			'fields'=>array('Weekly_point.id', 'Weekly_point.team_id', 
-							'Weekly_point.game_id', 'Weekly_point.matchday', 'Weekly_point.matchdate', 
-							'SUM(Weekly_point.points + Weekly_point.extra_points) AS TotalPoints', 'Team.id', 'Team.user_id', 
-							'Team.team_id','Team.team_name'),
-			'conditions'=>array('matchday'=>$matchday),
-	        'limit' => 100,
-	        'group' => 'Weekly_point.team_id',
-	        'order' => array(
-	            'TotalPoints' => 'desc',
-	        )
-	    );
-	    */
+		
 		$this->paginate = array(
 								'conditions'=>array('matchday'=>$matchday),
 								'limit'=>100,
@@ -124,7 +112,7 @@ class LeaderboardController extends AppController {
 	  	}
 	   
 	    
-	    
+	    //assign team ranking list to template
 	    $this->set('team',$rs);
 	    
 
@@ -149,11 +137,21 @@ class LeaderboardController extends AppController {
 	  		$current_year = intval($this->request->query['y']);
 	   	}else{
 	   		$current_month = date('m');
-	  		$current_year = date('Y');	
-	  		$check_count = $this->Weekly_point->find('count',array(
-	  			'conditions'=>array('MONTH(matchdate)'=>$current_month,
-	  								'YEAR(matchdate)'=>$current_year)
-	  		));
+	  		$current_year = date('Y');
+	  		$session_var_name = 'weekly_point'.'-'.$current_month.'-'.$current_year;
+	  		if(!isset($_SESSION[$session_var_name])){
+	  			$check_count = $this->Weekly_point->find('count',array(
+		  			'conditions'=>array('MONTH(matchdate)'=>$current_month,
+		  								'YEAR(matchdate)'=>$current_year)
+		  		));
+		  		$_SESSION[$session_var_name] = $check_count;
+		  		
+	  		}else{
+	  			$check_count = intval($_SESSION[$session_var_name]);
+	  			
+	  		}
+	  	
+
 		  	//kalau bulan ini tidak ada data, kita pakai data bulan lalu.
 		  	if($check_count==0){
 		  		$current_month -= 1;
@@ -176,18 +174,7 @@ class LeaderboardController extends AppController {
 
 	  	$this->set('available_months',$available_months);
 
-	  	/*
-	  	$this->paginate = array(
-	  		'fields'=>array('Weekly_point.team_id','SUM(Weekly_point.points) as points','Team.*'),
-			'conditions'=>array('MONTH(matchdate)'=>$current_month,
-	  							'YEAR(matchdate)'=>$current_year),
-	        'limit' => 100,
-	        'group' => 'Weekly_point.team_id',
-	        'order' => array(
-	            'Weekly_point.points' => 'desc'
-	        )
-	    );
-	    */
+	  	
 		$this->paginate = array(
 			'conditions'=>array('bln'=>$current_month,
 	  							'thn'=>$current_year),

@@ -873,3 +873,17 @@ CREATE TABLE ffgame.job_event_master_player (
 
 ALTER TABLE `ffgame`.`master_triggered_events`     ADD COLUMN `target_team` VARCHAR(32) NULL AFTER `offered_player_id`;
 ALTER TABLE `ffgame`.`master_events`     ADD COLUMN `prequisite_trigger_type` TINYINT(3) DEFAULT '0' NULL COMMENT '0->only when answered yes, 1-> only when answered no' AFTER `prequisite_event_id`;
+
+
+
+
+CREATE TABLE ffgame.add_fund_history (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `name` varchar(140) DEFAULT NULL,
+  `team_ids` longtext,
+  `amount` int(11) DEFAULT '0',
+  `post_dt` datetime DEFAULT NULL,
+  `n_status` tinyint(3) DEFAULT '0' COMMENT '0->failed, 1->success',
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

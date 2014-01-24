@@ -61,7 +61,7 @@ class DATABASE_CONFIG {
 		'host' => 'localhost',
 		'login' => 'root',
 		'password' => 'root',
-		'database' => 'ffg',
+		'database' => 'fantasy',
 		'prefix' => '',
 		//'encoding' => 'utf8',
 	);

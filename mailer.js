@@ -119,8 +119,6 @@ function runLoop(){
 			function(errorStatus,queue,responseStatus,callback){
 				console.log(responseStatus);
 				if(errorStatus!=null){
-
-
 					console.log('error : ',errorStatus.message);
 				}
 				if(queue!=null && responseStatus!=null){
@@ -137,6 +135,12 @@ function runLoop(){
 							callback(err,queue);	
 						});
 					}	
+				}else if(queue!=null && responseStatus==null){
+					console.log('Failed: no response status');
+					conn.query("UPDATE ffgame.email_queue SET n_status=3 WHERE id=?",
+									[queue.id],function(err,rs){
+							callback(err,queue);	
+						});
 				}else{
 					callback(err,queue);	
 				}

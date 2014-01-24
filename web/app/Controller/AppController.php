@@ -94,6 +94,7 @@ class AppController extends Controller {
 		
 			if($this->isUserLogin()){
 				$this->userData = $this->getUserData();
+				$this->initPerks();
 				
 				//prepare everything up.
 				$this->set('USER_IS_LOGIN',true);
@@ -236,6 +237,67 @@ class AppController extends Controller {
 		}
 		
 	}
+
+	//initializes user's perks
+	//also we need to enable immediately any accessories perks like jersey, custom stadium, etc.
+	protected function initPerks(){
+		$this->userPerks = $this->getUserPerks();
+		$this->Session->write('MyAppliedPerks',null);
+		$applied_perks = $this->Session->read('MyAppliedPerks');
+
+		//enable custom jersey
+		if(!isset($applied_perks['custom_jersey']) || $applied_perks['custom_jersey'] == null){
+			$applied_perks = $this->enableCustomJersey();
+
+		}
+		if(isset($applied_perks['custom_jersey']['jersey_id'])){
+			$this->set('custom_jersey_css',$this->Game->getCustomJerseyStyle(
+												$applied_perks['custom_jersey']['jersey_id']
+											)
+			);
+		}
+		//-->
+	}
+	private function enableCustomJersey(){
+		$rs = $this->Game->getPerkByType($this->userPerks,'ACCESSORIES','jersey');
+		$applied_perks = $this->Session->read('MyAppliedPerks');
+		//make sure that we only enable 1 jersey.
+		if(sizeof($rs)>0){
+			$jersey = $rs[0];
+			$applied_perks['custom_jersey'] = $rs[0];
+		}else{
+			$applied_perks['custom_jersey'] = array();
+		}
+		$this->Session->write('MyAppliedPerks',$applied_perks);
+		return $applied_perks;
+	}
+	//get current active user perks
+	//we only try to retrieve the perks once, and stored it to session for further use.
+	protected function getUserPerks(){
+		$perks = $this->Session->read('MyPerk');
+		$perks = null;
+		if(!is_array($perks)){
+			$this->loadModel('DigitalPerk');
+			$this->loadModel('MasterPerk');
+			$this->DigitalPerk->bindModel(
+				array('belongsTo'=>
+						array('MasterPerk')
+					)
+				
+			);
+			$perks =  $this->DigitalPerk->find('all',array(
+				'conditions'=>array(
+					'DigitalPerk.game_team_id' => $this->userData['team']['id'],
+					'DigitalPerk.available > 0',
+					'DigitalPerk.n_status' => 1
+				),
+				'limit'=>100
+			));
+			$this->Session->write('MyPerk',$perks);
+		}
+		return $perks;
+		
+	}
 	protected function logTime($activityLog=null){
 		$initial_ts = intval($this->Session->read('track_time_initial_ts'));
         $last_ts = intval($this->Session->read('track_time_initial_ts'));
@@ -259,7 +321,7 @@ class AppController extends Controller {
 		if($this->request->params['action']!='auth'){
 			$access_token = @$_REQUEST['access_token'];
 			
-			if(!$this->validateAPIAccessToken($access_token)){
+			if(!$this->validateAPIAccessToken($access_token) || strlen($access_token) < 2){
 				print json_encode(array('status'=>401,'error'=>'invalid access token !'));
 				die();
 			}
@@ -267,18 +329,32 @@ class AppController extends Controller {
 	}
 	protected function readAccessToken(){
 		$sessionContent = unserialize($this->redisClient->get($this->gameApiAccessToken));
-		return $sessionContent;
-	}
-	private function validateAPIAccessToken($access_token){
-		//$this->redisClient->get($access_token);
-		if($this->redisClient->ttl($access_token)>0){
-			$sessionContent = unserialize($this->redisClient->get($access_token));
-			$rs = $this->Apikey->findByApi_key($sessionContent['api_key']);
-			if(isset($rs['Apikey']) && $rs['Apikey']['api_key']==$sessionContent['api_key']){
-				$this->gameApiAccessToken = $access_token;
-				return true;
-			}
+		if(strlen($sessionContent['fb_id'])>0){
+			return $sessionContent;
 		}
+		
+	}
+	protected function validateAPIAccessToken($access_token){
+
+		//$this->redisClient->get($access_token);
+		if(strlen($access_token)>0){
+			if($this->redisClient->ttl($access_token)>0){
+				$sessionContent = unserialize($this->redisClient->get($access_token));
+				$rs = $this->Apikey->findByApi_key($sessionContent['api_key']);
+				if(isset($rs['Apikey']) 
+					&& strlen($rs['Apikey']['api_key']) > 0
+					&& strlen($sessionContent['api_key']) > 0
+					&& $rs['Apikey']['api_key'] == $sessionContent['api_key']){
+					$this->gameApiAccessToken = $access_token;
+					return true;
+				}
+			}else{
+				$this->Session->write('API_CURRENT_ACCESS_TOKEN',null);
+			}
+		}else{
+			$this->Session->write('API_CURRENT_ACCESS_TOKEN',null);
+		}
+		
 	}
 	public function isUserLogin(){
 		

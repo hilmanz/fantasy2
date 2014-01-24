@@ -1,7 +1,6 @@
 <?php
 /**
  * Manage Controller
-
  */
 App::uses('AppController', 'Controller');
 App::uses('Sanitize', 'Utility');
@@ -429,7 +428,7 @@ class ManageController extends AppController {
 		//best match
 		$best_match = $this->Game->getBestMatch($userData['team']['id']);
 		$team_id = $userData['team']['team_id'];
-
+		
 		if($best_match['status']==0){
 			$this->set('best_match','N/A');
 		}else{

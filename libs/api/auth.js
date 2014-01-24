@@ -96,7 +96,7 @@ function generateAccessToken(api_key,request_code){
 	return crypto.createHash('sha1').update(str).digest("hex");
 }
 function generateChallengeCode(api_key){
-	var challenge_code = api_key+'-'+dateFormat(new Date(), "ddmmyyyyHHMM")+'-'+Math.random()*999999;
+	var challenge_code = api_key+'-'+dateFormat(new Date(), "ddmmyyyyHHMM")+'-'+Math.random()*999999+'-'+Math.random()*999999;
 	return crypto.createHash('sha1').update(challenge_code).digest("hex");
 }
 function getRequestCodeHash(api_key,challenge_code,secret_key){

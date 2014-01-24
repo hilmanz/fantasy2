@@ -74,6 +74,7 @@
 					<?php if($data['event_type']==1):?>
 					<option value="1">Money</option>
 					<?php else:?>
+					<option value="1">Money</option>
 					<option value="2">Points</option>
 					<?php endif;?>
 				</select>

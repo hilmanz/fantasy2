@@ -73,7 +73,7 @@ class MerchandisesController extends AppController {
 			//check for child ids, and add it into category_ids
 			$category_ids = $this->getChildCategories($category_id,$category_ids);
 			$this->paginate = array('conditions'=>array('merchandise_category_id'=>$category_ids),
-									'limit'=>1
+									'limit'=>9
 									);
 			//maybe the category has children in it.
 			//so we try to populate it
@@ -86,7 +86,7 @@ class MerchandisesController extends AppController {
 		}else{
 			//if doesnt, we query everything.
 			$this->paginate = array(
-									'limit'=>1
+									'limit'=>9
 									);
 		}
 

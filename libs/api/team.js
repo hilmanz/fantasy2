@@ -237,6 +237,7 @@ function getUserTeam(fb_id,done){
 					conn.query("SELECT id FROM ffgame.game_users WHERE fb_id=? LIMIT 1",
 								[fb_id],
 								function(err,rs){
+									console.log("TEAM : ",S(this.sql).collapseWhitespace().s);
 									callback(null,rs[0]);
 								});
 					
@@ -248,7 +249,7 @@ function getUserTeam(fb_id,done){
 						],
 							function(err,team){
 								//console.log(team);
-								//console.log(this.sql);
+								console.log("TEAM : ",S(this.sql).collapseWhitespace().s);
 								try{
 									callback(err,team[0]);
 								}catch(e){

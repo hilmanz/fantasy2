@@ -15,6 +15,7 @@ var S = require('string');
 var formations = require(path.resolve('./libs/game_config')).formations;
 var player_stats_category = require(path.resolve('./libs/game_config')).player_stats_category;
 var pool = {};
+var frontend_schema = config.database.frontend_schema;
 function prepareDb(callback){
 	pool.getConnection(function(err,conn){
 		callback(conn);
@@ -786,32 +787,48 @@ function best_match(game_team_id,done){
 		async.waterfall(
 			[
 				function(callback){
-					conn.query("SELECT team_id FROM ffgame.game_teams WHERE id = ? LIMIT 1;",
+					conn.query("SELECT d.id AS user_team_id,a.id AS game_team_id,a.team_id\
+								FROM ffgame.game_teams a\
+								INNER JOIN ffgame.game_users b\
+								ON a.user_id = b.id\
+								INNER JOIN "+frontend_schema+".users c\
+								ON c.fb_id = b.fb_id\
+								INNER JOIN "+frontend_schema+".teams d\
+								ON d.user_id = c.id\
+								WHERE a.id = ? LIMIT 1;",
 								[game_team_id],function(err,rs){
-									callback(err,rs[0].team_id);
+									console.log(S(this.sql).collapseWhitespace().s);
+									callback(err,rs[0]);
 								});
 				},
-				function(team_id,callback){
-					conn.query("SELECT game_team_id,b.matchday,SUM(points) AS total_points\
-								FROM ffgame_stats.game_match_player_points a\
-								INNER JOIN ffgame.game_fixtures b\
-								ON a.game_id = b.game_id\
-								WHERE a.game_team_id = ?\
-								GROUP BY matchday ORDER BY total_points DESC LIMIT 1;",
-								[game_team_id],function(err,rs){
+				function(team_data,callback){
+					try{
+						conn.query("SELECT matchday,SUM(`Weekly_point`.`points`) AS TotalPoints\
+								FROM "+frontend_schema+".weekly_points AS `Weekly_point` \
+								INNER JOIN "+frontend_schema+".`teams` AS `Team` \
+								ON (`Weekly_point`.`team_id` = `Team`.`id`) \
+								WHERE `Weekly_point`.`team_id` = ? \
+								GROUP BY `Weekly_point`.`matchday` \
+								ORDER BY TotalPoints DESC LIMIT 1;",
+								[team_data.user_team_id],function(err,rs){
+								console.log(S(this.sql).collapseWhitespace().s);
 								if(err){
 									callback(new Error('no data'),{});
 								}else{
 									if(typeof rs[0] !== 'undefined'){
 										console.log(rs[0]);
-										callback(err,team_id,rs[0]);	
+										callback(err,team_data,rs[0]);	
 									}else{
-										callback(new Error('no data'),{});
+										callback(new Error('no data'),team_data,{});
 									}
 								}
 							});
+					}catch(e){
+						callback(new Error('no data'),team_data,{});
+					}
+					
 				},
-				function(team_id,best_match,callback){
+				function(team_data,best_match,callback){
 					conn.query("SELECT a.game_id,a.home_score,a.away_score,a.home_id,a.away_id,b.name AS home_name,c.name AS away_name\
 								FROM ffgame.game_fixtures a\
 								INNER JOIN ffgame.master_team b\
@@ -821,10 +838,14 @@ function best_match(game_team_id,done){
 								WHERE (a.home_id = ? OR a.away_id = ?) AND a.matchday=?\
 								AND period='FullTime'\
 								LIMIT 1;",
-								[team_id,team_id,best_match.matchday],
+								[team_data.team_id,
+								 team_data.team_id,
+								 best_match.matchday],
 								function(err,rs){
-									//console.log(this.sql);
-									callback(err,{match:rs[0],points:best_match.total_points});
+									console.log(S(this.sql).collapseWhitespace().s);
+									
+									callback(err,{match:rs[0],
+												  points:best_match.TotalPoints});
 								});
 					
 				}
@@ -836,7 +857,6 @@ function best_match(game_team_id,done){
 			}
 		);
 	});
-	
 }
 /**
 *	getting team's last week's earnings.

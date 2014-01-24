@@ -72,16 +72,35 @@ http.request(options, function(response){
 
 			process_report(queue_id,game_id,since_id,until_id,function(err,rs){
 				console.log('DONE');
-				conn.query("UPDATE ffgame_stats.job_queue SET finished_dt = NOW(),n_status=2 WHERE id = ?",
+				async.waterfall([
+					function(cb){
+						conn.query("UPDATE ffgame_stats.job_queue SET finished_dt = NOW(),n_status=2 WHERE id = ?",
 							[queue_id],function(err,rs){
 								console.log('flag queue as done');
-								conn.end(function(err){
-									console.log('database connection closed');
-									lineup_stats.done();
-									business_stats.done();
-								});
-								
+								cb(err);
 							});
+					},
+					function(cb){
+						conn.query("INSERT IGNORE INTO\
+									ffgame_stats.job_queue_rank\
+									(game_id,since_id,until_id,worker_id,queue_dt,current_id,n_done,n_status)\
+									VALUES\
+									(?,?,?,0,NOW(),0,0,0);",
+							[game_id,since_id,until_id],function(err,rs){
+								console.log('insert queue into job_queue_rank');
+								cb(err);
+							});
+					}
+				],
+
+				function(err){
+					conn.end(function(err){
+						console.log('database connection closed');
+						lineup_stats.done();
+						business_stats.done();
+					});
+				});
+				
 				
 			});
 		}
