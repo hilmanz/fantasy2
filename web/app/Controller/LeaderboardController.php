@@ -137,11 +137,21 @@ class LeaderboardController extends AppController {
 	  		$current_year = intval($this->request->query['y']);
 	   	}else{
 	   		$current_month = date('m');
-	  		$current_year = date('Y');	
-	  		$check_count = $this->Weekly_point->find('count',array(
-	  			'conditions'=>array('MONTH(matchdate)'=>$current_month,
-	  								'YEAR(matchdate)'=>$current_year)
-	  		));
+	  		$current_year = date('Y');
+	  		$session_var_name = 'weekly_point'.'-'.$current_month.'-'.$current_year;
+	  		if(!isset($_SESSION[$session_var_name])){
+	  			$check_count = $this->Weekly_point->find('count',array(
+		  			'conditions'=>array('MONTH(matchdate)'=>$current_month,
+		  								'YEAR(matchdate)'=>$current_year)
+		  		));
+		  		$_SESSION[$session_var_name] = $check_count;
+		  		
+	  		}else{
+	  			$check_count = intval($_SESSION[$session_var_name]);
+	  			
+	  		}
+	  	
+
 		  	//kalau bulan ini tidak ada data, kita pakai data bulan lalu.
 		  	if($check_count==0){
 		  		$current_month -= 1;

@@ -26,6 +26,12 @@
         }
 
     ?>
+    <?php
+    //load custom jersey if available
+    if(isset($custom_jersey_css)){
+        echo $custom_jersey_css;
+    }
+    ?>
 </head>
 <body class="page-<?=$FM_PAGE?>">
 	

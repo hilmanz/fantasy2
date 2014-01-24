@@ -291,5 +291,35 @@ class Game extends AppModel {
 
 	}
 
+	public function getPerkByType($perks,$perk_type,$reward_type=null){
+		$result = array();
+		for($i=0;$i < sizeof($perks); $i++){
+			$perk = $perks[$i];
+			$perk_data = unserialize($perk['MasterPerk']['data']);
+
+			if($perk['MasterPerk']['perk_name'] == $perk_type 
+				&& is_array($perk_data)
+				&& $perk_data['type'] == 'jersey'){
+					if($reward_type!=null && $perk_data['type'] == $reward_type){
+						 array_push($result,$perk_data);
+					}else if($reward_type==null){
+						 array_push($result,$perk_data);
+					}else{
+
+					}
+			}
+			
+		}
+		return $result;
+	}
+	/*
+	returns the hardcoded custom jersey CSS style
+	*/
+	public function getCustomJerseyStyle($jersey_id){
+		$rs = $this->query("SELECT css FROM ffgame.master_jersey a 
+									WHERE id = {$jersey_id} LIMIT 1");
+		return "<style>".PHP_EOL.$rs[0]['a']['css'].PHP_EOL."</style>".PHP_EOL;
+	}
+
 }
 

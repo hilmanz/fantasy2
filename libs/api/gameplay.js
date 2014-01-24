@@ -802,7 +802,8 @@ function best_match(game_team_id,done){
 								});
 				},
 				function(team_data,callback){
-					conn.query("SELECT matchday,SUM(`Weekly_point`.`points`) AS TotalPoints\
+					try{
+						conn.query("SELECT matchday,SUM(`Weekly_point`.`points`) AS TotalPoints\
 								FROM "+frontend_schema+".weekly_points AS `Weekly_point` \
 								INNER JOIN "+frontend_schema+".`teams` AS `Team` \
 								ON (`Weekly_point`.`team_id` = `Team`.`id`) \
@@ -818,10 +819,14 @@ function best_match(game_team_id,done){
 										console.log(rs[0]);
 										callback(err,team_data,rs[0]);	
 									}else{
-										callback(new Error('no data'),{});
+										callback(new Error('no data'),team_data,{});
 									}
 								}
 							});
+					}catch(e){
+						callback(new Error('no data'),team_data,{});
+					}
+					
 				},
 				function(team_data,best_match,callback){
 					conn.query("SELECT a.game_id,a.home_score,a.away_score,a.home_id,a.away_id,b.name AS home_name,c.name AS away_name\

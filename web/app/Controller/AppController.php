@@ -94,6 +94,7 @@ class AppController extends Controller {
 		
 			if($this->isUserLogin()){
 				$this->userData = $this->getUserData();
+				$this->initPerks();
 				
 				//prepare everything up.
 				$this->set('USER_IS_LOGIN',true);
@@ -234,6 +235,67 @@ class AppController extends Controller {
 				$this->set('USER_IS_LOGIN',false);
 			}
 		}
+		
+	}
+
+	//initializes user's perks
+	//also we need to enable immediately any accessories perks like jersey, custom stadium, etc.
+	protected function initPerks(){
+		$this->userPerks = $this->getUserPerks();
+		$this->Session->write('MyAppliedPerks',null);
+		$applied_perks = $this->Session->read('MyAppliedPerks');
+
+		//enable custom jersey
+		if(!isset($applied_perks['custom_jersey']) || $applied_perks['custom_jersey'] == null){
+			$applied_perks = $this->enableCustomJersey();
+
+		}
+		if(isset($applied_perks['custom_jersey']['jersey_id'])){
+			$this->set('custom_jersey_css',$this->Game->getCustomJerseyStyle(
+												$applied_perks['custom_jersey']['jersey_id']
+											)
+			);
+		}
+		//-->
+	}
+	private function enableCustomJersey(){
+		$rs = $this->Game->getPerkByType($this->userPerks,'ACCESSORIES','jersey');
+		$applied_perks = $this->Session->read('MyAppliedPerks');
+		//make sure that we only enable 1 jersey.
+		if(sizeof($rs)>0){
+			$jersey = $rs[0];
+			$applied_perks['custom_jersey'] = $rs[0];
+		}else{
+			$applied_perks['custom_jersey'] = array();
+		}
+		$this->Session->write('MyAppliedPerks',$applied_perks);
+		return $applied_perks;
+	}
+	//get current active user perks
+	//we only try to retrieve the perks once, and stored it to session for further use.
+	protected function getUserPerks(){
+		$perks = $this->Session->read('MyPerk');
+		$perks = null;
+		if(!is_array($perks)){
+			$this->loadModel('DigitalPerk');
+			$this->loadModel('MasterPerk');
+			$this->DigitalPerk->bindModel(
+				array('belongsTo'=>
+						array('MasterPerk')
+					)
+				
+			);
+			$perks =  $this->DigitalPerk->find('all',array(
+				'conditions'=>array(
+					'DigitalPerk.game_team_id' => $this->userData['team']['id'],
+					'DigitalPerk.available > 0',
+					'DigitalPerk.n_status' => 1
+				),
+				'limit'=>100
+			));
+			$this->Session->write('MyPerk',$perks);
+		}
+		return $perks;
 		
 	}
 	protected function logTime($activityLog=null){
