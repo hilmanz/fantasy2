@@ -26,12 +26,6 @@
         }
 
     ?>
-    <?php
-    //load custom jersey if available
-    if(isset($custom_jersey_css)){
-        echo $custom_jersey_css;
-    }
-    ?>
 </head>
 <body class="page-<?=$FM_PAGE?>">
 	<div id="popup-verification">
@@ -48,8 +42,7 @@
                 return false;
             });
         });
-    </script>
-	
+    </script>	
 	<div id="fb-root"></div>
 	<div id="effect"></div>
    	<div id="flag"></div>
@@ -57,9 +50,7 @@
         <div id="universal">
 
                 <?php if($USER_IS_LOGIN):?>
-                     <?php
-                        $user_masked_id = intval(Configure::read('RANK_RANDOM_NUM')) + intval($USER_DATA['team']['id']);
-                     ?>
+
           			 <div id="header">
              		  	<a id="logo" href="<?=$this->Html->url('/manage/team')?>" title="SUPER SOCCER - FANTASY FOOTBALL LEAGUE">&nbsp;</a>
                         <div id="user-info">
@@ -81,7 +72,7 @@
                                 </a> |
                                  <a class="logout" href="<?=$this->Html->url('/profile/logout')?>">Keluar</a></h3>
                                 <span class="points red">
-                                    ID: <?=$user_masked_id?> | <?=number_format(ceil($USER_POINTS))?> Pts | <?=number_format(ceil($USER_COINS))?> Coins
+                                    <?=number_format(ceil($USER_POINTS))?> Pts | <?=number_format(ceil($USER_COINS))?> Coins
                                 </span>
                                 
                             </div><!-- end .entry -->
