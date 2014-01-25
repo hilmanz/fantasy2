@@ -28,21 +28,6 @@
     ?>
 </head>
 <body class="page-<?=$FM_PAGE?>">
-	<div id="popup-verification">
-    	<div class="popup-content">
-        	<h3>Situs ini hanya diperuntukkan pengunjung usia 18 tahun keatas, Saya berumur 18 tahun atau lebih</h3>
-            <a href="#" class="button">Yes</a> <a href="#" class="button">No</a>
-        </div><!-- end .popup-content -->
-    </div><!-- end #popup-verification -->
-    <div id="bgPopup"></div>
-	<script type="text/javascript">
-        jQuery(document).ready(function(){
-            jQuery("#popup-verification a.button").click(function(){
-                jQuery("#popup-verification,#bgPopup").hide();
-                return false;
-            });
-        });
-    </script>	
 	<div id="fb-root"></div>
 	<div id="effect"></div>
    	<div id="flag"></div>
