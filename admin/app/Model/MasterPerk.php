@@ -4,8 +4,8 @@ App::uses('AppModel', 'Model');
  * Matches Model
 
  */
-class MasterMatchday extends AppModel {
-	public $useTable = 'master_matchdays'; 
+class MasterPerk extends AppModel {
+	public $useTable = 'master_perks';
 	public $useDbConfig = 'ffgame';
 
 	

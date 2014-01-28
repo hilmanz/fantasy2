@@ -193,6 +193,12 @@ class MerchandisesController extends AppController {
 		//attach the item_id
 		$this->Session->write('po_item_id',$item_id);
 		//dont forget to clear po_item_id session when the order is done.
+
+
+		//if digital item, we display different view
+		if($item['MerchandiseItem']['merchandise_type']==1){
+			$this->render('redeem_perk');
+		}
 	}
 	public function order(){
 		$this->loadModel('MerchandiseItem');
@@ -214,6 +220,8 @@ class MerchandisesController extends AppController {
 		$no_fund = false;
 
 		//make sure the csrf token still valid
+
+		//-> csrf check di disable dulu selama development
 		if(
 			(strlen($this->request->data['ct']) > 0)
 				&& ($this->Session->read('po_csrf') == $this->request->data['ct'])
@@ -236,7 +244,7 @@ class MerchandisesController extends AppController {
 		$this->Session->write('po_csrf',null);
 		//-->
 
-		//reset the item_id in session
+		//reset the item_id in session (disable these for debug only)
 		$this->Session->write('po_item_id',0);
 	}
 	private function ReduceStock($item_id,$item){
@@ -309,6 +317,7 @@ class MerchandisesController extends AppController {
 	}
 
 	private function pay_with_game_cash($item_id,$item){
+
 		//if valid, 
 		//save the order to database
 		//at these time, we assume that user will pay with in-game funds
@@ -322,10 +331,6 @@ class MerchandisesController extends AppController {
 		$data['po_number'] = $item_id.'-'.$data['game_team_id'].'-'.date("ymdhis");
 	
 		//oops, before that, we need to know if user has sufficient funds
-		
-
-		
-		
 		if(intval($this->cash) > 
 				intval($item['MerchandiseItem']['price_credit'])){
 			$no_fund = false;
@@ -338,8 +343,27 @@ class MerchandisesController extends AppController {
 		
 		if(!$no_fund){
 			//ok the user has enough fund... purchase it now.
-			$this->MerchandiseOrder->create();
-			$rs = $this->MerchandiseOrder->save($data);	
+
+
+			//1. check if the item is digital or non-digital
+			// if it's digital, we automatically set the order status into closed.
+			// and redeem the perk.
+
+			//this is for safety precaution
+			//make sure that the digital is successfully applied before processing the order
+			$continue = true; 
+			if($item['MerchandiseItem']['merchandise_type']==1){
+				$data['n_status']=3; //order status : closed
+				$continue = $this->apply_digital_perk($data['game_team_id'],
+										$item['MerchandiseItem']['perk_id']);
+			}
+			if($continue){
+				$this->MerchandiseOrder->create();
+				$rs = $this->MerchandiseOrder->save($data);		
+			}else{
+				$rs = false;
+			}
+			
 
 			if($rs){
 				//get next match's id
@@ -391,6 +415,71 @@ class MerchandisesController extends AppController {
 		$last_name = trim($last_name);
 		return array('first_name'=>$first_name,
 					 'last_name'=>$last_name);
+	}
+	private function apply_digital_perk($game_team_id,$perk_id){
+		$this->loadModel('MasterPerk');
+
+		$perk = $this->MasterPerk->findById($perk_id);
+		$perk['MasterPerk']['data'] = unserialize($perk['MasterPerk']['data']);
+		switch($perk['MasterPerk']['data']['type']){
+			case "jersey":
+				return $this->apply_jersey_perk($game_team_id,$perk['MasterPerk']);
+			break;
+			default:
+				//todo
+			break;
+		}
+		
+	}
+	private function apply_jersey_perk($game_team_id,$perk_data){
+		//only 1 jersey can be used
+		//so we disabled all existing jersey
+		$this->loadModel('DigitalPerk');
+		$this->DigitalPerk->bindModel(
+			array('belongsTo'=>array(
+				'MasterPerk'=>array(
+					'type'=>'inner',
+					'foreignKey'=>false,
+					'conditions'=>array(
+						"MasterPerk.id = DigitalPerk.master_perk_id",
+						"MasterPerk.perk_name = 'ACCESSORIES'"
+					)
+				)
+			))
+		);
+		$current_perks = $this->DigitalPerk->find('all',array(
+			'conditions'=>array('game_team_id'=>$game_team_id),
+			'limit'=>40
+		));
+
+		//we only take the jersey perks
+		$jerseys = array();
+		while(sizeof($current_perks)>0){
+			$p = array_pop($current_perks);
+			$p['MasterPerk']['data'] = unserialize($p['MasterPerk']['data']);
+			if($p['MasterPerk']['data']['type']=='jersey'){
+				$jerseys[] = $p['DigitalPerk']['id'];
+			}
+		}
+		//disable the current jerseys
+		for($i=0;$i<sizeof($jerseys);$i++){
+			$this->DigitalPerk->id = intval($jerseys[$i]);
+			$this->DigitalPerk->save(array(
+				'n_status'=>0
+			));
+		}
+		//add new jersey
+		$this->DigitalPerk->create();
+		$rs = $this->DigitalPerk->save(
+			array('game_team_id'=>$game_team_id,
+				  'master_perk_id'=>$perk_data['id'],
+				  'n_status'=>1,
+				  'redeem_dt'=>date("Y-m-d H:i:s"),
+				  'available'=>99999)
+		);
+		if(isset($rs['DigitalPerk'])){
+			return true;
+		}
 	}
 	public function status($order_id){
 

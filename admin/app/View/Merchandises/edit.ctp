@@ -32,6 +32,44 @@
 		</tr>
 		<tr>
 			<td valign="top">
+				Item Type
+			</td>
+			<td>
+				<select name="merchandise_type">
+					<option value="0">
+						Non-Digital Item
+					</option>
+					<option value="1">
+						Digital In-Game Item
+					</option>
+				</select>
+				<script>
+				$("select[name=merchandise_type]").val(<?=$rs['MerchandiseItem']['merchandise_type']?>);
+				</script>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
+				Perks
+			</td>
+			<td>
+				<select name="perk_id">
+					<option value="0">
+						N/A
+					</option>
+					<?php foreach($perks as $perk):?>
+					<option value="<?=$perk['MasterPerk']['id']?>">
+						<?=h($perk['MasterPerk']['id'])?> - <?=h($perk['MasterPerk']['perk_name'])?> - <?=h($perk['MasterPerk']['name'])?>
+					</option>
+					<?php endforeach;?>
+				</select>
+				<script>
+				$("select[name=perk_id]").val(<?=$rs['MerchandiseItem']['perk_id']?>);
+				</script>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
 				Description
 			</td>
 			<td>

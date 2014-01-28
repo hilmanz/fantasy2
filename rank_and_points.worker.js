@@ -26,13 +26,13 @@ var business_stats = require('./libs/gamestats/business_stats');
 var ranks = require(path.resolve('./libs/gamestats/ranks.worker'));
 
 /////THE LOGICS///////////////
-var conn = mysql.createConnection({
- 	host     : config.database.host,
+
+var pool  = mysql.createPool({
+   host     : config.database.host,
    user     : config.database.username,
    password : config.database.password,
 });
-
-
+ranks.setPool(pool);
 var bot_id = (typeof argv.bot_id !=='undefined') ? argv.bot_id : Math.round(1000+(Math.random()*999999));
 
 var options = {
@@ -60,27 +60,34 @@ http.request(options, function(response){
 						resp.data.game_id,
 						' starting from',resp.data.since_id,' until ',resp.data.until_id);
 
-
-			process_report(
-				conn,
-				resp.data,
-				function(err,rs){
-				console.log('DONE');
-				conn.query("UPDATE ffgame_stats.job_queue_rank \
-							SET finished_dt = NOW(),\
-								n_status = 2 \
-							WHERE id = ?",
-							[resp.data.id],function(err,rs){
-								console.log('RANK-WORKER-'+bot_id,'flag queue as done');
-								conn.end(function(err){
-									console.log('RANK-WORKER-'+bot_id,'database connection closed');
+			pool.getConnection(function(err,conn){
+				process_report(
+					conn,
+					resp.data,
+					function(err,rs){
+					
+					console.log('FINISHED');
+					conn.query("UPDATE ffgame_stats.job_queue_rank \
+								SET finished_dt = NOW(),\
+									n_status = 2 \
+								WHERE id = ?",
+								[resp.data.id],function(err,rs){
+									console.log('RANK-WORKER-'+bot_id,'flag queue as done');
+									conn.end(function(err){
+										console.log('RANK-WORKER-'+bot_id,'database connection closed');
+										pool.end(function(err){
+											console.log('RANK-WORKER-'+bot_id,'database pool closed');
+										});
+										
+									});
+									
 								});
-								
-							});
-				
+					
+				});
 			});
+			
 		}else{
-			conn.end(function(err){
+			pool.end(function(err){
 				console.log('RANK-WORKER-'+bot_id,'no need to update points and ranks close db anyway');
 			});
 		}
@@ -128,6 +135,7 @@ function update_points_and_ranks(job,conn,done){
 						],
 						function(err,r){
 							ranks.update(
+								conn,
 								job.since_id,
 								job.until_id,
 								function(err,rs){

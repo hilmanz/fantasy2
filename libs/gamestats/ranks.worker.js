@@ -16,11 +16,13 @@ var stadium_earnings = require(path.resolve('./libs/game_config')).stadium_earni
 var cost_mods = require(path.resolve('./libs/game_config')).cost_modifiers;
 var S = require('string');
 var mysql = require('mysql');
-var pool  = mysql.createPool({
+var pool = {};
+/*var pool  = mysql.createPool({
    host     : config.database.host,
    user     : config.database.username,
    password : config.database.password,
 });
+*/
 var punishment = require(path.resolve('./libs/gamestats/punishment_rules'));
 var cash = require(path.resolve('./libs/gamestats/game_cash'));
 
@@ -28,13 +30,17 @@ var frontend_schema = config.database.frontend_schema;
 var total_teams = 0;
 var limit  = 100;
 console.log('ranks updater : pool opened');
-exports.update = function(since_id,until_id,done){
+
+exports.setPool = function(p){
+	pool = p;
+}
+exports.update = function(conn,since_id,until_id,done){
 	var start = 0;
 	var limit = 100;//we deal with 100 teams at a time
 	var doLoop = true;
 
 
-	pool.getConnection(function(err,conn){
+	//pool.getConnection(function(err,conn){
 		async.waterfall([
 			function(cb){
 					console.log('Distribute overall,weekly,and monthly POINTS');
@@ -81,15 +87,15 @@ exports.update = function(since_id,until_id,done){
 		function(err,isDone){
 			conn.end(function(err){
 				console.log('connection end');
-				pool.end(function(err){
-					console.log('pool closed');
+				//pool.end(function(err){
+					//console.log('pool closed');
 					
 					done(err,null);
-				});
+				//});
 			});
 		});
 		
-	});
+	//});
 }
 function recalculate_ranks(conn,done){
 	console.log('recalculate ranks');

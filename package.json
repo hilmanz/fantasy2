@@ -25,6 +25,8 @@
     "string":"latest",
     "nodemailer":"latest",
     "sleep":"latest",
-    "msgpack": "latest"
+    "msgpack": "latest",
+    "express-validator":"latest",
+    "validator":"latest"
   }
 }

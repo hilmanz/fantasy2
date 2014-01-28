@@ -14,6 +14,7 @@ var master = require('./libs/master');
 var async = require('async');
 var mysql = require('mysql');
 var nodemailer = require('nodemailer');
+var validator = require('validator');
 var transport = nodemailer.createTransport("SMTP",{
 										    	host: "email-smtp.us-east-1.amazonaws.com", // hostname
 										    	secureConnection: true, // use SSL
@@ -77,40 +78,47 @@ function runLoop(){
 			function(queue,callback){
 				//sending the email
 				if(queue!=null){
-					var mailOptions = {
-					    from: "Supersoccer Football Manager <footballmanager@supersoccer.co.id>",
-					    to: queue.email,
-					    subject: queue.subject,
-					    generateTextFromHTML:true,
-					    html: queue.html_text
+					if(validator.isEmail(queue.email)){
+						console.log('sending ',queue.email);
+
+						var mailOptions = {
+						    from: "Supersoccer Football Manager <footballmanager@supersoccer.co.id>",
+						    to: queue.email,
+						    subject: queue.subject,
+						    generateTextFromHTML:true,
+						    html: queue.html_text
+						}
+						transport.sendMail(mailOptions,function(error, responseStatus){
+							
+							var td = ((new Date()).getTime() - last_t)/1000;
+							n_sent++;
+							total_sent++;
+							console.log('elapsed : ',td,'total sent : ',n_sent);
+							if(td < 1 && n_sent > 5){
+								console.log('sleep for 1s');
+								//sleep 1 second
+								sleep.sleep(1);
+								console.log('resetting the timewatch and n_sent');
+								n_sent = 0;
+								last_t = (new Date()).getTime();
+							}else if(td > 1 && n_sent < 5){
+								console.log('reset time and counter');
+								last_t = (new Date()).getTime();
+								n_sent = 0;
+							}else{
+								//do nothing
+							}
+							if(!error){
+								callback(null,error,queue,responseStatus);	
+							}else{
+								console.log('error : ',error.message);
+								callback(null,null,queue,null);
+							}
+						});
+					}else{
+						console.log('cannot send ',queue.email);
+						callback(null,null,queue,null);
 					}
-					transport.sendMail(mailOptions,function(error, responseStatus){
-						
-						var td = ((new Date()).getTime() - last_t)/1000;
-						n_sent++;
-						total_sent++;
-						console.log('elapsed : ',td,'total sent : ',n_sent);
-						if(td < 1 && n_sent > 5){
-							console.log('sleep for 1s');
-							//sleep 1 second
-							sleep.sleep(1);
-							console.log('resetting the timewatch and n_sent');
-							n_sent = 0;
-							last_t = (new Date()).getTime();
-						}else if(td > 1 && n_sent < 5){
-							console.log('reset time and counter');
-							last_t = (new Date()).getTime();
-							n_sent = 0;
-						}else{
-							//do nothing
-						}
-						if(!error){
-							callback(null,error,queue,responseStatus);	
-						}else{
-							console.log('error : ',error.message);
-							callback(null,null,queue,null);
-						}
-					});
 				}else{
 					callback(null,null,queue,null);
 				}

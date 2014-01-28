@@ -89,7 +89,9 @@ class MerchandisesController extends AppController {
 		}
 		
 
-		
+		$this->loadModel('MasterPerk');
+		$perks = $this->MasterPerk->find('all',array('limit'=>300));
+		$this->set('perks',$perks);
 
 		$this->set('rs',$rs);
 		$this->set('current_stock',$available_item);
@@ -149,6 +151,10 @@ class MerchandisesController extends AppController {
 		$this->loadModel('MerchandiseCategory');
 		$categories = $this->MerchandiseCategory->find('all',array('limit'=>100));
 		$this->set('categories',$categories);
+
+		$this->loadModel('MasterPerk');
+		$perks = $this->MasterPerk->find('all',array('limit'=>300));
+		$this->set('perks',$perks);
 
 	}
 	public function add_category(){
