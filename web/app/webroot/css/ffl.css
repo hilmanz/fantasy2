@@ -2216,3 +2216,37 @@ table.dataTable{
 	margin:0;
 	color:#fdcb02;
 }
+#popup-verification{
+	position:absolute;
+	width:500px;
+	margin:0 0 0 -250px;
+	left:50%;
+	top:100px;
+	z-index:1001;
+}
+.popup-content{
+	background:#fff;
+	padding:20px;
+	border:solid 10px #ccc;
+	text-align:center;
+	color:#333;
+	border-radius:10px;
+}
+.popup-content .button{
+	background:#c00;
+	display:inline-block;
+	line-height:30px;
+	padding:0 20px;
+	font-family:'BebasNeueRegular',serif;
+}
+.popup-content .button:hover{
+	background:#666;
+	color:#fff;
+}
+#bgPopup{
+	position:fixed;
+	width:100%; height:100%;
+	left:0; top:0;
+	background:url(../images/tr4.png) repeat;
+	z-index:1000;
+}
