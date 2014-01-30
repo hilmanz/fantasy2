@@ -1,6 +1,4 @@
-<?php
-//pr($result);
-?>
+
 <div class="widget">
     <div class="widget-title">
         <h3>Match Stats</h3>
@@ -86,3 +84,4 @@
         </table>
     </div><!-- end .widget-content -->
 </div><!-- end .widget -->
+<?php echo $this->element("sql_dump");?>

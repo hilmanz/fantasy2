@@ -41,7 +41,7 @@ var options = {
   path: '/job/?bot_id='+ bot_id
 };
 var limit = 100;
-
+var dt = new Date();
 console.log(options);
 http.request(options, function(response){
 	var str = '';
@@ -53,13 +53,22 @@ http.request(options, function(response){
 		console.log(resp);
 		
 		//resp.status=1;//DEBUG ONLY
-		
+		//resp.data.since_id=0;
+		//resp.data.until_id=1;
+		//resp.last_queue = 1;
+		//resp.data.game_id = 'f694992';
 		if(resp.status==1){
 			
 			console.log('RANK-WORKER-'+bot_id,'processing #queue',resp.data.id,' of game #',
 						resp.data.game_id,
 						' starting from',resp.data.since_id,' until ',resp.data.until_id);
+			resp.data.update_rank = false;
+			if(resp.last_queue == 1){
+				resp.data.update_rank = true;
+			}
 
+			var open_time = dt.getTime();
+			console.log('TIME','OPEN : ',open_time);
 			pool.getConnection(function(err,conn){
 				process_report(
 					conn,
@@ -74,6 +83,10 @@ http.request(options, function(response){
 								[resp.data.id],function(err,rs){
 									console.log('RANK-WORKER-'+bot_id,'flag queue as done');
 									conn.end(function(err){
+										dt = new Date();
+										var close_time = dt.getTime();
+										console.log('TIME','CLOSE : ',close_time);
+										console.log('TIME','SPENT : ',(close_time-open_time),'ms');
 										console.log('RANK-WORKER-'+bot_id,'database connection closed');
 										pool.end(function(err){
 											console.log('RANK-WORKER-'+bot_id,'database pool closed');
@@ -138,6 +151,8 @@ function update_points_and_ranks(job,conn,done){
 								conn,
 								job.since_id,
 								job.until_id,
+								job.update_rank,
+								job.game_id,
 								function(err,rs){
 									console.log('done');
 									done(err);
@@ -229,9 +244,9 @@ function process_perks(conn,team,perks,game_id,done){
 						//function(err){
 						//	cb(err);
 						//});
-						cb(err);
+						cb(null);
 					}else{
-						cb(err);
+						cb(null);
 					}
 				},
 				function(cb){
@@ -272,20 +287,22 @@ function perk_money_reward(conn,game_team_id,perk,game_id,done){
 				});
 }
 function update_team_points(conn,teams,done){
-	async.eachSeries(teams,function(item,next){
-		conn.query("INSERT INTO ffgame_stats.game_team_points\
+	var game_team_id = [];
+	for(var i=0; i < teams.length;i++){
+		game_team_id.push(teams[i].game_team_id);
+	}
+	conn.query("INSERT INTO ffgame_stats.game_team_points\
 					(game_team_id,points)\
-					SELECT game_team_id,SUM(points) AS total_points\
+					(SELECT game_team_id,SUM(points) AS total_points\
 					FROM ffgame_stats.game_team_player_weekly\
-					WHERE game_team_id = ?\
+					WHERE game_team_id IN (?)\
+					GROUP BY game_team_id)\
 					ON DUPLICATE KEY UPDATE\
 					points = VALUES(points);",
-					[item.game_team_id],
+					[game_team_id],
 					function(err,rs){
-						console.log(S(this.sql).collapseWhitespace().s);
-						next();
+						console.log('GAME_TEAM_POINTS',S(this.sql).collapseWhitespace().s);
+						done(err);
 					});
-	},function(err){
-		done(err);
-	});
+	
 }

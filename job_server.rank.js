@@ -71,7 +71,12 @@ app.get('/job',[],function(req,res){
 		//so we can do requeue stuffs in other API call such as /refresh
 		requeue(req.query.bot_id,true,function(q,has_data){
 			if(has_data){
-				res.send(200,{status:1,data:q});
+				var last_queue = 0;
+				if(queues.length==0){
+					last_queue = 1;
+				}
+				console.log('last_queue : ',last_queue);
+				res.send(200,{status:1,data:q,last_queue:last_queue});
 			}else{
 				res.send(200,{status:0});
 			}
@@ -79,7 +84,12 @@ app.get('/job',[],function(req,res){
 	}else{
 		var q = queues.shift();
 		assignQueue(req.query.bot_id,q,function(err){
-			res.send(200,{status:1,data:q});
+			var last_queue = 0;
+			if(queues.length==0){
+				last_queue = 1;
+			}
+			console.log('last_queue : ',last_queue);
+			res.send(200,{status:1,data:q,last_queue:last_queue});
 		});
 	}
 });

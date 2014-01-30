@@ -71,6 +71,7 @@ class ResultController extends AppController {
 		$game_id = $map['Game_maps']['game_id'];
 
 		$match = $this->Matchinfo->findByGame_id($game_id);
+
 		if(isset($match['Matchinfo'])){
 			$home_lineup = $this->Lineup->find('all',
 										array('conditions'=>array(
@@ -134,6 +135,7 @@ class ResultController extends AppController {
 												'team_id'=>$match['Matchinfo']['home_team']
 											),
 										'limit'=>1000));
+			
 			$home_stats = array();
 			foreach($home_bulk_stats as $stat){
 				$home_stats[$stat['Team_stats']['stats_name']] = $stat['Team_stats']['stats_value'];

@@ -1151,7 +1151,8 @@ function processAllUsersForMasterByPrequisite(conn,target,schedule,matchday,done
 			return has_data;
 		},
 		function(next){
-			conn.query("SELECT \
+			if(schedule.prequisite_trigger_type==0){
+				sql = "SELECT \
 						a.id,\
 						a.fb_id,\
 						a.email,\
@@ -1175,7 +1176,36 @@ function processAllUsersForMasterByPrequisite(conn,target,schedule,matchday,done
 						 AND e.n_status <> 2 LIMIT 1\
 						 ) \
 						ORDER BY id\
-						LIMIT 100;",
+						LIMIT 100;"
+			}else{
+				sql = "SELECT \
+						a.id,\
+						a.fb_id,\
+						a.email,\
+						a.name,\
+						c.id AS game_team_id,\
+						c.team_id AS original_team_id\
+						FROM "+dbschema+".users a \
+						INNER JOIN \
+						ffgame.game_users b\
+						ON a.fb_id = b.fb_id\
+						INNER JOIN \
+						ffgame.game_teams c\
+						ON c.user_id = b.id \
+						WHERE a.id > ? \
+						AND EXISTS\
+						(SELECT 1 FROM ffgame.game_team_players d \
+						 WHERE d.game_team_id = c.id AND d.player_id = ? LIMIT 1)\
+						AND EXISTS\
+						(SELECT 1 FROM ffgame.game_perks e WHERE e.event_id = ? \
+						 AND e.game_team_id =  c.id \
+						 AND e.n_status = 2 LIMIT 1\
+						 ) \
+						ORDER BY id\
+						LIMIT 100;"
+			}
+
+			conn.query(sql,
 						[since_id,target,schedule.prequisite_event_id],function(err,rs){
 							console.log(S(this.sql).collapseWhitespace().s);
 							try{
