@@ -150,9 +150,28 @@ class AppController extends Controller {
 				
 				if($previous_match!=null && $upcoming_match !=null){
 					//check the previous match backend proccess status
-
-					$matchstatus = $this->Game->getMatchStatus($previous_match['matchday']);
-					//pr($matchstatus);
+					$last_match_status = $this->Session->read('last_match_status');
+					if(is_array($last_match_status)){
+						
+						if($last_match_status['ts'] + (60 * 1) < time()){
+							$matchstatus = $this->Game->getMatchStatus($previous_match['matchday']);		
+							$this->Session->write('last_match_status',array(
+														'matchstatus'=>$matchstatus,
+														'ts'=>time()
+													));
+						}else{
+							
+							$matchstatus = $last_match_status['matchstatus'];
+						}
+					}else{
+						$matchstatus = $this->Game->getMatchStatus($previous_match['matchday']);		
+						$this->Session->write('last_match_status',array(
+													'matchstatus'=>$matchstatus,
+													'ts'=>time()
+												));
+					}
+					
+					
 					if($matchstatus['is_finished']==0){
 
 						//if the backend process is not finished,

@@ -425,13 +425,13 @@ class TeamStats extends Stats {
 		$shots_from_inside_the_box = $this->fromFormula('(att_ibox_blocked + att_ibox_goal + att_ibox_miss + att_ibox_target)',
 									 $stats);
 
-		$ibox_accuracy = $this->fromFormula('att_ibox_goal / (att_ibox_blocked + att_ibox_goal + att_ibox_miss + att_ibox_target)',
+		$ibox_accuracy = $this->fromFormula('(att_ibox_goal + att_ibox_target) / (att_ibox_blocked + att_ibox_goal + att_ibox_miss + att_ibox_target + att_ibox_post)',
 									 $stats);
 		$ibox_goal = $this->fromFormula('att_ibox_goal',$stats);
 
 
 		$shots_from_outside_the_box = $this->fromFormula('(att_obox_blocked + att_obox_goal + att_obox_miss + att_obox_target)',$stats);
-		$obox_accuracy = $this->fromFormula('att_obox_goal / (att_obox_blocked + att_obox_goal + att_obox_miss + att_obox_target)',$stats);
+		$obox_accuracy = $this->fromFormula('(att_obox_goal + att_obox_target) / (att_obox_blocked + att_obox_goal + att_obox_miss + att_obox_target + att_obox_post)',$stats);
 		$obox_goal = $this->fromFormula('att_obox_goal',$stats);
 
 		return array('shots_from_inside_the_box'=>array('total'=>$shots_from_inside_the_box,
@@ -902,6 +902,8 @@ class TeamStats extends Stats {
 		$openplay['efficiency'] = $openplay['chances'] / ($openplay['chances']+$setpieces['chances']+$counter['chances']);
 		$setpieces['efficiency'] = $setpieces['chances'] / ($openplay['chances']+$setpieces['chances']+$counter['chances']);
 		$counter['efficiency'] = $counter['chances'] / ($openplay['chances']+$setpieces['chances']+$counter['chances']);
+
+
 		return array('openplay'=>$openplay,
 					 'setpieces'=>$setpieces,
 					 'counter_attack'=>$counter);
@@ -939,7 +941,9 @@ class TeamStats extends Stats {
 	}
 	private function setpieces_conversion($stats){
 		//pr($stats['goals'].'-'.$stats['goals_openplay'].'-'.$stats['goal_fastbreak']);
-		$s = ($stats['goals'] - ($stats['goals_openplay']+$stats['goal_fastbreak'])) / ($stats['total_scoring_att'] - $stats['att_openplay']);
+		//$s = ($stats['goals'] - ($stats['goals_openplay'])) / ($stats['total_scoring_att'] - $stats['att_openplay']);
+
+		$s = $s = ($stats['goals'] - ($stats['goals_openplay'])) / ($stats['freekick_cross'] + $stats['total_corners_intobox']);
 		//sementara jika angkanya minus, kita set jadi 0 aja. sampai ada rumus baru.
 		if($s<0){ $s = 0;}
 		return $s;
@@ -947,7 +951,7 @@ class TeamStats extends Stats {
 		//return ($stats['goals'] - ($stats['goals_openplay']+$stats['goal_fastbreak']))/ intval(@$stats['att_assist_setplay']);
 	}
 	private function setpieces_goals($stats){
-		$s = ($stats['goals'] - ($stats['goals_openplay']+$stats['goal_fastbreak']));
+		$s = ($stats['goals'] - ($stats['goals_openplay']));
 		//sementara jika angkanya minus, kita set jadi 0 aja. sampai ada rumus baru.
 		if($s<0){ $s = 0;}
 		return $s;

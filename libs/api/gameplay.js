@@ -195,6 +195,7 @@ function position_valid(players,setup,formation){
 }
 //get user's players
 function getPlayers(game_team_id,callback){
+	console.log('getPlayers');
 	prepareDb(function(conn){
 		async.waterfall([
 			function(callback){
@@ -212,40 +213,63 @@ function getPlayers(game_team_id,callback){
 			function(players,callback){
 				var results = [];
 				async.eachSeries(players,function(player,done){
-					conn.query("SELECT SUM(total_points) AS total_points,\
-								SUM(performance) AS performance\
-								FROM (\
-								(SELECT SUM(points) AS total_points ,0 AS performance\
-								FROM ffgame_stats.game_team_player_weekly \
-								WHERE game_team_id = ? AND player_id = ?)\
-								UNION ALL\
-								(SELECT 0,performance FROM ffgame_stats.game_match_player_points a\
-									WHERE game_team_id=? AND player_id=?\
-									AND points <> 0\
-									AND EXISTS (SELECT 1 FROM ffgame.game_fixtures b \
-									WHERE b.game_id = a.game_id AND (b.home_id = ? OR b.away_id=?)\
-									LIMIT 1\
-									)\
-									ORDER BY id DESC LIMIT 1)\
-								)a;\
-								",
-					[game_team_id,player.uid,game_team_id,player.uid,player.team_id,player.team_id],
-					function(err,rs){
-						//console.log(S(this.sql).collapseWhitespace().s);
-						//console.log(rs[0]);
-						player.points = 0;
-						player.last_performance = 0;
-						if(!err){
-							if(rs!=null){
-								if(rs[0].total_points!=null){
-									player.points = parseFloat(rs[0].total_points);
-									player.last_performance = parseFloat(rs[0].performance);	
-									
-								}
-								
+
+					async.waterfall([
+						function(cb){
+							conn.query("SELECT SUM(points) AS total_points\
+										FROM ffgame_stats.game_team_player_weekly\
+										WHERE game_team_id = ? AND player_id = ?;",
+										[
+										 game_team_id,
+										 player.uid
+										],
+										function(err,rs){
+											try{
+												cb(err,rs[0].total_points);
+											}catch(e){
+												cb(err,0);
+											}
+										});
+						},
+						function(total_points,cb){
+							
+							if(typeof total_points !== 'number'){
+								total_points = 0;
 							}
+							conn.query("SELECT performance \
+										FROM ffgame_stats.game_match_player_points a\
+										WHERE game_team_id=? AND player_id=?\
+										AND points <> 0\
+										AND EXISTS (SELECT 1 FROM ffgame.game_fixtures b\
+										WHERE b.game_id = a.game_id AND (b.home_id = ? OR b.away_id=?)\
+										LIMIT 1) ORDER BY id DESC LIMIT 1;",
+										[
+											game_team_id,
+											player.uid,
+											player.team_id,
+											player.team_id
+										],
+										function(err,rs){
+											try{
+												cb(err,total_points,rs[0].performance);
+											}catch(e){
+												cb(err,total_points,0);
+											}
+										});
+						},
+						function(total_points,performance,cb){
+							if(typeof performance !== 'number'){
+								performance = 0;
+							}
+							player.points = parseFloat(total_points);
+							player.last_performance = parseFloat(performance);
+							
+							results.push(player);
+							cb(null,results);
 						}
-						results.push(player);
+
+					],
+					function(err,rs){
 						done();
 					});
 				},function(err){
@@ -254,6 +278,7 @@ function getPlayers(game_team_id,callback){
 			}
 		],
 		function(err,result){
+			console.log('getPlayers',result);
 			conn.end(function(e){
 				callback(err,result);	
 			});

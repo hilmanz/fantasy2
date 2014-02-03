@@ -77,6 +77,7 @@ exports.update_team_data = function(data,callback){
 		);
 		for(var i in team_data){
 			var players = team_data[i].players;
+			console.log(team_data[i].team_id,'->',players);
 			var team_id = team_data[i].team_id;
 			for(var j in players){
 				var player = players[j];

@@ -38,3 +38,17 @@ CREATE TABLE ffgame_stats.job_queue_rank (
 
 #index ini diperlukan untuk memproses rank_and_points.worker.js
 ALTER TABLE `ffgame_stats`.`game_team_extra_points` ADD INDEX `IDX_GAME_TEAM_ID` (`game_team_id`);
+
+
+CREATE TABLE ffgame.digital_perks (
+  `id` BIGINT(21) NOT NULL AUTO_INCREMENT,
+  `game_team_id` BIGINT(21) DEFAULT NULL,
+  `master_perk_id` BIGINT(21) DEFAULT NULL,
+  `redeem_dt` DATETIME DEFAULT NULL,
+  `last_use_dt` DATETIME DEFAULT NULL,
+  `available` INT(3) DEFAULT '1' COMMENT 'how many weeks these perk can be used.',
+  `n_status` TINYINT(3) DEFAULT '1' COMMENT '0-> disabled, 1->enabled',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `IDX_GAME_TEAM_ID` (`game_team_id`,`master_perk_id`),
+  KEY `IDX_AVAILABLE` (`game_team_id`,`available`,`n_status`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;

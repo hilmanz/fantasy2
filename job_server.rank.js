@@ -1,5 +1,11 @@
 /**
  * Job Server for Rank and Points Updater.
+ * Changelog
+ * 31/01/2014 - duf
+ * rank_and_points.worker.js cannot perform very well when updater.worker.js is in process
+ * because there will be a table lock in game_team_player_weekly, so we need to avoid that.
+ * job server rank must check the job_queue table, 
+ * making sure that none active or pending tasks in there
  */
 
 var express = require('express')
@@ -7,6 +13,7 @@ var express = require('express')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path');
+var async = require('async');
 var mysql = require('mysql');
 var redis = require('redis');
 var dummy_api_key = '1234567890';
@@ -63,35 +70,53 @@ var queues = [];
 var is_finished = false;
 var need_update = false; //the flag to update team's points and ranking
 app.get('/job',[],function(req,res){
-	if(queues.length==0){
-		//if queue empty,  we query for new queue
-		console.log('jobserver','queue is empty, we need more queues');
-
-		//SSFM-127 - we use new method requeue 
-		//so we can do requeue stuffs in other API call such as /refresh
-		requeue(req.query.bot_id,true,function(q,has_data){
-			if(has_data){
-				var last_queue = 0;
-				if(queues.length==0){
-					last_queue = 1;
-				}
-				console.log('last_queue : ',last_queue);
-				res.send(200,{status:1,data:q,last_queue:last_queue});
-			}else{
-				res.send(200,{status:0});
-			}
-		});
-	}else{
-		var q = queues.shift();
-		assignQueue(req.query.bot_id,q,function(err){
-			var last_queue = 0;
+	
+	async.waterfall([
+		function(cb){
+			//first we make sure that updater.worker.js is idle
+			isUpdaterIdle(function(err,is_idle){
+				cb(err,is_idle);
+			});
+		}
+	],function(err,is_idle){
+		if(is_idle){
 			if(queues.length==0){
-				last_queue = 1;
+				//if queue empty,  we query for new queue
+				console.log('jobserver','queue is empty, we need more queues');
+
+				//SSFM-127 - we use new method requeue 
+				//so we can do requeue stuffs in other API call such as /refresh
+				requeue(req.query.bot_id,true,function(q,has_data){
+					if(has_data){
+						var last_queue = 0;
+						if(queues.length==0){
+							last_queue = 1;
+						}
+						console.log('last_queue : ',last_queue);
+						res.send(200,{status:1,data:q,last_queue:last_queue});
+					}else{
+						res.send(200,{status:0});
+					}
+				});
+			}else{
+				var q = queues.shift();
+				assignQueue(req.query.bot_id,q,function(err){
+					var last_queue = 0;
+					if(queues.length==0){
+						last_queue = 1;
+					}
+					console.log('last_queue : ',last_queue);
+					res.send(200,{status:1,data:q,last_queue:last_queue});
+				});
 			}
-			console.log('last_queue : ',last_queue);
-			res.send(200,{status:1,data:q,last_queue:last_queue});
-		});
-	}
+		}else{
+			console.log('updater in process, we wait...');
+			res.send(200,{status:0});
+		}
+	});
+
+	//
+	
 });
 
 app.get('/refresh',function(req,res){
@@ -137,6 +162,22 @@ app.get('/refresh',function(req,res){
 http.createServer(app).listen(3098, function(){
   console.log('Express server listening on port 3098');
 });
+
+
+function isUpdaterIdle(done){
+	pool.getConnection(function(err,conn){
+		conn.query("SELECT id FROM ffgame_stats.job_queue WHERE n_status IN (0,1) LIMIT 1",
+					[],function(err,rs){
+						var is_idle = true;
+						if(rs!=null && rs.length > 0){
+							is_idle = false;
+						}
+						conn.end(function(e){
+							done(err,is_idle);
+						});
+					});
+	});
+}
 
 function assignQueue(bot_id,queue,done){
 	pool.getConnection(function(err,conn){
