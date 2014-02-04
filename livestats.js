@@ -20,6 +20,11 @@ var pool  = mysql.createPool({
    password : config.database.password,
 });
 
+
+var redisClient = redis.createClient(config.redis.port,config.redis.host);
+redisClient.on("error", function (err) {
+    console.log("Error " + err);
+});
 pool.getConnection(function(err,conn){
 		async.waterfall([
 			function(cb){
@@ -47,9 +52,9 @@ pool.getConnection(function(err,conn){
 				//foreach game_ids load the stats into redis cache.
 				//if there's no playerstats, we skip it
 				if(game_id.length>0){
-					cb(null);
+					storeToRedis(conn,matchday,game_id,cb);
 				}else{
-					cb(null);
+					cb(null,null);
 				}
 				
 			}
@@ -58,6 +63,9 @@ pool.getConnection(function(err,conn){
 			conn.end(function(err){
 				pool.end(function(err){
 					console.log('done');
+					redisClient.quit(function(err){
+						console.log('redis session ended');
+					});
 				});
 			});
 		});
@@ -240,6 +248,7 @@ function getModifiers(conn,done){
 				});
 }
 
+//return the statistic categories into our desired format.
 function getStatsCategory(){
 	var stats = [];
 	for(var group in player_stats_category){
@@ -248,4 +257,98 @@ function getStatsCategory(){
 		}
 	}
 	return stats;
+}
+
+/*
+* greedily store all the player points into the redis.
+* we store each game_id's data into specific key : match_[game_id]
+* before we store the data, make sure that the data is structured these way : 
+* match_[game_id] = {
+	[player_id]:[
+				{ts:[timestamp],points:[n_point]},
+				{ts:[timestamp],points:[n_point]},
+				{ts:[timestamp],points:[n_point]},
+				{ts:[timestamp],points:[n_point]},
+			],
+
+	[player_id]:[
+				{ts:[timestamp],points:[n_point]},
+				{ts:[timestamp],points:[n_point]},
+				{ts:[timestamp],points:[n_point]},
+				{ts:[timestamp],points:[n_point]},
+			],
+
+}
+*/
+function storeToRedis(conn,matchday,game_id,done){
+	console.log(game_id);
+	async.each(
+	game_id,
+	function(item,next){
+		storeGameIdPlayerPointsToRedis(conn,item.game_id,function(err,rs){
+			console.log('next');
+			next();
+		});
+	},
+	function(err){
+		done(err);
+	});
+}
+
+
+function storeGameIdPlayerPointsToRedis(conn,game_id,done){
+	console.log('storeGameIdPlayerPointsToRedis','store to cache ',game_id);
+
+	var players = {};// we store all the stats here.
+
+	//query everything, and piled the data up into players object
+	async.waterfall([
+		function(cb){
+
+			conn.query("SELECT * FROM ffgame_stats.master_player_progress \
+						WHERE game_id=? ORDER BY id ASC\
+						LIMIT 10000;",
+						[game_id],
+						function(err,rs){
+							console.log(S(this.sql).collapseWhitespace().s);
+							cb(err,rs);
+						});
+		},
+		function(stats,cb){
+			//format the data into our desired structure.
+		
+				async.eachSeries(
+				stats,
+				function(stat,next){
+					if(typeof players[stat.player_id] === 'undefined'){
+						players[stat.player_id] = [];
+					}
+					players[stat.player_id].push({
+						ts:stat.ts,
+						points:stat.points
+					});
+					next();
+				},
+				function(err){
+					cb(err);
+				});
+
+		},
+		function(cb){
+			//save it into redis cache
+			
+			redisClient.set('match_'+game_id,JSON.stringify(players),function(err,rs){
+				if(!err){
+					console.log('stats successfully stored');
+				}else{
+					console.log(err.message);
+				}
+				cb(err,rs);
+			});
+		}
+	],
+	function(err,rs){
+		console.log('storeGameIdPlayerPointsToRedis','done nih !');
+		done(err,rs);	
+	});
 }
