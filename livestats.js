@@ -305,9 +305,11 @@ function storeGameIdPlayerPointsToRedis(conn,game_id,done){
 	async.waterfall([
 		function(cb){
 
-			conn.query("SELECT * FROM ffgame_stats.master_player_progress \
-						WHERE game_id=? ORDER BY id ASC\
-						LIMIT 10000;",
+			conn.query("SELECT a.game_id,a.player_id,a.points,a.ts,b.name,b.team_id \
+						FROM ffgame_stats.master_player_progress a\
+						INNER JOIN ffgame.master_player b\
+						ON a.player_id = b.uid \
+						WHERE game_id = ? LIMIT 10000;",
 						[game_id],
 						function(err,rs){
 							console.log(S(this.sql).collapseWhitespace().s);
@@ -325,6 +327,8 @@ function storeGameIdPlayerPointsToRedis(conn,game_id,done){
 					}
 					players[stat.player_id].push({
 						ts:stat.ts,
+						name:stat.name,
+						team_id:stat.team_id,
 						points:stat.points
 					});
 					next();

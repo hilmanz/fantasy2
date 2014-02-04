@@ -479,6 +479,18 @@ exports.get_venue = function(req,res){
 		}
 	});
 }
+
+exports.livestats = function(req,res){
+	var client = req.redisClient;
+	client.get('match_'+req.params.game_id,function(err,rs){
+		if(!err){
+			res.json(200,{status:1,data:JSON.parse(rs)});
+		}else{
+			res.send(200,{status:0});
+		}
+	});
+}
+
 exports.matchstatus = function(req,res){
 	gameplay.matchstatus(req.params.matchday,function(err,rs){
 		if(!err){

@@ -75,6 +75,24 @@ class MatchController extends AppController {
 		$this->set('mods',$stats);
 		$this->set('o',$rs);
 	}
+	public function view($game_id){
+		$game_id = Sanitize::paranoid($game_id);
+		
+		$rs = $this->Game->getMatchDetails($game_id);
+		$modifier = $this->Team->query("SELECT name 
+										FROM ffgame.game_matchstats_modifier as stats;");
+		$stats = array();
+		foreach($modifier as $mod){
+			$stats[] = $mod['stats']['name'];
+		}
+		$modifier = null;
+		unset($modifier);
+		$this->set('mods',$stats);
+		$this->set('o',$rs);
+
+		$this->set('game_id',$game_id);
+		$this->set('ENABLE_CHARTS',true);
+	}
 	public function error(){
 		$this->render('error');
 	}
@@ -84,5 +102,14 @@ class MatchController extends AppController {
 	}
 	public function success(){
 		$this->render('success');
+	}
+
+	public function livestats($game_id){
+		$game_id = Sanitize::escape($game_id);
+		$this->layout="ajax";
+		$response = $this->Game->livestats($game_id);
+		
+		$this->set('response',$response);
+		$this->render('plaintext');
 	}
 }

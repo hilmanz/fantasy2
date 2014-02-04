@@ -457,6 +457,18 @@ class AppController extends Controller {
 		$response = json_decode(curlGet($this->getAPIUrl().$uri,$params,$cookie_file,$timeout),true);
 		return $response;
 	}
+	/*
+	* like api_call but without converting the json string into php-array.
+	*/
+	public function api_call_raw($uri,$params,$cookie_file='',$timeout=15){
+		App::import("Vendor","common");
+		if($this->getAccessToken()!=null){
+			$params['access_token'] = $this->getAccessToken();
+		}
+		$params['api_key'] = $this->getAPIKey();
+		$response = curlGet($this->getAPIUrl().$uri,$params,$cookie_file,$timeout);
+		return $response;
+	}
 	public function salt(){
 		return Configure::read('API_SALT');
 	}

@@ -2250,3 +2250,11 @@ table.dataTable{
 	background:url(../images/tr4.png) repeat;
 	z-index:1000;
 }
+
+.match-view-img{
+	width:40px;
+}
+.chart-player{
+	width:300px;
+	height:70px;
+}

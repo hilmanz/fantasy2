@@ -321,5 +321,12 @@ class Game extends AppModel {
 		return "<style>".PHP_EOL.$rs[0]['a']['css'].PHP_EOL."</style>".PHP_EOL;
 	}
 
+	public function livestats($game_id){
+		$response = $this->api_call_raw('/livestats/'.$game_id);
+		return $response;
+	}
+
+	
+
 }
 

@@ -55,7 +55,7 @@
 	<?php endif;?>
 	<!-- Le styles -->
 	<?php echo $this->Html->css(
-			  array('datatables/tables','ffl','superfish','fancybox/jquery.fancybox.css?v=2.1.5','responsive','footable-0.1'),
+			  array('datatables/tables','ffl','superfish','fancybox/jquery.fancybox.css?v=2.1.5','responsive','footable-0.1','jquery.jqplot'),
 		null,array('media'=>'all')); 
 	?>
 	<?php echo $this->Html->script(
@@ -90,3 +90,14 @@
 	    }
 	  </style>
 	<![endif]-->
+
+	<?php
+	if(isset($ENABLE_CHARTS)):
+	?>
+	<?php echo $this->Html->script(
+	  array('jquery.jqplot.min','plugins/jqplot.highlighter.min','plugins/jqplot.cursor.min',
+	  			'plugins/jqplot.dateAxisRenderer.min','plugins/jqplot.json2.min'));
+	  ?>
+	<?php
+	endif;
+	?>

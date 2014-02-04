@@ -119,6 +119,7 @@ app.get('/last_expenses/:game_team_id',[auth.canAccess],gameplay.last_expenses);
 app.get('/venue/:team_id',[auth.canAccess],gameplay.get_venue);
 app.get('/leaderboard',[auth.canAccess],gameplay.leaderboard);
 app.get('/matchstatus/:matchday',[auth.canAccess],gameplay.matchstatus);
+app.get('/livestats/:game_id',[auth.canAccess],gameplay.livestats);
 app.get('/checkSession',function(req,res){
 	auth.checkSession(req,res,function(is_valid){
 		if(is_valid){
