@@ -2183,6 +2183,12 @@ class ApiController extends AppController {
 		$this->set('response',$rs);
 		$this->render('default');
 	}
+	public function livestats($game_id){
+		$response = $this->Game->livestats($game_id);
+		$this->set('response',$response);
+		$this->set('raw',true);
+		$this->render('default');
+	}
 	/**
 	* buy a player
 	*/

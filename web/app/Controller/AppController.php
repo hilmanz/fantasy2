@@ -486,5 +486,7 @@ class AppController extends Controller {
 		
 		return $banners;
 	}
+
+	
 }
 

@@ -112,4 +112,12 @@ class MatchController extends AppController {
 		$this->set('response',$response);
 		$this->render('plaintext');
 	}
+	public function livegoals($game_id){
+		$game_id = Sanitize::escape($game_id);
+		$this->layout="ajax";
+		$response = $this->Game->livegoals($game_id);
+		
+		$this->set('response',$response);
+		$this->render('plaintext');
+	}
 }

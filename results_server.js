@@ -117,7 +117,19 @@ function extractData(filename,callback){
 						data.result_winner = '';	
 					}
 					data.referee = json.SoccerFeed.SoccerDocument.MatchData.MatchOfficial.OfficialName;
-					data.matchtime = json.SoccerFeed.SoccerDocument.MatchData.Stat['$t'];
+					
+
+					if(json.SoccerFeed.SoccerDocument.MatchData.Stat.length>1){
+						for(var ii in json.SoccerFeed.SoccerDocument.MatchData.Stat){
+							if(json.SoccerFeed.SoccerDocument.MatchData.Stat[ii].Type == 'match_time'){
+								data.matchtime = json.SoccerFeed.SoccerDocument.MatchData.Stat[ii]['$t'];	
+								break;
+							}
+						}
+					}else{
+						data.matchtime = json.SoccerFeed.SoccerDocument.MatchData.Stat['$t'];	
+					}
+					
 					var teamData = json.SoccerFeed.SoccerDocument.MatchData.TeamData;
 					for(var i in teamData){
 						if(teamData[i].Side=='Home'){

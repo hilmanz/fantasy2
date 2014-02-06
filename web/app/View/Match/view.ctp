@@ -121,11 +121,15 @@ function plotChart(player_id,data){
 	var scores = 0;
 	
 	for(var i in data){
+        var poin = data[i].points;
+        if(i>0){
+            poin = data[i].points - data[i-1].points;
+        }
 		series.push([
 			date("h:i",data[i].ts),
-			data[i].points
+			poin
 		]);
-		scores += data[i].points;
+		scores = data[i].points;
 	}
 	$("#totalpoints-"+player_id).html(scores);
 	if(typeof plots[player_id] === 'undefined'){

@@ -490,7 +490,26 @@ exports.livestats = function(req,res){
 		}
 	});
 }
-
+exports.livegoals = function(req,res){
+	var client = req.redisClient;
+	client.get('goals_'+req.params.game_id,function(err,rs){
+		if(!err){
+			res.json(200,{status:1,data:JSON.parse(rs)});
+		}else{
+			res.send(200,{status:0});
+		}
+	});
+}
+exports.livematches = function(req,res){
+	var client = req.redisClient;
+	client.get('matchinfo_'+req.params.matchday,function(err,rs){
+		if(!err){
+			res.json(200,{status:1,data:JSON.parse(rs)});
+		}else{
+			res.send(200,{status:0});
+		}
+	});
+}
 exports.matchstatus = function(req,res){
 	gameplay.matchstatus(req.params.matchday,function(err,rs){
 		if(!err){

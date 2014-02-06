@@ -325,7 +325,10 @@ class Game extends AppModel {
 		$response = $this->api_call_raw('/livestats/'.$game_id);
 		return $response;
 	}
-
+	public function livegoals($game_id){
+		$response = $this->api_call_raw('/livegoals/'.$game_id);
+		return $response;	
+	}
 	
 
 }

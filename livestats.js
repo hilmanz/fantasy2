@@ -137,13 +137,14 @@ function populateData(conn,modifiers,game_id,done){
 		function(next){
 			conn.query("SELECT a.*,b.name,b.position,b.team_id \
 						FROM optadb.player_stats a\
-						INNER JOIN ffgame.master_player b\
+						INNER JOIN optadb.master_player b\
 						ON a.player_id = b.uid \
 						WHERE game_id=? \
 						ORDER BY a.id ASC \
 						LIMIT ?,100;",
 						[game_id,start],
 						function(err,rs){
+							console.log(S(this.sql).collapseWhitespace().s);
 							if(rs!=null && rs.length > 0){
 								
 								insertPlayerStats(conn,game_id,modifiers,rs,
@@ -185,7 +186,7 @@ function populateData(conn,modifiers,game_id,done){
 							",
 							[game_id,item.player_id,item.points],
 							function(err,rs){
-								//console.log(S(this.sql).collapseWhitespace().s);
+								console.log(S(this.sql).collapseWhitespace().s);
 								next();
 							});
 			},
@@ -206,7 +207,7 @@ function insertPlayerStats(conn,game_id,modifiers,data,done){
 		for(var i in stats){
 			if(stats[i]==player.stats_name){
 				if(player.player_id=='p12297'){
-					console.log(player.name,'---',stats[i],'------',player.stats_name,'->',modifiers[player.stats_name][player.position.toLowerCase()]);	
+					//console.log(player.name,'---',stats[i],'------',player.stats_name,'->',modifiers[player.stats_name][player.position.toLowerCase()]);	
 				}
 				
 				if(typeof overall[player.player_id] === 'undefined'){
@@ -285,17 +286,60 @@ function storeToRedis(conn,matchday,game_id,done){
 	async.each(
 	game_id,
 	function(item,next){
-		storeGameIdPlayerPointsToRedis(conn,item.game_id,function(err,rs){
-			console.log('next');
+		async.waterfall([
+			function(cb){
+				storeGameIdPlayerPointsToRedis(conn,item.game_id,function(err,rs){
+					cb(err);
+				});		
+			},
+			function(cb){
+				storeMatchInfoToRedis(conn,matchday,function(err,rs){
+					cb(err);
+				});			
+			}
+		],
+		function(err){
 			next();
 		});
+		
 	},
 	function(err){
 		done(err);
 	});
 }
 
-
+function storeMatchInfoToRedis(conn,matchday,done){
+	async.waterfall([
+		function(cb){
+			conn.query("SELECT a.home_score,a.away_score,a.period,a.matchtime,a.matchdate,\
+						a.venue_name,b.name AS home_name,c.name AS away_name,a.referee\
+						FROM optadb.matchinfo a\
+						INNER JOIN optadb.master_team b\
+						ON a.home_team = b.uid\
+						INNER JOIN optadb.master_team c\
+						ON a.away_team = c.uid\
+						WHERE a.matchday=? LIMIT 10;",
+						[matchday],
+						function(err,rs){
+							console.log(S(this.sql).collapseWhitespace().s);
+							cb(err,rs);
+						});
+		},
+		function(matches,cb){
+			redisClient.set('matchinfo_'+matchday,JSON.stringify(matches),function(err,rs){
+				if(!err){
+					console.log('matchinfo successfully stored');
+				}else{
+					console.log(err.message);
+				}
+				cb(err);
+			});
+		}
+	],
+	function(err){
+		done(err);
+	});
+}
 function storeGameIdPlayerPointsToRedis(conn,game_id,done){
 	console.log('storeGameIdPlayerPointsToRedis','store to cache ',game_id);
 
@@ -346,6 +390,28 @@ function storeGameIdPlayerPointsToRedis(conn,game_id,done){
 					console.log('stats successfully stored');
 				}else{
 					console.log(err.message);
+				}
+				cb(err);
+			});
+		},
+		function(cb){
+			//save the goal stats into redis cache
+			conn.query("SELECT a.time,a.team_id,a.player_id,b.name \
+						FROM optadb.goals a\
+						INNER JOIN optadb.master_player b \
+						ON a.player_id = b.uid\
+						WHERE game_id = ? LIMIT 20;",
+						[game_id],function(err,rs){
+							cb(err,rs);
+						});
+		},
+		function(goals,cb){
+			console.log(goals);
+			redisClient.set('goals_'+game_id,JSON.stringify(goals),function(err,rs){
+				if(!err){
+					console.log('goals stats successfully stored');
+				}else{
+					console.log('setup goals',err.message);
 				}
 				cb(err,rs);
 			});
