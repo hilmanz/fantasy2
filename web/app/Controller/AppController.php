@@ -94,6 +94,8 @@ class AppController extends Controller {
 		
 			if($this->isUserLogin()){
 				$this->userData = $this->getUserData();
+				
+				
 				$this->initPerks();
 				
 				//prepare everything up.
@@ -107,7 +109,6 @@ class AppController extends Controller {
 
 				$this->userDetail = $this->User->findByFb_id($this->userData['fb_id']);
 				
-
 				$point = $this->Point->findByTeam_id(@$this->userDetail['Team']['id']);
 				$this->userPoints = @$point['Point']['points'] + @$point['Point']['extra_points'];
 				$this->userRank = @$point['Point']['rank'];

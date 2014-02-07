@@ -330,6 +330,40 @@ class Game extends AppModel {
 		return $response;	
 	}
 	
+	public function livematches(){
+		$rs = $this->api_call('/fixtures');
+		$fixtures = $rs['matches'];
+		
+		$matchday = 0;
+		for($i=0;$i<sizeof($fixtures);$i++){
+			if($fixtures[$i]['period']=='PreMatch'){
+				$matchday = $fixtures[$i]['matchday'];
+				break;
+			}
+		}
+		$response = $this->api_call('/livematches/'.$matchday);
+		$is_live = 1;
+		if(sizeof($response['data'])==0){
+			$matchday -= 1; //we use the previous matches
+			$is_live = 0;
+		}
+		$matches = array();
+		for($i=0;$i<sizeof($fixtures);$i++){
+			if($fixtures[$i]['matchday']==$matchday){
+
+				$matches[] = $fixtures[$i];
+			}
+		}
+
+		return json_encode(
+			array('status'=>1,'data'=>array('matches'=>$matches,
+				  'live'=>$is_live,
+				  'fixtures'=>$fixtures,
+				  'live_data'=>$response['data']
+				))
+		);
+	}
+
 
 }
 

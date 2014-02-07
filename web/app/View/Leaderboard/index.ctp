@@ -65,7 +65,7 @@ $overall = isset($overall) ? "selected='selected'":"";
                   <tr class="odd">
                     <td class="l-rank"><?=number_format($no)?></td>
                     <td class="l-club"><?=h($t['Team']['team_name'])?></td>
-                    <td class="l-manager"><?=h($t['Manager']['name'])?></td>
+                    <td class="l-manager"><a href="#" title="<?=$t['manager_id']?>"><?=h($t['Manager']['name'])?></a></td>
                     <td class="l-points alignright"><?=number_format($t['Point']['points'])?></td>
                   </tr>
                   <?php

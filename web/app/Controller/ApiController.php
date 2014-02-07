@@ -2184,7 +2184,39 @@ class ApiController extends AppController {
 		$this->render('default');
 	}
 	public function livestats($game_id){
+		$game_id = Sanitize::paranoid($game_id);
+		$rs = $this->Game->query("SELECT home_id,away_id,b.name AS home_name,c.name AS away_name 
+							FROM ffgame.game_fixtures a
+							INNER JOIN ffgame.master_team b
+							ON a.home_id = b.uid
+							INNER JOIN ffgame.master_team c
+							ON a.away_id = c.uid
+							WHERE a.game_id='{$game_id}'
+							LIMIT 1;");
+
 		$response = $this->Game->livestats($game_id);
+		$data = json_decode($response,true);
+		$data['fixture']  = array(
+			'home'=>$rs[0]['b']['home_name'],
+			'away'=>$rs[0]['c']['away_name'],
+			'home_id'=>$rs[0]['a']['home_id'],
+			'away_id'=>$rs[0]['a']['away_id']
+		);
+		
+		$this->set('response',$data);
+		$this->render('default');
+	}
+	
+	public function livegoals($game_id){
+		$response = $this->Game->livegoals($game_id);
+		$this->set('response',$response);
+		$this->set('raw',true);
+		$this->render('default');
+	}
+	public function livematches(){
+		//first we have to know our current
+		$matchday = 10;
+		$response = $this->Game->livematches($matchday);
 		$this->set('response',$response);
 		$this->set('raw',true);
 		$this->render('default');

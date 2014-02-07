@@ -43,6 +43,7 @@
 
                 <?php if($USER_IS_LOGIN):?>
                      <?php
+                        
                        $user_masked_id = intval(Configure::read('RANK_RANDOM_NUM')) + intval($USER_DATA['team']['id']);
                      ?>
           			 <div id="header">

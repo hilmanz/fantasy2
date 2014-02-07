@@ -121,7 +121,7 @@ app.get('/leaderboard',[auth.canAccess],gameplay.leaderboard);
 app.get('/matchstatus/:matchday',[auth.canAccess],gameplay.matchstatus);
 app.get('/livestats/:game_id',[auth.canAccess],gameplay.livestats);
 app.get('/livegoals/:game_id',[auth.canAccess],gameplay.livegoals);
-app.get('/livegoals/:matchday',[auth.canAccess],gameplay.livematches);
+app.get('/livematches/:matchday',[auth.canAccess],gameplay.livematches);
 app.get('/checkSession',function(req,res){
 	auth.checkSession(req,res,function(is_valid){
 		if(is_valid){

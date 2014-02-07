@@ -484,7 +484,39 @@ exports.livestats = function(req,res){
 	var client = req.redisClient;
 	client.get('match_'+req.params.game_id,function(err,rs){
 		if(!err){
-			res.json(200,{status:1,data:JSON.parse(rs)});
+			var player_stats = JSON.parse(rs);
+			client.get('playerrefs_'+req.params.game_id,function(err,lineup){
+				if(!err){
+					client.get('teamstats_'+req.params.game_id,function(err,matchstats){
+						if(!err){
+							client.get('fixture_'+req.params.game_id,function(err,fixture){
+								if(!err){
+									client.get('accstats_'+req.params.game_id,function(err,accstats){
+										if(!err){
+											res.json(200,{status:1,data:{
+												lineup:JSON.parse(lineup),
+												matchinfo:JSON.parse(fixture),
+												accumulative:filterAccumulativeStats(JSON.parse(accstats)),
+												stats:player_stats}
+											});
+										}else{
+											res.send(200,{status:0});
+										}
+									});
+								}else{
+									res.send(200,{status:0});
+								}	
+							});	
+						}else{
+							res.send(200,{status:0});
+						}
+					});
+					
+				}else{
+					res.send(200,{status:0});
+				}
+			});
+			
 		}else{
 			res.send(200,{status:0});
 		}
@@ -589,4 +621,74 @@ exports.leaderboard = function(req,res){
 			}
 		}
 	});
+}
+
+
+//other functions
+function filterAccumulativeStats(stats){
+	var teamstats = {};
+	for(var i in stats){
+		if(typeof teamstats[stats[i].team_id] === 'undefined'){
+			teamstats[stats[i].team_id] = [];
+		}
+		if(isAccumulativeStatsOk(stats[i].stats_name)){
+			teamstats[stats[i].team_id].push({
+				name:stats[i].stats_name,
+				value:stats[i].total
+			});
+		}
+	}
+	return teamstats;
+}
+//checking if the stats_name is the stats we want to include in output
+function isAccumulativeStatsOk(stats_name){
+	var valid_stats = [
+		'ontarget_scoring_att',
+		'total_scoring_att',
+		'att_ibox_blocked',
+		'att_ibox_goal',
+		'att_ibox_miss',
+		'att_ibox_target',
+		'att_obox_blocked',
+		'att_obox_goal',
+		'att_obox_miss',
+		'att_obox_target',
+		'att_ibox_goal',
+		'att_obox_goal',
+		'att_ibox_post',
+		'att_obox_post',
+		'big_chance_created',
+		'shot_fastbreak',
+		'total_scoring_att',
+		'accurate_cross_nocorner',
+		'total_cross_nocorner',
+		'accurate_through_ball',
+		'total_through_ball',
+		'final_third_entries',
+		'pen_area_entries',
+		'passes_left',
+		'passes_right',
+		'fouled_final_third',
+		'duel_won',
+		'aerial_won',
+		'won_contest',
+		'won_tackle',
+		'total_tackle',
+		'effective_head_clearance',
+		'blocked_pass',
+		'interception',
+		'outfielder_block',
+		'six_yard_block',
+		'blocked_cross',
+		'offside_provoked',
+		'error_lead_to_shot',
+		'error_lead_to_goal',
+		'unsuccessful_touch',
+		'dispossessed'
+	];
+	for(var i in valid_stats){
+		if(valid_stats[i] == stats_name){
+			return true;
+		}
+	}
 }
