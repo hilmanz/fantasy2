@@ -336,7 +336,7 @@ class Game extends AppModel {
 		
 		$matchday = 0;
 		for($i=0;$i<sizeof($fixtures);$i++){
-			if($fixtures[$i]['period']=='PreMatch'){
+			if($fixtures[$i]['period']!='FullTime'){
 				$matchday = $fixtures[$i]['matchday'];
 				break;
 			}

@@ -535,9 +535,12 @@ exports.livegoals = function(req,res){
 exports.livematches = function(req,res){
 	var client = req.redisClient;
 	client.get('matchinfo_'+req.params.matchday,function(err,rs){
+
 		if(!err){
+			console.log('livematches',JSON.parse(rs));
 			res.json(200,{status:1,data:JSON.parse(rs)});
 		}else{
+			console.log('livematches',err.message);
 			res.send(200,{status:0});
 		}
 	});
