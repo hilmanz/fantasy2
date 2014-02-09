@@ -14,11 +14,14 @@ var dateFormat = require('dateformat');
 var redis = require('redis');
 var player_stats_category = require(path.resolve('./libs/game_config')).player_stats_category;
 var S = require('string');
+var argv = require('optimist').argv;
+
 var pool  = mysql.createPool({
    host     : config.database.host,
    user     : config.database.username,
    password : config.database.password,
 });
+
 
 
 var redisClient = redis.createClient(config.redis.port,config.redis.host);
@@ -29,10 +32,15 @@ pool.getConnection(function(err,conn){
 		async.waterfall([
 			function(cb){
 				//get the current matchday
-				getCurrentMatchday(conn,cb);
+				if(typeof argv.matchday === 'undefined'){
+					getCurrentMatchday(conn,cb);	
+				}else{
+					cb(null,argv.matchday);
+				}
+				
 			},
 			function(matchday,cb){
-				//console.log('matchday -> ',matchday);
+				console.log('matchday -> ',matchday);
 				//get the list of game_ids of those matchday
 				getGameIdsByMatchday(conn,matchday,cb);
 			},
@@ -487,8 +495,11 @@ function storeGameIdPlayerPointsToRedis(conn,game_id,done){
 		},
 		function(cb){
 			//save the playerrefs stats into redis cache
-			conn.query("SELECT * FROM optadb.playerrefs \
-						WHERE game_id=? ORDER BY position LIMIT 100;",
+			conn.query("SELECT a.*,b.first_name,b.last_name,b.known_name \
+						FROM optadb.playerrefs a \
+						INNER JOIN optadb.master_player b\
+						ON a.player_id = b.uid\
+						WHERE a.game_id=? ORDER BY a.position LIMIT 100;",
 						[game_id],
 						function(err,rs){
 							console.log(S(this.sql).collapseWhitespace().s);
