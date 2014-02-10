@@ -343,14 +343,19 @@ class Game extends AppModel {
 		}
 		$response = $this->api_call('/livematches/'.$matchday);
 		$is_live = 1;
+		$show_stats = 0;
 		if(sizeof($response['data'])==0){
 			$matchday -= 1; //we use the previous matches
 			$is_live = 0;
+			//check if the previous matchday has cached stats.
+			$response = $this->api_call('/livematches/'.$matchday);
+			if(sizeof($response['data'])>0){
+				$show_stats = 1;
+			}
 		}
 		$matches = array();
 		for($i=0;$i<sizeof($fixtures);$i++){
 			if($fixtures[$i]['matchday']==$matchday){
-
 				$matches[] = $fixtures[$i];
 			}
 		}
@@ -359,7 +364,8 @@ class Game extends AppModel {
 			array('status'=>1,'data'=>array('matches'=>$matches,
 				  'live'=>$is_live,
 				  'fixtures'=>$fixtures,
-				  'live_data'=>$response['data']
+				  'live_data'=>$response['data'],
+				  'show_stats'=>$show_stats
 				))
 		);
 	}
