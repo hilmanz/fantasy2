@@ -569,6 +569,7 @@ function handleError(res){
 //sale a player
 exports.sale = function(req,res){
 	gameplay.sale(
+		req.redisClient,
 		req.body.window_id,
 		req.body.game_team_id,
 		req.body.player_id,

@@ -1172,7 +1172,7 @@ function getTransferWindow(done){
 * Change - 14/10/2013 
 * player who already bought cannot be sold on the same transfer window.
 */
-function sale(window_id,game_team_id,player_id,done){
+function sale(redisClient,window_id,game_team_id,player_id,done){
 	var async = require('async');
 	prepareDb(function(conn){
 		async.waterfall(
@@ -1367,6 +1367,16 @@ function sale(window_id,game_team_id,player_id,done){
 							callback(err,result);
 						}
 					);
+				},
+				function(result,callback){
+					//reset the cache
+					redisClient.set(
+						'game_team_lineup_'+game_team_id
+						,JSON.stringify(null)
+						,function(err,lineup){
+							console.log('LINEUP','reset the cache',lineup);
+							callback(err,result);
+						});
 				}
 			],
 			function(err,result){
