@@ -7,7 +7,7 @@ exports.setPool = function(pool){
 }
 
 exports.getLineup = function(req,res){
-	gameplay.getLineup(req.params.id,
+	gameplay.getLineup(req.redisClient,req.params.id,
 		function(err,rs){
 			if(rs!=null){
 				res.send(200,rs);
@@ -48,7 +48,7 @@ exports.getCash = function(req,res){
 }
 exports.setLineup = function(req,res){
 	
-	gameplay.setLineup(req.body.team_id,
+	gameplay.setLineup(req.redisClient,req.body.team_id,
 						JSON.parse(req.body.players),
 						req.body.formation,
 		function(err,rs){
@@ -234,22 +234,28 @@ exports.player_data = function(req,res){
 	async.waterfall(
 		[
 			function(callback){
+				console.log('getPlayers',req.params.id,'retrieving player data');
 				gameplay.getPlayerDetail(req.params.id,function(err,player){
+					console.log('getPlayers',req.params.id,player);
 					callback(err,player);
 				});
 			},
 			function(player,callback){
+				console.log('getPlayers',req.params.id,'retrieving player stats');
 				gameplay.getPlayerStats(
 							req.params.id,
 							function(err,rs){
+								console.log('getPlayers',req.params.id,rs);
 								callback(err,{player:player,stats:rs});	
 							});
 			},
 			function(result,callback){
 				if(result.player != null){
+					console.log('getPlayers',req.params.id,'retrieving player overall');
 					gameplay.getPlayerOverallStats(0,
 												   result.player.player_id,
 												   function(err,rs){
+						console.log('getPlayers',req.params.id,rs);
 						result.overall_stats = rs;
 						callback(err,result);
 					});
@@ -278,11 +284,14 @@ exports.player_data = function(req,res){
 		],
 		function(err,result){
 			if(err){
+				console.log('getPlayers',req.params.id,'ERROR',result);
 				handleError(res);
 			}else{
 				if(result){
+					console.log('getPlayers',req.params.id,'OK',result);
 					res.json(200,{status:1,data:result});
 				}else{
+					console.log('getPlayers',req.params.id,'ERROR',result);
 					res.send(200,{status:0,data:{player:{},stats:[]}});
 				}
 			}

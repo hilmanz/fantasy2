@@ -21,27 +21,50 @@ function prepareDb(callback){
 		callback(conn);
 	});
 }
-
+//
 //get current lineup setup
-function getLineup(game_team_id,callback){
+function getLineup(redisClient,game_team_id,callback){
 	prepareDb(function(conn){
 		async.waterfall(
 			[
 				function(callback){
-					conn.query("SELECT a.player_id,a.position_no,\
-					b.name,b.position,b.known_name \
-					FROM ffgame.game_team_lineups a\
-					INNER JOIN ffgame.master_player b\
-					ON a.player_id = b.uid\
-					WHERE a.game_team_id=? \
-					AND EXISTS ( SELECT 1 FROM ffgame.game_team_players c \
-								WHERE c.game_team_id = a.game_team_id \
-									AND c.player_id = a.player_id LIMIT 1)\
-					LIMIT 16",
-					[game_team_id],
-					function(err,rs){
-							callback(err,rs);	
+					//check if we have the cached data
+					console.log('LINEUP','CHECKING LINEUP');
+					console.log('LINEUP','REDIS KEY : ','game_team_lineup_'+game_team_id);
+					redisClient.get('game_team_lineup_'+game_team_id,function(err,lineup){
+						var rs = JSON.parse(lineup);
+						console.log('LINEUP','-->',rs);
+						callback(err,rs);
 					});
+					//
+				},
+				function(cachedData,callback){
+					if(cachedData!=null){
+						callback(null,cachedData);	
+					}else{
+						conn.query("SELECT a.player_id,a.position_no,\
+						b.name,b.position,b.known_name \
+						FROM ffgame.game_team_lineups a\
+						INNER JOIN ffgame.master_player b\
+						ON a.player_id = b.uid\
+						WHERE a.game_team_id=? \
+						AND EXISTS ( SELECT 1 FROM ffgame.game_team_players c \
+									WHERE c.game_team_id = a.game_team_id \
+										AND c.player_id = a.player_id LIMIT 1)\
+						LIMIT 16",
+						[game_team_id],
+						function(err,rs){
+								redisClient.set(
+									'game_team_lineup_'+game_team_id
+									,JSON.stringify(rs)
+									,function(err,lineup){
+										console.log('LINEUP','store to cache',rs);
+										callback(err,rs);
+									});
+						});
+					}
+
+					
 				},
 				function(result,callback){
 					conn.query("SELECT formation FROM ffgame.game_team_formation\
@@ -67,7 +90,7 @@ function getLineup(game_team_id,callback){
 	});
 	
 }
-function setLineup(game_team_id,setup,formation,done){
+function setLineup(redisClient,game_team_id,setup,formation,done){
 	prepareDb(function(conn){
 		var players = [];
 		for(var i in setup){
@@ -142,6 +165,16 @@ function setLineup(game_team_id,setup,formation,done){
 								function(err,rs){
 									callback(err,result);
 								});
+				},
+				function(result,callback){
+					//reset the cache
+					redisClient.set(
+									'game_team_lineup_'+game_team_id
+									,JSON.stringify(null)
+									,function(err,lineup){
+										console.log('LINEUP','reset the cache',lineup);
+										callback(err,result);
+									});
 				}
 			],
 			function(err,result){
@@ -290,7 +323,7 @@ function getPlayers(game_team_id,callback){
 
 //get user's budget
 function getBudget(game_team_id,callback){
-	sql = "SELECT SUM(initial_budget+total) AS budget \
+	var sql = "SELECT SUM(initial_budget+total) AS budget \
 			FROM (SELECT budget AS initial_budget,0 AS total FROM ffgame.game_team_purse WHERE game_team_id = ?\
 			UNION ALL\
 			SELECT 0,SUM(amount) AS total FROM ffgame.game_team_expenditures WHERE game_team_id = ?) a;";
@@ -311,7 +344,10 @@ function getBudget(game_team_id,callback){
 * get player master detail
 */
 function getPlayerDetail(player_id,callback){
-	sql = "SELECT a.uid AS player_id,a.name,a.position,\
+	
+	prepareDb(function(conn){
+
+		conn.query("SELECT a.uid AS player_id,a.name,a.position,\
 		a.first_name,a.last_name,a.known_name,a.birth_date,\
 		a.weight,a.height,a.jersey_num,a.real_position,a.real_position_side,\
 		a.country,team_id AS original_team_id,\
@@ -319,11 +355,10 @@ function getPlayerDetail(player_id,callback){
 		FROM ffgame.master_player a\
 		INNER JOIN ffgame.master_team b\
 		ON a.team_id = b.uid\
-		WHERE a.uid = ? LIMIT 1;";
-	prepareDb(function(conn){
-		conn.query(sql,
+		WHERE a.uid = ? LIMIT 1;",
 				[player_id],
 				function(err,rs){
+					console.log('getPlayers',player_id,'getPlayerDetail',S(this.sql).collapseWhitespace().s);
 					conn.end(function(e){
 						if(rs!=null && rs.length==1){
 							callback(err,rs[0]);	
@@ -339,7 +374,7 @@ function getPlayerDetail(player_id,callback){
 * get team's player detail
 */
 function getTeamPlayerDetail(game_team_id,player_id,callback){
-	sql = "SELECT a.uid AS player_id,a.name,a.position,\
+	var sql = "SELECT a.uid AS player_id,a.name,a.position,\
 			a.first_name,a.last_name,a.known_name,a.birth_date,\
 			a.weight,a.height,a.jersey_num,a.real_position,a.real_position_side,\
 			a.country,team_id AS original_team_id,\
@@ -376,7 +411,7 @@ function getTeamPlayerDetail(game_team_id,player_id,callback){
 * get player master stats
 */
 function getPlayerStats(player_id,callback){
-	sql = "SELECT a.game_id,a.points,a.performance,b.matchday\
+	var sql = "SELECT a.game_id,a.points,a.performance,b.matchday\
 			FROM ffgame_stats.master_player_performance a\
 			INNER JOIN ffgame.game_fixtures b\
 			ON a.game_id = b.game_id \
@@ -396,6 +431,7 @@ function getPlayerStats(player_id,callback){
 *	get player's overall stats
 */
 function getPlayerOverallStats(game_team_id,player_id,callback){
+	var sql = "";
 	if(game_team_id!=0){
 		sql = "SELECT stats_name,stats_category,SUM(stats_value) AS total,SUM(a.points) as points\
 				FROM ffgame_stats.game_team_player_weekly a\
@@ -425,7 +461,7 @@ function getPlayerOverallStats(game_team_id,player_id,callback){
 */
 function getPlayerTeamStats(game_team_id,player_id,callback){
 
-	sql = "SELECT a.game_id,SUM(b.points) AS points,a.performance,b.matchday\
+	var sql = "SELECT a.game_id,SUM(b.points) AS points,a.performance,b.matchday\
 	FROM ffgame_stats.game_match_player_points a\
 	INNER JOIN\
 	ffgame_stats.game_team_player_weekly b\
@@ -466,6 +502,7 @@ function getPlayerDailyTeamStats(game_team_id,player_id,player_pos,done){
 			pos = 'g';
 		break;
 	}
+	var sql = "";
 	if(game_team_id!=0){
 		sql = "SELECT a.game_id,stats_name,stats_category,SUM(stats_value) AS total,\
 				SUM(points) as points\
