@@ -800,7 +800,7 @@ function distribute_weekly_cash(conn,teams,done){
 					function(points,c){
 						console.log('Weekly_cash','adding #',team.game_team_id,' matchday#',last_matchday,
 									 'points:',points.total_points);
-						if(points.total_points == null){
+						if(points.total_points == null || points.total_points < 0){
 							points.total_points = 0;
 						}
 						//adding cash

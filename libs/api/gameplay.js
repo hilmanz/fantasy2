@@ -47,11 +47,11 @@ function getLineup(redisClient,game_team_id,callback){
 						FROM ffgame.game_team_lineups a\
 						INNER JOIN ffgame.master_player b\
 						ON a.player_id = b.uid\
+						INNER JOIN ffgame.game_team_players c\
+						ON c.game_team_id = a.game_team_id AND\
+						c.player_id = a.player_id\
 						WHERE a.game_team_id=? \
-						AND EXISTS ( SELECT 1 FROM ffgame.game_team_players c \
-									WHERE c.game_team_id = a.game_team_id \
-										AND c.player_id = a.player_id LIMIT 1)\
-						LIMIT 16",
+						LIMIT 16;",
 						[game_team_id],
 						function(err,rs){
 								redisClient.set(
