@@ -189,7 +189,9 @@ exports.check_violation = function(conn,game_id,game_team_id,original_team_id,ca
 	});
 	
 }
-
+//Update
+//12/02/2014
+//the penalty only given once per season
 function add_rules(conn,game_id,game_team_id,game_type,done){
 	var async = require('async');
 
@@ -200,7 +202,7 @@ function add_rules(conn,game_id,game_team_id,game_type,done){
 				var can_punish = true;
 				//we can only give new punishment if all punishment is done.
 				conn.query("SELECT COUNT(*) AS total FROM ffgame.game_punishments \
-							WHERE game_team_id = ? AND punishment='home_income_cuts' AND n_status=0;",
+							WHERE game_team_id = ? AND punishment='home_income_cuts';",
 							[game_team_id],function(err,rs){
 								try{
 									if(rs[0].total > 0){
@@ -242,7 +244,7 @@ function add_rules(conn,game_id,game_team_id,game_type,done){
 				var can_punish = true;
 				//we can only give new punishment if all punishment is done.
 				conn.query("SELECT COUNT(*) AS total FROM ffgame.game_punishments \
-							WHERE game_team_id = ? AND punishment='home_balance_cuts' AND n_status=0;",
+							WHERE game_team_id = ? AND punishment='home_balance_cuts';",
 							[game_team_id],function(err,rs){
 								try{
 									if(rs[0].total > 0){
@@ -291,9 +293,10 @@ function add_rules(conn,game_id,game_team_id,game_type,done){
 		async.waterfall([
 			function(cb){
 				var can_punish = true;
-				//we can only give new punishment if all punishment is done.
+				//--we can only give new punishment if all punishment is done.-- Obseleted
+
 				conn.query("SELECT COUNT(*) AS total FROM ffgame.game_punishments \
-							WHERE game_team_id = ? AND punishment='away_balance_cuts' AND n_status=0;",
+							WHERE game_team_id = ? AND punishment='away_balance_cuts';",
 							[game_team_id],function(err,rs){
 								try{
 									if(rs[0].total > 0){

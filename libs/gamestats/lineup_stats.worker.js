@@ -520,7 +520,7 @@ function getPlayerDailyTeamStats(conn,game_team_id,player_id,player_pos,matchday
 		break;
 	}
 	
-	sql = "SELECT a.game_id,stats_name,stats_value\
+	var sql = "SELECT a.game_id,stats_name,stats_value\
 			FROM ffgame_stats.master_player_stats a \
 			INNER JOIN ffgame.game_fixtures b\
 			ON a.game_id = b.game_id\
