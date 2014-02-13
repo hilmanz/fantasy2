@@ -14,7 +14,8 @@ class CouponController extends AppController {
  * @var string
  */
 	public $name = 'Coupon';
-
+	private $error_codes = array(); //an array of invalid coupon codes.
+	private $success_codes = array();
 	//display the available coupons, 20 items each
 	public function index(){
 		$this->paginate = array('limit'=>20,
@@ -136,4 +137,77 @@ class CouponController extends AppController {
 		
 		$this->render('response');
 	}
+
+	/*
+	* user will upload the csv file, and we parse the csv, and update the code usage.
+	* CSV Format : 
+	* code,purchase_date
+	*/
+	public function update_data($coupon_id){
+		$coupon = $this->Coupon->findById($coupon_id);
+		$this->set('coupon',$coupon);
+	}
+	public function import_csv($coupon_id){
+		
+		if(move_uploaded_file($_FILES['csv']['tmp_name'], 
+							Configure::read('CSV_DIR').Inflector::slug($_FILES['csv']['name']))){
+			$this->Session->setFlash("The file is uploaded successfully !");
+			$this->import_data($coupon_id,
+								Configure::read('CSV_DIR').Inflector::slug($_FILES['csv']['name'])
+								);
+		}else{
+			$this->Session->setFlash("Cannot import the file, please try again later !");
+		}
+		$coupon = $this->Coupon->findById($coupon_id);
+		$this->set('coupon',$coupon);
+	}
+
+	private function import_data($coupon_id,$filename){
+		$fp = fopen($filename,"r");
+		while(!feof($fp)){
+			$str = fgets($fp,4096);
+			$this->update_from_csv($coupon_id,$str);
+		}
+		fclose($fp);
+		$this->set('success_codes',$this->success_codes);
+		$this->set('error_codes',$this->error_codes);
+
+	}
+	private function update_from_csv($coupon_id,$str){
+		$str = str_replace("\"","",$str);
+		$str = str_replace(";",",",$str);
+		$arr = explode(",",$str);
+
+		$this->loadModel('CouponCode');
+
+		//1. make sure that the coupon code is valid.
+		$code = $this->CouponCode->find('first',array('conditions'=>array(
+			'coupon_id'=>$coupon_id,
+			'coupon_code'=>$arr[0],
+			'paid'=>0
+		)));
+
+		if($code['CouponCode']['coupon_code']==$arr[0] && strlen($code['CouponCode']['coupon_code']) > 10){
+			$this->CouponCode->id = $code['CouponCode']['id'];
+			$rs = $this->CouponCode->save(array(
+				'paid'=>1,
+				'paid_dt'=>date("Y-m-d H:i:s",strtotime($arr[1]))
+			));
+			if(!$rs){
+				$this->error_codes[] = array('code'=>$arr[0],
+											'purchase_date'=>$arr[1],
+											'reason'=>'unable to update the code status');	
+			}else{
+				$this->success_codes[] = array('code'=>$arr[0],
+											'purchase_date'=>$arr[1]);	
+				return true;
+			}
+		}else{
+			$this->error_codes[] = array('code'=>$arr[0],
+										'purchase_date'=>$arr[1],
+										'reason'=>'the code is not found or already been paid');
+		}
+
+	}
+
 }

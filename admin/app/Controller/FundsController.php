@@ -42,7 +42,45 @@ class FundsController extends AppController {
 									WHERE game_team.id IN (".implode(',',$team_ids).")");
 		$this->set('teams',$teams);
 	}
+	public function history($transaction_id=null){
+		$this->loadModel('AddFundHistory');
 
+		if($transaction_id!=null){
+			$transaction = $this->Game->query("SELECT * 
+											FROM ffgame.add_fund_history a
+											WHERE id = {$transaction_id}
+											LIMIT 1");
+			$team_ids = unserialize($transaction[0]['a']['team_ids']);
+			
+
+			$transaction[0]['a']['teams'] = $this->Game->query("SELECT * FROM ffgame.game_teams game_team
+										INNER JOIN ffgame.game_users game_users
+										ON game_users.id = game_team.user_id
+										INNER JOIN users user
+										ON user.fb_id = game_users.fb_id
+										INNER JOIN teams teams
+										ON teams.user_id = user.id
+										INNER JOIN ffgame.master_team master_team
+										ON master_team.uid = teams.team_id
+										WHERE game_team.id IN (".implode(',',$team_ids).")");
+
+			$this->set('transaction',$transaction[0]['a']);
+			$this->set('view_transaction',true);
+			
+
+		}
+			
+		$this->paginate = array('limit'=>10,
+								'order'=>array(
+									'AddFundHistory.id'=>'DESC'
+								)
+						);
+		$rs = $this->paginate('AddFundHistory');
+		
+		$this->set('rs',$rs);
+		
+		
+	}
 	public function bulk_send(){
 		if($this->request->is('post')){
 			if(md5($this->request->data['authcode'])==md5("aldilathehuns!")){

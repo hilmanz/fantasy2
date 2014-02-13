@@ -1,7 +1,9 @@
 <h3>
 	Give Funds
 </h3>
-
+<div class="row">
+	<a href="<?=$this->Html->url('/funds/history')?>" class="button">View History</a>
+</div>
 <h4>Search Users</h4>
 <div class="row">
 Enter the list of user's IDs.
@@ -66,6 +68,7 @@ Enter the list of user's IDs.
 			</div>
 	</form>
 </div>
+
 <script>
 $("#btn-search").on('click',function(e){
 	$("#frm1").submit();

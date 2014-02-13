@@ -102,13 +102,17 @@ function onJsonData(data,done){
 				//home stats
 				//console.log(data[0].PlayerLineUp.MatchPlayer);
 				console.log('Processing Home Stats');
-				
-				getPlayerStats(game_id,
+				try{
+					getPlayerStats(game_id,
 								data[0].TeamRef,
 								data[0].PlayerLineUp.MatchPlayer,
 								function(err,result){
 									callback(err,game_id,data);
-				});
+					});
+				}catch(e){
+					callback(new Error('no lineup data just yet'),game_id,data);
+				}
+				
 	
 				//callback(null,game_id,data);
 			},

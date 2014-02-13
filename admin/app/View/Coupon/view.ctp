@@ -74,7 +74,7 @@
 		</table>
 	</div>
 	<div class="row">
-		<a href="#" class="button">Upload Data</a><br/>
+		<a href="<?=$this->Html->url('/coupon/update_data/'.$coupon['Coupon']['id'])?>" class="button">Upload Data</a><br/>
 		<a href="<?=$this->Html->url('/coupon/download/'.$coupon['Coupon']['id'])?>" class="button">Download Unused Codes</a>
 	</div>
 </div>

@@ -370,3 +370,6 @@ Configure::write('avatar_web_dir','/files/');
 Configure::write('avatar_web_url','http://localhost/fantasy/files/');
 Configure::write('WWW_URL','http://localhost/fantasy');
 Configure::write('RANK_RANDOM_NUM',139670);
+
+Configure::write('CSV_DIR','/home/duf/node_workspace/fantasy_fork/admin/app/webroot/files/');
+Configure::write('CSV_WWW','http://localhost/fantasy_admin/files/');
