@@ -370,6 +370,60 @@ class Game extends AppModel {
 		);
 	}
 
+	public function redeemCode($game_team_id,$coupon_code){
+		$game_team_id = intval($game_team_id);
+		if(strlen($coupon_code) > 10){
+			$rs = $this->query("SELECT * FROM ffgame.coupon_codes a
+						WHERE coupon_code = '{$coupon_code}' 
+						AND game_team_id = 0 
+						AND n_status = 0 
+						LIMIT 1;",false);
+			
+			if(isset($rs[0]['a']['coupon_code']) 
+				&& $rs[0]['a']['coupon_code'] == $coupon_code
+				&& $rs[0]['a']['game_team_id'] == 0
+				&& $rs[0]['a']['n_status'] == 0){
+				//the code is available, then we claim the code for these user
+				$claim = $this->query("UPDATE ffgame.coupon_codes
+										SET game_team_id = {$game_team_id},
+										n_status=1,
+										redeem_dt = NOW() 
+										WHERE coupon_code='{$coupon_code}'",false);
+				if(is_array($claim)){
+					$rs = $this->api_post('/redeemCode',array(
+						'game_team_id'=>$game_team_id,
+						'coupon_code'=>$coupon_code
+					));
+					if($rs['status']==1){
+						return true;	
+					}else{
+						//if we failed to redeem the code,
+						//we set the coupon code to 0 again.
+						$reset = $this->query("UPDATE ffgame.coupon_codes
+										SET game_team_id = {$game_team_id},
+										n_status=0,
+										redeem_dt = NOW() 
+										WHERE coupon_code='{$coupon_code}'",false);
+					}
+					
+				}
+				
+			}
+		}
+	}
 
+	public function setInputAttempt($game_team_id,$input_name,$input_value){
+		$name = $input_name.'_'.$game_team_id;
+		$rs = $this->api_call('/setInputAttempt',array(
+					'name'=>$name,
+					'value'=>$input_value
+				));
+		return $rs;
+	}
+	public function getInputAttempt($game_team_id,$input_name){
+		$name = $input_name.'_'.$game_team_id;
+		$rs = $this->api_call('/getInputAttempt',array('name'=>$name));
+		return $rs;
+	}
 }
 

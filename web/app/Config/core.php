@@ -367,4 +367,11 @@ Configure::write('avatar_web_dir','/files/');
 Configure::write('avatar_web_url','http://localhost/fantasy/files/');
 Configure::write('OPTA_CUSTOMER_ID','c8bb60c8f6d0184c33a87e6f3041b9cc');
 Configure::write('STAGING',true);
-Configure::write('RANK_RANDOM_NUM',139670);
+Configure::write('RANK_RANDOM_NUM',139670); //base_id for masking user_id  
+
+//reCaptcha settings
+Configure::write('reCaptcha_PUBLIC_KEY','6Ldike4SAAAAAKCVQ6wE43JVpzlxtrPibY0a_5qZ');
+Configure::write('reCaptcha_PRIVATE_KEY','6Ldike4SAAAAAG9XwrYy8h_c0uOp012WNeleWA_W');
+
+//Redeem Code settings
+Configure::write('REDEEM_MAXIMUM_TRY',5); //how many time user can attempt to redeem the code.

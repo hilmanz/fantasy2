@@ -88,6 +88,10 @@ app.get('/cash/:game_team_id', [auth.canAccess],gameplay.getCash);
 
 app.get('/transfer_window',[auth.canAccess],gameplay.getTransferWindow);
 
+app.get('/setInputAttempt',[auth.canAccess],gameplay.setInputAttempt);
+app.get('/getInputAttempt',[auth.canAccess],gameplay.getInputAttempt);
+app.post('/redeemCode',[auth.canAccess],gameplay.redeemCode);
+
 app.get('/test',function(req,res){
 	client.get(req.query.access_token,function(err,rs){
 		console.log(rs);

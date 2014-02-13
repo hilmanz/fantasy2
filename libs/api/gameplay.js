@@ -1848,6 +1848,96 @@ function getCash(game_team_id,done){
 		});
 	});
 }
+function redeemCode(game_team_id,coupon_code,done){
+	prepareDb(function(conn){
+		async.waterfall([
+			function(callback){
+				conn.query("SELECT coin_amount,ss_dollar \
+							FROM ffgame.coupons a\
+							INNER JOIN ffgame.coupon_codes b\
+							ON a.id = b.coupon_id\
+							WHERE \
+							b.coupon_code = ?\
+							AND \
+							b.game_team_id = ? \
+							LIMIT 1;",
+				[coupon_code,game_team_id],
+				function(err,rs){
+					console.log(S(this.sql).collapseWhitespace().s);
+					try{
+						callback(err,rs[0]);
+					}catch(e){
+						callback(err,null);
+					}
+				});
+			},
+			function(redeemed,callback){
+				if(redeemed!=null){
+					//we need to know the next week game_id
+					conn.query("SELECT team_id FROM ffgame.game_teams WHERE id=? LIMIT 1",
+						 [game_team_id],
+						 function(err,rs){
+						 	console.log(S(this.sql).collapseWhitespace().s);
+						 	callback(err,redeemed,rs[0]['team_id']);
+						 });
+				}else{
+					callback(err,redeemed,0);
+				}
+			},
+			function(redeemed,team_id,callback){
+				if(redeemed!=null){
+					//we need to know next match's game_id and matchdate
+					conn.query("SELECT a.id,\
+					a.game_id,a.home_id,b.name AS home_name,a.away_id,\
+					c.name AS away_name,a.home_score,a.away_score,\
+					a.matchday,a.period,a.session_id,a.attendance,match_date\
+					FROM ffgame.game_fixtures a\
+					INNER JOIN ffgame.master_team b\
+					ON a.home_id = b.uid\
+					INNER JOIN ffgame.master_team c\
+					ON a.away_id = c.uid\
+					WHERE (home_id = ? OR away_id=?) AND period <> 'FullTime'\
+					ORDER BY a.matchday\
+					LIMIT 1;\
+					",[team_id,team_id],function(err,rs){
+						console.log(S(this.sql).collapseWhitespace().s);
+						callback(err,redeemed,team_id,rs[0]['game_id'],rs[0]['matchday']);
+					});
+				}else{
+					callback(err,redeemed,0,0,0);
+				}
+			},
+			function(redeemed,team_id,game_id,matchday,callback){
+				if(redeemed!=null){
+					conn.query("INSERT INTO ffgame.game_team_expenditures\
+							(game_team_id,item_name,item_type,amount,game_id,match_day)\
+							VALUES\
+							(?,?,?,?,?,?)\
+							ON DUPLICATE KEY UPDATE\
+							amount = VALUES(amount);",
+							[game_team_id,
+							'redeem_code_'+coupon_code,
+							 1,
+							 redeemed.ss_dollar,
+							 game_id,
+							 matchday
+							],
+							function(err,rs){
+								console.log(S(this.sql).collapseWhitespace().s);
+								callback(err,redeemed);
+							});
+				}else{
+					callback(err,redeemed);
+				}
+			}
+		],
+		function(err,result){
+			conn.end(function(e){
+				done(err,result);
+			});
+		});
+	});
+}
 var match = require(path.resolve('./libs/api/match'));
 var officials = require(path.resolve('./libs/api/officials'));
 var sponsorship = require(path.resolve('./libs/api/sponsorship'));
@@ -1878,6 +1968,7 @@ exports.buy = buy;
 exports.getWeeklyFinance = getWeeklyFinance;
 exports.getTransferWindow = getTransferWindow;
 exports.matchstatus = matchstatus;
+exports.redeemCode = redeemCode;
 exports.setPool = function(p){
 	pool = p;
 	match.setPool(pool);
