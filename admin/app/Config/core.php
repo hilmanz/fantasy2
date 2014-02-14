@@ -359,7 +359,7 @@ Configure::write('API_URL','http://localhost:3002');
 Configure::write('API_KEY','1234567890');
 Configure::write('API_SALT',md5("hello world"));
 Configure::write('INITIAL_BUDGET','100000000');
-Configure::write('DB','ffg');
+Configure::write('DB','fantasy');
 Configure::write('AVATAR_URL','http://localhost/fantasy/files/');
 Configure::write('optadb','optadb');
 Configure::write('season_id','2013');

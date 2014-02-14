@@ -90,25 +90,10 @@
 		</table>
 	</div>
 	<div class="row">
-		<h3>Used Codes</h3>
-		<table width="100%" class="table">
-			<tr>
-				<td>
-					Redeem Date
-				</td>
-				<td>
-					User
-				</td>
-				<td>
-					Code
-				</td>
-				<td>
-					Paid
-				</td>
-				<td>
-					Status
-				</td>
-			</tr>
+		<h3>REDEEM HISTORY</h3>
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" 
+		class="dataTable dataTablePlayer" id="tbl">
+		
 		</table>
 	</div>
 	<div class="row">
@@ -117,7 +102,7 @@
 	</div>
 </div>
 
-
+<?php echo $this->Html->script('jquery.dataTables.min');?>
 <script>
 var data = [];
 function loadRedeemedCode(start){
@@ -125,8 +110,23 @@ function loadRedeemedCode(start){
 				function(response){
 					if(response.status==1){
 						for(var i in response.data){
+							var paid_status = 'unpaid';
+							if(response.data[i].CouponCode.paid==1){
+								paid_status = 'paid';
+							}
+							var transaction_status = 'FAILED';
+							if(response.data[i].CouponCode.n_status==1){
+								transaction_status = 'SUCCESS';
+							}
 							data.push(
-								[]
+								[
+									response.data[i].CouponCode.redeem_dt,
+									response.data[i].User.user_id+' - '+response.data[i].User.name,
+									response.data[i].CouponCode.coupon_code,
+									paid_status,
+									transaction_status,
+
+								]
 							)
 						}
 						if(response.total_rows == 100){
@@ -137,4 +137,19 @@ function loadRedeemedCode(start){
 					}
 	});
 }
+function drawTable(){
+	
+	$('#tbl').dataTable({
+		"aaData": data,
+		"aoColumns": [
+			{ "sTitle": "Redeem Date" },
+			{ "sTitle": "User" },
+			{ "sTitle": "Code" },
+			{ "sTitle": "Payment" },
+			{ "sTitle": "Status" }
+		]
+	});
+}
+
+loadRedeemedCode(0);
 </script>

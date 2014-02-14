@@ -235,6 +235,8 @@ class CouponController extends AppController {
 	public function ajax_code_redeemed($coupon_id){
 		$start = intval($this->request->query['start']);
 		$this->loadModel('CouponCode');
+		$db = Configure::read('DB');
+
 		$coupon = $this->CouponCode->find('all',array(
 				'conditions'=>array(
 					'coupon_id'=>$coupon_id,
@@ -243,7 +245,28 @@ class CouponController extends AppController {
 				'start'=>$start,
 				'limit'=>100
 			));
+		for($i=0;$i<sizeof($coupon);$i++){
+			$team = $this->CouponCode->query("SELECT a.fb_id,a.name,a.email,a.phone_number,b.team_name,d.id
+												FROM fantasy.users a
+												INNER JOIN fantasy.teams b
+												ON b.user_id = a.id
+												INNER JOIN ffgame.game_users c
+												ON c.fb_id = a.fb_id
+												INNER JOIN ffgame.game_teams d
+												ON d.user_id = c.id
+												WHERE d.id = {$coupon[$i]['CouponCode']['game_team_id']} 
+												LIMIT 1;");
 
+			$coupon[$i]['User'] = array(
+					'fb_id'=>$team[0]['a']['fb_id'],
+					'name'=>$team[0]['a']['name'],
+					'email'=>$team[0]['a']['email'],
+					'phone_number'=>$team[0]['a']['phone_number'],
+					'team_name'=>$team[0]['b']['team_name'],
+					'user_id'=>$team[0]['d']['id']+Configure::read('RANK_RANDOM_NUM')
+				);
+			unset($team);
+		}
 		$this->set('response',array('status'=>1,'data'=>$coupon,'total_rows'=>sizeof($coupon)));
 		$this->layout="ajax";
 		$this->render('response');
