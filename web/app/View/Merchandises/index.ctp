@@ -14,6 +14,7 @@ if(isset($category_name)){
 					Online Catalog <?=$subtitle?>
 				</h1>
 				<h4>Tukarkan coin elo dan dapatkan merchandise seru dari Supersoccer Football Manager</h4>
+				<h4>Ongkos Kirim Ditanggung Pemenang</h4>
             </div>
             <div class="rowd">
 				<div class="col-content fr tr widget">

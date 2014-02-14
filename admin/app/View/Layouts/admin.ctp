@@ -64,6 +64,9 @@
                                 <li>
                                     <a href="<?=$this->Html->url('/newsletter')?>">Newsletter</a>
                                 </li>
+                                <li>
+                                    <a href="<?=$this->Html->url('/coupon')?>">Digital Coupon</a>
+                                </li>
 							</ul>
                         </li>
                     	<li><a href="#">OPTA</a>

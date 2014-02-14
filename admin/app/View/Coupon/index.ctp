@@ -9,7 +9,7 @@
 <div class="row">
 	<table width="100%" class="table">
 	<?php
-		echo $this->Html->tableHeaders(array('Date', 'Vendor', 'Service', 'Reward', 'Status','Action'));
+		echo $this->Html->tableHeaders(array('Date', 'Created By','Vendor', 'Service', 'Reward', 'Status','Action'));
 	?>
 	<?php
 	$tblArray = array();
@@ -33,6 +33,7 @@
 		}
 		$tblArray[] = array(
 			$data[$i]['Coupon']['created_dt'],
+			$data[$i]['Admin']['username'],
 			$data[$i]['Coupon']['vendor_name'],
 			$data[$i]['Coupon']['service_name'],
 			$reward,

@@ -6,19 +6,57 @@
 		<h3></h3>
 	</div>
 	<div class="row">
+
 		<?php
 			echo $this->Form->create('Coupon',array('type' => 'file'));
 		?>
+		<div>
+			<h3>Vendor</h3>
+		</div>
 		<?php
-		echo $this->Form->input('vendor_name',array('default'=>$coupon['Coupon']['vendor_name']));   
-		echo $this->Form->input('service_name',array('default'=>$coupon['Coupon']['service_name']));   
-		echo $this->Form->input('description',array('default'=>$coupon['Coupon']['description'])); 
-		echo $this->Form->input('coin_amount',array('default'=>intval($coupon['Coupon']['coin_amount']))); 
-		echo $this->Form->input('ss_dollar',array('default'=>intval($coupon['Coupon']['ss_dollar']))); 
+		echo $this->Form->input('vendor_name',
+								array('default'=>$coupon['Coupon']['vendor_name'],
+										'label'=>false));   
 		?>
+		<div>
+			<h3>Service Name</h3>
+		</div>
+		<?php
+		echo $this->Form->input('service_name',array('default'=>$coupon['Coupon']['service_name'],
+														'label'=>false));   
+		?>
+		<div>
+			<h3>Created By : <?=h($coupon['Admin']['username'])?></h3>
+		</div>
+		<div>
+			<h3>Description</h3>
+		</div>
+		<?php
+		echo $this->Form->input('description',array('default'=>$coupon['Coupon']['description'],
+														'label'=>false)); 
+		?>
+		<div>
+			<h3>Coin Reward</h3>
+		</div>
+		<?php
+		echo $this->Form->input('coin_amount',array('default'=>intval($coupon['Coupon']['coin_amount']),
+														'label'=>false)); 
+
+		?>
+		<div>
+			<h3>ss$ Reward</h3>
+		</div>
+		<?php
+		echo $this->Form->input('ss_dollar',array('default'=>intval($coupon['Coupon']['ss_dollar']),
+														'label'=>false)); 
+		?>
+		<div>
+			<h3>Image</h3>
+		</div>
 		<div>
 			<input type="file" name="img"/>
 		</div>
+		<div><h3>Status</h3></div>
 		<div>
 			<?php
 				$options = array('1'=>'Enabled','0'=>'Pending');
@@ -65,7 +103,7 @@
 					Code
 				</td>
 				<td>
-					Validity
+					Paid
 				</td>
 				<td>
 					Status
@@ -79,3 +117,24 @@
 	</div>
 </div>
 
+
+<script>
+var data = [];
+function loadRedeemedCode(start){
+	api_call("<?=$this->Html->url('/coupon/ajax_code_redeemed/'.$coupon['Coupon']['id'])?>?start="+start,
+				function(response){
+					if(response.status==1){
+						for(var i in response.data){
+							data.push(
+								[]
+							)
+						}
+						if(response.total_rows == 100){
+							loadRedeemedCode(start+100);
+						}else{
+							drawTable();
+						}
+					}
+	});
+}
+</script>

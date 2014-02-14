@@ -18,14 +18,33 @@ class CouponController extends AppController {
 	private $success_codes = array();
 	//display the available coupons, 20 items each
 	public function index(){
+		$this->loadModel('Admin');
+		$this->Coupon->bindModel(array(
+			'belongsTo'=>array('Admin'=>array(
+				'foreignKey'=>false,
+				'conditions'=>array(
+					'Coupon.creator_id=Admin.id'
+				)
+			))
+		));
 		$this->paginate = array('limit'=>20,
 								'order'=>array('Coupon.id'=>'desc')
 								);
 		$this->set('data',$this->Paginate('Coupon'));
 	}
 	public function view($coupon_id){
+		$this->loadModel('Admin');
 		$this->loadModel('CouponCode');
+		$this->Coupon->bindModel(array(
+			'belongsTo'=>array('Admin'=>array(
+				'foreignKey'=>false,
+				'conditions'=>array(
+					'Coupon.creator_id=Admin.id'
+				)
+			))
+		));
 		$coupon = $this->Coupon->findById($coupon_id);
+
 		$coupon_count = $this->CouponCode->find('count',
 												array('conditions'=>array('coupon_id'=>$coupon_id)));
 		$this->set('coupon',$coupon);
@@ -208,6 +227,26 @@ class CouponController extends AppController {
 										'reason'=>'the code is not found or already been paid');
 		}
 
+	}
+
+	/*
+	* ajax method for retrieving the redeemed code 
+	*/
+	public function ajax_code_redeemed($coupon_id){
+		$start = intval($this->request->query['start']);
+		$this->loadModel('CouponCode');
+		$coupon = $this->CouponCode->find('all',array(
+				'conditions'=>array(
+					'coupon_id'=>$coupon_id,
+					'n_status'=>1
+				),
+				'start'=>$start,
+				'limit'=>100
+			));
+
+		$this->set('response',array('status'=>1,'data'=>$coupon,'total_rows'=>sizeof($coupon)));
+		$this->layout="ajax";
+		$this->render('response');
 	}
 
 }
