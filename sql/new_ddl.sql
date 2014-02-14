@@ -86,3 +86,6 @@ CREATE TABLE ffgame.coupons (
   PRIMARY KEY (`id`),
   KEY `IDX_CREATOR` (`creator_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `ffgame_stats`.`job_queue` ADD INDEX `IDX_STATUS` (`n_status`);
+ALTER TABLE `ffgame_stats`.`job_queue_rank` ADD INDEX `IDX_STATUS` (`n_status`);
