@@ -54,10 +54,11 @@
 			<h3>Image</h3>
 		</div>
 		<div>
+			<img src="<?=Configure::read('avatar_web_url').$coupon['Coupon']['img']?>"/>
 			<input type="file" name="img"/>
 		</div>
 		<div><h3>Status</h3></div>
-		<div>
+		<div class="row">
 			<?php
 				$options = array('1'=>'Enabled','0'=>'Pending');
 				echo $this->Form->input('n_status',
@@ -66,14 +67,18 @@
 											  'default'=>$coupon['Coupon']['n_status']));
 			?>
 		</div>
+		<div class="row">
 		<?php 
-			echo $this->Form->end('Create');
+			echo $this->Form->end('Update');
 		?>
-		<a href="<?=$this->Html->url('/coupon')?>" class="button">Back to Coupon List</a>
-		<a href="<?=$this->Html->url('/coupon/generate/'.$coupon['Coupon']['id'])?>" 
-				class="button">
-				Generate Codes
-		</a>
+		</div>
+		<div class="row">
+			<a href="<?=$this->Html->url('/coupon')?>" class="button">Back to Coupon List</a>
+			<a href="<?=$this->Html->url('/coupon/generate/'.$coupon['Coupon']['id'])?>" 
+					class="button">
+					Generate Codes
+			</a>
+		</div>
 	</div>
 
 	<div class="row">

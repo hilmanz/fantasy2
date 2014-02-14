@@ -52,3 +52,37 @@ CREATE TABLE ffgame.digital_perks (
   UNIQUE KEY `IDX_GAME_TEAM_ID` (`game_team_id`,`master_perk_id`),
   KEY `IDX_AVAILABLE` (`game_team_id`,`available`,`n_status`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE ffgame.coupon_codes (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `coupon_id` bigint(21) DEFAULT NULL,
+  `coupon_code` varchar(13) DEFAULT NULL,
+  `created_dt` datetime DEFAULT NULL,
+  `redeem_dt` datetime DEFAULT NULL,
+  `paid_dt` datetime DEFAULT NULL,
+  `game_team_id` bigint(21) DEFAULT NULL,
+  `paid` tinyint(3) DEFAULT '0' COMMENT '0->unpaid, 1->paid',
+  `n_status` tinyint(3) DEFAULT '0' COMMENT '0->unused, 1->used',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE_CODE` (`coupon_code`),
+  KEY `IDX_GAME_TEAM_ID` (`game_team_id`),
+  KEY `IDX_STATUS` (`coupon_code`,`n_status`,`coupon_id`,`paid`),
+  KEY `IDX_AVAILABLE` (`coupon_id`,`paid`,`n_status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE ffgame.coupons (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `vendor_name` varchar(140) DEFAULT NULL,
+  `service_name` varchar(140) DEFAULT NULL,
+  `description` text,
+  `coin_amount` int(11) DEFAULT '0',
+  `ss_dollar` int(11) DEFAULT '0',
+  `img` varchar(140) DEFAULT NULL,
+  `created_dt` datetime DEFAULT NULL,
+  `creator_id` int(11) DEFAULT NULL,
+  `n_status` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `IDX_CREATOR` (`creator_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

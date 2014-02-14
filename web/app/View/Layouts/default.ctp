@@ -183,7 +183,7 @@
             </div><!-- end #container -->
             <div id="footer">
                 <div id="footNav">
-                  	<p class="fl"><a class="yellow" href="<?=$this->Html->url('/pages/privacy')?>" target="_blank">Privacy Policy</a> | <a  class="yellow" href="http://www.supersoccer.co.id/terms-and-conditions/" target="_blank">Terms And Conditions</a></p>
+                  	<p class="fl"><a class="yellow" href="<?=$this->Html->url('/pages/privacy')?>" target="_blank">Privacy Policy</a> | <a  class="yellow" href="http://www.supersoccer.co.id/pages/terms-and-conditions/" target="_blank">Terms And Conditions</a></p>
                   	<p class="fr">Copyright &copy; Supersoccer.co.id 2013</p>
                      <?php
                             if($debug>0):

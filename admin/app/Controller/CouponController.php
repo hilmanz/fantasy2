@@ -35,6 +35,35 @@ class CouponController extends AppController {
 	public function view($coupon_id){
 		$this->loadModel('Admin');
 		$this->loadModel('CouponCode');
+
+		if($this->request->is('post')){
+			if(is_array($_FILES['img'])){
+				$aFile = explode(".",$_FILES['img']['name']);
+				$ext = array_pop($aFile);
+				$filename = 'voucher_'.Inflector::slug(implode('_',$aFile)).'.'.$ext;
+				if(move_uploaded_file($_FILES['img']['tmp_name'],
+									Configure::read('avatar_img_dir').$filename)){
+					$this->request->data['Coupon']['img'] = $filename;
+					
+					$this->Coupon->id = $coupon_id;
+					$rs = $this->Coupon->save(array('img'=>$filename));
+					$this->Session->setFlash("New picture has been uploaded successfully !");
+					
+				}else{
+					$this->Session->setFlash("Please upload the Coupon/Voucher image !");
+				}
+			}
+
+			$this->Coupon->id = $coupon_id;
+			$rs = $this->Coupon->save($this->request->data['Coupon']);
+
+			if(isset($rs['Coupon'])){
+				$this->Session->setFlash("The Coupon/Voucher has been updated successfully !");
+			}else{
+				$this->Session->setFlash("Cannot update the data, please try again later !");
+			}
+		}
+
 		$this->Coupon->bindModel(array(
 			'belongsTo'=>array('Admin'=>array(
 				'foreignKey'=>false,
@@ -53,7 +82,9 @@ class CouponController extends AppController {
 	public function create(){
 		if($this->request->is('post')){
 			if(is_array($_FILES['img'])){
-				$filename = 'voucher_'.Inflector::slug($_FILES['img']['name']);
+				$aFile = explode(".",$_FILES['img']['name']);
+				$ext = array_pop($aFile);
+				$filename = 'voucher_'.Inflector::slug(implode('_',$aFile)).'.'.$ext;
 				if(move_uploaded_file($_FILES['img']['tmp_name'],
 									Configure::read('avatar_img_dir').$filename)){
 					$this->request->data['Coupon']['img'] = $filename;
@@ -96,7 +127,7 @@ class CouponController extends AppController {
 					'n_status'=>0,
 					'paid'=>0
 				),
-				'start'=>$start,
+				'offset'=>$start,
 				'limit'=>100
 			));
 			$start+=100;
