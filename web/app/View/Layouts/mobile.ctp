@@ -33,7 +33,7 @@
 			<?php if(@eregi('Android',env('HTTP_USER_AGENT'))):?>
 				<h1>Mau Main di Android?</h1>
 				<h3>Download aplikasi Football Manager versi Android untuk mendapatkan pengalaman bermain terbaik</h3>
-				<a href="<?=$this->Html->url('/dl/FantasyFootball.apk')?>" class="btn_android"> 
+				<a href="https://play.google.com/store/apps/details?id=com.fullspade.ffleague" class="btn_android"> 
 					<img src="<?=$this->Html->url('/images/mobile/android_download.png')?>" />
 				</a>
 				<h3 class="yellow">Anda harus terdaftar terlebih dahulu di versi web</h3>

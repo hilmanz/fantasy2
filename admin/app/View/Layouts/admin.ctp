@@ -67,6 +67,9 @@
                                 <li>
                                     <a href="<?=$this->Html->url('/coupon')?>">Digital Coupon</a>
                                 </li>
+                                <li>
+                                    <a href="<?=$this->Html->url('/perks')?>">Game Perks</a>
+                                </li>
 							</ul>
                         </li>
                     	<li><a href="#">OPTA</a>
