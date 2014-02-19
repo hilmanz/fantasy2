@@ -17,11 +17,13 @@ var player_stats_category = require(path.resolve('./libs/game_config')).player_s
 var pool = {};
 var frontend_schema = config.database.frontend_schema;
 var PHPUnserialize = require('php-unserialize');
+var redisClient = {};
 function prepareDb(callback){
 	pool.getConnection(function(err,conn){
 		callback(conn);
 	});
 }
+
 //
 //get current lineup setup
 function getLineup(redisClient,game_team_id,callback){
@@ -461,28 +463,40 @@ function getPlayerOverallStats(game_team_id,player_id,callback){
 * get player's team stats
 */
 function getPlayerTeamStats(game_team_id,player_id,callback){
-
-	var sql = "SELECT a.game_id,SUM(b.points) AS points,a.performance,b.matchday\
-	FROM ffgame_stats.game_match_player_points a\
-	INNER JOIN\
-	ffgame_stats.game_team_player_weekly b\
-	ON a.game_id = b.game_id  \
-	AND a.player_id = b.player_id\
-	AND a.game_team_id = b.game_team_id\
-	WHERE a.game_team_id = ?\
-	AND a.player_id = ? \
-	GROUP BY a.game_id\
-	ORDER BY a.game_id LIMIT 300;";
-	prepareDb(function(conn){
-		conn.query(sql,
-				[game_team_id,player_id],
-				function(err,rs){
-					console.log(S(this.sql).collapseWhitespace().s);
-					conn.end(function(e){
-						callback(err,rs);	
-					});
-				});
+	redisClient.get('getPlayerTeamStats_'+game_team_id+'_'+player_id,function(err,rs){
+		if(rs==null){
+			console.log('getPlayerTeamStats','query from db');
+			var sql = "SELECT a.game_id,SUM(b.points) AS points,a.performance,b.matchday\
+						FROM ffgame_stats.game_match_player_points a\
+						INNER JOIN\
+						ffgame_stats.game_team_player_weekly b\
+						ON a.game_id = b.game_id  \
+						AND a.player_id = b.player_id\
+						AND a.game_team_id = b.game_team_id\
+						WHERE a.game_team_id = ?\
+						AND a.player_id = ? \
+						GROUP BY a.game_id\
+						ORDER BY a.game_id LIMIT 300;";
+						prepareDb(function(conn){
+							conn.query(sql,
+									[game_team_id,player_id],
+									function(err,rs){
+										console.log(S(this.sql).collapseWhitespace().s);
+										conn.end(function(e){
+											redisClient.set('getPlayerTeamStats_'+game_team_id+'_'+player_id,
+															JSON.stringify(rs),
+															function(err,result){
+												callback(err,rs);	
+											});
+										});
+								});
+						});
+		}else{
+			console.log('getPlayerTeamStats','we take from cache');
+			callback(err,JSON.parse(rs));
+		}
 	});
+	
 	
 }
 /**get player daily stats relative to game_team
@@ -2039,4 +2053,7 @@ exports.setPool = function(p){
 	match.setPool(pool);
 	officials.setPool(pool);
 	sponsorship.setPool(pool);
+}
+exports.setRedisClient = function(p){
+	redisClient = p;
 }
