@@ -231,6 +231,7 @@ exports.match_results_for_user_team = function(req,res){
 }
 exports.player_data = function(req,res){
 	var async = require('async');
+	gameplay.setRedisClient(req.redisClient);
 	async.waterfall(
 		[
 			function(callback){

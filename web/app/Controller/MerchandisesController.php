@@ -189,6 +189,7 @@ class MerchandisesController extends AppController {
 		$this->set('first_name',$name['first_name']);
 		$this->set('last_name',$name['last_name']);
 		$this->set('phone_number',$this->userDetail['User']['phone_number']);
+		$this->set('email',$this->userDetail['User']['email']);
 		
 		//attach the item_id
 		$this->Session->write('po_item_id',$item_id);

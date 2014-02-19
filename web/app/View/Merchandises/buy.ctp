@@ -31,6 +31,10 @@ $pic = Configure::read('avatar_web_url').
 							<label>Mobile Phone</label>
 							<input type="text" name="phone" value="<?=h($phone_number)?>"/>
 						</div><!-- end .row -->
+						<div class="row">
+							<label>Email</label>
+							<input type="text" name="email" value="<?=h($email)?>"/>
+						</div><!-- end .row -->
 						<h3>Shipping Address</h3>
 						<div class="row">
 							<label>Street</label>

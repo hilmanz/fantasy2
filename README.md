@@ -99,3 +99,9 @@ q. Bot for updating game_fixtures from OPTA file.
 	<option value="30">SUMATERA BARAT</option>
 	<option value="31">SUMATERA SELATAN</option>
 	<option value="32">SUMATERA UTARA</option>
+
+
+
+the cache that need to reset everytime the weekly stats is counted.
+getPlayerTeamStats_
+getPlayerDailyTeamStats_

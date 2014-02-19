@@ -232,6 +232,7 @@ function position_valid(players,setup,formation){
 //get user's players
 function getPlayers(game_team_id,callback){
 	console.log('getPlayers');
+
 	prepareDb(function(conn){
 		async.waterfall([
 			function(callback){
@@ -502,105 +503,123 @@ function getPlayerTeamStats(game_team_id,player_id,callback){
 /**get player daily stats relative to game_team
 */
 function getPlayerDailyTeamStats(game_team_id,player_id,player_pos,done){
-	var pos = 'g';
-	switch(player_pos){
-		case 'Forward':
-			pos = 'f';
-		break;
-		case 'Midfielder':
-			pos = 'm';
-		break;
-		case 'Defender':
-			pos = 'd';
-		break;
-		default:
-			pos = 'g';
-		break;
-	}
-	var sql = "";
-	if(game_team_id!=0){
-		sql = "SELECT a.game_id,stats_name,stats_category,SUM(stats_value) AS total,\
-				SUM(points) as points\
-				FROM ffgame_stats.game_team_player_weekly a\
-				WHERE a.player_id=? AND a.game_team_id=?\
-				GROUP BY a.game_id,a.stats_name\
-				ORDER BY a.game_id ASC LIMIT 20000;";
-	}else{
-		sql = "SELECT a.game_id,stats_name,'' as stats_category,SUM(stats_value) AS total,\
-				0 as points\
-				FROM ffgame_stats.master_player_stats a \
-				INNER JOIN ffgame.game_fixtures b\
-				ON a.game_id = b.game_id\
-				WHERE a.player_id=?\
-				GROUP BY a.game_id,stats_name \
-				ORDER BY game_id ASC LIMIT 20000;";
-	}
-	prepareDb(function(conn){
-		async.waterfall([
-			function(callback){
-				conn.query(sql,
-					[player_id,game_team_id,game_team_id],
-					function(err,rs){
-						//console.log(this.sql);			
-						callback(err,rs);	
-						
-					});
-			},
-			function(result,callback){
-				conn.query("SELECT * FROM ffgame.game_matchstats_modifier;",
-				[],
-				function(err,rs){
-					callback(err,rs,result);	
-					
-				});
-			},
-			function(modifiers,result,callback){
-				//mapping
-				var daily = {};
-				
-				if(result.length>0){
-					for(var i in result){
-						if(typeof daily[result[i].game_id] === 'undefined'){
-							daily[result[i].game_id] = {
-								games:0,
-								passing_and_attacking:0,
-								defending:0,
-								goalkeeper:0,
-								mistakes_and_errors:0
-							};
-						}
-						if(result[i].stats_category!=''){
+	redisClient.get('getPlayerDailyTeamStats_'+game_team_id+'_'+player_id,function(err,rs){
+		
+		rs = JSON.parse(rs);
+		console.log('getPlayerDailyTeamStats',typeof rs);
+		if(rs == null || (typeof rs === 'string')){
+			console.log('getPlayerDailyTeamStats','query data from db');
+			var pos = 'g';
+			switch(player_pos){
+				case 'Forward':
+					pos = 'f';
+				break;
+				case 'Midfielder':
+					pos = 'm';
+				break;
+				case 'Defender':
+					pos = 'd';
+				break;
+				default:
+					pos = 'g';
+				break;
+			}
+			var sql = "";
+			if(game_team_id!=0){
+				sql = "SELECT a.game_id,stats_name,stats_category,SUM(stats_value) AS total,\
+						SUM(points) as points\
+						FROM ffgame_stats.game_team_player_weekly a\
+						WHERE a.player_id=? AND a.game_team_id=?\
+						GROUP BY a.game_id,a.stats_name\
+						ORDER BY a.game_id ASC LIMIT 20000;";
+			}else{
+				sql = "SELECT a.game_id,stats_name,'' as stats_category,SUM(stats_value) AS total,\
+						0 as points\
+						FROM ffgame_stats.master_player_stats a \
+						INNER JOIN ffgame.game_fixtures b\
+						ON a.game_id = b.game_id\
+						WHERE a.player_id=?\
+						GROUP BY a.game_id,stats_name \
+						ORDER BY game_id ASC LIMIT 20000;";
+			}
+			prepareDb(function(conn){
+				async.waterfall([
+					function(callback){
+						conn.query(sql,
+							[player_id,game_team_id,game_team_id],
+							function(err,rs){
+								//console.log(this.sql);			
+								callback(err,rs);	
+								
+							});
+					},
+					function(result,callback){
+						conn.query("SELECT * FROM ffgame.game_matchstats_modifier;",
+						[],
+						function(err,rs){
+							callback(err,rs,result);	
 							
-							daily[result[i].game_id][result[i].stats_category] += result[i].points;
+						});
+					},
+					function(modifiers,result,callback){
+						//mapping
+						var daily = {};
+						
+						if(result.length>0){
+							for(var i in result){
+								if(typeof daily[result[i].game_id] === 'undefined'){
+									daily[result[i].game_id] = {
+										games:0,
+										passing_and_attacking:0,
+										defending:0,
+										goalkeeper:0,
+										mistakes_and_errors:0
+									};
+								}
+								if(result[i].stats_category!=''){
+									
+									daily[result[i].game_id][result[i].stats_category] += result[i].points;
 
-						}else{
-							//distributed the counts for each categories
-							for(var category in player_stats_category){
-								for(var j in player_stats_category[category]){
+								}else{
+									//distributed the counts for each categories
+									for(var category in player_stats_category){
+										for(var j in player_stats_category[category]){
 
-									if(player_stats_category[category][j] == result[i].stats_name){
-										
-										daily[result[i].game_id][category] += (parseInt(result[i].total) 
-																			  * getModifierValue(modifiers,
-																			  					result[i].stats_name,
-																			  					pos));
+											if(player_stats_category[category][j] == result[i].stats_name){
+												
+												daily[result[i].game_id][category] += (parseInt(result[i].total) 
+																					  * getModifierValue(modifiers,
+																					  					result[i].stats_name,
+																					  					pos));
+											}
+										}
 									}
 								}
+								
 							}
 						}
-						
+						console.log(daily);
+						callback(null,daily);
 					}
-				}
-				console.log(daily);
-				callback(null,daily);
-			}
-		],
-		function(err,result){
-			conn.end(function(e){
-				done(err,result);
+				],
+				function(err,result){
+					conn.end(function(e){
+						redisClient.set('getPlayerDailyTeamStats_'+game_team_id+'_'+player_id,
+										JSON.stringify(result),
+										function(err,rs){
+											done(err,result);
+										});
+						
+					});
+				});	
 			});
-		});	
+		}else{
+			console.log('getPlayerDailyTeamStats','query data from redis');
+			done(err,rs);
+		}
+
 	});
+	
 	
 }
 /**
