@@ -50,11 +50,20 @@ funds.</br> Thanks for your purchase!</h3>
             <div class="rowd">
 				<div class="col-content">
 					<div class="tr widget">
-						<h1>Your order cannot be processed.</h1>
-						<?php if($no_fund):?>
+						<h1>Pesanan loe tidak dapat di proses</h1>
+						<?php if(isset($apply_digital_perk_error) && $apply_digital_perk_error == 1):?>
+						<h3>
+							Maaf, Perk ini sedang aktif di klub loe, perk ini hanya bisa loe beli setelah masa berlakunya telah habis !
+						</h3>
+						<?php elseif(isset($apply_digital_perk_error) && $apply_digital_perk_error == 2):?>
+						<h3>
+							Maaf, Perk ini tidak dapat lo beli saat ini. Silahkan coba lagi nanti !
+						</h3>
+						
+						<?php elseif($no_fund):?>
 						<h3>Coins loe gak cukup untuk melakukan transaksi ini.</h3>
 						<?php else:?>
-						<h3>Please try again later !</h3>
+						<h3>Maaf, transaksi loe tidak dapat diproses. Silahkan coba lagi nanti !</h3>
 						<?php endif;?>
 						<p><a class="button" href="<?=$this->Html->url('/manage/team')?>">Back to the Game</a></p>
 					</div><!-- end .widget -->

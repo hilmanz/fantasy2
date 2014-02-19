@@ -237,9 +237,11 @@ class MerchandisesController extends AppController {
 		}else{
 			$is_transaction_ok = false;
 		}
-
+		
+		$this->set('apply_digital_perk_error',$this->Session->read('apply_digital_perk_error'));
 		$this->set('is_transaction_ok',$is_transaction_ok);
 		$this->set('no_fund',$no_fund);
+		$this->Session->write('apply_digital_perk_error',null);
 		//reset the csrf token
 		$this->Session->write('po_csrf',null);
 		//-->
@@ -426,7 +428,18 @@ class MerchandisesController extends AppController {
 				return $this->apply_jersey_perk($game_team_id,$perk['MasterPerk']);
 			break;
 			default:
-				//todo
+				//for everything else, let the game API handle the task
+				$rs = $this->Game->apply_digital_perk($game_team_id,$perk_id);
+
+				if($rs['data']['can_add'] && $rs['data']['success']){
+					return true;
+				}else if(!$rs['data']['can_add']){
+					//tells us that the perk cannot be redeemed because these perk is already redeemed before
+					$this->Session->write('apply_digital_perk_error','1');
+				}else{
+					//tells us that the perk cannot be redeemed because we cannot save the perk.
+					$this->Session->write('apply_digital_perk_error','2');
+				}
 			break;
 		}
 		

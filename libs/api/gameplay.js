@@ -16,6 +16,7 @@ var formations = require(path.resolve('./libs/game_config')).formations;
 var player_stats_category = require(path.resolve('./libs/game_config')).player_stats_category;
 var pool = {};
 var frontend_schema = config.database.frontend_schema;
+var PHPUnserialize = require('php-unserialize');
 function prepareDb(callback){
 	pool.getConnection(function(err,conn){
 		callback(conn);
@@ -1938,6 +1939,68 @@ function redeemCode(game_team_id,coupon_code,done){
 		});
 	});
 }
+
+/*
+* when applying a perk to player, we need to make sure that
+* the perk bonus in the same category cannot be stacked.
+* so we need to make sure only 1 perk category active at a time.
+*/
+function apply_perk(game_team_id,perk_id,done){
+	prepareDb(function(conn){
+		async.waterfall([
+			function(cb){
+				//first we get the perk detail
+				conn.query("SELECT * FROM ffgame.master_perks WHERE id = ? LIMIT 1;",
+							[perk_id],
+							function(err,rs){
+								console.log(S(this.sql).collapseWhitespace().s);
+								var perk = rs[0];
+								perk.data = PHPUnserialize.unserialize(perk.data);
+								cb(err,perk);
+							});
+			},
+			function(perk,cb){
+				//check if the team has apply the perk. if it has, make sure all of it are disabled.
+				conn.query("SELECT * FROM ffgame.digital_perks \
+							WHERE game_team_id=?\
+							AND master_perk_id=?\
+							AND available > 0\
+							AND n_status=1 LIMIT 1",
+							[game_team_id,perk_id],
+							function(err,rs){
+								console.log(S(this.sql).collapseWhitespace().s);
+								if(rs!=null && rs.length > 0){
+									cb(err,perk,false);
+								}else{
+									cb(err,perk,true);
+								}
+							});
+			},
+			function(perk,canAddPerk,cb){
+				if(canAddPerk){
+					conn.query("INSERT INTO ffgame.digital_perks\
+								(game_team_id,master_perk_id,redeem_dt,available,n_status)\
+								VALUES\
+								(?,?,NOW(),?,1);",
+								[game_team_id,perk_id,perk.data.duration],
+								function(err,rs){
+									console.log(S(this.sql).collapseWhitespace().s);
+									if(!err){
+										cb(null,{perk:perk,can_add:canAddPerk,success:true});
+									}else{
+										cb(null,{perk:perk,can_add:canAddPerk,success:false});
+									}
+								});
+				}else{
+					cb(null,{perk:perk,can_add:canAddPerk,success:false});
+				}
+			}
+		],
+		function(err,rs){
+			done(err,rs);
+		});
+	});
+}
 var match = require(path.resolve('./libs/api/match'));
 var officials = require(path.resolve('./libs/api/officials'));
 var sponsorship = require(path.resolve('./libs/api/sponsorship'));
@@ -1969,6 +2032,8 @@ exports.getWeeklyFinance = getWeeklyFinance;
 exports.getTransferWindow = getTransferWindow;
 exports.matchstatus = matchstatus;
 exports.redeemCode = redeemCode;
+exports.apply_perk = apply_perk;
+
 exports.setPool = function(p){
 	pool = p;
 	match.setPool(pool);

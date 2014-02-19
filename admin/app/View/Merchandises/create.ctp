@@ -1,3 +1,6 @@
+<div class="row">
+	<a href="<?=$this->Html->url('/merchandises')?>" class="button">Catalog List</a>
+</div>
 <form action="<?=$this->Html->url('/merchandises/create')?>" method="post" enctype="multipart/form-data">
 	<h3>Add Merchandise</h3>
 	<table width="100%">

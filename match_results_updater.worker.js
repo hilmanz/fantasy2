@@ -24,6 +24,7 @@ var master = require('./libs/master');
 var async = require('async');
 var mysql = require('mysql');
 var S = require('string');
+var redis = require('redis');
 /////DECLARATIONS/////////
 var FILE_PREFIX = config.updater_file_prefix+config.competition.id+'-'+config.competition.year;
 var stat_maps = require('./libs/stats_map').getStats();
@@ -34,6 +35,13 @@ var match_results = require('./libs/match_results');
 var lineup_stats = require('./libs/gamestats/lineup_stats');
 var business_stats = require('./libs/gamestats/business_stats');
 var ranks = require(path.resolve('./libs/gamestats/ranks'));
+
+
+//REDIS SETUP
+var redisClient = redis.createClient(config.redis.port,config.redis.host);
+redisClient.on("error", function (err) {
+    console.log("Error " + err);
+});
 
 /////THE LOGICS///////////////
 
@@ -72,6 +80,8 @@ function generateReports(games){
 		pool.end(function(err){
 			match_results.done();
 			business_stats.done();
+			console.log('closing redis connection');
+			redisClient.quit();
 		});
 		
 	});
@@ -103,6 +113,23 @@ function process_report(game_id,done){
 							cb(err);
 						});
 					},
+					function(cb){
+						//we need the matchday
+						var competition_stat = result.SoccerFeed.SoccerDocument.Competition.Stat;
+						var matchday = 1;
+						for(var i in competition_stat){
+							if(competition_stat[i].Type=='matchday'){
+								matchday = competition_stat[i]['$t'];
+								break;
+							}
+						}
+
+						//reduce the team stats related perks availability
+						reduce_perks_usage(matchday,function(err){
+							cb(err);
+						});
+
+					}
 				],
 				function(err,rs){
 					callback(err,'JOB DISTRIBUTED');
@@ -112,7 +139,7 @@ function process_report(game_id,done){
 				callback(null,'ON GOING MATCH');
 			}
 			
-		},
+		}
 		
 	],
 	function(err,result){
@@ -197,3 +224,91 @@ function distribute_jobs(game_id,done){
 
 
 
+function reduce_perks_usage(matchday,done){
+	console.log('reduce_perks_usage','begins');
+	pool.getConnection(function(err,conn){
+		async.waterfall([
+			function(cb){
+				console.log('reduce_perks_usage','check if the perk has reduced for the current matchday');
+				redisClient.get('perk_reduced-'+matchday,function(err,rs){
+					console.log('reduce_perks_usage','perk_reduced-'+matchday,'->',rs);
+					var canReduce = false;
+					if(rs==null){
+						canReduce = true;
+					}else{
+						canReduce = false;
+					}
+					cb(err,canReduce);
+				});
+			},
+			function(canReduce,cb){
+				if(canReduce){
+					conn.query("UPDATE ffgame.digital_perks SET available = available - 1 \
+							WHERE master_perk_id IN (\
+							SELECT id FROM ffgame.master_perks\
+							WHERE perk_name \
+							IN \
+							(\
+							'POINTS_MODIFIER_PER_CATEGORY',\
+							'EXTRA_POINTS_PERCENTAGE',\
+							'EXTRA_POINTS_VALUE'\
+							))\
+							AND n_status=1;",[],function(err,rs){
+								console.log(S(this.sql).collapseWhitespace().s);
+								cb(err,canReduce);
+							});
+				}else{
+					cb(null,canReduce);
+				}
+				
+			},
+			function(canReduce,cb){
+				if(canReduce){
+					conn.query("UPDATE ffgame.digital_perks SET n_status=0,available=0\
+							WHERE master_perk_id IN (\
+							SELECT id FROM ffgame.master_perks\
+							WHERE perk_name \
+							IN \
+							(\
+							'POINTS_MODIFIER_PER_CATEGORY',\
+							'EXTRA_POINTS_PERCENTAGE',\
+							'EXTRA_POINTS_VALUE'\
+							))\
+							AND\
+							available < 0\
+							AND n_status=1;",[],
+							function(err,rs){
+								console.log(S(this.sql).collapseWhitespace().s);
+								cb(err,canReduce);
+							});
+				}else{
+					cb(null,canReduce);
+				}
+			},
+			function(canReduce,cb){
+				//tell redis that these matchday has been reduced. 
+				//so we dont have to reduce it again in the future
+				if(canReduce){
+					console.log('perk_reduced-'+matchday);
+					redisClient.set('perk_reduced-'+matchday,1,function(err,rs){
+						if(err){
+							console.log('reduce_perks_usage',err.message);
+						}
+						cb(err,rs);
+					});
+				}else{
+					console.log('reduce_perks_usage','no need to reduce');
+					cb(null,null);
+				}
+				
+			}
+		],
+		function(err,rs){
+			conn.end(function(err){
+				console.log('reduce_perks_usage','done');
+				done(err,rs);
+			});
+			
+		});
+	});
+}

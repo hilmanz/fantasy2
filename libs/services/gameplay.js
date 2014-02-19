@@ -663,6 +663,26 @@ exports.redeemCode = function(req,res){
 		}					
 	});
 }
+
+/*
+* apply digital perk to game_team_id
+* these method can only be executed after user buy the perk in online catalog.
+*/
+exports.apply_perk = function(req,res){
+	gameplay.apply_perk(req.params.game_team_id,
+						req.params.perk_id,
+						function(err,rs){
+		if(err){
+			handleError(res);
+		}else{
+			if(rs!=null){
+				res.json(200,{status:1,data:rs});
+			}else{
+				res.send(200,{status:0});
+			}
+		}		
+	});
+}
 //other functions
 function filterAccumulativeStats(stats){
 	var teamstats = {};

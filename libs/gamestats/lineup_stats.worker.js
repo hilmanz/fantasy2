@@ -27,6 +27,7 @@ var pool  = mysql.createPool({
    password : config.database.password,
 });
 var punishment = require(path.resolve('./libs/gamestats/punishment_rules'));
+var perks = require(path.resolve('./libs/gamestats/perks'));
 var player_stats_category = require(path.resolve('./libs/game_config')).player_stats_category;
 
 console.log('lineup_stats - creating pool');
@@ -480,6 +481,7 @@ function update_team_stats(queue_id,game_id,team,player_stats,team_summary,done)
 										}
 									}
 								],
+
 								function(err,wf_result){
 									conn.query("UPDATE ffgame_stats.job_queue SET current_id=?,n_done=n_done+1\
 												WHERE id = ?",
@@ -598,6 +600,7 @@ function getPlayerDailyTeamStats(conn,game_team_id,player_id,player_pos,matchday
 								var points =  (parseInt(result[i].stats_value) * getModifierValue(modifiers,
 																	  					result[i].stats_name,
 																	  					pos));
+								
 								console.log('EVENT APPLIED POINTS',points,'*',point_modifier,'*',percentage);
 								weekly.push({
 									game_id:result[i].game_id,
@@ -645,6 +648,18 @@ function getPlayerDailyTeamStats(conn,game_team_id,player_id,player_pos,matchday
 			},
 			function(err){callback(err,weekly)});
 			
+		},
+		function(weekly,callback){
+			//apply player stats perks
+			perks.apply_player_perk(
+				conn,
+				game_team_id,
+				player_id,
+				weekly,
+				matchday,
+			function(err,rs){
+				callback(err,rs)
+			});
 		}
 	],
 	function(err,result){

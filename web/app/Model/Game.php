@@ -313,6 +313,15 @@ class Game extends AppModel {
 		return $result;
 	}
 	/*
+	* apply digital perk to game_team_id
+	* @return $response
+	*/
+	public function apply_digital_perk($game_team_id,$perk_id){
+		
+		$response = $this->api_call('/apply_perk/'.$game_team_id.'/'.$perk_id);
+		return $response;
+	}
+	/*
 	returns the hardcoded custom jersey CSS style
 	*/
 	public function getCustomJerseyStyle($jersey_id){
