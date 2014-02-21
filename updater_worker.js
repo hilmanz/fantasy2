@@ -121,6 +121,10 @@ http.request(options, function(response){
 				
 				
 			});
+		}else{
+			redisClient.quit(function(err){
+				console.log('redis closed');
+			});
 		}
 	});
 }).end();

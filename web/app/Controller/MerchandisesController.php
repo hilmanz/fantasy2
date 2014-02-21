@@ -114,6 +114,36 @@ class MerchandisesController extends AppController {
 
 
 	}
+
+	public function view($item_id){
+		$this->loadModel('MerchandiseItem');
+		$this->loadModel('MerchandiseCategory');
+		$this->loadModel('MerchandiseOrder');
+
+		//parno mode.
+		$item_id = Sanitize::clean($item_id);
+
+		//get the item detail
+		$item = $this->MerchandiseItem->findById($item_id);
+		
+		$total_order = $this->MerchandiseOrder->find('count',
+				array('conditions'=>array('merchandise_item_id'=>$item['MerchandiseItem']['id'],
+										  'n_status <> 4')));
+			
+		$item['MerchandiseItem']['available'] = $item['MerchandiseItem']['stock'] - $total_order;
+
+
+
+		$this->set('item',$item);
+
+		$category = $this->MerchandiseCategory->findById($item['MerchandiseItem']['merchandise_category_id']);
+		$this->set('category_name',h($category['MerchandiseCategory']['name']));
+
+		
+
+
+	}
+
 	private function getPreviousOrders(){
 		$this->loadModel('MerchandiseOrder');
 		$game_team_id = $this->userData['team']['id'];
@@ -142,6 +172,7 @@ class MerchandisesController extends AppController {
 		for($i=0;$i<sizeof($categories);$i++){
 			$category_ids[] = $categories[$i]['MerchandiseCategory']['id'];
 		}
+
 		return $category_ids;
 	}
 

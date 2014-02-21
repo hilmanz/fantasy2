@@ -25,6 +25,7 @@ if(isset($category_name)){
 										"merchandise/thumbs/0_".
 										$r['MerchandiseItem']['pic'];
 						$buy_url = $this->Html->url('/merchandises/buy/'.$r['MerchandiseItem']['id']);
+						$view_url = $this->Html->url('/merchandises/view/'.$r['MerchandiseItem']['id']);
 					?>
 					<div class="catalog-item">
 						<div class="imagesCatalog tr widget">
@@ -42,13 +43,11 @@ if(isset($category_name)){
 							<!--<p class="idrprice">(or buy now for IDR <?=number_format($r['MerchandiseItem']['price_money'])?>)</p>-->
 
 							<?php if($r['MerchandiseItem']['available'] > 0):?>
-							<a class="buyBtn button" href="<?=$buy_url?>">BUY</a>
+							<a class="buyBtn button" href="<?=$view_url?>">VIEW</a>
 							<?php else:?>
 							SOLD OUT
 							<?php endif;?>
-							<div class="desc">
-								<?=$r['MerchandiseItem']['description']?>
-							</div>
+							
 							
 							
 						</div>
