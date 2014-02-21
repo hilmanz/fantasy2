@@ -54,6 +54,10 @@ $pic = Configure::read('avatar_web_url')."merchandise/thumbs/1_".$rs['Merchandis
 		<label>Mobile Phone</label>
 		<input type="text" name="phone" value="<?=h($rs['MerchandiseOrder']['phone'])?>"/>
 	</div><!-- end .row -->
+	<div class="row">
+		<label>Email</label>
+		<input type="text" name="email" value="<?=h($rs['MerchandiseOrder']['email'])?>"/>
+	</div><!-- end .row -->
 	<h3>Shipping Address</h3>
 	<div class="row">
 		<label>Street</label>

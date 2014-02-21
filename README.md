@@ -105,3 +105,12 @@ q. Bot for updating game_fixtures from OPTA file.
 the cache that need to reset everytime the weekly stats is counted.
 getPlayerTeamStats_
 getPlayerDailyTeamStats_
+
+
+TODO
+
+cache the following in /api/gameplay.js
+getPlayers
+getPlayerStats
+getPlayerOverallStats
+best_player

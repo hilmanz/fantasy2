@@ -233,7 +233,7 @@ function reduce_perks_usage(matchday,done){
 				redisClient.get('perk_reduced-'+matchday,function(err,rs){
 					console.log('reduce_perks_usage','perk_reduced-'+matchday,'->',rs);
 					var canReduce = false;
-					if(rs==null){
+					if(rs==null || JSON.parse(rs) == 0){
 						canReduce = true;
 					}else{
 						canReduce = false;

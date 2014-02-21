@@ -88,12 +88,6 @@ function getAllPerks(conn,game_team_id,callback){
 				ON a.master_perk_id = b.id\
 				WHERE \
 				a.game_team_id=? \
-				AND \
-				b.perk_name IN (\
-				'POINTS_MODIFIER_PER_CATEGORY','EXTRA_POINTS_PERCENTAGE',\
-				'EXTRA_POINTS_VALUE',\
-				'INCOME_MODIFIER'\
-				)\
 				AND a.available >= 0 AND a.n_status = 1 LIMIT 100",
 				[game_team_id],
 				function(err,perks){
@@ -132,8 +126,51 @@ function process_player_stats_perks(conn,game_team_id,perks,new_stats,callback){
 		callback(err,extra_points);
 	});
 }
-
-
+/**
+* those who has jersey perk, will get additional points every match
+*/
+function apply_jersey_perks(conn,game_id,matchday,game_team_id,callback){
+	console.log('apply_jersey_perks','starting');
+	async.waterfall([
+		function(cb){
+			//get all perks available
+			getAllPerks(conn,game_team_id,function(err,perks){
+				console.log('apply_jersey_perks',game_team_id,'perks',perks);
+				cb(err,perks);
+			});
+		},
+		function(perks,cb){
+			var has_perk = false;
+			if(perks!=null){
+				has_perk = false;
+				for(var i in perks){
+					if(perks[i].perk_name=='ACCESSORIES' && perks[i].data.type=='jersey'){
+						has_perk = true;
+						break;
+					}
+				}
+			}
+			if(has_perk){
+				console.log('apply_jersey_perks',game_team_id,'+100 points');
+				saveExtraPoint(conn,
+								game_id,
+								matchday,
+								game_team_id,
+								'jersey_perk',
+								100,
+								function(err,rs){
+									cb(err,rs);
+								});
+			}else{
+				console.log('apply_jersey_perks',game_team_id,'no jersey perk');
+				cb(null,null);
+			}
+		}
+	],function(err,rs){
+		callback(err,rs);
+	});
+}
+exports.apply_jersey_perks = apply_jersey_perks;
 /*
 * process POINTS_MODIFIER_PER_CATEGORY perks
 */

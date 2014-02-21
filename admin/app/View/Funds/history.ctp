@@ -1,9 +1,6 @@
 <h3>
 	Fund Redeemed History
 </h3>
-
-
-
 <div class="theContainer">
 	
 	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="dataTable">
@@ -61,7 +58,7 @@ var base_id = <?php echo Configure::read('RANK_RANDOM_NUM'); ?>;
 var data = [];
 for(var i in teamlist){
 	data.push([
-		teamlist[i].game_team.id + base_id,
+		parseInt(teamlist[i].game_team.id) + parseInt(base_id),
 		teamlist[i].game_users.name,
 		teamlist[i].teams.team_name,
 		teamlist[i].master_team.name

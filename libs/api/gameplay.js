@@ -231,95 +231,107 @@ function position_valid(players,setup,formation){
 }
 //get user's players
 function getPlayers(game_team_id,callback){
-	console.log('getPlayers');
+	
+	redisClient.get('getPlayers_'+game_team_id,function(err,rs){
+		if(JSON.parse(rs)==null){
+			console.log('getPlayers',game_team_id,'get from db');
+			prepareDb(function(conn){
+				async.waterfall([
+					function(callback){
+						conn.query("SELECT b.* \
+						FROM ffgame.game_team_players a\
+						INNER JOIN ffgame.master_player b \
+						ON a.player_id = b.uid\
+						WHERE game_team_id = ? ORDER BY b.position ASC,b.last_name ASC \
+						LIMIT 200;",
+						[game_team_id],
+						function(err,rs){
+							callback(err,rs);
+						});
+					},
+					function(players,callback){
+						var results = [];
+						async.eachSeries(players,function(player,done){
 
-	prepareDb(function(conn){
-		async.waterfall([
-			function(callback){
-				conn.query("SELECT b.* \
-				FROM ffgame.game_team_players a\
-				INNER JOIN ffgame.master_player b \
-				ON a.player_id = b.uid\
-				WHERE game_team_id = ? ORDER BY b.position ASC,b.last_name ASC \
-				LIMIT 200;",
-				[game_team_id],
-				function(err,rs){
-					callback(err,rs);
-				});
-			},
-			function(players,callback){
-				var results = [];
-				async.eachSeries(players,function(player,done){
+							async.waterfall([
+								function(cb){
+									conn.query("SELECT SUM(points) AS total_points\
+												FROM ffgame_stats.game_team_player_weekly\
+												WHERE game_team_id = ? AND player_id = ?;",
+												[
+												 game_team_id,
+												 player.uid
+												],
+												function(err,rs){
+													try{
+														cb(err,rs[0].total_points);
+													}catch(e){
+														cb(err,0);
+													}
+												});
+								},
+								function(total_points,cb){
+									
+									if(typeof total_points !== 'number'){
+										total_points = 0;
+									}
+									conn.query("SELECT performance \
+												FROM ffgame_stats.game_match_player_points a\
+												WHERE game_team_id=? AND player_id=?\
+												AND points <> 0\
+												AND EXISTS (SELECT 1 FROM ffgame.game_fixtures b\
+												WHERE b.game_id = a.game_id AND (b.home_id = ? OR b.away_id=?)\
+												LIMIT 1) ORDER BY id DESC LIMIT 1;",
+												[
+													game_team_id,
+													player.uid,
+													player.team_id,
+													player.team_id
+												],
+												function(err,rs){
+													try{
+														cb(err,total_points,rs[0].performance);
+													}catch(e){
+														cb(err,total_points,0);
+													}
+												});
+								},
+								function(total_points,performance,cb){
+									if(typeof performance !== 'number'){
+										performance = 0;
+									}
+									player.points = parseFloat(total_points);
+									player.last_performance = parseFloat(performance);
+									
+									results.push(player);
+									cb(null,results);
+								}
 
-					async.waterfall([
-						function(cb){
-							conn.query("SELECT SUM(points) AS total_points\
-										FROM ffgame_stats.game_team_player_weekly\
-										WHERE game_team_id = ? AND player_id = ?;",
-										[
-										 game_team_id,
-										 player.uid
-										],
-										function(err,rs){
-											try{
-												cb(err,rs[0].total_points);
-											}catch(e){
-												cb(err,0);
-											}
-										});
-						},
-						function(total_points,cb){
-							
-							if(typeof total_points !== 'number'){
-								total_points = 0;
-							}
-							conn.query("SELECT performance \
-										FROM ffgame_stats.game_match_player_points a\
-										WHERE game_team_id=? AND player_id=?\
-										AND points <> 0\
-										AND EXISTS (SELECT 1 FROM ffgame.game_fixtures b\
-										WHERE b.game_id = a.game_id AND (b.home_id = ? OR b.away_id=?)\
-										LIMIT 1) ORDER BY id DESC LIMIT 1;",
-										[
-											game_team_id,
-											player.uid,
-											player.team_id,
-											player.team_id
-										],
-										function(err,rs){
-											try{
-												cb(err,total_points,rs[0].performance);
-											}catch(e){
-												cb(err,total_points,0);
-											}
-										});
-						},
-						function(total_points,performance,cb){
-							if(typeof performance !== 'number'){
-								performance = 0;
-							}
-							player.points = parseFloat(total_points);
-							player.last_performance = parseFloat(performance);
-							
-							results.push(player);
-							cb(null,results);
-						}
-
-					],
-					function(err,rs){
-						done();
+							],
+							function(err,rs){
+								done();
+							});
+						},function(err){
+							callback(err,results);
+						});
+					}
+				],
+				function(err,result){
+					console.log('getPlayers',result);
+					conn.end(function(e){
+						redisClient.set('getPlayers_'+game_team_id,
+										JSON.stringify(result),
+										function(err,redis_status){
+							callback(err,result);	
+						});
+						
 					});
-				},function(err){
-					callback(err,results);
 				});
-			}
-		],
-		function(err,result){
-			console.log('getPlayers',result);
-			conn.end(function(e){
-				callback(err,result);	
 			});
-		});
+		}else{
+			console.log('getPlayers',game_team_id,'get from redis');
+			callback(err,JSON.parse(rs));
+		}
 	});
 	
 	
@@ -415,6 +427,7 @@ function getTeamPlayerDetail(game_team_id,player_id,callback){
 * get player master stats
 */
 function getPlayerStats(player_id,callback){
+	console.log('getPlayerStats');
 	var sql = "SELECT a.game_id,a.points,a.performance,b.matchday\
 			FROM ffgame_stats.master_player_performance a\
 			INNER JOIN ffgame.game_fixtures b\
@@ -435,6 +448,7 @@ function getPlayerStats(player_id,callback){
 *	get player's overall stats
 */
 function getPlayerOverallStats(game_team_id,player_id,callback){
+	console.log('getPlayerOverallStats',game_team_id,player_id);
 	var sql = "";
 	if(game_team_id!=0){
 		sql = "SELECT stats_name,stats_category,SUM(stats_value) AS total,SUM(a.points) as points\
@@ -465,7 +479,7 @@ function getPlayerOverallStats(game_team_id,player_id,callback){
 */
 function getPlayerTeamStats(game_team_id,player_id,callback){
 	redisClient.get('getPlayerTeamStats_'+game_team_id+'_'+player_id,function(err,rs){
-		if(rs==null){
+		if(JSON.parse(rs)==null){
 			console.log('getPlayerTeamStats','query from db');
 			var sql = "SELECT a.game_id,SUM(b.points) AS points,a.performance,b.matchday\
 						FROM ffgame_stats.game_match_player_points a\

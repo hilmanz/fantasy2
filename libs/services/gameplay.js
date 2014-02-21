@@ -18,6 +18,7 @@ exports.getLineup = function(req,res){
 	});
 }
 exports.getPlayers = function(req,res){
+	gameplay.setRedisClient(req.redisClient);
 	gameplay.getPlayers(req.params.id,function(err,rs){
 		if(rs!=null){
 			res.json(200,rs);

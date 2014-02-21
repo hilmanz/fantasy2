@@ -30,6 +30,12 @@ var punishment = require(path.resolve('./libs/gamestats/punishment_rules'));
 var perks = require(path.resolve('./libs/gamestats/perks'));
 var player_stats_category = require(path.resolve('./libs/game_config')).player_stats_category;
 
+var redisClient = null;
+exports.setRedisClient = function(client){
+	redisClient = client;
+}
+
+
 console.log('lineup_stats - creating pool');
 exports.update = function(queue_id,game_id,since_id,until_id,done){
 	//the updates will run for each 100 entries.
@@ -388,7 +394,11 @@ function update_team_stats(queue_id,game_id,team,player_stats,team_summary,done)
 									},
 									function(the_game_id,matchday,is_finished,is_all_player_started,
 											is_team_budget_below_zero,balance,next){
-										console.log('wrapping up buddy !');
+										console.log('execute punishment and some perks');
+										// NOTES : only perks that effect the overall points that 
+										// can be executed here..
+
+
 										if(is_finished){
 											async.waterfall([
 												function(cb){
@@ -471,6 +481,16 @@ function update_team_stats(queue_id,game_id,team,player_stats,team_summary,done)
 													}else{
 														cb(null,true);
 													}
+												},function(endOfProcess,cb){
+													//apply jersey perks
+													perks.apply_jersey_perks(
+														conn,
+														the_game_id,
+														matchday,
+														item.id,
+														function(err,rs){
+															cb(err,endOfProcess);
+														});
 												}
 
 											],function(err,endOfProcess){
@@ -660,6 +680,42 @@ function getPlayerDailyTeamStats(conn,game_team_id,player_id,player_pos,matchday
 			function(err,rs){
 				callback(err,rs)
 			});
+		},
+		function(result,callback){
+			//reset all the caches
+			
+			
+			async.waterfall([
+				function(cb){
+					console.log('lineup_stats','reset cache','getPlayerTeamStats_'+game_team_id+'_'+player_id);
+					redisClient.set('getPlayerTeamStats_'+game_team_id+'_'+player_id,
+									JSON.stringify(null),
+									function(err,rs){
+										if(err){
+											console.log('lineup_stats',err.message);
+										}
+										
+										cb(err);
+									});
+				},
+				function(cb){
+					console.log('lineup_stats','reset cache','getPlayerDailyTeamStats_'+game_team_id+'_'+player_id);
+					redisClient.set('getPlayerDailyTeamStats_'+game_team_id+'_'+player_id,
+									JSON.stringify(null),
+									function(err,rs){
+										if(err){
+											console.log('lineup_stats',err.message);
+										}
+										cb(err);
+									});
+				}
+			],
+
+			function(err,rs){
+				console.log('lineup_stats','reset cache completed');
+				callback(err,result);
+			});
+			
 		}
 	],
 	function(err,result){

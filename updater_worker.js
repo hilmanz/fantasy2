@@ -25,6 +25,7 @@ var async = require('async');
 var mysql = require('mysql');
 var util = require('util');
 var argv = require('optimist').argv;
+var redis = require('redis');
 /////DECLARATIONS/////////
 var FILE_PREFIX = config.updater_file_prefix+config.competition.id+'-'+config.competition.year;
 var stat_maps = require('./libs/stats_map').getStats();
@@ -37,12 +38,26 @@ var lineup_stats = require('./libs/gamestats/lineup_stats.worker');
 var business_stats = require('./libs/gamestats/business_stats.worker');
 var ranks = require(path.resolve('./libs/gamestats/ranks'));
 
+
+
+//now we need Redis to play with data caches.
+
+//REDIS SETUP
+var redisClient = redis.createClient(config.redis.port,config.redis.host);
+redisClient.on("error", function (err) {
+    console.log("Error " + err);
+});
+
+//attach redisClient to the following modules
+lineup_stats.setRedisClient(redisClient);
+
 /////THE LOGICS///////////////
 var conn = mysql.createConnection({
  	host     : config.database.host,
    user     : config.database.username,
    password : config.database.password,
 });
+
 
 
 var bot_id = (typeof argv.bot_id !=='undefined') ? argv.bot_id : Math.round(1000+(Math.random()*999999));
@@ -98,6 +113,9 @@ http.request(options, function(response){
 						console.log('database connection closed');
 						lineup_stats.done();
 						business_stats.done();
+						redisClient.quit(function(err){
+							console.log('redis closed');
+						});
 					});
 				});
 				
