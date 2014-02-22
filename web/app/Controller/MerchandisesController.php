@@ -120,6 +120,11 @@ class MerchandisesController extends AppController {
 		$this->loadModel('MerchandiseCategory');
 		$this->loadModel('MerchandiseOrder');
 
+
+		//we need to populate the category
+		$this->populate_main_categories();
+
+		
 		//parno mode.
 		$item_id = Sanitize::clean($item_id);
 
