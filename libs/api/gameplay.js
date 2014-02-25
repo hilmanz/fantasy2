@@ -1418,13 +1418,55 @@ function sale(redisClient,window_id,game_team_id,player_id,done){
 				},
 				function(result,callback){
 					//reset the cache
-					redisClient.set(
-						'game_team_lineup_'+game_team_id
-						,JSON.stringify(null)
-						,function(err,lineup){
-							console.log('LINEUP','reset the cache',lineup);
-							callback(err,result);
-						});
+					async.waterfall([
+						function(cb){
+							redisClient.set(
+								'game_team_lineup_'+game_team_id
+								,JSON.stringify(null)
+								,function(err,lineup){
+									console.log('LINEUP',game_team_id,'sale- reset the cache',lineup);
+									cb(err);
+								});
+						},
+						function(cb){
+							redisClient.set(
+								'getPlayers_'+game_team_id
+								,JSON.stringify(null)
+								,function(err,lineup){
+									console.log('LINEUP',game_team_id,'sale - reset getPlayers',lineup);
+									cb(err);
+								});
+						},
+						function(cb){
+							//when we sale a player.. the cache must be destroyed
+							
+							redisClient.del(
+								'getPlayerTeamStats_'+game_team_id+'_'+player_id
+								,function(err,lineup){
+									console.log('LINEUP',
+												'sale - remove getPlayerTeamStats_'+game_team_id+'_'+player_id,
+												lineup);
+									cb(err);
+								});
+						},
+						function(cb){
+							//when we sale a player.. the cache must be destroyed
+							
+							redisClient.del(
+								'getPlayerDailyTeamStats_'+game_team_id+'_'+player_id
+								,function(err,lineup){
+									console.log('LINEUP',
+												'sale - remove getPlayerDailyTeamStats_'+game_team_id+'_'+player_id,
+												lineup);
+									cb(err);
+								});
+						}
+					],
+					function(err,rs){
+						callback(err,result);
+
+					});
+					
 				}
 			],
 			function(err,result){
@@ -1445,7 +1487,7 @@ function sale(redisClient,window_id,game_team_id,player_id,done){
 * step 5 - deduct a transfer money from game_team_expenditures
 * 
 */
-function buy(window_id,game_team_id,player_id,done){
+function buy(redisClient,window_id,game_team_id,player_id,done){
 	var async = require('async');
 	prepareDb(function(conn){
 		async.waterfall(
@@ -1659,6 +1701,35 @@ function buy(window_id,game_team_id,player_id,done){
 							callback(err,result);
 						}
 					);
+				},
+				function(result,callback){
+
+					//reset the caches
+					async.waterfall([
+						function(cb){
+							redisClient.set(
+								'game_team_lineup_'+game_team_id
+								,JSON.stringify(null)
+								,function(err,lineup){
+									console.log('LINEUP',game_team_id,'buy reset the cache',lineup);
+									cb(err);
+							});
+						},
+						function(cb){
+							redisClient.set(
+								'getPlayers_'+game_team_id
+								,JSON.stringify(null)
+								,function(err,lineup){
+									console.log('LINEUP',game_team_id,'buy reset getPlayers',lineup);
+									cb(err);
+							});
+						}
+					],
+
+					function(err,rs){
+						callback(err,result);
+					});
+					
 				}
 			],
 			function(err,result){

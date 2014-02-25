@@ -600,6 +600,7 @@ exports.sale = function(req,res){
 //buy a player
 exports.buy = function(req,res){
 	gameplay.buy(
+		req.redisClient,
 		req.body.window_id,
 		req.body.game_team_id,
 		req.body.player_id,

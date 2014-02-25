@@ -433,7 +433,21 @@ class AppController extends Controller {
 		
 	}
 	public function getAPIUrl(){
-		return Configure::read('API_URL');
+		$in_session = $this->Session->read('API_URL');
+		if(isset($in_session)){
+			return $in_session;
+		}else{
+			$API_URL = Configure::read('API_URL');
+			if(is_array($API_URL)){
+				$n = sizeof($API_URL);
+				$API_URL = $API_URL[rand(0,($n-1))];
+			}
+			$this->Session->write('API_URL',$API_URL);
+			$in_session = $this->Session->read('API_URL');
+			return $API_URL;
+		}
+		
+		
 	}
 	public function getAPIKey(){
 		return Configure::read('API_KEY');

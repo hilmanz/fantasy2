@@ -497,10 +497,10 @@ class ApiController extends AppController {
 
 		//for weekly points, make sure the points from other player are included
 		$this->loadModel('Weekly_point');
-		$this->Weekly_point->virtualFields['TotalPoints'] = 'SUM(Weekly_point.points)';
+		$this->Weekly_point->virtualFields['TotalPoints'] = 'SUM(Weekly_point.points + Weekly_point.extra_points)';
 		$options = array('fields'=>array('Weekly_point.id', 'Weekly_point.team_id', 
 							'Weekly_point.game_id', 'Weekly_point.matchday', 'Weekly_point.matchdate', 
-							'SUM(Weekly_point.points) AS TotalPoints', 'Team.id', 'Team.user_id', 
+							'SUM(Weekly_point.points + Weekly_point.extra_points) AS TotalPoints', 'Team.id', 'Team.user_id', 
 							'Team.team_id','Team.team_name'),
 			'conditions'=>array('Weekly_point.team_id'=>$club['Team']['id']),
 	        'limit' => 100,
@@ -2335,6 +2335,130 @@ class ApiController extends AppController {
 		$this->set('response',$rs);
 		$this->render('default');
 	}
+
+
+	//online catalog API
+	public function catalog(){
+		$this->loadModel('MerchandiseItem');
+		$this->loadModel('MerchandiseCategory');
+		
+		$catalog_token = unserialize(decrypt_params($this->request->query['ctoken']));
+		$user_fb_id = Sanitize::clean(@$catalog_token['fb_id']);
+
+		$since_id = intval(@$this->request->query['since_id']);
+
+		$response = array();
+
+		if(isset($this->request->query['cid'])){
+			$category_id = intval($this->request->query['cid']);
+		}else{
+			$category_id = 0;
+		}
+		
+		$merchandise = $this->MerchandiseItem->find('count');
+		if($merchandise > 0){
+			$response['has_merchandise'] = true;
+		}else{
+			$response['has_merchandise'] = false;
+		}
+		
+
+		//bind the model's association first.
+		//i'm too lazy to create a new Model Class :P
+		$this->MerchandiseItem->bindModel(array(
+			'belongsTo'=>array('MerchandiseCategory')
+		));
+
+		//we need to populate the category
+		$categories = $this->getCatalogMainCategories();
+		$response['main_categories'] = $categories;
+
+
+		//if category is set, we filter the query by category_id
+		if($category_id != 0){
+			$category_ids = array($category_id);
+			//check for child ids, and add it into category_ids
+			$category_ids = $this->getChildCategoryIds($category_id,$category_ids);
+			$this->paginate = array('conditions'=>array('merchandise_category_id'=>$category_ids),
+									'limit'=>9
+									);
+			//maybe the category has children in it.
+			//so we try to populate it
+			$child_categories = $this->getChildCategories($category_id);
+			$response['child_categories'] = $child_categories;
+
+			//we need to know the category details
+			$category = $this->MerchandiseCategory->findById($category_id);
+			$response['current_category'] = $category['MerchandiseCategory'];
+			$this->set('category_name',h($category['MerchandiseCategory']['name']));
+
+		}else{
+			//if doesnt, we query everything.
+			$this->paginate = array(
+									'limit'=>9
+									);
+		}
+
+
+		
+
+		//retrieve the paginated results.
+		$rs = $this->paginate('MerchandiseItem');
+		for($i=0;$i<sizeof($rs);$i++){
+			//get the available stock
+			// stock_available = stock - total_order
+			$total_order = $this->MerchandiseOrder->find('count',
+				array('conditions'=>array('merchandise_item_id'=>$rs[$i]['MerchandiseItem']['id'],
+										  'n_status <> 4')));
+			
+			$rs[$i]['MerchandiseItem']['available'] = $rs[$i]['MerchandiseItem']['stock'] - $total_order;
+		}
+		//assign it.
+		$this->set('rs',$rs);
+		$response['items'] = $rs;
+		$this->layout="ajax";
+		$this->set('response',array('status'=>1,'data'=>$response));
+		$this->render('default');
+	}
+
+	/**
+	*	get catalog's main categories
+	*/
+	private function getCatalogMainCategories(){
+		//retrieve main categories
+		$categories = $this->MerchandiseCategory->find('all',
+						array('conditions'=>array('parent_id'=>0),
+							  'limit'=>100)
+					);
+		return $categories;
+	}
+	/*
+	* 
+	*/
+	private function getChildCategories($category_id){
+		//retrieve main categories
+		$categories = $this->MerchandiseCategory->find('all',
+														array('conditions'=>
+															array('parent_id'=>$category_id),
+															      'limit'=>100)
+													);
+		return $categories;
+	}
+	/**
+	*	get the list of child categories, 1 level under only.
+	*/
+	private function getChildCategoryIds($category_id,$category_ids){
+		$categories = $this->MerchandiseCategory->find('all',
+														array('conditions'=>array('parent_id'=>$category_id),
+															  'limit'=>100)
+													);
+		for($i=0;$i<sizeof($categories);$i++){
+			$category_ids[] = $categories[$i]['MerchandiseCategory']['id'];
+		}
+
+		return $category_ids;
+	}
+
 	//dummy for selling player
 	public function test_buy(){
 		$game_team = $this->Game->getTeam($fb_id);
@@ -2426,7 +2550,6 @@ class ApiController extends AppController {
 			
 		}
 
-		
 
 		$this->set('response',$rs);
 		$this->render('default');

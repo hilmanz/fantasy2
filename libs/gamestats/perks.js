@@ -66,7 +66,7 @@ exports.apply_player_perk = function(conn,game_team_id,player_id,new_stats,match
 					});
 				}else{
 					//no additional points
-					console.log(game_team_id,'no perks bonus');
+					console.log('getExtraPoints',game_team_id,'no perks bonus');
 					cb(null,{perks:perks,extra_points:{},game_id:game_id,matchday:matchday});	
 				}
 			}

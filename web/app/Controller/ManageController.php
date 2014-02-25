@@ -183,10 +183,11 @@ class ManageController extends AppController {
 		//weekly points and weekly ranks
 		//for weekly points, make sure the points from other player are included
 
-		$this->Weekly_point->virtualFields['TotalPoints'] = 'SUM(Weekly_point.points)';
+		$this->Weekly_point->virtualFields['TotalPoints'] = 'SUM(Weekly_point.points + Weekly_point.extra_points)';
 		$options = array('fields'=>array('Weekly_point.id', 'Weekly_point.team_id', 
 							'Weekly_point.game_id', 'Weekly_point.matchday', 'Weekly_point.matchdate', 
-							'SUM(Weekly_point.points) AS TotalPoints', 'Team.id', 'Team.user_id', 
+							'SUM(Weekly_point.points+Weekly_point.extra_points) AS TotalPoints',
+							'Team.id', 'Team.user_id', 
 							'Team.team_id','Team.team_name'),
 			'conditions'=>array('Weekly_point.team_id'=>$user['Team']['id']),
 	        'limit' => 100,
@@ -576,7 +577,7 @@ class ManageController extends AppController {
 
 		$match = unserialize(decrypt_param($this->request->query['r']));
 		$this->set('r',$this->request->query['r']);
-
+		
 		$userData = $this->userData;
 		//user data
 		$user = $this->User->findByFb_id($userData['fb_id']);

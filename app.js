@@ -18,6 +18,8 @@ var team = require('./libs/services/team'); // soccer team
 //var player = require('./libs/services/player'); //soccer player 
 var gameplay = require('./libs/services/gameplay'); // gameplay service
 
+var argv = require('optimist').argv;
+
 //mysql pool
 var pool  = mysql.createPool({
    host     : config.database.host,
@@ -33,7 +35,13 @@ var app = express();
 var RedisStore = require('connect-redis')(express);
 
 // all environments
-app.set('port', process.env.PORT || config.port);
+var app_port =  config.port;
+
+if(typeof argv.port !== 'undefined'){
+	app_port = argv.port;
+}
+
+app.set('port', app_port);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(express.favicon());

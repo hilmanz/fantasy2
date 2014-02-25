@@ -29,7 +29,10 @@ function getTotalPoints($str,$stats){
 			<span class="matchScore"><?=intval($match['away_score'])?></span> <span class="matchClub"><?=h($away)?></span></h4>
         </div>
         <div class="match-info fl brLeft">
-            <h4><span class="matchClub">Total Poin</span> <span class="totalpoin yellow">0</span></h4>
+            <h4>
+                <span class="matchClub">Total Poin</span> <span class="totalpoin yellow">0</span>
+                <span class="bonusPoin" title="Bonus Points" alt="Bonus Points"></span>
+            </h4>
         </div>
         <div class="fr">
       		  <a href="<?=$this->Html->url('/manage/club')?>" class="button">Kembali</a>
@@ -103,5 +106,13 @@ function getTotalPoints($str,$stats){
     </div>
 </div>
 <script>
-$(".totalpoin").html(<?=ceil($overall_points)?>);
+var total_points = <?=floatval($match['points'])?>;
+<?php
+$bonus_points = floatval($match['points']) - floatval($overall_points);
+if($bonus_points > 0):
+?>
+$(".bonusPoin").html('(<?=($bonus_points)?>)');
+<?php endif;?>
+$(".totalpoin").html(<?=($overall_points)?>);
+
 </script>
