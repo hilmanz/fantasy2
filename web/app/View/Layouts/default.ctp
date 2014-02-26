@@ -82,12 +82,17 @@
                 if($USER_IS_LOGIN):
             ?>
                 <div id="navigation">
-                	<ul>
+                	<ul id="mainNav" class="sf-menu">
                     	<li>
                         	<a href="<?=$this->Html->url('/manage/team')?>">Mengelola Tim</a>
                         </li>
                     	<li>
                         	<a href="<?=$this->Html->url('/manage/club')?>">Klab Saya</a>
+                            <ul>
+                            	<li><a href="<?=$this->Html->url('/manage/club')?>#tabs-Info">Info</a></li>
+                            	<li><a href="<?=$this->Html->url('/manage/club')?>#tabs-Money">Keuangan</a></li>
+                            	<li><a href="<?=$this->Html->url('/manage/club')?>#tabs-Players">Pemain</a></li>
+                            </ul>
                         </li>
                     	<li>
                         	<a href="<?=$this->Html->url('/profile')?>">Profil Saya</a>
@@ -101,7 +106,13 @@
                         <li>
                             <a href="<?=$this->Html->url('/merchandises')?>">Online Catalog</a>
                         </li>
-                    	<li><a href="<?=$this->Html->url('/pages/faq')?>">Bantuan & FAQ</a></li>
+                    	<li><a href="<?=$this->Html->url('/pages/faq')?>">Bantuan & FAQ</a>
+                            <ul>
+                            	<li><a href="<?=$this->Html->url('/pages/faq')?>#tabs-faq">FAQ</a></li>
+                            	<li><a href="<?=$this->Html->url('/pages/faq')?>#tabs-point">PENGUMPULAN POINT</a></li>
+                            </ul>
+                        
+                        </li>
                     </ul>
                 </div>
 			<?php else:?>

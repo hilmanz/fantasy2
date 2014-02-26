@@ -1,11 +1,14 @@
 <div id="faqPage">
     <div id="thecontent">
-        <div class="content">
+      <div class="rowd">
+     	 <?php echo $this->element('infobar'); ?>
+      </div>
+        <div class="rowd">
         	<div class="titlePage">
 				<h1 class="red">BANTUAN</h1>
             </div>
 			<div id="bantuanTab">
-				<ul>
+				<ul style="display:none;">
 				<li><a href="#tabs-faq">FAQ</a></li>
 				<li><a href="#tabs-point">PENGUMPULAN POINT</a></li>
 				</ul>
@@ -560,6 +563,18 @@
 					</div><!-- end .row-3 -->
 				</div><!-- end #tabs-point -->
 			</div><!-- end #tabs-point -->
-        </div><!-- end .content -->
+        </div><!-- end .rowd -->
+      <div class="rowd">
+        <div class="col2">
+            <div class="mediumBanner">
+                <?=$this->element('sponsor_banner',array('slot'=>'MY_CLUB_LONG','game_team_id'=>$game_team_id));?>
+            </div><!-- end .mediumBanner -->
+        </div><!-- end .col2 -->
+        <div class="col2">
+            <div class="mediumBanner">
+                <?=$this->element('sponsor_banner',array('slot'=>'MY_CLUB_LONG','game_team_id'=>$game_team_id));?>
+            </div><!-- end .mediumBanner -->
+        </div><!-- end .col2 -->
+      </div><!-- end .rowd -->
     </div><!-- end #thecontent -->
 </div><!-- end #faqPage -->

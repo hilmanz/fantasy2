@@ -1,5 +1,46 @@
 <div id="leaderboardPage">
-	 <?php echo $this->element('infobar'); ?>
+      <div class="rowd">
+     	 <?php echo $this->element('infobar'); ?>
+      </div>
+      <div class="rowd">
+        <div class="col2">
+            <div class="widget RingkasanKlab" id="RingkasanKlab">
+                <div class="entry tr">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td align="center">
+                        	<a href="#">
+							<?php if(strlen(@$user['avatar_img'])==0 || @$user['avatar_img']=='0'):?>
+                            <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
+                            <?php else:?>
+                            <img width="65" src="<?=$this->Html->url('/files/120x120_'.@$user['avatar_img'])?>" />
+                            <?php endif;?>
+       					 </a>
+    					</td>
+                        <td>
+                            <span>Rank: <strong><?=number_format($USER_RANK)?></strong></span>
+                            <span>Uang: <strong>ss$ <?=number_format($team_bugdet)?></strong></span>
+                            <span>Point: <strong><?=number_format($USER_POINTS)?></strong></span>
+                        </td>
+                        <td colspan="2" class="pendapatan">
+                        	<p><span class="ico icon-coin">&nbsp;</span>
+                            	<strong class="amounts">ss$ <?=number_format($weekly_salaries)?></strong></p>
+                            <p><span class="ico icon-plus-alt">&nbsp;</span>
+                            	<strong class="amounts">ss$ <?=number_format($last_earning)?></strong></p>
+                            <p><span class="ico icon-minus-alt">&nbsp;</span>
+                            	<strong class="amounts">ss$ <?=number_format($last_expenses)?></strong></p>
+                        </td>
+                      </tr>
+                    </table>
+                </div><!-- end .entry -->
+            </div><!-- end .widget -->
+        </div><!-- end .col2 -->
+        <div class="col2">
+            <div class="mediumBanner">
+                <?=$this->element('sponsor_banner',array('slot'=>'MY_CLUB_LONG','game_team_id'=>$game_team_id));?>
+            </div><!-- end .mediumBanner -->
+        </div><!-- end .col2 -->
+      </div><!-- end .rowd -->
     <div class="headbar tr">
         <div class="leaderboard-head">
         	<h3>Bursa Transfer</h3>
@@ -56,5 +97,17 @@
             </table>
             
         </div><!-- end .content -->
+        <div class="rows">
+            <div class="col2">
+                <div class="mediumBanner">
+                    <?=$this->element('sponsor_banner',array('slot'=>'MY_CLUB_LONG','game_team_id'=>$game_team_id));?>
+                </div><!-- end .mediumBanner -->
+            </div><!-- end .col2 -->
+            <div class="col2">
+                <div class="mediumBanner">
+                    <?=$this->element('sponsor_banner',array('slot'=>'MY_CLUB_LONG','game_team_id'=>$game_team_id));?>
+                </div><!-- end .mediumBanner -->
+            </div><!-- end .col2 -->
+        </div><!-- end .rows -->
     </div><!-- end #thecontent -->
 </div><!-- end #leaderboardPage -->

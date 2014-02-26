@@ -111,53 +111,61 @@ function isStaffExist($staff_token,$name){
 ?>
 <div id="klabPage">
     <div id="thecontent">
+      <div class="rows">
+     	 <?php echo $this->element('infobar'); ?>
+      </div>
+      <div class="rows">
+        <div class="col2">
+            <div class="widget RingkasanKlab" id="RingkasanKlab">
+                <div class="entry tr">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td align="center">
+                        	<a href="#">
+							<?php if(strlen(@$user['avatar_img'])==0 || @$user['avatar_img']=='0'):?>
+                            <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
+                            <?php else:?>
+                            <img width="65" src="<?=$this->Html->url('/files/120x120_'.@$user['avatar_img'])?>" />
+                            <?php endif;?>
+       					 </a>
+    					</td>
+                        <td>
+                            <span>Rank: <strong><?=number_format($USER_RANK)?></strong></span>
+                            <span>Uang: <strong>ss$ <?=number_format($team_bugdet)?></strong></span>
+                            <span>Point: <strong><?=number_format($USER_POINTS)?></strong></span>
+                        </td>
+                        <td colspan="2" class="pendapatan">
+                        	<p><span class="ico icon-coin">&nbsp;</span>
+                            	<strong class="amounts">ss$ <?=number_format($weekly_salaries)?></strong></p>
+                            <p><span class="ico icon-plus-alt">&nbsp;</span>
+                            	<strong class="amounts">ss$ <?=number_format($last_earning)?></strong></p>
+                            <p><span class="ico icon-minus-alt">&nbsp;</span>
+                            	<strong class="amounts">ss$ <?=number_format($last_expenses)?></strong></p>
+                        </td>
+                      </tr>
+                    </table>
+                </div><!-- end .entry -->
+            </div><!-- end .widget -->
+        </div><!-- end .col2 -->
+        <div class="col2">
+            <div class="mediumBanner">
+                <?=$this->element('sponsor_banner',array('slot'=>'MY_CLUB_LONG','game_team_id'=>$game_team_id));?>
+            </div><!-- end .mediumBanner -->
+        </div><!-- end .col2 -->
+      </div><!-- end .rows -->
     	<div class="row">
 			<div id="clubtabs">
-              <ul class="tabLeft">
+              <ul class="tabLeft" style="display:none;">
                 <li><a href="#tabs-Info">Info</a></li>
                 <li><a href="#tabs-Money">Keuangan</a></li>
                 <li><a href="#tabs-Players">Pemain</a></li>
                 
               </ul>
-            <div class="mediumBanner">
-                <?=$this->element('sponsor_banner',array('slot'=>'MY_CLUB_LONG','game_team_id'=>$game_team_id));?>
-            </div><!-- end .mediumBanner -->
               <div id="tabs-Info">
 
                 <div class="row">
 					<div class="col3 fl">
-						<div class="widget RingkasanKlab">
-							<h3>Ringkasan Klab</h3>
-							<div class="entry tr">
-								<table width="100%" border="0" cellspacing="0" cellpadding="0">
-								  <tr>
-									<td align="center"><a href="#">
-                    <?php if(strlen(@$user['avatar_img'])==0 || @$user['avatar_img']=='0'):?>
-                    <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
-                    <?php else:?>
-                    <img width="65" src="<?=$this->Html->url('/files/120x120_'.@$user['avatar_img'])?>" />
-                    <?php endif;?>
-                    
-
-                    </a>
-
-                  </td>
-									<td>
-										<span>Rank: <strong><?=number_format($USER_RANK)?></strong></span>
-										<span>Uang: <strong>ss$ <?=number_format($team_bugdet)?></strong></span>
-										<span>Point: <strong><?=number_format($USER_POINTS)?></strong></span>
-									</td>
-								  </tr>
-								  <tr>
-									<td colspan="2" class="pendapatan">
-										<span class="fl">Gaji Mingguan:</span><strong class="fr">ss$ <?=number_format($weekly_salaries)?></strong>
-										<span class="fl">Pendapatan Minggu lalu:</span> <strong class="fr">ss$ <?=number_format($last_earning)?></strong>
-										<span class="fl">Pengeluaran Minggu lalu:</span><strong class="fr">ss$ <?=number_format($last_expenses)?></strong>
-									</td>
-								  </tr>
-								</table>
-							</div><!-- end .entry -->
-						</div><!-- end .widget -->
+                            <div class="banner300x250"></div>
 					</div><!-- end .col3 -->
 					<div class="col3 fl">
 						<div class="widget PergerakanRanking">
@@ -301,6 +309,7 @@ function isStaffExist($staff_token,$name){
 				</div><!-- end .row -->
               </div><!-- end #Info -->
               <div id="tabs-Money">
+              	 <div class="col-content">
                     <div class="fr" style="height:40px;">
                       <select name="finance_week" class="styled">
                         <?php
@@ -580,6 +589,13 @@ function isStaffExist($staff_token,$name){
                     </tr>
                    </table>
                    <span>*Neraca klab di update mingguan setelah pertandingan.</span>
+					</div><!-- end .col-content -->
+                    <div class="col3">
+                    	<div class="fr">
+                            <div class="banner300x250"></div>
+                            <div class="banner300x250"></div>
+                        </div><!-- end .fr -->
+                    </div><!-- end .col3 -->
               </div><!-- end #tabs-Keuagan -->
               <div id="tabs-Players">
                 <div class="player-list">
@@ -651,6 +667,18 @@ function isStaffExist($staff_token,$name){
                  </tbody>
                 </table>
                 </div><!-- end .player-list -->
+                <div class="rows">
+                	<div class="col2">
+                        <div class="mediumBanner">
+                            <?=$this->element('sponsor_banner',array('slot'=>'MY_CLUB_LONG','game_team_id'=>$game_team_id));?>
+                        </div><!-- end .mediumBanner -->
+                    </div><!-- end .col2 -->
+                	<div class="col2">
+                        <div class="mediumBanner">
+                            <?=$this->element('sponsor_banner',array('slot'=>'MY_CLUB_LONG','game_team_id'=>$game_team_id));?>
+                        </div><!-- end .mediumBanner -->
+                    </div><!-- end .col2 -->
+                </div><!-- end .rows -->
               </div><!-- end #tabs-Squad -->
               
             </div><!-- end #clubtabs -->

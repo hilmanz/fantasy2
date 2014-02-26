@@ -20,57 +20,44 @@ if(isset($category_name)){
             </div>
             <div class="rowd">
 				<div class="col-content fr tr widget">
-					<?php if($has_merchandise):?>
-					<?php 
-							foreach($rs as $r):
+					
+					<?php
 						$pic = Configure::read('avatar_web_url').
 										"merchandise/thumbs/0_".
-										$r['MerchandiseItem']['pic'];
-						$buy_url = $this->Html->url('/merchandises/buy/'.$r['MerchandiseItem']['id']);
-						$view_url = $this->Html->url('/merchandises/view/'.$r['MerchandiseItem']['id']);
+										$item['MerchandiseItem']['pic'];
+						$buy_url = $this->Html->url('/merchandises/buy/'.$item['MerchandiseItem']['id']);
 					?>
 					<div class="catalog-item">
 						<div class="imagesCatalog tr widget">
-							<?php if($r['MerchandiseItem']['available'] > 0):?>
+							<?php if($item['MerchandiseItem']['available'] > 0):?>
 							<a href="<?=$buy_url?>">
 							<?php endif;?>
 							  <img src="<?=$this->Html->url($pic)?>" />
-							<?php if($r['MerchandiseItem']['available'] > 0):?>
+							<?php if($item['MerchandiseItem']['available'] > 0):?>
 							</a>
 							<?php endif;?>
 						</div>
-						<div class="detailCatalog">
-							<h4><?=h($r['MerchandiseItem']['name'])?></h4>
-							<p class="price"><?=number_format($r['MerchandiseItem']['price_credit'])?> Coins</p>
-							<!--<p class="idrprice">(or buy now for IDR <?=number_format($r['MerchandiseItem']['price_money'])?>)</p>-->
-
-							<?php if($r['MerchandiseItem']['available'] > 0):?>
-							<a class="buyBtn button" href="<?=$view_url?>">VIEW</a>
+					</div>
+					<div class="detailCatalog" style="width:440px;">
+							<h4><?=h($item['MerchandiseItem']['name'])?></h4>
+							<p class="price"><?=number_format($item['MerchandiseItem']['price_credit'])?> Coins</p>
+							<!--<p class="idrprice">(or buy now for IDR <?=number_format($item['MerchandiseItem']['price_money'])?>)</p>-->
+							<div>
+							<?php if($item['MerchandiseItem']['available'] > 0):?>
+							<a class="buyBtn button" href="<?=$buy_url?>">BUY</a>
 							<?php else:?>
 							SOLD OUT
 							<?php endif;?>
-							
+							</div>
+							<div class="desc">
+								<?=$item['MerchandiseItem']['description']?>
+							</div>
 							
 							
 						</div>
-						
-					</div>
-					<?php endforeach;?>
-					<div class="pagings tr">
-						<?php
-			              echo $this->Paginator->prev(__('Sebelumnya'), array(), null, 
-			                                          array('class' => 'prev'));
-			              ?>
-			              <?php
-			              echo $this->Paginator->next(__('Berikutnya'), array(), null, 
-			                                      array('class' => 'next'));
-			              ?>
-					</div><!-- end .col-content -->
-					<?php else:?>
-					<div class="desc">
-						Saat ini belum ada merchandise yang dapat di beli
-					</div>
-					<?php endif;?>
+					
+					
+					
 				</div><!-- end .box4 -->
 				<div class="box4 fr">
 					<div class="widget tr catalog-categories">

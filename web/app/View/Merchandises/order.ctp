@@ -7,7 +7,9 @@ $pic = Configure::read('avatar_web_url').
 
 ?>
 <div id="catalogPage">
-    <?php echo $this->element('infobar'); ?>
+      <div class="rowd">
+     	 <?php echo $this->element('infobar'); ?>
+      </div>
     <?php if($is_transaction_ok):?>
     <div id="thecontent">
         <div class="content">
@@ -79,6 +81,9 @@ funds.</br> Thanks for your purchase!</h3>
 						</div>
 					</div><!-- end .widget -->
 					<?php endif;?>
+                    <div class="banner300x250"></div>
+                    <div class="banner300x250"></div>
+                    <div class="banner300x250"></div>
 				</div><!-- end .box4 -->
             </div><!-- end .row-3 -->
         </div><!-- end .content -->

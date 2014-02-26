@@ -9,7 +9,7 @@ $(document).ready(function() {
 	//$('.showPopup').fancybox();
 	
 	// Drop Down Menu
-	$('ul#topnav').superfish({ 
+	$('ul#topnav,#mainNav').superfish({ 
         delay:       600,
         animation:   {opacity:'show',height:'show'},
         speed:       'fast',

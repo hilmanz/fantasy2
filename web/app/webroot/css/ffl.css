@@ -198,6 +198,40 @@ a.download-appstore{
 	text-shadow:0 1px 1px #000;
 	border-radius:4px;
 	border:solid 1px #222222;
+	width:auto;
+	font-size:12px;
+}
+#navigation ul ul{
+	background:none;
+	left:auto;
+	top:45px;
+	padding:5px;
+	background:#000;
+}
+#navigation ul ul li a{
+	background:url(../images/bg_nav.jpg) repeat-x 0 -32px;
+	line-height: 30px;
+	border-radius: 0;
+	text-align: left;
+	padding: 0 20px;
+	border: none;
+	border-bottom: solid 1px #222;
+}
+#navigation ul ul li a:hover{
+	box-shadow: none;
+}
+#navigation ul ul li{
+	width: auto;
+	float: none;
+	display: block;
+	float: none;
+	box-shadow: none;
+	background: none;
+	border: none;
+	border-radius: 0;
+	margin: 0;
+	padding: 0;
+	height:auto;
 }
 #navigation ul li a:hover,#navigation ul li.current a{
 	background:url(../images/bg_nav.jpg) repeat-x;
@@ -326,7 +360,7 @@ a.download-appstore{
 	overflow:hidden;
 }
 #newsticker{
-	width:700px;
+	width:600px;
 	height:20px;
 	float:left;
 	margin:0 0 0 20px;
@@ -344,6 +378,9 @@ a.download-appstore{
 	width:270px;
 	border-radius:5px;
 	min-height:135px;
+}
+.page-merchandises .box4{
+	width:300px;
 }
 .box3{
 	width:460px;
@@ -655,6 +692,10 @@ a.download-appstore{
 	overflow:hidden;
 	padding:20px 0 0 0;
 }
+#listBox h3{
+	font-size:22px;
+	color:#fdcb02;
+}
 #listBox .box:last-child{
 	margin:0;
 }
@@ -677,13 +718,23 @@ a.download-appstore{
 .box .entry{
 	padding:0;
 }
-.boxButton{
-	width:135px;
-	height:72px;
-	float:left;
-	margin:0 20px 0 0;
+#loginbox{
+	padding:20px 10px;
+	text-align:center;
 	border-radius:5px;
-	background-repeat:no-repeat
+	margin:0 0 30px 0;
+}
+#loginbox h3{
+	margin:0;
+}
+.boxButton{
+	display:block;
+	width:255px;
+	height:41px;
+	margin:0 auto;
+	border-radius:5px;
+	background-repeat:no-repeat;
+	background-position:-2px 0;
 }
 .loginFacebook{
 	background-image:url(../images/btn_login_facebook.png);
@@ -693,7 +744,7 @@ a.download-appstore{
 }
 .boxButton:hover{
 	text-decoration:none;
-	background-position:0 -72px;
+	background-position:-2px -41px;
 }
 .readmore{
 	padding:0 17px 0 0;
@@ -730,6 +781,12 @@ a.download-appstore{
 	clear:both;
 	background:url(../images/dot.png) bottom repeat-x;
 	padding:18px 0;
+	overflow:hidden;
+}
+.rows{
+	clear:both;
+	overflow:hidden;
+	padding:10px 0;
 	overflow:hidden;
 }
 .row:last-child{
@@ -808,7 +865,7 @@ select.styled{
 .rows{
 	clear:both;
 	overflow:hidden;
-	padding:5px 20px;
+	padding:5px 0;
 }
 .searchBox{
 	background:url(../images/bg_search.png) no-repeat;
@@ -1041,6 +1098,7 @@ input[type=text]{
 	overflow:hidden;
 	border-radius:5px;
 	margin:20px 0;
+	min-height:32px;
 }
 .headbars{
 	padding:10px 15px;
@@ -1804,10 +1862,10 @@ h3.tabtitle{
 }
 #listBox .bannerBox{
 	width:360px;
-	height:175px;
+	height:168px;
 	border-radius:5px;
 	overflow:hidden;
-	margin:0 0 0 20px;
+	margin:0 0 10px 0 !important;
 	float:left;
 }
 .bannerBox img{
@@ -1819,7 +1877,7 @@ h3.tabtitle{
 	border-radius:5px;
 	overflow:hidden;
 	display:block;
-};
+}
 #sidebar .bannerBox{
 	width:300px;
 	min-height:135px;
@@ -2008,6 +2066,19 @@ h3.tabtitle{
 	background:#000;
 	border-radius:5px;
 }
+.banner300x250{
+	width:300px; height:250px;
+	margin:0 auto 20px auto;
+	background:#000;
+	overflow:hidden;
+}
+.banner250x250{
+	width:250px; height:250px;
+	margin:0 auto 20px auto;
+	background:#000;
+	overflow:hidden;
+	padding:10px;
+}
 .smallBanner a{
 	display:block;
 	width:250px; height:250px;
@@ -2017,8 +2088,7 @@ h3.tabtitle{
 	width:468px; height:60px;
 	padding:5px;
 	background:#000;
-	margin:0 0 20px 0;
-	float:right;
+	margin:10px auto;
 }
 .mediumBanner a{
 	display:block;
@@ -2153,6 +2223,7 @@ table.dataTable{
 	width:100%;
 	float:left;
 	margin:0 20px 20px 0;
+	padding:0 !important;
 }
 .imagesCatalog img{
 	width:100%;
@@ -2190,6 +2261,9 @@ table.dataTable{
 }
 .catalog-categories form{
 	min-height:30px;
+}
+.catalog-categories{
+	padding:10px !important;
 }
 .order-detail{
 	width:270px;
@@ -2257,4 +2331,107 @@ table.dataTable{
 .chart-player{
 	width:300px;
 	height:70px;
+}
+.pendapatan .ico{
+	display: inline-block;
+	margin: 0 3px 0 0;
+	width: 20px;
+	height: 20px;
+	float: left;
+	line-height: 20px;
+}
+.icon-coin{
+	font-size:16px;
+}
+.pendapatan p{
+	clear:both;
+	margin:0;
+}
+.RingkasanKlab strong.amounts{
+	float:left;
+}
+#klabPage .RingkasanKlab .entry{
+	min-height:inherit;
+}
+#klabPage .RingkasanKlab table{
+	margin:0;
+	padding:0;
+}
+#klabPage #RingkasanKlab .entry{
+	padding:0;
+}
+#RingkasanKlab td{
+	border:none;
+	background:none;
+}
+#RingkasanKlab .RingkasanKlabWidget td{
+	padding:0 10px 0 0;
+}
+#RingkasanKlab table{
+	border:none;
+	padding:0;
+	margin:0;
+}
+#RingkasanKlab .tr{
+	border-radius:5px;
+}
+.rowd{
+	padding:5px 0;
+	clear:both;
+	overflow:hidden;
+}
+.page-team .rowd{
+	padding:10px 0;
+}
+.rowd .widget{
+	padding:10px 0;
+}
+#banner{
+	position:relative;
+}
+.topManager li{
+	padding:5px 0;
+	overflow:hidden;
+}
+.topManager li .points{
+	color:#fdcb02;
+}
+#listBox .box h3{
+	font-size: 22px;
+	color: #fdcb02;
+	margin: 0;
+}
+.gameNews li{
+	padding:5px 0;
+}
+.gameNews li span.date{
+	color:#ccc;
+}
+#listBox .box{
+	min-height:195px;
+	margin:0 20px 20px 0;
+}
+#listBox #topPlayerWeek{
+	min-height:210px;
+}
+#listBox .topPlayerWeek h3{
+	font-size:16px;
+	color:#fff;
+	float:left;
+	line-height:45px;
+}
+#topPlayerWeek li{
+	padding:5px 0;
+	overflow:hidden;
+	clear:both;
+}
+.smallerThumb{
+	width:45px; height:45px;
+	display:block;
+	background:#000;
+	float:left;
+	margin:0 10px 0 0;
+}
+.page-pages .banner300x250{
+	margin:0 auto 40px auto;
 }

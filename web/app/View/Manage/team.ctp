@@ -46,77 +46,20 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
 }
 ?>
 <div id="fillDetailsPage">
-    <?php echo $this->element('infobar'); ?>
+      <div class="rowd">
+     	 <?php echo $this->element('infobar'); ?>
+      </div>
     <div id="thecontent">
         <div class="box4 fl">
-            <div class="widget tr match-date">
-                <h2>PERTANDINGAN BERIKUTNYA</h2>
-                <span class="date whites">
-                    <?=date("d/m/Y",strtotime($next_match['match_date']))?><br/>
-                    Minggu ke: <?=$next_match['matchday']?>
-                </span>
-            </div><!-- end .widget -->
-            <div class="widget tr match-team">
-                <div class="col3 home-team">
-                    <a href="#" class="team-logo">
-
-                        <img style="height:46px;" src="<?=$home_logo?>"/>
-                    </a>
-                    <h3><?=h($next_match['home_name'])?></h3>
-                </div><!-- end .col3 -->
-                <div class="col3 vs">
-                    <h2>Vs</h2>
-                </div><!-- end .col3 -->
-                <div class="col3 away-team">
-                    <a href="#" class="team-logo">
-                         <img style="height:46px;" src="<?=$away_logo?>"/>
-                    </a>
-                    <h3><?=h($next_match['away_name'])?></h3>
-                </div><!-- end .col3 -->
-            </div><!-- end .widget -->
-            <div class="widget tr match-place">
-                <p class="stadion"><?=h($venue['name'])?></p>
-                <p class="attendance">Kapasitas : <?=number_format($venue['capacity'])?></p>
-            </div><!-- end .widget -->
-            <div class="widget tr perform-team">
-                <h2>Performa Anda</h2>
-                <h3><span class="span1">Peringkat Liga</span>:<span class="span2"><?=number_format($USER_RANK)?></span></h3>
-                <h3><span class="span1">Perolehan Terakhir</span>:<span class="span2">SS$ <?=number_format($last_earning)?></span></h3>
-                <h3><span class="span1">Kekayaan</span>:<span class="span2">SS$ <?=number_format($team_bugdet)?></span></h3>
-                <h4><span class="span1">Pemain Terbaik</span><span class="span2">
-                    <?php
-                        if(isset($best_player)):
-
-                    ?>
-
-                    <a class="yellow" href="<?=$this->Html->url('/manage/player/'.$best_player['player_id'])?>"><?=h($best_player['name'])?></a>
-                    <?php
-                        else:
-                    ?>
-                    N/A
-                    <?php
-                    endif;
-                    ?>
-                </span></h4>
-                
-                 <h4><span class="span1">Pertandingan Terbaik</span><span class="span2">
-                    <?php if(isset($best_match_id)):?>
-                        <a href="<?=$this->Html->url($best_match_url)?>" class="yellow"><?=$best_match?>
-                        </a>
-                    <?php else:?>
-                        <?=$best_match?>
-                    <?php endif;?>
-                </span></h4><br/>
-                <a class="button" href="<?=$this->Html->url('/leaderboard')?>">Lihat Papan Peringkat</a>
-            </div><!-- end .widget -->
-           <!-- <div class="widget tr downloadapp">
-                    <a href="#" class="download-googleplay">&nbsp;</a>
-                    <a href="#" class="download-appstore">&nbsp;</a>
-            </div> end .widget -->
-            
-            <div class="smallBanner">
-				<?=$this->element('sponsor_banner',array('slot'=>'TEAM_SMALL','game_team_id'=>$game_team_id));?>
-            </div><!-- end .smallBanner -->
+        	<div class="banner250x250">
+			<?=$this->element('sponsor_banner',array('slot'=>'TEAM_SMALL','game_team_id'=>$game_team_id));?>
+            </div>
+        	<div class="banner250x250">
+			<?=$this->element('sponsor_banner',array('slot'=>'TEAM_SMALL','game_team_id'=>$game_team_id));?>
+            </div>
+        	<div class="banner250x250">
+			<?=$this->element('sponsor_banner',array('slot'=>'TEAM_SMALL','game_team_id'=>$game_team_id));?>
+            </div>
             
         </div><!-- end .box4 -->
         <div class="box3 tr fl drop" style="height:906px;">
@@ -158,7 +101,28 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
         <div class="box4 fr">
             <div class="widget tr squad-team-name">
                 <h2><?=h($club['team_name'])?></h2>
-                
+                <div class="RingkasanKlab" id="RingkasanKlab">
+                    <div class="RingkasanKlabWidget">
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr>
+                            <td align="center">
+                                <a href="#">
+                                <?php if(strlen(@$user['avatar_img'])==0 || @$user['avatar_img']=='0'):?>
+                                <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
+                                <?php else:?>
+                                <img width="65" src="<?=$this->Html->url('/files/120x120_'.@$user['avatar_img'])?>" />
+                                <?php endif;?>
+                             </a>
+                            </td>
+                            <td>
+                                <span>Rank: <strong><?=number_format($USER_RANK)?></strong></span>
+                                <span>Uang: <strong>ss$ <?=number_format($team_bugdet)?></strong></span>
+                                <span>Point: <strong><?=number_format($USER_POINTS)?></strong></span>
+                            </td>
+                          </tr>
+                        </table>
+                    </div><!-- end .entry -->
+                </div><!-- end .widget -->
             </div><!-- end .widget -->
             <div id="rooster" class="widget tr squad-team drop">
             	<div class="starters">

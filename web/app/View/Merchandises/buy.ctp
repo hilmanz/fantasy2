@@ -4,7 +4,9 @@ $pic = Configure::read('avatar_web_url').
 				$item['pic'];
 ?>
 <div id="catalogPage">
-    <?php echo $this->element('infobar'); ?>
+      <div class="rowd">
+     	 <?php echo $this->element('infobar'); ?>
+      </div>
     <div id="thecontent">
         <div class="content">
         	<div class="titlePage">
@@ -73,6 +75,9 @@ $pic = Configure::read('avatar_web_url').
 							  <img src="<?=$pic?>" />
 						</div>
 					</div><!-- end .widget -->
+                    <div class="banner300x250"></div>
+                    <div class="banner300x250"></div>
+                    <div class="banner300x250"></div>
 				</div><!-- end .box4 -->
             </div><!-- end .row-3 -->
         </div><!-- end .content -->
