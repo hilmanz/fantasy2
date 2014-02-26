@@ -2442,6 +2442,12 @@ class ApiController extends AppController {
 			
 			$rs[$i]['MerchandiseItem']['available'] = $rs[$i]['MerchandiseItem']['stock'] - $total_order;
 
+			//prepare the picture url
+			$pic = Configure::read('avatar_web_url').
+										"merchandise/thumbs/0_".
+										$rs[$i]['MerchandiseItem']['pic'];
+			$rs[$i]['MerchandiseItem']['picture'] = $pic;
+
 		}
 		//assign it.
 		
@@ -2497,6 +2503,11 @@ class ApiController extends AppController {
 			
 		$item['MerchandiseItem']['available'] = $item['MerchandiseItem']['stock'] - $total_order;
 
+		//prepare the picture url
+		$pic = Configure::read('avatar_web_url').
+									"merchandise/thumbs/0_".
+									$item['MerchandiseItem']['pic'];
+		$item['MerchandiseItem']['picture'] = $pic;
 
 		$response['item'] = $item['MerchandiseItem'];
 		
