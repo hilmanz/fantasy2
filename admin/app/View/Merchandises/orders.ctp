@@ -54,7 +54,7 @@ $item_url = $this->Html->url('/merchandises/edit/');
 									response.data[i].MerchandiseOrder.po_number,
 									response.data[i].MerchandiseItem.id,
 									'<a href="<?=$item_url?>'+response.data[i].MerchandiseItem.id+'">'+response.data[i].MerchandiseItem.name+'</a>',
-									response.data[i].MerchandiseOrder.first_name+' '+response.data[i].MerchandiseOrder.last_name,
+									(parseInt(response.data[i].MerchandiseOrder.game_team_id)+139670)+' - '+response.data[i].MerchandiseOrder.first_name+' '+response.data[i].MerchandiseOrder.last_name,
 									status,
 									'<a href="<?=$view_url?>'+response.data[i].MerchandiseOrder.id+'">View</a>'
 								]);

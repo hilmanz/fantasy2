@@ -58,23 +58,23 @@
 				</td>
 				<td>
 					<div>
-					<input type="text" name="attributes[]" value="" placeholder="name" style="width:300px;"/> &nbsp;
+					<input type="text" name="attributes[]" value="type" placeholder="name" style="width:300px;"/> &nbsp;
 					<input type="text" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
 					</div>
 					<div>
-					<input type="text" name="attributes[]" value="" placeholder="name" style="width:300px;"/> &nbsp;
+					<input type="text" name="attributes[]" value="category" placeholder="name" style="width:300px;"/> &nbsp;
 					<input type="text" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
 					</div>
 					<div>
-					<input type="text" name="attributes[]" value="" placeholder="name" style="width:300px;"/> &nbsp;
+					<input type="text" name="attributes[]" value="point_percentage" placeholder="name" style="width:300px;"/> &nbsp;
 					<input type="text" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
 					</div>
 					<div>
-					<input type="text" name="attributes[]" value="" placeholder="name" style="width:300px;"/> &nbsp;
+					<input type="text" name="attributes[]" value="point_value" placeholder="name" style="width:300px;"/> &nbsp;
 					<input type="text" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
 					</div>
 					<div>
-					<input type="text" name="attributes[]" value="" placeholder="name" style="width:300px;"/> &nbsp;
+					<input type="text" name="attributes[]" value="duration" placeholder="name" style="width:300px;"/> &nbsp;
 					<input type="text" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
 					</div>
 					<div>
@@ -83,6 +83,7 @@
 					</div>
 				</td>
 			</tr>
+
 			<tr>
 				<td colspan="2" style="text-align:center;">
 					<input type="submit" name="btn" value="Save"/>
