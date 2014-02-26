@@ -22,6 +22,7 @@
 App::uses('AppController', 'Controller');
 App::uses('Sanitize', 'Utility');
 require_once APP . 'Vendor' . DS. 'Thumbnail.php';
+
 class ApiController extends AppController {
 
 /**
@@ -2341,11 +2342,24 @@ class ApiController extends AppController {
 	public function catalog(){
 		$this->loadModel('MerchandiseItem');
 		$this->loadModel('MerchandiseCategory');
+		$this->loadModel('MerchandiseOrder');
+
+		if(isset($this->request->query['ctoken'])){
+			$catalog_token = unserialize(decrypt_param($this->request->query['ctoken']));	
+		}else{
+			$catalog_token = '';
+		}
 		
-		$catalog_token = unserialize(decrypt_params($this->request->query['ctoken']));
 		$user_fb_id = Sanitize::clean(@$catalog_token['fb_id']);
 
 		$since_id = intval(@$this->request->query['since_id']);
+
+		$start = intval(@$this->request->query['start']);
+		$total = intval(@$this->request->query['total']);
+
+		if($total > 10){
+			$total = 10;
+		}
 
 		$response = array();
 
@@ -2373,15 +2387,21 @@ class ApiController extends AppController {
 		$categories = $this->getCatalogMainCategories();
 		$response['main_categories'] = $categories;
 
-
+		$total_rows = 0;
 		//if category is set, we filter the query by category_id
 		if($category_id != 0){
 			$category_ids = array($category_id);
 			//check for child ids, and add it into category_ids
 			$category_ids = $this->getChildCategoryIds($category_id,$category_ids);
-			$this->paginate = array('conditions'=>array('merchandise_category_id'=>$category_ids),
-									'limit'=>9
+			$options = array('conditions'=>array(
+									'merchandise_category_id'=>$category_ids),
+									'offset'=>$start,
+									'limit'=>$total,
+									'order'=>array('MerchandiseItem.id'=>'DESC')
 									);
+
+
+
 			//maybe the category has children in it.
 			//so we try to populate it
 			$child_categories = $this->getChildCategories($category_id);
@@ -2390,20 +2410,29 @@ class ApiController extends AppController {
 			//we need to know the category details
 			$category = $this->MerchandiseCategory->findById($category_id);
 			$response['current_category'] = $category['MerchandiseCategory'];
-			$this->set('category_name',h($category['MerchandiseCategory']['name']));
+			
 
 		}else{
 			//if doesnt, we query everything.
-			$this->paginate = array(
-									'limit'=>9
-									);
+			$options = array(
+						'offset'=>$start,
+						'limit'=>$total,
+						'order'=>array('MerchandiseItem.id'=>'DESC')
+						);
 		}
 
 
 		
 
-		//retrieve the paginated results.
-		$rs = $this->paginate('MerchandiseItem');
+		//retrieve the results.
+		$rs = $this->MerchandiseItem->find('all',$options);
+
+		//retrieve the total rows
+		unset($options['limit']);
+		unset($options['offset']);
+		$total_rows = $this->MerchandiseItem->find('count',$options);
+		
+		//check the stock for each items
 		for($i=0;$i<sizeof($rs);$i++){
 			//get the available stock
 			// stock_available = stock - total_order
@@ -2412,10 +2441,132 @@ class ApiController extends AppController {
 										  'n_status <> 4')));
 			
 			$rs[$i]['MerchandiseItem']['available'] = $rs[$i]['MerchandiseItem']['stock'] - $total_order;
+
 		}
 		//assign it.
-		$this->set('rs',$rs);
+		
 		$response['items'] = $rs;
+
+		//setup new offset pointers
+		if(sizeof($rs) > 0){
+			$next_offset = $start + $total;
+		}else{
+			$next_offset = $start;
+		}
+		
+		$previous_offset = $start - $total;
+		if($previous_offset < 0){
+			$previous_offset = 0;
+		}
+		//-->
+
+
+		//and here's the JSON output
+		$this->layout="ajax";
+		$this->set('response',array('status'=>1,
+									'data'=>$response,
+									'offset'=>$start,
+									'limit'=>$total,
+									'next_offset'=>$next_offset,
+									'previous_offset'=>$previous_offset,
+									'total_rows'=>$total_rows));
+
+		$this->render('default');
+	}
+	///api for displaying the catalog's item
+	public function catalog_item($item_id){
+		$this->loadModel('MerchandiseItem');
+		$this->loadModel('MerchandiseCategory');
+		$this->loadModel('MerchandiseOrder');
+
+
+		//we need to populate the category
+		$categories = $this->getCatalogMainCategories();
+		$response['main_categories'] = $categories;
+
+		
+		//parno mode.
+		$item_id = Sanitize::clean($item_id);
+
+		//get the item detail
+		$item = $this->MerchandiseItem->findById($item_id);
+		
+		$total_order = $this->MerchandiseOrder->find('count',
+				array('conditions'=>array('merchandise_item_id'=>$item['MerchandiseItem']['id'],
+										  'n_status <> 4')));
+			
+		$item['MerchandiseItem']['available'] = $item['MerchandiseItem']['stock'] - $total_order;
+
+
+		$response['item'] = $item['MerchandiseItem'];
+		
+
+		$category = $this->MerchandiseCategory->findById($item['MerchandiseItem']['merchandise_category_id']);
+		$response['current_category'] = $category['MerchandiseCategory'];
+
+
+		$this->layout="ajax";
+		$this->set('response',array('status'=>1,'data'=>$response));
+		$this->render('default');
+	}
+	//api call for send purchase order to buy online catalog's items
+	public function catalog_order($item_id){
+		$this->loadModel('MerchandiseItem');
+		$this->loadModel('MerchandiseCategory');
+		$this->loadModel('MerchandiseOrder');
+		
+		if(isset($this->request->query['ctoken'])){
+			$catalog_token = unserialize(decrypt_param($this->request->query['ctoken']));	
+		}else{
+			$catalog_token = '';
+		}
+		$item_id = $this->Session->read('po_item_id');
+		
+		//parno mode.
+		$item_id = Sanitize::clean($item_id);
+
+		//get the item detail
+		$item = $this->MerchandiseItem->findById($item_id);
+		if(isset($item['MerchandiseItem'])){
+			$response['item'] = $item['MerchandiseItem'];	
+		}
+		
+		//these is our flags
+		$is_transaction_ok = true;
+		$no_fund = false;
+
+		//make sure the csrf token still valid
+
+		//-> csrf check di disable dulu selama development
+		if(
+			(strlen($this->request->data['ct']) > 0)
+				&& ($this->Session->read('po_csrf') == $this->request->data['ct'])
+		  ){
+
+			$result = $this->pay_with_game_cash($item_id,$item);
+			$is_transaction_ok = $result['is_transaction_ok'];
+			$no_fund = $result['no_fund'];
+			if($is_transaction_ok == true){
+				//we reduce the stock in front
+				//$this->ReduceStock($item_id,$item['MerchandiseItem']);
+			}
+		}else{
+			$is_transaction_ok = false;
+		}
+		
+		$response['apply_digital_perk_error'] = $this->Session->read('apply_digital_perk_error');
+		$response['is_transaction_ok'] = $is_transaction_ok;
+		$response['no_fund'] = $no_fund;
+		
+		
+		$this->Session->write('apply_digital_perk_error',null);
+		//reset the csrf token
+		$this->Session->write('po_csrf',null);
+		//-->
+
+		//reset the item_id in session (disable these for debug only)
+		$this->Session->write('po_item_id',0);
+
 		$this->layout="ajax";
 		$this->set('response',array('status'=>1,'data'=>$response));
 		$this->render('default');
