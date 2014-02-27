@@ -76,6 +76,7 @@ app.get('/match/list',[auth.canAccess],gameplay.fixtures);
 
 
 app.get('/players/:team_id',[auth.canAccess],team.getPlayers);
+app.get('/top_players/:total',[auth.canAccess],team.getMasterTopPlayers);
 app.get('/teams', [auth.canAccess],team.getTeams);
 app.get('/team/get/:fb_id',[auth.canAccess],team.getUserTeam);
 app.get('/points/:fb_id',[auth.canAccess],team.getUserTeamPoints);

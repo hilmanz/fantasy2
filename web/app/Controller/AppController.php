@@ -71,6 +71,7 @@ class AppController extends Controller {
 			$this->ApiInit();
 			
 		}else{
+			$this->loadModel('Ticker');
 			$last_session = intval($this->Session->read('LastSession'));
 			
 			if($last_session < time()){
@@ -104,7 +105,7 @@ class AppController extends Controller {
 				$this->loadModel('User');
 				$this->loadModel('Point');
 				$this->loadModel('Info');
-				$this->loadModel('Ticker');
+				
 
 
 				$this->userDetail = $this->User->findByFb_id($this->userData['fb_id']);
@@ -242,8 +243,7 @@ class AppController extends Controller {
 				
 
 				
-				//news ticker
-				$this->set('tickers',$this->Ticker->find('all',array('limit'=>5)));
+				
 				
 
 				//notification stuffs
@@ -254,6 +254,8 @@ class AppController extends Controller {
 			}else{
 				$this->set('USER_IS_LOGIN',false);
 			}
+			//news ticker
+			$this->set('tickers',$this->Ticker->find('all',array('limit'=>5)));
 		}
 		
 	}

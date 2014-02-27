@@ -91,3 +91,5 @@ ALTER TABLE `ffgame_stats`.`job_queue` ADD INDEX `IDX_STATUS` (`n_status`);
 ALTER TABLE `ffgame_stats`.`job_queue_rank` ADD INDEX `IDX_STATUS` (`n_status`);
 
 ALTER TABLE `fantasy`.`merchandise_orders` ADD COLUMN `email` VARCHAR(140) NULL AFTER `last_name`;
+
+ALTER TABLE `ffgame_stats`.`master_match_player_points` ADD INDEX `IDX_PLAYER_ID` (`player_id`);

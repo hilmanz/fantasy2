@@ -21,6 +21,15 @@ exports.getPlayers = function(req,res){
 		}
 	});
 }
+exports.getMasterTopPlayers = function(req,res){
+	team.getMasterTopPlayers(req.params.total,
+	function(err,players){
+		if(err) handleError(res);
+		else{
+			res.send(200,players);
+		}
+	});
+}
 exports.getTeamById = function(req,res){
 	team.getTeamById(req.params.id,
 	function(err,team){

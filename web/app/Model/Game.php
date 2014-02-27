@@ -50,6 +50,11 @@ class Game extends AppModel {
 		$response = $this->api_call('/players/'.$team_id);
 		return $response;
 	}
+	public function getMasterTopPlayers($team_id,$total=10){
+		$response = $this->api_call('/top_players/'.$total);
+		
+		return $response;
+	}
 	public function create_team($data){
 		$response = $this->api_post('/create_team',$data);
 		return $response;

@@ -103,6 +103,35 @@ function getPlayers(team_uid,callback){
 	
 }
 
+//get top players (players with the highest points)
+//@params total -> how many players you want to retrieved
+function getMasterTopPlayers(total,callback){
+	prepareDb(function(conn){
+		async.waterfall([
+				function(callback){
+					conn.query("SELECT a.uid AS player_id,a.team_id,\
+								name,SUM(points) AS total\
+								FROM ffgame.master_player a\
+								INNER JOIN ffgame_stats.master_match_player_points b\
+								ON a.uid = b.player_id\
+								GROUP BY b.player_id ORDER BY total DESC LIMIT ?;",
+					[parseInt(total)],
+					function(err,players){
+						console.log(S(this.sql).collapseWhitespace().s);
+						console.log(players);
+						callback(err,players);
+					});
+				},
+				
+			],
+			function(err,result){
+				conn.end(function(err){
+					callback(err,result);
+				});
+			}
+		);
+	});
+}
 /** get team detail from master **/
 function getTeamById(team_uid,callback){
 	prepareDb(function(conn){
@@ -382,6 +411,7 @@ exports.getTeamById = getTeamById;
 exports.create = create;
 exports.remove_team = remove_team;
 exports.getUserTeam = getUserTeam;
+exports.getMasterTopPlayers = getMasterTopPlayers;
 exports.setPool = function(p){
 	pool = p;
 }

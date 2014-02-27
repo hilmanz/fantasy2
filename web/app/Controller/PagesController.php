@@ -96,6 +96,9 @@ class PagesController extends AppController {
 		$small_banners = $this->getBanners('FRONTPAGE_SMALL_RIGHT',10,true);
 		$this->set('small_banner_2',$small_banners);
 
+		$sidebar_banner = $this->getBanners('FRONTPAGE_SIDEBAR',10,true);
+		$this->set('sidebar_banner',$sidebar_banner);
+
 		//-->
 
 		if($path[0]=='home'&&$this->userDetail['Team']['id']>0){
@@ -109,7 +112,83 @@ class PagesController extends AppController {
 			
 		}else if($path[0]=='mobile'){
 			$this->layout="mobile";
+		}else if($path[0]=='home'){
+			$this->getHomeContent();
 		}
 		$this->render(implode('/', $path));
+	}
+	private function getHomeContent(){
+		$this->getLastWeekTopManagers();
+		$this->getTopPlayers();
+	}
+	private function getTopPlayers(){
+		$top_players = $this->Game->getMasterTopPlayers(10);
+		$this->set('top_players',$top_players);
+	}
+	private function getLastWeekTopManagers(){
+		$this->loadModel("Point");
+	    $this->loadModel('User');
+	    $this->loadModel('Weekly_point');
+	    $this->loadModel('Weekly_rank');
+
+	    $rs = $this->Session->read('last_week_rank');
+	    if(!isset($rs)){
+	    	
+		    //get the current matchday
+		    $sql = "SELECT matchday FROM ffgame.game_fixtures 
+		    		WHERE is_processed = 1 AND period='FullTime' 
+		    		ORDER BY matchday DESC LIMIT 1;";
+
+		    $match = $this->Game->query($sql);
+
+
+		    
+		    $matchday = $match[0]['game_fixtures']['matchday'];
+			
+			$this->Weekly_point->virtualFields['TotalPoints'] = 'SUM(Weekly_point.points + Weekly_point.extra_points)';
+			
+			$this->paginate = array(
+									'conditions'=>array('matchday'=>$matchday),
+									'limit'=>10,
+									'order'=> array('rank'=>'asc')
+								);
+
+
+		 
+		    $rs = $this->paginate('Weekly_rank');
+		    
+		    $game_id = '';
+		 
+		  	if(sizeof($rs)>0){
+		  		foreach($rs as $n=>$r){
+			    	$poin = $this->Weekly_point->find('first',array(
+			    									'conditions'=>array(
+			    										'Weekly_point.team_id'=>$r['Weekly_rank']['team_id'],
+			    										'matchday'=>$matchday
+			    									)
+			    								));
+			    	$rs[$n]['Weekly_point'] = $poin['Weekly_point'];
+			    	$rs[$n]['Weekly_point']['points'] = $poin['Weekly_point']['TotalPoints'];
+			    	$rs[$n]['Point'] = $rs[$n]['Weekly_point'];
+			    	$rs[$n]['Team'] = $poin['Team'];
+			    	//get manager's name
+			    	$manager = $this->User->findById($poin['Team']['user_id']);
+			    	$game_team = $this->Game->query("SELECT b.id as id FROM ffgame.game_users a
+								INNER JOIN ffgame.game_teams b
+								ON a.id = b.user_id WHERE fb_id = '{$manager['User']['fb_id']}' LIMIT 1;");
+
+			    	$rs[$n]['Manager'] = @$manager['User'];
+			    	
+			    	$rs[$n]['manager_id'] = $game_team[0]['b']['id'] + intval(Configure::read('RANK_RANDOM_NUM'));
+
+			    }
+		  	}
+	   
+	   
+		    //store to cache
+		   	$this->Session->write('last_week_rank',$rs);
+		}
+		//assign team ranking list to template
+	    $this->set('team',$rs);
 	}
 }

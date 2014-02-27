@@ -30,11 +30,13 @@
             <h3>Top Manager Minggu Ini</h3>
             <div class="topManager">
             	<ul>
-                	<li>Nibh Nullam - Liverpool <span class="points">24123 Pts</span></li>
-                	<li>Vehicula Vestibulum - Arsenal <span class="points">23123 Pts</span></li>
-                	<li>Malesuada Sit - Chelsea <span class="points">20123 Pts</span></li>
-                	<li>Duis mollis - Manchester City <span class="points">18123 Pts</span></li>
-                	<li>Vehicula Vestibulum - Arsenal <span class="points">23123 Pts</span></li>
+                <?php for($i=0;$i<sizeof($team);$i++):?>
+                	<li><?=h($team[$i]['Manager']['name'])?> 
+                      - 
+                      <?=h($team[$i]['Team']['team_name'])?> 
+                      <span class="points">
+                        <?=floatval($team[$i]['Weekly_point']['TotalPoints'])?> Pts</span></li>
+                <?php endfor;?>
                 </ul>
             </div><!-- end .entry -->
         </div><!-- end .box -->
@@ -42,85 +44,48 @@
             <h3>Game News & Update</h3>
             <div class="gameNews">
             	<ul>
+                  <?php for($i=0;$i<sizeof($tickers);$i++):?>
                 	<li>
-                    	<span class="date">15/02/2014</span>
-                    	<p>Vehicula Vestibulum Bibendum Consectetur</p>
-                    </li>
-                	<li>
-                    	<span class="date">15/02/2014</span>
-                    	<p>Malesuada Commodo Ipsum Tristique Sit</p>
-                    </li>
-                	<li>
-                    	<span class="date">15/02/2014</span>
-                    	<p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula</p>
-                    </li>
+                    	<span class="date">
+                        <?=date("d/m/Y",strtotime($tickers[$i]['Ticker']['post_dt']))?>
+                      </span>
+                    	<p>
+                        <a href="<?=$tickers[$i]['Ticker']['url']?>" target="_blank">
+                          <?=h($tickers[$i]['Ticker']['content'])?>
+                         </a>
+                      </p>
+                  </li>
+                	<?php endfor;?>
                 </ul>
             </div><!-- end .entry -->
         </div><!-- end .box -->
         <div class="box tr" id="topPlayerWeek">
             <h3>Pemain Top Minggu Ini</h3>
             <div class="topPlayerWeek">
+             
             	<ul>
-                	<li>
-                    	<a href="#" class="smallerThumb">
-							<?php if(strlen(@$user['avatar_img'])==0 || @$user['avatar_img']=='0'):?>
-                            <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
-                            <?php else:?>
-                            <img width="65" src="<?=$this->Html->url('/files/120x120_'.@$user['avatar_img'])?>" />
-                            <?php endif;?>
-       					 </a>
-                         <h3>Tevez</h3>
+                  <?php 
+                    for($i=0;$i<sizeof($top_players);$i++):
+                  ?>
+                	 <li>
+
+                          <a class="thumbPlayersSmall" href="#">
+                            <img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$top_players[$i]['team_id'])?>&dimensions=103x155&id=<?=str_replace('p','',$top_players[$i]['player_id'])?>"/></a>
+                         <h3 style="float:left"><?=h($top_players[$i]['name'])?></h3>
+                         <span class="points">
+                            <?=number_format($top_players[$i]['total'])?>Pts
+                          </span>
                     </li>
-                	<li>
-                    	<a href="#" class="smallerThumb">
-							<?php if(strlen(@$user['avatar_img'])==0 || @$user['avatar_img']=='0'):?>
-                            <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
-                            <?php else:?>
-                            <img width="65" src="<?=$this->Html->url('/files/120x120_'.@$user['avatar_img'])?>" />
-                            <?php endif;?>
-       					 </a>
-                         <h3>Andrey Shevchenko</h3>
-                    </li>
-                	<li>
-                    	<a href="#" class="smallerThumb">
-							<?php if(strlen(@$user['avatar_img'])==0 || @$user['avatar_img']=='0'):?>
-                            <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
-                            <?php else:?>
-                            <img width="65" src="<?=$this->Html->url('/files/120x120_'.@$user['avatar_img'])?>" />
-                            <?php endif;?>
-       					 </a>
-                         <h3>Ronaldo</h3>
-                    </li>
-                	<li>
-                    	<a href="#" class="smallerThumb">
-							<?php if(strlen(@$user['avatar_img'])==0 || @$user['avatar_img']=='0'):?>
-                            <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
-                            <?php else:?>
-                            <img width="65" src="<?=$this->Html->url('/files/120x120_'.@$user['avatar_img'])?>" />
-                            <?php endif;?>
-       					 </a>
-                         <h3>Dudek</h3>
-                    </li>
-                	<li>
-                    	<a href="#" class="smallerThumb">
-							<?php if(strlen(@$user['avatar_img'])==0 || @$user['avatar_img']=='0'):?>
-                            <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
-                            <?php else:?>
-                            <img width="65" src="<?=$this->Html->url('/files/120x120_'.@$user['avatar_img'])?>" />
-                            <?php endif;?>
-       					 </a>
-                         <h3>Rooney</h3>
-                    </li>
+                	<?php endfor;?>
                 </ul>
             </div><!-- end .entry -->
         </div><!-- end .box -->
         <div class="bannerBox last">
-	                    <a href="<?=$small_banner_2[0]['Banners']['url']?>" target="_blank"><img src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner_2[0]['Banners']['banner_file'])?>" /></a>
+	               <a href="<?=$small_banner_2[0]['Banners']['url']?>" target="_blank"><img src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner_2[0]['Banners']['banner_file'])?>" /></a>
         </div>
-		<div class="bannerBox last">
-
-				<a href="<?=$small_banner_1[0]['Banners']['url']?>" target="_blank"><img src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner_1[0]['Banners']['banner_file'])?>" /></a>
-		</div>
+    		<div class="bannerBox last">
+    				<a href="<?=$small_banner_1[0]['Banners']['url']?>" target="_blank"><img src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner_1[0]['Banners']['banner_file'])?>" /></a>
+    		</div>
     </div><!-- end #listBox -->
 </div><!-- end #content -->
 
@@ -129,9 +94,14 @@
     	<h3>Login Manager</h3>
 		<a href="javascript:fb_login();" class="boxButton loginFacebook">&nbsp;</a>
     </div>
-    <div class="banner300x250"></div>
-    <div class="banner300x250"></div>
-    <div class="banner300x250"></div>
+    <?php for($i=0;$i<sizeof($sidebar_banner);$i++):?>
+    <div class="banner300x250">
+        <a href="<?=$sidebar_banner[$i]['Banners']['url']?>" target="_blank">
+          <img src="<?=$this->Html->url(Configure::read('avatar_web_url').$sidebar_banner[0]['Banners']['banner_file'])?>" />
+        </a>
+    </div>
+    <?php endfor;?>
+    
 </div><!-- end #sidebar -->
 
 
