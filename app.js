@@ -136,6 +136,8 @@ app.get('/livestats/:game_id',[auth.canAccess],gameplay.livestats);
 app.get('/livegoals/:game_id',[auth.canAccess],gameplay.livegoals);
 app.get('/livematches/:matchday',[auth.canAccess],gameplay.livematches);
 app.get('/apply_perk/:game_team_id/:perk_id',[auth.canAccess],gameplay.apply_perk);
+app.get('/postponed',[auth.canAccess],gameplay.setPostponedStatus);
+app.get('/postponed_status',[auth.canAccess],gameplay.getPostponedStatus);
 app.get('/checkSession',function(req,res){
 	auth.checkSession(req,res,function(is_valid){
 		if(is_valid){

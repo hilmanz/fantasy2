@@ -53,6 +53,9 @@ class ScheduleController extends AppController {
 									LIMIT 1");
 
 		$this->set('rs',$rs[0]);
+
+		$rs = $this->Game->getPostponedMatch($game_id);
+		$this->set('is_postponed',$rs['status']);
 	}
 
 	public function matchday(){
@@ -72,5 +75,15 @@ class ScheduleController extends AppController {
 		
 
 		$this->set('rs',$rs);
+	}
+
+	public function postponed($game_id,$toggle){
+		$rs = $this->Game->setPostponedMatch($game_id,$toggle);
+		if($rs['status']==1){
+			$this->Session->setFlash('The match is successfully postponed !');
+		}else{
+			$this->Session->setFlash('Cannot postponed the match, please try again later !');
+		}
+		$this->redirect('/schedule/edit/'.$game_id);
 	}
 }

@@ -2119,6 +2119,78 @@ function apply_perk(game_team_id,perk_id,done){
 		});
 	});
 }
+
+//method to postponed the match
+exports.setPostponedStatus = function(redisClient,game_id,toggle,callback){
+	if(toggle==1){
+		prepareDb(function(conn){
+			async.waterfall([
+				function(cb){
+					console.log('updating fixtures');
+					//update game fixtures, set to FullTime and is_perocessed = 1
+					conn.query("UPDATE ffgame.game_fixtures \
+								SET is_processed = 1, period='FullTime'\
+								WHERE game_id=?",
+								[game_id],
+								function(err,rs){
+									console.log(S(this.sql).collapseWhitespace().s);
+									if(err){
+										console.log('postponed','ERROR',err.message);
+									}
+									cb(err,rs);
+								});
+				},
+				function(result,cb){
+					console.log('insert dummy entry to job_queue');
+					//then insert a dummy entry to make job_queue stops the job.
+					conn.query("INSERT IGNORE INTO ffgame_stats.job_queue\
+						        (game_id,since_id,until_id)\
+						        VALUES(?,0,0)",[game_id],function(err,rs){
+						console.log(S(this.sql).collapseWhitespace().s);
+						cb(err);
+					});
+				}
+			],
+			function(err,rs){
+				conn.end(function(err){
+					redisClient.set('postponed-'+game_id,1,function(err,rs){
+						console.log('postponed-'+game_id+'->'+rs);
+						callback(err);
+					});
+				});
+			});
+		});
+		
+	}else{
+		prepareDb(function(conn){
+			async.waterfall([
+				function(cb){
+					//update game fixtures, set to FullTime and is_perocessed = 1
+					conn.query("UPDATE ffgame.game_fixtures \
+								SET is_processed = 0, period='PreMatch'\
+								WHERE game_id=?",[game_id],function(err,rs){
+						if(err){
+							console.log('postpone',err.message);
+						}
+						console.log(S(this.sql).collapseWhitespace().s);
+						cb(err);
+					});
+				}
+			],
+			function(err,rs){
+				conn.end(function(err){
+					redisClient.del('postponed-'+game_id,
+					function(err,rs){
+						callback(err);
+					});
+				});
+			});
+		});
+	}
+}
+//-->
+
+
 var match = require(path.resolve('./libs/api/match'));
 var officials = require(path.resolve('./libs/api/officials'));
 var sponsorship = require(path.resolve('./libs/api/sponsorship'));

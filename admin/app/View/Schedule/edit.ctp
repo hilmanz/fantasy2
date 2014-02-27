@@ -36,5 +36,12 @@ $arr = explode(" ",$match_date);
 <h4>Time : </h4>
 <input type="text" name="tm" value="<?=$arr[1]?>" placeholder="HH:MM:SS"/>
 <input type="submit" name="btn" value="Save"/>
+<div style="margin-top:10px;">
+<?php if($is_postponed==0):?>
+<a href="<?=$this->Html->url('/schedule/postponed/'.$rs['Fixture']['game_id'].'/1')?>" class="button">POSTPONE</a>
+<?php else: ?>
+<a href="<?=$this->Html->url('/schedule/postponed/'.$rs['Fixture']['game_id'].'/0')?>" class="button">REACTIVATE</a>
+<?php endif;?>
+</div>
 </form>
 </div>

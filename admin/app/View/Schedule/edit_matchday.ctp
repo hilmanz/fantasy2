@@ -21,6 +21,7 @@ enctype="application/x-www-form-urlencoded">
 	<tr>
 		<td colspan="2">
 			<input type="submit" name="btn" value="Update"/>
+			
 		</td>
 	</tr>
 </table>

@@ -231,4 +231,15 @@ class Game extends AppModel {
 		$rs = $this->query($sql);
 		return $rs[0]['Transaction'];
 	}
+
+	public function setPostponedMatch($game_id,$toggle){
+		$response = $this->api_call('/postponed',
+									array('game_id'=>$game_id,'toggle'=>$toggle));
+		return $response;
+	}
+	public function getPostponedMatch($game_id){
+		$response = $this->api_call('/postponed_status',
+									array('game_id'=>$game_id));
+		return $response;
+	}
 }

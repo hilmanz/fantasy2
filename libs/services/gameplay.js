@@ -755,3 +755,25 @@ function isAccumulativeStatsOk(stats_name){
 		}
 	}
 }
+
+
+//get match postponed status
+exports.getPostponedStatus = function(req,res){
+	req.redisClient.get('postponed-'+req.query.game_id,function(err,postponed){
+		if(postponed==null){
+			res.json(200,{status:0});
+		}else{
+			res.json(200,{status:1});
+		}
+	});
+}
+exports.setPostponedStatus = function(req,res){
+	
+	gameplay.setPostponedStatus(req.redisClient,
+								req.query.game_id,
+								req.query.toggle,
+								function(err,rs){
+									res.json(200,{status:1});
+								});
+	
+}
