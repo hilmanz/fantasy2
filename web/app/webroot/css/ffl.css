@@ -173,7 +173,9 @@ a.download-appstore{
 	padding:5px 0;
 	margin:0 0 20px 0;
 	text-align:center;
-	height:40px;
+	min-height:40px;
+	display:table;
+	width:100%;
 }
 #navigation ul{
 	margin:0;
@@ -2218,6 +2220,7 @@ table.dataTable{
 }
 #catalogPage .col-content{
 	width:68%;
+	margin:0;
 }
 .catalog-list a{
 	color:#fdcb02;
@@ -2227,7 +2230,7 @@ table.dataTable{
 .catalog-item {
     float: left;
     height: 440px;
-    margin: 0 46px 5px 0;
+    margin:10px 23px;
     width: 185px;
 }
 .imagesCatalog{
@@ -2442,6 +2445,9 @@ table.dataTable{
 	background:#000;
 	float:left;
 	margin:0 10px 0 0;
+}
+.smallerThumb img{
+	width:100%;
 }
 .page-pages .banner300x250{
 	margin:0 auto 40px auto;
