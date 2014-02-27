@@ -73,7 +73,14 @@ class ProfileController extends AppController {
 			//budget
 			$budget = $this->Game->getBudget($userData['team']['id']);
 			$this->set('team_bugdet',$budget);
+			
+			//long banner
+			$long_banner = $this->getBanners('PROFILE_BANNER',2,true);
+			$this->set('long_banner',$long_banner);
+			
 			$this->render('details');
+
+			
 		}else{
 			$this->redirect('/');
 		}

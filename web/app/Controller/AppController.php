@@ -503,7 +503,121 @@ class AppController extends Controller {
 		
 		return $banners;
 	}
+	
 
+	protected function getFinancialStatementSummary($fb_id){
+
+		$finance = $this->Game->financial_statements($fb_id);
+		
+		$this->weekly_balances = @$finance['data']['weekly_balances'];
+		$this->expenditures = @$finance['data']['expenditures'];
+		$this->tickets_sold = @$finance['data']['tickets_sold'];
+		$this->starting_budget = @intval($finance['data']['starting_budget']);
+
+		if($finance['status']==1){
+
+			$report = array('total_matches' => $finance['data']['total_matches'],
+							'budget' => $finance['data']['budget']);
+			$total_items = array();
+			foreach($finance['data']['report'] as $n=>$v){
+				$report[$v['item_name']] = $v['total'];
+				$total_items[$v['item_name']] = $v['item_total'];
+			}
+			
+			$report['total_earnings'] = intval(@$report['tickets_sold'])+
+										intval(@$report['commercial_director_bonus'])+
+										intval(@$report['marketing_manager_bonus'])+
+										intval(@$report['public_relation_officer_bonus'])+
+										intval(@$report['win_bonus'])+
+										
+										intval(@$report['player_sold']);
+
+			foreach($report as $item_name=>$price){
+				if($price > 0 && @eregi('other_',$item_name)){
+					//$report['total_earnings'] += intval($price);
+					
+				}
+				if($price > 0 && @eregi('perk-',$item_name)){
+					//$report['total_earnings'] += intval($price);
+
+				}
+			}
+			$this->finance_total_items_raw = $total_items;
+
+			return $report;
+		}
+	}
+	protected function getFinanceSummary($fb_id){
+		$cached = $this->Session->read('cached_finance_summary');
+		if($cached==null){
+
+
+			$financial_statement = $this->getFinancialStatementSummary($fb_id);
+			//last earnings
+			$rs = $this->Game->getLastEarnings($this->userData['team']['id']);
+			if($rs['status']==1){
+				$financial_statement['last_earning'] = $rs['data']['total_earnings'];
+			}else{
+				$financial_statement['last_earning'] = 0;
+			}
+
+			//last expenses
+			$rs = $this->Game->getLastExpenses($this->userData['team']['id']);
+			if($rs['status']==1){
+				$financial_statement['last_expenses'] = $rs['data']['total_expenses'];
+			}else{
+				$financial_statement['last_expenses'] = 0;
+			}
+
+			
+			//weekly salaries
+
+			//list of players
+			$players = $this->Game->get_team_players($this->userData['fb_id']);
+
+			$weekly_salaries = 0;
+			foreach($players as $p){
+				$weekly_salaries += intval(@$p['salary']);
+			}
+			
+			//-->
+			//list of staffs
+			//get officials
+			$officials = $this->Game->getAvailableOfficials($this->userData['team']['id']);
+			$staffs = array();
+			foreach($officials as $official){
+				if(isset($official['hired'])){
+					$staffs[] = $official;
+				}
+			}
+			
+
+			foreach($staffs as $p){
+				$weekly_salaries += intval(@$p['salary']);
+			}
+			$financial_statement['weekly_salaries'] = $weekly_salaries;
+
+			//end of weekly salaries
+			
+
+
+
+		    //budget
+			$budget = $this->Game->getBudget($this->userData['team']['id']);
+
+			$financial_statement['budget'] = $budget;
+			$this->Session->write('cached_finance_summary',$financial_statement);
+
+
+		}else{
+			$financial_statement = $cached;
+		}
+
+		$this->set('team_bugdet',$financial_statement['budget']);
+		$this->set('last_earning',$financial_statement['last_earning']);
+		$this->set('last_expenses',$financial_statement['last_expenses']);
+		$this->set('weekly_salaries',$financial_statement['weekly_salaries']);
+	}
 	
 }
 

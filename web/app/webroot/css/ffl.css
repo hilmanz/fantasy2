@@ -433,7 +433,7 @@ a.download-appstore{
 }
 .widget{
 	padding:15px 20px;
-	margin:0 0 2px 0;
+	margin:0 0 2px 20px;
 	overflow:hidden;
 	border-radius:5px;
 }

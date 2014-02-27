@@ -36,9 +36,16 @@
             </div><!-- end .widget -->
         </div><!-- end .col2 -->
         <div class="col2">
-            <div class="mediumBanner">
-                <?=$this->element('sponsor_banner',array('slot'=>'MY_CLUB_LONG','game_team_id'=>$game_team_id));?>
-            </div><!-- end .mediumBanner -->
+            <?php for($i=0;$i<sizeof($long_banner);$i++):?>
+                  <div class="col2">
+                      <div class="mediumBanner">
+                        <a href="javascript:banner_click(<?=$long_banner[$i]['Banners']['id']?>,'<?=$long_banner[$i]['Banners']['url']?>');">
+                            <img src="<?=$this->Html->url(Configure::read('avatar_web_url').
+                              $long_banner[$i]['Banners']['banner_file'])?>" />
+                        </a>
+                      </div><!-- end .mediumBanner -->
+                  </div><!-- end .col2 -->
+            <?php endfor;?>
         </div><!-- end .col2 -->
       </div><!-- end .rowd -->
     <div class="headbar tr">
@@ -98,16 +105,16 @@
             
         </div><!-- end .content -->
         <div class="rows">
-            <div class="col2">
-                <div class="mediumBanner">
-                    <?=$this->element('sponsor_banner',array('slot'=>'MY_CLUB_LONG','game_team_id'=>$game_team_id));?>
-                </div><!-- end .mediumBanner -->
-            </div><!-- end .col2 -->
-            <div class="col2">
-                <div class="mediumBanner">
-                    <?=$this->element('sponsor_banner',array('slot'=>'MY_CLUB_LONG','game_team_id'=>$game_team_id));?>
-                </div><!-- end .mediumBanner -->
-            </div><!-- end .col2 -->
+             <?php for($i=0;$i<sizeof($long_banner2);$i++):?>
+                  <div class="col2">
+                      <div class="mediumBanner">
+                        <a href="javascript:banner_click(<?=$long_banner2[$i]['Banners']['id']?>,'<?=$long_banner2[$i]['Banners']['url']?>');">
+                            <img src="<?=$this->Html->url(Configure::read('avatar_web_url').
+                              $long_banner2[$i]['Banners']['banner_file'])?>" />
+                        </a>
+                      </div><!-- end .mediumBanner -->
+                  </div><!-- end .col2 -->
+            <?php endfor;?>
         </div><!-- end .rows -->
     </div><!-- end #thecontent -->
 </div><!-- end #leaderboardPage -->

@@ -31,6 +31,13 @@ class MarketController extends AppController {
 		if(!$this->hasTeam()){
 			$this->redirect('/login/expired');
 		}
+
+		$this->getFinanceSummary($this->userData['fb_id']);
+		//banners
+		$long_banner = $this->getBanners('TRANSFERWINDOW_TOP',2,true);
+		$this->set('long_banner',$long_banner);
+		$long_banner2 = $this->getBanners('TRANSFERWINDOW_BOTTOM',2,true);
+		$this->set('long_banner2',$long_banner2);
 	}
 	public function hasTeam(){
 		$userData = $this->getUserData();
@@ -47,6 +54,7 @@ class MarketController extends AppController {
 															($v['stats']['draws']);
 		}
 		$this->set('teams',$this->sortTeamByPoints($teams['data']));
+
 	}
 	private function sortTeamByPoints($teams){
 		

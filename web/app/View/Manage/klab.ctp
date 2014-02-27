@@ -122,7 +122,7 @@ function isStaffExist($staff_token,$name){
                       <tr>
                         <td align="center">
                         	<a href="#">
-							<?php if(strlen(@$user['avatar_img'])==0 || @$user['avatar_img']=='0'):?>
+							             <?php if(strlen(@$user['avatar_img'])==0 || @$user['avatar_img']=='0'):?>
                             <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
                             <?php else:?>
                             <img width="65" src="<?=$this->Html->url('/files/120x120_'.@$user['avatar_img'])?>" />
@@ -135,11 +135,11 @@ function isStaffExist($staff_token,$name){
                             <span>Point: <strong><?=number_format($USER_POINTS)?></strong></span>
                         </td>
                         <td colspan="2" class="pendapatan">
-                        	<p><span class="ico icon-coin">&nbsp;</span>
+                        	<p title="Gaji Minggu Lalu"><span class="ico icon-coin">&nbsp;</span>
                             	<strong class="amounts">ss$ <?=number_format($weekly_salaries)?></strong></p>
-                            <p><span class="ico icon-plus-alt">&nbsp;</span>
+                            <p title="Pendapatan Minggu Lalu"><span class="ico icon-plus-alt">&nbsp;</span>
                             	<strong class="amounts">ss$ <?=number_format($last_earning)?></strong></p>
-                            <p><span class="ico icon-minus-alt">&nbsp;</span>
+                            <p title="Pengeluaran Minggu Lalu"><span class="ico icon-minus-alt">&nbsp;</span>
                             	<strong class="amounts">ss$ <?=number_format($last_expenses)?></strong></p>
                         </td>
                       </tr>
@@ -165,7 +165,12 @@ function isStaffExist($staff_token,$name){
 
                 <div class="row">
 					<div class="col3 fl">
-                            <div class="banner300x250"></div>
+            <div class="banner300x250">
+              <a href="javascript:banner_click(<?=$info_banner[0]['Banners']['id']?>,'<?=$info_banner[0]['Banners']['url']?>');">
+                    <img src="<?=$this->Html->url(Configure::read('avatar_web_url').
+                                $info_banner[0]['Banners']['banner_file'])?>" />
+                </a>
+            </div>
 					</div><!-- end .col3 -->
 					<div class="col3 fl">
 						<div class="widget PergerakanRanking">
@@ -592,8 +597,14 @@ function isStaffExist($staff_token,$name){
 					</div><!-- end .col-content -->
                     <div class="col3">
                     	<div class="fr">
-                            <div class="banner300x250"></div>
-                            <div class="banner300x250"></div>
+                            <?php for($i=0;$i<sizeof($sidebar_banner);$i++):?>
+                            <div class="banner300x250">
+                             <a href="javascript:banner_click(<?=$sidebar_banner[$i]['Banners']['id']?>,'<?=$banners[$i]['Banners']['url']?>');" target="_blank">
+                                      <img src="<?=$this->Html->url(Configure::read('avatar_web_url').
+                                                  $sidebar_banner[$i]['Banners']['banner_file'])?>" />
+                                  </a>
+                              </div>
+                            <?php endfor;?>
                         </div><!-- end .fr -->
                     </div><!-- end .col3 -->
               </div><!-- end #tabs-Keuagan -->
@@ -668,16 +679,16 @@ function isStaffExist($staff_token,$name){
                 </table>
                 </div><!-- end .player-list -->
                 <div class="rows">
+                  <?php for($i=0;$i<sizeof($long_banner);$i++):?>
                 	<div class="col2">
                         <div class="mediumBanner">
-                            <?=$this->element('sponsor_banner',array('slot'=>'MY_CLUB_LONG','game_team_id'=>$game_team_id));?>
+                          <a href="javascript:banner_click(<?=$long_banner[$i]['Banners']['id']?>,'<?=$long_banner[$i]['Banners']['url']?>');">
+                              <img src="<?=$this->Html->url(Configure::read('avatar_web_url').
+                                $long_banner[$i]['Banners']['banner_file'])?>" />
+                          </a>
                         </div><!-- end .mediumBanner -->
                     </div><!-- end .col2 -->
-                	<div class="col2">
-                        <div class="mediumBanner">
-                            <?=$this->element('sponsor_banner',array('slot'=>'MY_CLUB_LONG','game_team_id'=>$game_team_id));?>
-                        </div><!-- end .mediumBanner -->
-                    </div><!-- end .col2 -->
+                	<?php endfor;?>
                 </div><!-- end .rows -->
               </div><!-- end #tabs-Squad -->
               
@@ -912,6 +923,21 @@ $('#chart_keuangan').highcharts({
 </script>
 
 <script>
+$('#mainNav li a').click(function(e){
+  var hash = window.location.hash;
+  if(hash!=null){
+    $("#tabs-Info").hide();
+    $("#tabs-Players").hide();
+    $("#tabs-Money").hide();
+    var tag = $(this).attr('href').split('#');
+    $('#'+tag[1]).show();
+    $(window).scrollTop(0);
+  } 
+});
+
+
+
+
 $(function() {
     $( "#clubtabs" ).tabs({
         active:<?=intval(@$active_tab)?>

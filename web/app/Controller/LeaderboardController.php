@@ -31,6 +31,15 @@ class LeaderboardController extends AppController {
 		}
 		$user = $this->userDetail;
 		$this->set('user',$user['User']);
+
+		$this->getFinanceSummary($this->userData['fb_id']);
+
+		//banners
+	
+		$long_banner = $this->getBanners('LEADERBOARD_TOP',2,true);
+		$this->set('long_banner',$long_banner);
+		$long_banner2 = $this->getBanners('LEADERBOARD_BOTTOM',2,true);
+		$this->set('long_banner2',$long_banner2);
 	}
 	public function hasTeam(){
 		$userData = $this->getUserData();
@@ -64,7 +73,7 @@ class LeaderboardController extends AppController {
 	    $this->loadModel('User');
 	    $this->loadModel('Weekly_point');
 	    $this->loadModel('Weekly_rank');
-
+	  
 	    $next_match = $this->Game->getNextMatch($this->userData['team']['team_id']);
 	    $this->set('next_match',$next_match);
 		//define week.
@@ -131,7 +140,11 @@ class LeaderboardController extends AppController {
 	    $this->set('rank',$myRank['Weekly_rank']['rank']);
 
 	    $this->set('tier',$this->getTier($myRank['Weekly_rank']['rank']));
+
+
+	   	
 	}
+	
 	public function monthly(){
 		$this->loadModel("Point");
 	    $this->loadModel('User');

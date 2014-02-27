@@ -50,6 +50,14 @@ if(isset($results)):
 				</option>
 				<option value="FRONTPAGE_SIDEBAR">Frontpage (SIDEBAR) (300x250 pixels)</option>
 				<option value="INSIDE_SIDEBAR">ALL PAGES (SIDEBAR) (250x250 pixels)</option>
+				<option value="MY_CLUB_INFO">MY CLUB INFO (300x250 pixels)</option>
+				<option value="MY_CLUB_LONG2">MY CLUB LONG BANNER BOTTOM (468x60 pixels)</option>
+				<option value="PROFILE_BANNER">PROFILE PAGE BANNER (468x60 pixels)</option>
+				<option value="LEADERBOARD_TOP">LEADERBOARD TOP (468x60 pixels)</option>
+				<option value="LEADERBOARD_BOTTOM">LEADERBOARD BOTTOM (468x60 pixels)</option>
+				<option value="TRANSFERWINDOW_TOP">TRANSFER WINDOW TOP (468x60 pixels)</option>
+				<option value="TRANSFERWINDOW_BOTTOM">TRANSFER WINDOW BOTTOM (468x60 pixels)</option>
+
 			</select>
 		</td>
 	</tr>

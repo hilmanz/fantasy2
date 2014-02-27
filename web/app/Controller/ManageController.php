@@ -111,7 +111,8 @@ class ManageController extends AppController {
 		
 
 		//financial statements & cache it when necessary.  these are a hell of heavy queries.
-		//$this->Session->write('FinancialStatement',null); //debug only.
+		$this->Session->write('FinancialStatement',null); //debug only.
+
 		if(!is_array($this->Session->read('FinancialStatement'))){
 
 		
@@ -225,16 +226,63 @@ class ManageController extends AppController {
 		}
 
 		//banners
-		$long_banner = $this->getBanners('MY_CLUB_LONG',2,true);
-		if(sizeof($long_banner)==1){
-			$long_banner[1] = $long_banner[0];
-		}
-		$this->set('long_banner',$long_banner);
-
 		
 
+		//banner in tab info.
+		$info_banner = $this->getBanners('MY_CLUB_INFO',1,true);
+		$this->set('info_banner',$info_banner);
+
+		//sidebar banner
+		$sidebar_banner = $this->getBanners('INSIDE_SIDEBAR',2,true);
+		$this->set('sidebar_banner',$sidebar_banner);
+
+		//long banner
+		$long_banner = $this->getBanners('MY_CLUB_LONG2',2,true);
+		$this->set('long_banner2',$long_banner);
+		
 		//render time !
 		$this->render('klab');
+	}
+	protected function getFinancialStatements($fb_id){
+
+		$finance = $this->Game->financial_statements($fb_id);
+		
+		$this->weekly_balances = @$finance['data']['weekly_balances'];
+		$this->expenditures = @$finance['data']['expenditures'];
+		$this->tickets_sold = @$finance['data']['tickets_sold'];
+		$this->starting_budget = @intval($finance['data']['starting_budget']);
+
+		if($finance['status']==1){
+
+			$report = array('total_matches' => $finance['data']['total_matches'],
+							'budget' => $finance['data']['budget']);
+			$total_items = array();
+			foreach($finance['data']['report'] as $n=>$v){
+				$report[$v['item_name']] = $v['total'];
+				$total_items[$v['item_name']] = $v['item_total'];
+			}
+			
+			$report['total_earnings'] = intval(@$report['tickets_sold'])+
+										intval(@$report['commercial_director_bonus'])+
+										intval(@$report['marketing_manager_bonus'])+
+										intval(@$report['public_relation_officer_bonus'])+
+										intval(@$report['win_bonus'])+
+										
+										intval(@$report['player_sold']);
+
+			foreach($report as $item_name=>$price){
+				if($price > 0 && @eregi('other_',$item_name)){
+					//$report['total_earnings'] += intval($price);
+					
+				}
+				if($price > 0 && @eregi('perk-',$item_name)){
+					//$report['total_earnings'] += intval($price);
+
+				}
+			}
+			$this->finance_total_items_raw = $total_items;
+			return $report;
+		}
 	}
 	private function getWeeklyFinancialStatement($weekly_finance){
 		$weekly_statement = array();
@@ -311,46 +359,7 @@ class ManageController extends AppController {
 		}
 		return $matches;
 	}
-	private function getFinancialStatements($fb_id){
-		$finance = $this->Game->financial_statements($fb_id);
-		
-		$this->weekly_balances = @$finance['data']['weekly_balances'];
-		$this->expenditures = @$finance['data']['expenditures'];
-		$this->tickets_sold = @$finance['data']['tickets_sold'];
-		$this->starting_budget = @intval($finance['data']['starting_budget']);
-
-		if($finance['status']==1){
-
-			$report = array('total_matches' => $finance['data']['total_matches'],
-							'budget' => $finance['data']['budget']);
-			$total_items = array();
-			foreach($finance['data']['report'] as $n=>$v){
-				$report[$v['item_name']] = $v['total'];
-				$total_items[$v['item_name']] = $v['item_total'];
-			}
-			
-			$report['total_earnings'] = intval(@$report['tickets_sold'])+
-										intval(@$report['commercial_director_bonus'])+
-										intval(@$report['marketing_manager_bonus'])+
-										intval(@$report['public_relation_officer_bonus'])+
-										intval(@$report['win_bonus'])+
-										
-										intval(@$report['player_sold']);
-
-			foreach($report as $item_name=>$price){
-				if($price > 0 && @eregi('other_',$item_name)){
-					//$report['total_earnings'] += intval($price);
-					
-				}
-				if($price > 0 && @eregi('perk-',$item_name)){
-					//$report['total_earnings'] += intval($price);
-
-				}
-			}
-			$this->finance_total_items_raw = $total_items;
-			return $report;
-		}
-	}
+	
 	public function hiring_staff(){
 		
 		$userData = $this->userData;
