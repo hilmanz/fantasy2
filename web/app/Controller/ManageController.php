@@ -465,11 +465,8 @@ class ManageController extends AppController {
 
 
 		//banners
-		$small_banners = $this->getBanners('TEAM_SMALL',2,true);
-		if(sizeof($small_banners)==1){
-			$small_banners[1] = $small_banners[0];
-		}
-		$this->set('small_banner',$small_banners);
+		$sidebar_banner = $this->getBanners('INSIDE_SIDEBAR',2,true);
+		$this->set('sidebar_banner',$sidebar_banner);
 	}
 	public function player($player_id){
 		

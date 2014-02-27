@@ -49,6 +49,7 @@ if(isset($results)):
 					Frontpage (bottom-right) (300x175 pixels)
 				</option>
 				<option value="FRONTPAGE_SIDEBAR">Frontpage (SIDEBAR) (300x250 pixels)</option>
+				<option value="INSIDE_SIDEBAR">ALL PAGES (SIDEBAR) (250x250 pixels)</option>
 			</select>
 		</td>
 	</tr>

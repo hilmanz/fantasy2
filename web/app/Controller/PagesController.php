@@ -122,7 +122,7 @@ class PagesController extends AppController {
 		$this->getTopPlayers();
 	}
 	private function getTopPlayers(){
-		$top_players = $this->Game->getMasterTopPlayers(10);
+		$top_players = $this->Game->getMasterTopPlayers(5);
 		$this->set('top_players',$top_players);
 	}
 	private function getLastWeekTopManagers(){

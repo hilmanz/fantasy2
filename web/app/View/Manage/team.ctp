@@ -54,12 +54,15 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
         	<div class="banner250x250">
 			<?=$this->element('sponsor_banner',array('slot'=>'TEAM_SMALL','game_team_id'=>$game_team_id));?>
             </div>
+            <?php for($i=0;$i<sizeof($sidebar_banner);$i++):?>
         	<div class="banner250x250">
-			<?=$this->element('sponsor_banner',array('slot'=>'TEAM_SMALL','game_team_id'=>$game_team_id));?>
+			     <a href="<?=$sidebar_banner[$i]['Banners']['url']?>" target="_blank">
+                    <img src="<?=$this->Html->url(Configure::read('avatar_web_url').
+                                $sidebar_banner[$i]['Banners']['banner_file'])?>" />
+                </a>
             </div>
-        	<div class="banner250x250">
-			<?=$this->element('sponsor_banner',array('slot'=>'TEAM_SMALL','game_team_id'=>$game_team_id));?>
-            </div>
+            <?php endfor;?>
+        	
             
         </div><!-- end .box4 -->
         <div class="box3 tr fl drop" style="height:906px;">
