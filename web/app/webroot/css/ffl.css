@@ -102,7 +102,6 @@ a.download-appstore{
 /*============= LAYOUT ===============*/
 #body{
 	background:url(../images/top-nav-bg.png) top repeat-x;
-	overflow:hidden;
 }
 #effect{
 	width:100%; height:100%;
@@ -174,6 +173,7 @@ a.download-appstore{
 	padding:5px 0;
 	margin:0 0 20px 0;
 	text-align:center;
+	height:40px;
 }
 #navigation ul{
 	margin:0;
@@ -431,7 +431,7 @@ a.download-appstore{
 #formationPage .box3{
 	margin:0 0 0 30px;
 }
-.widget{
+.widget,.widgets{
 	padding:15px 20px;
 	margin:0 0 2px 20px;
 	overflow:hidden;
@@ -440,6 +440,18 @@ a.download-appstore{
 .widget h2{
 	font-size:24px;
 	margin:0;
+}
+.widgets{
+	margin:0 0 20px 0;
+}
+.widgets h3{
+	margin:0;
+}
+.widgets a{
+	color:#fdcb02;
+}
+.widgets a:hover{
+	color:#FC0;
 }
 .match-team{
 	text-align:center;
@@ -1530,6 +1542,7 @@ table td a.button,table td .buttons{
 .fbexpired{
 	margin:0 auto;
 	width:460px;
+	text-align:center;
 }
 .fbexpired .box{
 	margin:0 auto !important;
@@ -1538,8 +1551,6 @@ table td a.button,table td .buttons{
 }
 .fbexpired .box h3{
 	color:#eee;
-	width:300px;
-	float:right;
 	font-size:22px;
 	line-height:35px;
 }
@@ -1865,7 +1876,7 @@ h3.tabtitle{
 	height:168px;
 	border-radius:5px;
 	overflow:hidden;
-	margin:0 0 10px 0 !important;
+	margin:0 0 0 20px;
 	float:left;
 }
 .bannerBox img{
@@ -2411,14 +2422,14 @@ table.dataTable{
 	min-height:195px;
 	margin:0 20px 20px 0;
 }
-#listBox #topPlayerWeek{
-	min-height:210px;
-}
-#listBox .topPlayerWeek h3{
+.topPlayerWeek h3{
 	font-size:16px;
 	color:#fff;
 	float:left;
 	line-height:45px;
+}
+.topPlayerWeek h3 span.points{
+	color:#fdcb02;
 }
 #topPlayerWeek li{
 	padding:5px 0;
@@ -2434,4 +2445,8 @@ table.dataTable{
 }
 .page-pages .banner300x250{
 	margin:0 auto 40px auto;
+}
+.rowbox{
+	padding:15px;
+	border-radius:5px;
 }

@@ -1,11 +1,7 @@
 <div class="fbexpired">
 	<div class="box tr last">
-		<div class="entry">
-			<p>
-			<a href="javascript:fb_login();" class="boxButton loginFacebook">&nbsp;</a>
-			</p>
-		</div><!-- end .entry -->
-		<h3>Maaf, sesi login sudah habis, mohon login-ulang menggunakan Facebook.</h3>
+		<h3>Maaf, sesi login sudah habis,<br/> mohon login-ulang menggunakan Facebook.</h3>
+		<a href="javascript:fb_login();" class="boxButton loginFacebook">&nbsp;</a>
 	</div><!-- end .box -->
 </div>
 <!-- -->

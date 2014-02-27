@@ -14,66 +14,20 @@
 	      </div><!-- end .slider -->
 	    </div><!-- end #banner -->
 	</div><!-- end #slider -->
-
+	<div class="rowbox tr">
+        <div id="caramain">
+            <h3>Cara Bermain</h3>
+            <div class="entry">
+                <p>Selamat datang di SuperSoccer Football Manager, ajang unjuk gigi kemampuan kamu sebagai manager klab liga utama inggris.</p>
+                <a class="readmore" href="<?=$this->Html->url('/pages/cara')?>">Selengkapnya </a>
+            </div><!-- end .entry -->
+        </div>
+    </div><!-- end .rowbox -->
 	<div id="listBox">
-        <div class="box tr" id="topManager">
-            <h3>Top Manager Minggu Ini</h3>
-            <div class="topManager">
-            	<ul>
-                <?php for($i=0;$i<sizeof($team);$i++):?>
-                	<li><?=h($team[$i]['Manager']['name'])?> 
-                      - 
-                      <?=h($team[$i]['Team']['team_name'])?> 
-                      <span class="points">
-                        <?=floatval($team[$i]['Weekly_point']['TotalPoints'])?> Pts</span></li>
-                <?php endfor;?>
-                </ul>
-            </div><!-- end .entry -->
-        </div><!-- end .box -->
-        <div class="box tr last" id="gameNews">
-            <h3>Game News & Update</h3>
-            <div class="gameNews">
-            	<ul>
-                  <?php for($i=0;$i<sizeof($tickers);$i++):?>
-                	<li>
-                    	<span class="date">
-                        <?=date("d/m/Y",strtotime($tickers[$i]['Ticker']['post_dt']))?>
-                      </span>
-                    	<p>
-                        <a href="<?=$tickers[$i]['Ticker']['url']?>" target="_blank">
-                          <?=h($tickers[$i]['Ticker']['content'])?>
-                         </a>
-                      </p>
-                  </li>
-                	<?php endfor;?>
-                </ul>
-            </div><!-- end .entry -->
-        </div><!-- end .box -->
-        <div class="box tr" id="topPlayerWeek">
-            <h3>Pemain Top Minggu Ini</h3>
-            <div class="topPlayerWeek">
-             
-            	<ul>
-                  <?php 
-                    for($i=0;$i<sizeof($top_players);$i++):
-                  ?>
-                	 <li>
-
-                          <a class="thumbPlayersSmall" href="#">
-                            <img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$top_players[$i]['team_id'])?>&dimensions=103x155&id=<?=str_replace('p','',$top_players[$i]['player_id'])?>"/></a>
-                         <h3 style="float:left"><?=h($top_players[$i]['name'])?></h3>
-                         <span class="points">
-                            <?=number_format($top_players[$i]['total'])?>Pts
-                          </span>
-                    </li>
-                	<?php endfor;?>
-                </ul>
-            </div><!-- end .entry -->
-        </div><!-- end .box -->
         <div class="bannerBox last">
 	               <a href="<?=$small_banner_2[0]['Banners']['url']?>" target="_blank"><img src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner_2[0]['Banners']['banner_file'])?>" /></a>
         </div>
-    		<div class="bannerBox last">
+    		<div class="bannerBox">
     				<a href="<?=$small_banner_1[0]['Banners']['url']?>" target="_blank"><img src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner_1[0]['Banners']['banner_file'])?>" /></a>
     		</div>
     </div><!-- end #listBox -->
@@ -81,9 +35,27 @@
 
 <div id="sidebar">
 	<div id="loginbox" class="tr">
-    	<h3>Login Manager</h3>
 		<a href="javascript:fb_login();" class="boxButton loginFacebook">&nbsp;</a>
     </div>
+    <div class="widgets tr" id="gameNews">
+        <h3>Game News & Update</h3>
+        <div class="gameNews">
+            <ul>
+              <?php for($i=0;$i<sizeof($tickers);$i++):?>
+                <li>
+                    <span class="date">
+                    <?=date("d/m/Y",strtotime($tickers[$i]['Ticker']['post_dt']))?>
+                  </span>
+                    <p>
+                    <a href="<?=$tickers[$i]['Ticker']['url']?>" target="_blank">
+                      <?=h($tickers[$i]['Ticker']['content'])?>
+                     </a>
+                  </p>
+              </li>
+                <?php endfor;?>
+            </ul>
+        </div><!-- end .entry -->
+    </div><!-- end .box -->
     <?php for($i=0;$i<sizeof($sidebar_banner);$i++):?>
     <div class="banner300x250">
         <a href="<?=$sidebar_banner[$i]['Banners']['url']?>" target="_blank">
@@ -91,6 +63,41 @@
         </a>
     </div>
     <?php endfor;?>
+    <div class="widgets tr" id="topManager">
+        <h3>Top Manager Minggu Ini</h3>
+        <div class="topManager">
+            <ul>
+            <?php for($i=0;$i<sizeof($team);$i++):?>
+                <li><?=h($team[$i]['Manager']['name'])?> 
+                  - 
+                  <?=h($team[$i]['Team']['team_name'])?> 
+                  <span class="points">
+                    <?=floatval($team[$i]['Weekly_point']['TotalPoints'])?> Pts</span></li>
+            <?php endfor;?>
+            </ul>
+        </div><!-- end .entry -->
+    </div><!-- end .box -->
+    <div class="widgets tr" id="topPlayerWeek">
+        <h3>Pemain Top Minggu Ini</h3>
+        <div class="topPlayerWeek">
+            <ul>
+              <?php 
+                for($i=0;$i<sizeof($top_players);$i++):
+              ?>
+                 <li>
+                      <a class="smallerThumb" href="#">
+                        <img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$top_players[$i]['team_id'])?>&dimensions=103x155&id=<?=str_replace('p','',$top_players[$i]['player_id'])?>"/></a>
+                       <h3><?=h($top_players[$i]['name'])?> 
+                     	<span class="points">
+                        <?=number_format($top_players[$i]['total'])?> Pts
+                      </span>
+                     </h3>
+                     
+                </li>
+                <?php endfor;?>
+            </ul>
+        </div><!-- end .entry -->
+    </div><!-- end .box -->
     
 </div><!-- end #sidebar -->
 
