@@ -9,17 +9,7 @@
                         <iframe width="100%" height="350" src="//www.youtube.com/embed/HxwxlVqW0O0" frameborder="0" allowfullscreen></iframe>
                     </div>		
     			</li>
-              <?php 
-              foreach($banners as $banner):
-              ?>
-	            <li class="theSlide">
-	                <div class="imgSlide">
-	                    <a href="<?=$this->Html->url($banner['Banners']['url'])?>" target="_blank">
-                        <img src="<?=$this->Html->url(Configure::read('avatar_web_url').$banner['Banners']['banner_file'])?>" border="0"/>
-                      </a>
-	                </div>
-	            </li>
-            <?php endforeach;?>
+            
 	          </ul>
 	      </div><!-- end .slider -->
 	    </div><!-- end #banner -->

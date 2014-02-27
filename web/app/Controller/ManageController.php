@@ -60,6 +60,7 @@ class ManageController extends AppController {
 
 		//budget
 		$budget = $this->Game->getBudget($userData['team']['id']);
+		
 		$this->set('team_bugdet',$budget);
 
 		//club

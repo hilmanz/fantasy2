@@ -57,7 +57,8 @@ if(isset($results)):
 				<option value="LEADERBOARD_BOTTOM">LEADERBOARD BOTTOM (468x60 pixels)</option>
 				<option value="TRANSFERWINDOW_TOP">TRANSFER WINDOW TOP (468x60 pixels)</option>
 				<option value="TRANSFERWINDOW_BOTTOM">TRANSFER WINDOW BOTTOM (468x60 pixels)</option>
-
+				<option value="CATALOG_SIDEBAR">ONLINE CATALOG SIDEBAR (300x250 pixels)</option>
+				
 			</select>
 		</td>
 	</tr>

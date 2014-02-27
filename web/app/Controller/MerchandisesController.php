@@ -31,6 +31,10 @@ class MerchandisesController extends AppController {
 		if(!$this->hasTeam()){
 			$this->redirect('/login/expired');
 		}
+
+		//banners
+		$sidebar_banner = $this->getBanners('CATALOG_SIDEBAR',3,true);
+		$this->set('sidebar_banner',$sidebar_banner);
 	}
 	public function hasTeam(){
 		$userData = $this->getUserData();

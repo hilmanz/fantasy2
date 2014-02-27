@@ -56,7 +56,7 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
             </div>
             <?php for($i=0;$i<sizeof($sidebar_banner);$i++):?>
         	<div class="banner250x250">
-			     <a href="<?=$sidebar_banner[$i]['Banners']['url']?>" target="_blank">
+			     <a href="javascript:banner_click(<?=$sidebar_banner[$i]['Banners']['id']?>,'<?=$sidebar_banner[$i]['Banners']['url']?>');" target="_blank">
                     <img src="<?=$this->Html->url(Configure::read('avatar_web_url').
                                 $sidebar_banner[$i]['Banners']['banner_file'])?>" />
                 </a>
