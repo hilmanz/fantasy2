@@ -2,10 +2,10 @@
 $can_update_formation = true;
 
 if(time() > $close_time['ts'] && Configure::read('debug') == 0){
-    
+   
     $can_update_formation = false;
     if(time() > $open_time){
-       
+     
         $can_update_formation = true;
     }
 }else{
@@ -126,6 +126,7 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
                         </table>
                     </div><!-- end .entry -->
                 </div><!-- end .widget -->
+
             </div><!-- end .widget -->
             <div id="rooster" class="widget tr squad-team drop">
             	<div class="starters">

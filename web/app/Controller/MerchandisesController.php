@@ -238,6 +238,8 @@ class MerchandisesController extends AppController {
 
 		//if digital item, we display different view
 		if($item['MerchandiseItem']['merchandise_type']==1){
+			//the perk can only be bought when the transfer window is on.
+			
 			$this->render('redeem_perk');
 		}
 	}

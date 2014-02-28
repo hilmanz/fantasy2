@@ -3,6 +3,7 @@ $pic = Configure::read('avatar_web_url').
 				"merchandise/thumbs/0_".
 				$item['pic'];
 ?>
+
 <div id="catalogPage">
       <div class="rowd">
      	 <?php echo $this->element('infobar'); ?>
@@ -75,9 +76,14 @@ $pic = Configure::read('avatar_web_url').
 							  <img src="<?=$pic?>" />
 						</div>
 					</div><!-- end .widget -->
-                    <div class="banner300x250"></div>
-                    <div class="banner300x250"></div>
-                    <div class="banner300x250"></div>
+                    <?php for($i=0;$i<sizeof($sidebar_banner);$i++):?>
+			        	<div class="banner300x250">
+						     <a href="javascript:banner_click(<?=$sidebar_banner[$i]['Banners']['id']?>,'<?=$sidebar_banner[$i]['Banners']['url']?>');" target="_blank">
+			                    <img src="<?=$this->Html->url(Configure::read('avatar_web_url').
+			                                $sidebar_banner[$i]['Banners']['banner_file'])?>" />
+			                </a>
+			            </div>
+		            <?php endfor;?>
 				</div><!-- end .box4 -->
             </div><!-- end .row-3 -->
         </div><!-- end .content -->

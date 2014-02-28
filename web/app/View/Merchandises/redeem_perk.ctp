@@ -3,6 +3,24 @@ $pic = Configure::read('avatar_web_url').
 				"merchandise/thumbs/0_".
 				$item['pic'];
 ?>
+<?php
+$can_update_formation = true;
+
+if(time() > $close_time['ts'] && Configure::read('debug') == 0){
+    
+    $can_update_formation = false;
+    if(time() > $open_time){
+       
+        $can_update_formation = true;
+    }
+}else{
+    if(time() < $open_time){
+       
+        $can_update_formation = false;
+    }
+}
+
+?>
 <div id="catalogPage">
       <div class="rowd">
      	 <?php echo $this->element('infobar'); ?>
@@ -11,11 +29,22 @@ $pic = Configure::read('avatar_web_url').
         <div class="content">
         	<div class="titlePage">
 				<h1 class="red">Online Catalog</h1>
+				<?php 
+				if($can_update_formation):
+				?>
 				<h4><?=h($item['name'])?> akan di-redeem menggunakan coin kamu. Lanjutkan ?</h4>
+				<?php else:?>
+				<h4>
+					<?=h($item['name'])?> tidak dapat dibeli selama pertandingan sedang berlangsung !
+				</h4>
+				<?php endif;?>
             </div>
             <div class="rowd">
 				<div class="col-content">
 					<div class="tr widget">
+						<?php
+						if($can_update_formation):
+						?>
 					<form class="shipaddress" 
 						action="<?=$this->Html->url('/merchandises/order')?>" 
 						method="post" 
@@ -27,6 +56,9 @@ $pic = Configure::read('avatar_web_url').
 							<input type="submit" value="Confirm" class="button"/>
 						</div><!-- end .row -->
 					</form>
+					<?php else:?>
+						<a href="<?=$this->Html->url('/merchandises')?>" class="button">Kembali ke Online Catalog</a>
+					<?php endif;?>
 					</div><!-- end .widget -->
 				</div><!-- end .col-content -->
 				<div class="box4 fr">
@@ -38,9 +70,14 @@ $pic = Configure::read('avatar_web_url').
 							  <img src="<?=$pic?>" />
 						</div>
 					</div><!-- end .widget -->
-                    <div class="banner300x250"></div>
-                    <div class="banner300x250"></div>
-                    <div class="banner300x250"></div>
+                    <?php for($i=0;$i<sizeof($sidebar_banner);$i++):?>
+			        	<div class="banner300x250">
+						     <a href="javascript:banner_click(<?=$sidebar_banner[$i]['Banners']['id']?>,'<?=$sidebar_banner[$i]['Banners']['url']?>');" target="_blank">
+			                    <img src="<?=$this->Html->url(Configure::read('avatar_web_url').
+			                                $sidebar_banner[$i]['Banners']['banner_file'])?>" />
+			                </a>
+			            </div>
+		            <?php endfor;?>
 				</div><!-- end .box4 -->
             </div><!-- end .row-3 -->
         </div><!-- end .content -->
