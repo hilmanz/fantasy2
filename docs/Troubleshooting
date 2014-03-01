@@ -1,0 +1,62 @@
+Troubleshooting
+-------------------
+
+cara ngecek lineup user dan weekly point
+
+
+#cari usernya
+SELECT *,d.id AS team_id FROM ffgame.game_teams a
+INNER JOIN ffgame.game_users b
+ON a.user_id = b.id
+INNER JOIN fantasy.users c
+ON b.fb_id = c.fb_id
+INNER JOIN fantasy.teams d
+ON d.user_id = c.id
+WHERE a.id= (256825 - 139670);
+
+#cek weekly point
+SELECT * FROM fantasy.weekly_points WHERE team_id=43267;
+
+
+SELECT (game_team_id+139670) AS ID,b.* FROM ffgame.game_team_players a
+INNER JOIN ffgame.master_player b
+ON a.player_id = b.uid WHERE game_team_id=117155;
+
+
+
+
+
+
+#### CARA NGURANGIN KOIN SECARA MANUAL 
+####UTK TRANSAKSI YG GA SENGAJA DI CLOSE PADAHAL USER UDA TRANSFER DUIT.
+
+input : user no. ID FM.  (misal 157451)
+
+SELECT *,d.id AS team_id,a.id AS game_team_id 
+FROM ffgame.game_teams a
+INNER JOIN ffgame.game_users b
+ON a.user_id = b.id
+INNER JOIN fantasy.users c
+ON b.fb_id = c.fb_id
+INNER JOIN fantasy.teams d
+ON d.user_id = c.id
+WHERE a.id= (157451 - 139670);
+
+#17980 - 20000
+
+
+SELECT * FROM ffgame.game_transactions WHERE game_team_id=17781;
+SELECT SUM(amount) FROM ffgame.game_transactions WHERE game_team_id=17781;
+
+
+INSERT INTO ffgame.game_team_cash
+				(game_team_id,cash)
+				SELECT game_team_id,SUM(amount) AS cash 
+				FROM ffgame.game_transactions
+				WHERE game_team_id = 17781
+				GROUP BY game_team_id
+				ON DUPLICATE KEY UPDATE
+				cash = VALUES(cash);
+
+
+SELECT * FROM ffgame.game_team_cash WHERE game_team_id=17781;
