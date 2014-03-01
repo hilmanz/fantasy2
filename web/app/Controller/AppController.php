@@ -618,6 +618,25 @@ class AppController extends Controller {
 		$this->set('last_expenses',$financial_statement['last_expenses']);
 		$this->set('weekly_salaries',$financial_statement['weekly_salaries']);
 	}
+
+	public function can_update_formation(){
+		$can_update_formation = true;
+
+		if(time() > $close_time['ts'] && Configure::read('debug') == 0){
+		    
+		    $can_update_formation = false;
+		    if(time() > $open_time){
+		       
+		        $can_update_formation = true;
+		    }
+		}else{
+		    if(time() < $open_time){
+		       
+		        $can_update_formation = false;
+		    }
+		}
+		return $can_update_formation;
+	}
 	
 }
 

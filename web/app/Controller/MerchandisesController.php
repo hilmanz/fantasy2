@@ -396,12 +396,20 @@ class MerchandisesController extends AppController {
 
 			//this is for safety precaution
 			//make sure that the digital is successfully applied before processing the order
+
 			$continue = true; 
-			if($item['MerchandiseItem']['merchandise_type']==1){
-				$data['n_status']=3; //order status : closed
-				$continue = $this->apply_digital_perk($data['game_team_id'],
-										$item['MerchandiseItem']['perk_id']);
+			//make sure that the match isnt in progress.
+			//people cant buy the perk while the match is in progress.
+			if($this->can_update_formation()){
+				if($item['MerchandiseItem']['merchandise_type']==1){
+					$data['n_status']=3; //order status : closed
+					$continue = $this->apply_digital_perk($data['game_team_id'],
+											$item['MerchandiseItem']['perk_id']);
+				}
+			}else{
+				$continue = false;
 			}
+			
 			if($continue){
 				$this->MerchandiseOrder->create();
 				$rs = $this->MerchandiseOrder->save($data);		
