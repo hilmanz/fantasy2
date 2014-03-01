@@ -496,7 +496,13 @@ class MerchandisesController extends AppController {
 		
 	}
 	private function apply_jersey_perk($game_team_id,$perk_data){
+		
+		$this->DigitalPerk->cache = false;
+
+
 		//only 1 jersey can be used
+
+
 		//so we disabled all existing jersey
 		$this->loadModel('DigitalPerk');
 		$this->DigitalPerk->bindModel(
@@ -515,7 +521,8 @@ class MerchandisesController extends AppController {
 			'conditions'=>array('game_team_id'=>$game_team_id),
 			'limit'=>40
 		));
-
+		$has_bought = false;
+		$bought_id = 0;
 		//we only take the jersey perks
 		$jerseys = array();
 		while(sizeof($current_perks)>0){
@@ -524,26 +531,47 @@ class MerchandisesController extends AppController {
 			if($p['MasterPerk']['data']['type']=='jersey'){
 				$jerseys[] = $p['DigitalPerk']['id'];
 			}
+			if($p['DigitalPerk']['master_perk_id'] == $perk_data['id']){
+				$has_bought = true;
+				$bought_id = $p['DigitalPerk']['id'];
+			}
 		}
+		//check if these jersy has been bought before.
+		
 		//disable the current jerseys
 		for($i=0;$i<sizeof($jerseys);$i++){
+
 			$this->DigitalPerk->id = intval($jerseys[$i]);
 			$this->DigitalPerk->save(array(
 				'n_status'=>0
 			));
 		}
+
+
 		//add new jersey
-		$this->DigitalPerk->create();
-		$rs = $this->DigitalPerk->save(
-			array('game_team_id'=>$game_team_id,
-				  'master_perk_id'=>$perk_data['id'],
-				  'n_status'=>1,
-				  'redeem_dt'=>date("Y-m-d H:i:s"),
-				  'available'=>99999)
-		);
-		if(isset($rs['DigitalPerk'])){
-			return true;
+		if(!$has_bought){
+			$this->DigitalPerk->create();
+			$rs = $this->DigitalPerk->save(
+				array('game_team_id'=>$game_team_id,
+					  'master_perk_id'=>$perk_data['id'],
+					  'n_status'=>1,
+					  'redeem_dt'=>date("Y-m-d H:i:s"),
+					  'available'=>99999)
+			);
+			if(isset($rs['DigitalPerk'])){
+				return true;
+			}
+		}else{
+			//update the status only
+			$this->DigitalPerk->id = intval($bought_id);
+			$rs = $this->DigitalPerk->save(array(
+				'n_status'=>1
+			));
+			if($rs){
+				return true;
+			}
 		}
+		
 	}
 	public function status($order_id){
 

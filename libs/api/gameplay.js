@@ -2095,6 +2095,36 @@ function apply_perk(game_team_id,perk_id,done){
 							});
 			},
 			function(perk,canAddPerk,cb){
+				conn.query("SELECT * FROM ffgame.digital_perks_group WHERE master_perk_id = ? LIMIT 1",
+					[perk_id],function(err,perk_group){
+						var group_name = '';
+						if(perk_group!=null){
+							group_name = perk_group[0].category;
+						}
+						cb(err,perk,canAddPerk,group_name);
+				});
+			},
+			function(perk,canAddPerk,group_name,cb){
+				//cari apakah perk dari category ini uda pernah dibeli apa belum.
+				if(group_name!=''){
+					conn.query("SELECT * FROM ffgame.digital_perks a\
+								INNER JOIN ffgame.digital_perks_group b \
+								ON a.master_perk_id = b.master_perk_id\
+								WHERE category = ? \
+								AND game_team_id=? AND a.available > 0\
+								AND a.n_status = 1 LIMIT 1;",
+					[group_name,game_team_id],
+					function(err,rs){
+						if(rs!=null && rs.length==1){
+							canAddPerk =false;
+						}
+						cb(err,perk,canAddPerk);
+					});
+				}else{
+					cb(err,perk,canAddPerk);
+				}
+			},
+			function(perk,canAddPerk,cb){
 				if(canAddPerk){
 					conn.query("INSERT INTO ffgame.digital_perks\
 								(game_team_id,master_perk_id,redeem_dt,available,n_status)\
