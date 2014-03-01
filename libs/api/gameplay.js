@@ -2071,7 +2071,7 @@ function apply_perk(game_team_id,perk_id,done){
 				conn.query("SELECT * FROM ffgame.master_perks WHERE id = ? LIMIT 1;",
 							[perk_id],
 							function(err,rs){
-								console.log(S(this.sql).collapseWhitespace().s);
+								console.log('GET_PERK',S(this.sql).collapseWhitespace().s);
 								var perk = rs[0];
 								perk.data = PHPUnserialize.unserialize(perk.data);
 								cb(err,perk);
@@ -2086,7 +2086,7 @@ function apply_perk(game_team_id,perk_id,done){
 							AND n_status=1 LIMIT 1",
 							[game_team_id,perk_id],
 							function(err,rs){
-								console.log(S(this.sql).collapseWhitespace().s);
+								console.log('GET_PERK',S(this.sql).collapseWhitespace().s);
 								if(rs!=null && rs.length > 0){
 									cb(err,perk,false);
 								}else{
@@ -2097,6 +2097,7 @@ function apply_perk(game_team_id,perk_id,done){
 			function(perk,canAddPerk,cb){
 				conn.query("SELECT * FROM ffgame.digital_perks_group WHERE master_perk_id = ? LIMIT 1",
 					[perk_id],function(err,perk_group){
+						console.log('GET_PERK',S(this.sql).collapseWhitespace().s);
 						var group_name = '';
 						if(perk_group!=null){
 							group_name = perk_group[0].category;
@@ -2115,6 +2116,7 @@ function apply_perk(game_team_id,perk_id,done){
 								AND a.n_status = 1 LIMIT 1;",
 					[group_name,game_team_id],
 					function(err,rs){
+						console.log('GET_PERK',S(this.sql).collapseWhitespace().s);
 						if(rs!=null && rs.length==1){
 							canAddPerk =false;
 						}
