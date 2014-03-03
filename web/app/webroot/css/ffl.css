@@ -2473,3 +2473,29 @@ table.dataTable{
 .flex-control-nav{
 	display:none;
 }
+.howtoBox{
+	padding:20px 0;
+	border-top:solid 1px #ccc;
+	overflow:hidden;
+	margin:20px 0 0 0;
+}
+.howtoBox h2{
+	font-size:24px;
+	color:#C00;
+	margin:0;
+}
+.howto-entry h3{
+	margin:0;
+}
+.howto-entry{
+	width:400px;
+	float:left;
+	text-align:left;
+}
+.howto-img{
+	width:200px;
+	float:right;
+}
+#faqPage .howto-entry{
+	width:70%;
+}

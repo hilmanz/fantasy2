@@ -41,9 +41,71 @@ endif;
         <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
         <h4><?=h($club['team_name'])?></h4>
         <h5>Pilih formasi, pemain starter dan cadangan untuk mulai berkompetisi </h5>
-        <p><a href="<?=$this->Html->url('/pages/faq')?>#tabs-faq">How to play</a>
-    </div>
-</div>
+        <div class="howtoBox">
+        	<h2>HOW TO PLAY</h2>
+        	<div class="row">
+            	<div class="howto-entry">
+                	<h3> Atur Formasi Kamu</h3>
+                    <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
+                    Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                </div><!-- end .howto-entry -->
+            	<div class="howto-img">
+                	<img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                </div><!-- end .howto-img -->
+            </div><!-- end .row -->
+        	<div class="row">
+            	<div class="howto-entry">
+                	<h3> Curabitur blandit tempus</h3>
+                    <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
+                    Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                </div><!-- end .howto-entry -->
+            	<div class="howto-img">
+                	<img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                </div><!-- end .howto-img -->
+            </div><!-- end .row -->
+        	<div class="row">
+            	<div class="howto-entry">
+                	<h3> Donec sed odio </h3>
+                    <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
+                    Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                </div><!-- end .howto-entry -->
+            	<div class="howto-img">
+                	<img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                </div><!-- end .howto-img -->
+            </div><!-- end .row -->
+        	<div class="row">
+            	<div class="howto-entry">
+                	<h3> Curabitur blandit tempus porttitor</h3>
+                    <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
+                    Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                </div><!-- end .howto-entry -->
+            	<div class="howto-img">
+                	<img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                </div><!-- end .howto-img -->
+            </div><!-- end .row -->
+        	<div class="row">
+            	<div class="howto-entry">
+                	<h3> Nullam id dolor id nibh</h3>
+                    <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
+                    Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                </div><!-- end .howto-entry -->
+            	<div class="howto-img">
+                	<img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                </div><!-- end .howto-img -->
+            </div><!-- end .row -->
+        	<div class="row">
+            	<div class="howto-entry">
+                	<h3> Cras mattis consectetur</h3>
+                    <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
+                    Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                </div><!-- end .howto-entry -->
+            	<div class="howto-img">
+                	<img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                </div><!-- end .howto-img -->
+            </div><!-- end .row -->
+        </div><!-- end .howtoBox -->
+    </div><!-- end .popup-content -->
+</div><!-- end #popupWelcome -->
 
 
 <?php

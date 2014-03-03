@@ -570,16 +570,68 @@
                     <div class="titlePage">
                         <h1 class="yellow">HOW TO PLAY</h1>
                     </div>
-					<div class="row-3">
-						<p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Nullam quis risus eget urna mollis ornare vel eu leo. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
-
-<p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Donec ullamcorper nulla non metus auctor fringilla. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.</p>
-<p>Maecenas faucibus mollis interdum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Nulla vitae elit libero, a pharetra augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-
-<p>Nullam id dolor id nibh ultricies vehicula ut id elit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
-
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Donec id elit non mi porta gravida at eget metus. Donec sed odio dui..</p>
-					</div><!-- end .row-3 -->
+                    <div class="howtoBox">
+                        <div class="row">
+                            <div class="howto-entry">
+                                <h3> Atur Formasi Kamu</h3>
+                                <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
+                                Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                            </div><!-- end .howto-entry -->
+                            <div class="howto-img">
+                                <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                            </div><!-- end .howto-img -->
+                        </div><!-- end .row -->
+                        <div class="row">
+                            <div class="howto-entry">
+                                <h3> Curabitur blandit tempus</h3>
+                                <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
+                                Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                            </div><!-- end .howto-entry -->
+                            <div class="howto-img">
+                                <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                            </div><!-- end .howto-img -->
+                        </div><!-- end .row -->
+                        <div class="row">
+                            <div class="howto-entry">
+                                <h3> Donec sed odio </h3>
+                                <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
+                                Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                            </div><!-- end .howto-entry -->
+                            <div class="howto-img">
+                                <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                            </div><!-- end .howto-img -->
+                        </div><!-- end .row -->
+                        <div class="row">
+                            <div class="howto-entry">
+                                <h3> Curabitur blandit tempus porttitor</h3>
+                                <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
+                                Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                            </div><!-- end .howto-entry -->
+                            <div class="howto-img">
+                                <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                            </div><!-- end .howto-img -->
+                        </div><!-- end .row -->
+                        <div class="row">
+                            <div class="howto-entry">
+                                <h3> Nullam id dolor id nibh</h3>
+                                <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
+                                Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                            </div><!-- end .howto-entry -->
+                            <div class="howto-img">
+                                <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                            </div><!-- end .howto-img -->
+                        </div><!-- end .row -->
+                        <div class="row">
+                            <div class="howto-entry">
+                                <h3> Cras mattis consectetur</h3>
+                                <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
+                                Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                            </div><!-- end .howto-entry -->
+                            <div class="howto-img">
+                                <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                            </div><!-- end .howto-img -->
+                        </div><!-- end .row -->
+                    </div><!-- end .howtoBox -->
 				</div><!-- end #tabs-howto -->
 			</div><!-- end #tabs-point -->
         </div><!-- end .rowd -->
