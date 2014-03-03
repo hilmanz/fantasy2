@@ -2497,5 +2497,19 @@ table.dataTable{
 	float:right;
 }
 #faqPage .howto-entry{
-	width:70%;
+	width:60%;
+}
+.buttonred{
+	display:inline-block;
+	line-height:30px;
+	color:#fff;
+	background:#C00;
+	text-transform:uppercase;
+	padding:0 20px;
+	margin:20px 0 0 0;
+}
+.buttonred:hover{
+	color:#fff;
+	text-decoration:none;
+	background:#666;
 }

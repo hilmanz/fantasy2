@@ -4,8 +4,9 @@
      	 <?php echo $this->element('infobar'); ?>
       </div>
         <div class="rowd">
+        	<div class="col-content">
 			<div id="bantuanTab">
-				<ul style="display:none;">
+				<ul>
 				<li><a href="#tabs-faq">FAQ</a></li>
 				<li><a href="#tabs-point">PENGUMPULAN POINT</a></li>
 				<li><a href="#tabs-howto">HOW TO PLAY</a></li>
@@ -573,9 +574,8 @@
                     <div class="howtoBox">
                         <div class="row">
                             <div class="howto-entry">
-                                <h3> Atur Formasi Kamu</h3>
-                                <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
-                                Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                                <h3>Atur Formasi lo</h3>
+                                <p>Pada kolom mengelola tim, pilih formasi yang dipakai (4-4-2, 4-3-1-2, 4-3-3, 3-5-2, dll) lalu atur formasi elo dengan cara pilih salah satu pemain di slot kanan lalu geser ke slot bergambar lapangan sesuai posisi.</p>
                             </div><!-- end .howto-entry -->
                             <div class="howto-img">
                                 <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
@@ -583,9 +583,8 @@
                         </div><!-- end .row -->
                         <div class="row">
                             <div class="howto-entry">
-                                <h3> Curabitur blandit tempus</h3>
-                                <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
-                                Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                                <h3>Lihat Status Keuangan Klub</h3>
+                                <p>Di kolom klab saya, elo bisa lihat info klub, status keuangan klub dan grafik pemain.</p>
                             </div><!-- end .howto-entry -->
                             <div class="howto-img">
                                 <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
@@ -593,9 +592,8 @@
                         </div><!-- end .row -->
                         <div class="row">
                             <div class="howto-entry">
-                                <h3> Donec sed odio </h3>
-                                <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
-                                Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                                <h3>Ganti Profil</h3>
+                                <p>Di kolom profil saya, elo bisa mengganti profil dan memasang foto tim lo</p>
                             </div><!-- end .howto-entry -->
                             <div class="howto-img">
                                 <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
@@ -603,9 +601,8 @@
                         </div><!-- end .row -->
                         <div class="row">
                             <div class="howto-entry">
-                                <h3> Curabitur blandit tempus porttitor</h3>
-                                <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
-                                Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                                <h3>Lihat Peringkat</h3>
+                                <p>Di kolom papan peringkat, elo bisa lihat peringkat ke berapa time lo berdasarkan keseluruhan, bulanan dan mingguan</p>
                             </div><!-- end .howto-entry -->
                             <div class="howto-img">
                                 <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
@@ -613,9 +610,8 @@
                         </div><!-- end .row -->
                         <div class="row">
                             <div class="howto-entry">
-                                <h3> Nullam id dolor id nibh</h3>
-                                <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
-                                Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                                <h3>Transfer dan Beli Pemain</h3>
+                                <p>Di kolom bursa transfer, elo bias belanja pemain yang mau elo masukkan kedalam tim</p>
                             </div><!-- end .howto-entry -->
                             <div class="howto-img">
                                 <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
@@ -623,9 +619,26 @@
                         </div><!-- end .row -->
                         <div class="row">
                             <div class="howto-entry">
-                                <h3> Cras mattis consectetur</h3>
-                                <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
-                                Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                                <h3>Penjelasan dan Perhitungan Poin</h3>
+                                <p>Di kolom Bantuan dan FAQ, elo bias baca penjelasan lebih lengkap tentang Super Soccer Football Manager dan perhitungan poin statistik pemain</p>
+                            </div><!-- end .howto-entry -->
+                            <div class="howto-img">
+                                <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                            </div><!-- end .howto-img -->
+                        </div><!-- end .row -->
+                        <div class="row">
+                            <div class="howto-entry">
+                                <h3>Tukar Poin</h3>
+                                <p>Di kolom online catalog, elo bisa menukar koin elo dengan merchandise yang disediakan dan membeli item lain seperti booster, customized jersey line up elo dll.</p>
+                            </div><!-- end .howto-entry -->
+                            <div class="howto-img">
+                                <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                            </div><!-- end .howto-img -->
+                        </div><!-- end .row -->
+                        <div class="row">
+                            <div class="howto-entry">
+                                <h3>Statistik pemain update</h3>
+                                <p>Statistik pemain di Super Soccer Football Manager akan di update setiap matchday </p>
                             </div><!-- end .howto-entry -->
                             <div class="howto-img">
                                 <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
@@ -633,7 +646,18 @@
                         </div><!-- end .row -->
                     </div><!-- end .howtoBox -->
 				</div><!-- end #tabs-howto -->
-			</div><!-- end #tabs-point -->
+			</div><!-- end #tabs -->
+            </div><!-- end .col-content -->
+            <div class="col3">
+				<?php for($i=0;$i<sizeof($sidebar_banner);$i++):?>
+                    <div class="banner300x250">
+                         <a href="javascript:banner_click(<?=$sidebar_banner[$i]['Banners']['id']?>,'<?=$sidebar_banner[$i]['Banners']['url']?>');" target="_blank">
+                            <img src="<?=$this->Html->url(Configure::read('avatar_web_url').
+                                        $sidebar_banner[$i]['Banners']['banner_file'])?>" />
+                        </a>
+                    </div>
+                <?php endfor;?>
+            </div><!-- end .col3 -->
         </div><!-- end .rowd -->
       <div class="rowd">
         <div class="col2">

@@ -26,28 +26,12 @@ if(isset($first_time) && $first_time==true):
         <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
         <h4><?=h($club['team_name'])?></h4>
         <h5>Pilih formasi, pemain starter dan cadangan untuk mulai berkompetisi </h5>
-        <p><a href="<?=$this->Html->url('/pages/faq')?>#tabs-faq">How to play</a>
-    </div>
-</div>
-<?php
-endif;
-?>
-<div id="bgPopup"></div>
-<div id="popupWelcome">
-	<a href="#" class="closebtn"><span class="icon-close"></span></a>
-	<div class="popup-content">
-    	<h3>Selamat datang di<br /><span class="red">SUPER SOCCER FOOTBALL MANAGER</span></h3>
-       
-        <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
-        <h4><?=h($club['team_name'])?></h4>
-        <h5>Pilih formasi, pemain starter dan cadangan untuk mulai berkompetisi </h5>
         <div class="howtoBox">
         	<h2>HOW TO PLAY</h2>
         	<div class="row">
             	<div class="howto-entry">
-                	<h3> Atur Formasi Kamu</h3>
-                    <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
-                    Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                	<h3>Atur Formasi lo</h3>
+                    <p>Pada kolom mengelola tim, pilih formasi yang dipakai (4-4-2, 4-3-1-2, 4-3-3, 3-5-2, dll) lalu atur formasi elo dengan cara pilih salah satu pemain di slot kanan lalu geser ke slot bergambar lapangan sesuai posisi.</p>
                 </div><!-- end .howto-entry -->
             	<div class="howto-img">
                 	<img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
@@ -55,9 +39,8 @@ endif;
             </div><!-- end .row -->
         	<div class="row">
             	<div class="howto-entry">
-                	<h3> Curabitur blandit tempus</h3>
-                    <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
-                    Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                	<h3>Lihat Status Keuangan Klub</h3>
+                    <p>Di kolom klab saya, elo bisa lihat info klub, status keuangan klub dan grafik pemain.</p>
                 </div><!-- end .howto-entry -->
             	<div class="howto-img">
                 	<img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
@@ -65,9 +48,8 @@ endif;
             </div><!-- end .row -->
         	<div class="row">
             	<div class="howto-entry">
-                	<h3> Donec sed odio </h3>
-                    <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
-                    Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                	<h3>Ganti Profil</h3>
+                    <p>Di kolom profil saya, elo bisa mengganti profil dan memasang foto tim lo</p>
                 </div><!-- end .howto-entry -->
             	<div class="howto-img">
                 	<img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
@@ -75,9 +57,8 @@ endif;
             </div><!-- end .row -->
         	<div class="row">
             	<div class="howto-entry">
-                	<h3> Curabitur blandit tempus porttitor</h3>
-                    <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
-                    Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                	<h3>Lihat Peringkat</h3>
+                    <p>Di kolom papan peringkat, elo bisa lihat peringkat ke berapa time lo berdasarkan keseluruhan, bulanan dan mingguan</p>
                 </div><!-- end .howto-entry -->
             	<div class="howto-img">
                 	<img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
@@ -85,9 +66,8 @@ endif;
             </div><!-- end .row -->
         	<div class="row">
             	<div class="howto-entry">
-                	<h3> Nullam id dolor id nibh</h3>
-                    <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
-                    Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                	<h3>Transfer dan Beli Pemain</h3>
+                    <p>Di kolom bursa transfer, elo bias belanja pemain yang mau elo masukkan kedalam tim</p>
                 </div><!-- end .howto-entry -->
             	<div class="howto-img">
                 	<img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
@@ -95,17 +75,38 @@ endif;
             </div><!-- end .row -->
         	<div class="row">
             	<div class="howto-entry">
-                	<h3> Cras mattis consectetur</h3>
-                    <p>Cras mattis consectetur purus sit amet fermentum. Curabitur blandit tempus porttitor. Donec sed odio dui.
-                    Sed posuere consectetur est at lobortis. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                	<h3>Penjelasan dan Perhitungan Poin</h3>
+                    <p>Di kolom Bantuan dan FAQ, elo bias baca penjelasan lebih lengkap tentang Super Soccer Football Manager dan perhitungan poin statistik pemain</p>
                 </div><!-- end .howto-entry -->
             	<div class="howto-img">
                 	<img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
                 </div><!-- end .howto-img -->
             </div><!-- end .row -->
+        	<div class="row">
+            	<div class="howto-entry">
+                	<h3>Tukar Poin</h3>
+                    <p>Di kolom online catalog, elo bisa menukar koin elo dengan merchandise yang disediakan dan membeli item lain seperti booster, customized jersey line up elo dll.</p>
+                </div><!-- end .howto-entry -->
+            	<div class="howto-img">
+                	<img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                </div><!-- end .howto-img -->
+            </div><!-- end .row -->
+        	<div class="row">
+            	<div class="howto-entry">
+                	<h3>Statistik pemain update</h3>
+                    <p>Statistik pemain di Super Soccer Football Manager akan di update setiap matchday </p>
+                </div><!-- end .howto-entry -->
+            	<div class="howto-img">
+                	<img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                </div><!-- end .howto-img -->
+            </div><!-- end .row -->
+            <a class="buttonred" href="<?=$this->Html->url('/pages/faq')?>#tabs-howto">KLIK DISINI UNTUK INFO LEBIH LANJUT</a>
         </div><!-- end .howtoBox -->
     </div><!-- end .popup-content -->
 </div><!-- end #popupWelcome -->
+<?php
+endif;
+?>
 
 
 <?php
