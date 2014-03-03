@@ -94,7 +94,7 @@ function getCurrentMatchday(conn,done){
 }
 
 function getGameIdsByMatchday(conn,matchday,done){
-	conn.query("SELECT game_id FROM \
+	conn.query("SELECT game_id,period FROM \
 				ffgame.game_fixtures \
 				WHERE matchday = ? \
 				ORDER BY id ASC LIMIT 10;",
@@ -119,10 +119,33 @@ function populateIntoMasterPlayerProgress(conn,matchday,game_id,done){
 				});
 			},
 			function(modifiers,cb){
-				//console.log(modifiers);
-				populateData(conn,modifiers,item.game_id,function(err){
-					cb(err);
+				//only populate data if the match isnt FullTime Yet
+				redisClient.get('livestats_ft_'+item.game_id,function(err,fulltime){
+					if(fulltime==null){
+						console.log('livestats','not fulltime yet',item.game_id);
+						populateData(conn,modifiers,item.game_id,function(err){
+							cb(err);
+						});		
+					}else{
+						console.log('livestats','has reached fulltime, we not proceed',item.game_id);
+						cb(null);
+					}
 				});
+				//console.log(modifiers);
+				
+			},
+			function(cb){
+				//if period is FullTime, we flag the game. so we dont update the stats anymore.
+				if(item.period=='FullTime'){
+					console.log('livestats','full time reached, flag redis',item);
+					redisClient.set('livestats_ft_'+item.game_id,1,function(err,rs){
+						cb(err);
+					});
+				}else{
+					console.log('livestats','not fulltime yet');
+					cb(null);
+				}
+				//-->
 			}
 		],
 		function(err){

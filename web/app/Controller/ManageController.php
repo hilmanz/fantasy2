@@ -313,6 +313,7 @@ class ManageController extends AppController {
 			}
 
 			$a_game_ids = implode(',',$game_ids);
+			/*
 			$sql = "SELECT game_id,home_id,away_id,b.name AS home_name,c.name AS away_name,
 					a.matchday,a.match_date,a.home_score,a.away_score
 					FROM ffgame.game_fixtures a
@@ -326,7 +327,18 @@ class ManageController extends AppController {
 								WHERE d.game_id = a.game_id 
 								AND d.game_team_id = {$this->userData['team']['id']} LIMIT 1)
 					ORDER BY a.matchday DESC";
-
+			*/
+			$sql = "SELECT game_id,home_id,away_id,b.name AS home_name,c.name AS away_name,
+					a.matchday,a.match_date,a.home_score,a.away_score
+					FROM ffgame.game_fixtures a
+					INNER JOIN ffgame.master_team b
+					ON a.home_id = b.uid
+					INNER JOIN ffgame.master_team c
+					ON a.away_id = c.uid
+					WHERE (a.home_id = '{$this->userData['team']['team_id']}' 
+							OR a.away_id = '{$this->userData['team']['team_id']}')
+					AND a.is_processed = 1
+					ORDER BY a.matchday DESC";
 			$rs = $this->Game->query($sql);
 			
 

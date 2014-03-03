@@ -240,7 +240,7 @@ function getExtraPoints(perk_data,points){
 		extra1 = points * (perk_data.point_percentage / 100);
 	}
 	console.log('getExtraPoints',(extra1 + perk_data.point_value));
-	return (extra1 + perk_data.point_value);
+	return parseFloat(extra1 + perk_data.point_value);
 }
 
 function saveExtraPoint(conn,game_id,matchday,game_team_id,modifier_name,extra_points,callback){
