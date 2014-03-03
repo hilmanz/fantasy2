@@ -4,15 +4,16 @@
      	 <?php echo $this->element('infobar'); ?>
       </div>
         <div class="rowd">
-        	<div class="titlePage">
-				<h1 class="red">BANTUAN</h1>
-            </div>
 			<div id="bantuanTab">
 				<ul style="display:none;">
 				<li><a href="#tabs-faq">FAQ</a></li>
 				<li><a href="#tabs-point">PENGUMPULAN POINT</a></li>
+				<li><a href="#tabs-howto">HOW TO PLAY</a></li>
 				</ul>
-				<div id="tabs-faq"">
+				<div id="tabs-faq">
+                    <div class="titlePage">
+                        <h1 class="yellow">FAQ</h1>
+                    </div>
 					<div class="row-3">
 						<h3 class="yellow">Apa itu Super Soccer Football Manager?</h3>
 						<p>Super Soccer Football Manager adalah sebuah permainan yang menggabungkan konsep permainan simulasi manajemen sepak bola dan permainan fantasy football. Permainan ini dilakukan secara online melalui situs www.supersoccer.co.id atau aplikasi mobile yang dapat di download secara terpisah.</p>
@@ -58,7 +59,10 @@
 						<p>Anda akan mendapat bonus pemasukan jika tim yang Anda kelola juga meraih kemenangan di pertandingan sebenarnya. Selain itu, sebentar lagi Anda akan bisa mengambil banyak inisiatif seperti merekrut staff komersil seperti marketing director, PR manager, dll dimana mereka akan menjadwalkan kegiatan pemasaran untuk menghasilkan dana tambahan.</p>
 					</div><!-- end .row-3 -->
 				</div><!-- end #tabs-faq -->
-				<div id="tabs-point"">
+				<div id="tabs-point">
+                    <div class="titlePage">
+                        <h1 class="yellow">PENGUMPULAN POINT</h1>
+                    </div>
 					<div class="row-3">
 						<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable" id="tablePoint">
 							<thead>
@@ -562,6 +566,21 @@
 						</table>
 					</div><!-- end .row-3 -->
 				</div><!-- end #tabs-point -->
+				<div id="tabs-howto">
+                    <div class="titlePage">
+                        <h1 class="yellow">HOW TO PLAY</h1>
+                    </div>
+					<div class="row-3">
+						<p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Nullam quis risus eget urna mollis ornare vel eu leo. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+
+<p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Donec ullamcorper nulla non metus auctor fringilla. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.</p>
+<p>Maecenas faucibus mollis interdum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Nulla vitae elit libero, a pharetra augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+
+<p>Nullam id dolor id nibh ultricies vehicula ut id elit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lacinia bibendum nulla sed consectetur. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Donec id elit non mi porta gravida at eget metus. Donec sed odio dui..</p>
+					</div><!-- end .row-3 -->
+				</div><!-- end #tabs-howto -->
 			</div><!-- end #tabs-point -->
         </div><!-- end .rowd -->
       <div class="rowd">

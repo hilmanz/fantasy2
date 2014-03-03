@@ -26,11 +26,24 @@ if(isset($first_time) && $first_time==true):
         <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
         <h4><?=h($club['team_name'])?></h4>
         <h5>Pilih formasi, pemain starter dan cadangan untuk mulai berkompetisi </h5>
+        <p><a href="<?=$this->Html->url('/pages/faq')?>#tabs-faq">How to play</a>
     </div>
 </div>
 <?php
 endif;
 ?>
+<div id="bgPopup"></div>
+<div id="popupWelcome">
+	<a href="#" class="closebtn"><span class="icon-close"></span></a>
+	<div class="popup-content">
+    	<h3>Selamat datang di<br /><span class="red">SUPER SOCCER FOOTBALL MANAGER</span></h3>
+       
+        <img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/<?=str_replace('t','',$club['team_id'])?>.png"/>
+        <h4><?=h($club['team_name'])?></h4>
+        <h5>Pilih formasi, pemain starter dan cadangan untuk mulai berkompetisi </h5>
+        <p><a href="<?=$this->Html->url('/pages/faq')?>#tabs-faq">How to play</a>
+    </div>
+</div>
 
 
 <?php

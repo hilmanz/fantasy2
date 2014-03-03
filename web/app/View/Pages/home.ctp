@@ -14,14 +14,19 @@
 	      </div><!-- end .slider -->
 	    </div><!-- end #banner -->
 	</div><!-- end #slider -->
-	<div class="rowbox tr">
-        <div id="caramain">
-            <h3>Cara Bermain</h3>
-            <div class="entry">
-                <p>Selamat datang di SuperSoccer Football Manager, ajang unjuk gigi kemampuan kamu sebagai manager klab liga utama inggris.</p>
-                <a class="readmore" href="<?=$this->Html->url('/pages/cara')?>">Selengkapnya </a>
-            </div><!-- end .entry -->
-        </div>
+	<div class="rowboxs tr">
+		<h3>Super Soccer Football Manager</h3>
+		<div class="entry">
+			<img src="<?=$this->Html->url('/content/hadiah.png')?>" style="float:right; margin:0 0 0 10px; width:170px;"/>
+			<p>Mau dapat hadiah-hadiah keren seperti PS 4, X-Box One,  Jesrey retro dan langka, jersey bertandatangan pemain dan hadiah elektronik lainnya? Atau elo mau nonton pertandingan  liga Inggris langsung di Inggris? Semuanya bisa elo dapetin di Super Soccer Football Manager.</p>
+			<p>Setiap minggu kita juga nyedian hadiah istimewa, yaitu jersey apapun yang elo minta! Serunya, kesempatan elo menjadi pemenang mingguan sama besarnya dengan peserta lain, karena perhitungannya akan sama rata setiap minggunya. </p>
+			<p>Buat elo yang sukanya mengkritik manajer dan ngerasa lebih pinter dari mereka, buktiin omongan elo dan skill manajerial  elo disini, karena game ini menggunakan semua kriteria yang menentukan sukses seorang manajer di lapangan. Menghitung lebih dari 64 statistik pemain di pertandingan secara real time, penilaian elo sebagai ahli taktik akan benar benar diuji, karena poin elo dihitung berdasarkan gol, assist, crossing akurat, passing berbahaya, memotong umpan, menepis bola dan aksi lainnya yang dilakukan pemain sebenarnya di dunia nyata.</p>
+			<img src="<?=$this->Html->url('/content/stats.png')?>" style="float:left; margin:0 10px 0 0;"/>
+			<p>Setiap Gerrard memotong umpan, elo dapat 10 poin, setiap kali Petr Cech menepis bola elo dapat 10 poin, setiap kali John Terry menghalau bola elo dapat  20 poin. Nah, dengan penghitungan se-realistik ini, apa yang elo lakukan di game ini sama seperti apa yang dilakukan manajer sepakbola di dunia nyata. </p>
+			<p>Seperti kata Roy Evans manajer legendaris Liverpool, semua fans merasa dirinya mampu menjadi manajer, namun dengan Super Soccer Football Manager, akhirnya elo harus mempertanggung jawabkan omongan elo. </p>
+			<p>Jadi, tunggu apalagi ayo bergabung dan bersaing dengan ratusan ribu manajer lainnya,</p>
+			<h4>Its Time to Show What You Know!</h4>
+		</div><!-- end .entry -->
     </div><!-- end .rowbox -->
 	<div id="listBox">
         <div class="bannerBox last">
@@ -31,6 +36,7 @@
     				<a href="<?=$small_banner_1[0]['Banners']['url']?>" target="_blank"><img src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner_1[0]['Banners']['banner_file'])?>" /></a>
     		</div>
     </div><!-- end #listBox -->
+	
 </div><!-- end #content -->
 
 <div id="sidebar">

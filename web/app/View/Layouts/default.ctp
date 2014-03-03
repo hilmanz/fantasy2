@@ -109,6 +109,7 @@
                     	<li><a href="<?=$this->Html->url('/pages/faq')?>">Bantuan & FAQ</a>
                             <ul>
                             	<li><a href="<?=$this->Html->url('/pages/faq')?>#tabs-faq">FAQ</a></li>
+                            	<li><a href="<?=$this->Html->url('/pages/faq')?>#tabs-howto">HOW TO PLAY</a></li>
                             	<li><a href="<?=$this->Html->url('/pages/faq')?>#tabs-point">PENGUMPULAN POINT</a></li>
                             </ul>
                         
