@@ -17,11 +17,6 @@ if(time() > $close_time['ts'] && Configure::read('debug') == 0){
 
 if(isset($first_time) && $first_time==true):
 ?>
-//popup
-<?php
-endif;
-?>
-
 <div id="bgPopup"></div>
 <div id="popupWelcome">
 	<a href="#" class="closebtn"><span class="icon-close"></span></a>
@@ -109,6 +104,10 @@ endif;
             <a class="buttonred" href="<?=$this->Html->url('/pages/faq')?>#tabs-howto">KLIK DISINI UNTUK INFO LEBIH LANJUT</a>
         </div><!-- end .howtoBox -->
     </div><!-- end .popup-content -->
+<?php
+endif;
+?>
+
 </div><!-- end #popupWelcome -->
 
 
