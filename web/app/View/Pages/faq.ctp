@@ -578,7 +578,7 @@
                                 <p>Pada kolom mengelola tim, pilih formasi yang dipakai (4-4-2, 4-3-1-2, 4-3-3, 3-5-2, dll) lalu atur formasi elo dengan cara pilih salah satu pemain di slot kanan lalu geser ke slot bergambar lapangan sesuai posisi.</p>
                             </div><!-- end .howto-entry -->
                             <div class="howto-img">
-                                <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                                <img src="<?=$this->Html->url('/content/howto/AturFormasiLo.jpg')?>"/>
                             </div><!-- end .howto-img -->
                         </div><!-- end .row -->
                         <div class="row">
@@ -587,7 +587,7 @@
                                 <p>Di kolom klab saya, elo bisa lihat info klub, status keuangan klub dan grafik pemain.</p>
                             </div><!-- end .howto-entry -->
                             <div class="howto-img">
-                                <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                                <img src="<?=$this->Html->url('/content/howto/LihatStatusKeuanganKlub.jpg')?>"/>
                             </div><!-- end .howto-img -->
                         </div><!-- end .row -->
                         <div class="row">
@@ -596,7 +596,7 @@
                                 <p>Di kolom profil saya, elo bisa mengganti profil dan memasang foto tim lo</p>
                             </div><!-- end .howto-entry -->
                             <div class="howto-img">
-                                <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                                <img src="<?=$this->Html->url('/content/howto/GantiProfil.jpg')?>"/>
                             </div><!-- end .howto-img -->
                         </div><!-- end .row -->
                         <div class="row">
@@ -605,7 +605,7 @@
                                 <p>Di kolom papan peringkat, elo bisa lihat peringkat ke berapa time lo berdasarkan keseluruhan, bulanan dan mingguan</p>
                             </div><!-- end .howto-entry -->
                             <div class="howto-img">
-                                <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                                <img src="<?=$this->Html->url('/content/howto/LihatPeringkat.jpg')?>"/>
                             </div><!-- end .howto-img -->
                         </div><!-- end .row -->
                         <div class="row">
@@ -614,7 +614,7 @@
                                 <p>Di kolom bursa transfer, elo bias belanja pemain yang mau elo masukkan kedalam tim</p>
                             </div><!-- end .howto-entry -->
                             <div class="howto-img">
-                                <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                                <img src="<?=$this->Html->url('/content/howto/TransferBeliPemain.jpg')?>"/>
                             </div><!-- end .howto-img -->
                         </div><!-- end .row -->
                         <div class="row">
@@ -623,7 +623,7 @@
                                 <p>Di kolom Bantuan dan FAQ, elo bias baca penjelasan lebih lengkap tentang Super Soccer Football Manager dan perhitungan poin statistik pemain</p>
                             </div><!-- end .howto-entry -->
                             <div class="howto-img">
-                                <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                                <img src="<?=$this->Html->url('/content/howto/PerhitunganPoin.jpg')?>"/>
                             </div><!-- end .howto-img -->
                         </div><!-- end .row -->
                         <div class="row">
@@ -632,7 +632,7 @@
                                 <p>Di kolom online catalog, elo bisa menukar koin elo dengan merchandise yang disediakan dan membeli item lain seperti booster, customized jersey line up elo dll.</p>
                             </div><!-- end .howto-entry -->
                             <div class="howto-img">
-                                <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                                <img src="<?=$this->Html->url('/content/howto/TukarKoin.jpg')?>"/>
                             </div><!-- end .howto-img -->
                         </div><!-- end .row -->
                         <div class="row">
@@ -641,7 +641,7 @@
                                 <p>Statistik pemain di Super Soccer Football Manager akan di update setiap matchday </p>
                             </div><!-- end .howto-entry -->
                             <div class="howto-img">
-                                <img src="<?=$this->Html->url('/content/dummy.jpg')?>"/>
+                                <img src="<?=$this->Html->url('/content/howto/StatistikPemainUpdate.jpg')?>"/>
                             </div><!-- end .howto-img -->
                         </div><!-- end .row -->
                     </div><!-- end .howtoBox -->
