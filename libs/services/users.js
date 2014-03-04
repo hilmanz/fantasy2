@@ -15,8 +15,10 @@ exports.register = function(req,res){
 		},
 		function(err,rs){
 			if(rs!=null){
+				console.log('REGISTER','SUCCESS',req.body);
 				res.send(200,{status:1,message:'the user is successfully registered !'});
 			}else{
+				console.log('REGISTER','FAILED',req.body);
 				res.send(200,{status:0,err:"the user cannot be registered because it's already exists"});
 			}
 	});

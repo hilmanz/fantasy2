@@ -79,7 +79,7 @@ function runLoop(){
 				//sending the email
 				if(queue!=null){
 					if(validator.isEmail(queue.email)){
-						console.log('sending ',queue.email);
+						console.log(queue.id,'sending ',queue.email);
 
 						var mailOptions = {
 						    from: "Supersoccer Football Manager <footballmanager@supersoccer.co.id>",
@@ -93,12 +93,12 @@ function runLoop(){
 							var td = ((new Date()).getTime() - last_t)/1000;
 							n_sent++;
 							total_sent++;
-							console.log('elapsed : ',td,'total sent : ',n_sent);
+							console.log(queue.id,'elapsed : ',td,'total sent : ',n_sent);
 							if(td < 1 && n_sent > 5){
 								console.log('sleep for 1s');
 								//sleep 1 second
 								sleep.sleep(1);
-								console.log('resetting the timewatch and n_sent');
+								console.log(queue.id,'resetting the timewatch and n_sent');
 								n_sent = 0;
 								last_t = (new Date()).getTime();
 							}else if(td > 1 && n_sent < 5){
@@ -109,17 +109,19 @@ function runLoop(){
 								//do nothing
 							}
 							if(!error){
+								console.log(queue.id,'sent');
 								callback(null,error,queue,responseStatus);	
 							}else{
-								console.log('error : ',error.message);
+								console.log(queue.id,'error : ',error.message);
 								callback(null,null,queue,null);
 							}
 						});
 					}else{
-						console.log('cannot send ',queue.email);
+						console.log(queue.id,'cannot send ',queue.email);
 						callback(null,null,queue,null);
 					}
 				}else{
+					console.log('NO QUEUE');
 					callback(null,null,queue,null);
 				}
 				

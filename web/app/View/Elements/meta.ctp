@@ -55,7 +55,7 @@
 	<?php endif;?>
 	<!-- Le styles -->
 	<?php echo $this->Html->css(
-			  array('datatables/tables','ffl','superfish','fancybox/jquery.fancybox.css?v=2.1.5','responsive','footable-0.1','jquery.jqplot'),
+			  array('ffl','superfish','fancybox/jquery.fancybox.css?v=2.1.5','responsive','footable-0.1','jquery.jqplot'),
 		null,array('media'=>'all')); 
 	?>
 	<?php echo $this->Html->script(

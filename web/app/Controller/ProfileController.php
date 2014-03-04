@@ -374,10 +374,18 @@ class ProfileController extends AppController {
 								  );
 					//make sure that the fb_id is unregistered
 					$check = $this->User->findByFb_id($user_fb['id']);
+					//make sure that the email is not registered yet.
+					$check2 = $this->User->findByEmail($this->request->data['email']);
 
+					
 					if(isset($check['User'])){
 						$this->Session->destroy();
 						$this->Session->setFlash('Mohon maaf, akun kamu sudah terdaftar sebelumnya. !');
+						$this->redirect('/profile/error');
+					}else if(isset($check2['User']) 
+								&& $check2['User']['email'] == $this->request->data['email']){
+						$this->Session->destroy();
+						$this->Session->setFlash('Mohon maaf, akun email ini `'.Sanitize::html($this->request->data['email']).'` sudah terdaftar sebelumnya. Silahkan menggunakan alamat email yang lain !');
 						$this->redirect('/profile/error');
 					}else{
 						$this->User->create();

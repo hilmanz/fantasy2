@@ -66,10 +66,11 @@
                                     <?php endif;?>
                                 </a> |
                                  <a class="logout" href="<?=$this->Html->url('/profile/logout')?>">Keluar</a></h3>
+                                 <?php if($user_masked_id!=COnfigure::read('RANK_RANDOM_NUM')):?>
                                 <span class="points red">
                                     ID: <?=$user_masked_id?> | <?=number_format(ceil($USER_POINTS))?> Pts | <?=number_format(ceil($USER_COINS))?> Coins
                                 </span>
-                                
+                                <?php endif;?>
                             </div><!-- end .entry -->
                         </div>
            			 </div><!-- end #header -->
