@@ -632,7 +632,7 @@
                                 <p>Di kolom online catalog, elo bisa menukar koin elo dengan merchandise yang disediakan dan membeli item lain seperti booster, customized jersey line up elo dll.</p>
                             </div><!-- end .howto-entry -->
                             <div class="howto-img">
-                                <img src="<?=$this->Html->url('/content/howto/TukarKoin.jpg')?>"/>
+                                <img src="<?=$this->Html->url('/content/howto/TukarPoin.jpg')?>"/>
                             </div><!-- end .howto-img -->
                         </div><!-- end .row -->
                         <div class="row">

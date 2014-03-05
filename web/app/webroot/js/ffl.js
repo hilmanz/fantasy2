@@ -23,7 +23,7 @@ $(document).ready(function() {
 $(window).load(function(){
   $('.bannerslider').flexslider({
 	animation: "slide",
-	controlNav: true,               
+	controlNav: false,               
 	directionNav: true,           
 	prevText: "Previous",          
 	nextText: "Next",
@@ -35,6 +35,8 @@ $(window).load(function(){
 	animation: "slide",
 	animationSpeed: 1000,
 	slideshowSpeed: 3000,
+	controlNav: false,               
+	directionNav: false, 
 	start: function(slider){
 	  $('body').removeClass('loading');
 	}

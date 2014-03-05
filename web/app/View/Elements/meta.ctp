@@ -71,9 +71,13 @@
 	  ));
 ?>
     <script type="text/javascript">
-      $(function() {
-        $('table').footable();
-      });
+		if ($(window).width() < 960) {
+			  $(function() {
+				$('table').footable();
+			  });
+		}
+		else {
+		}
     </script>
 	<!--[if IE 6]>
 	<link rel="stylesheet" type="text/css" href="js/slider/themes/default/jquery.slider.ie6.css" />
