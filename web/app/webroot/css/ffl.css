@@ -2552,3 +2552,7 @@ table.dataTable{
 	color: #fdcb02;
 	text-transform: uppercase;
 }
+.entry-home strong{
+	color:#fdcb02;
+	font-weight:bold;
+}
