@@ -2620,7 +2620,42 @@ class ApiController extends AppController {
 
 		return $category_ids;
 	}
+	public function order(){
 
+	}
+	/*
+	*	method for checking the items availability
+	*  if the item is available, we flag the item_id with 1, else we flag it with 0
+	*/
+	public function catalog_checkItems(){
+		$this->loadModel('MerchandiseItem');
+		$this->loadModel('MerchandiseCategory');
+		$this->loadModel('MerchandiseOrder');
+
+		$itemIds = Sanitize::clean($this->request->query('itemId'));
+		$arr = explode(',',$itemIds);
+		$items = array();
+
+		for($i=0;$i<sizeof($arr);$i++){
+			$item = $this->MerchandiseItem->findById(intval($arr[$i]));
+			$total_order = $this->MerchandiseOrder->find('count',
+														array('conditions'=>
+																array('merchandise_item_id'=>
+																		$item['MerchandiseItem']['id'],
+										  								'n_status <> 4')
+															)
+														);
+			$stock_available = $item['MerchandiseItem']['stock'] - $total_order;
+			if($stock_available > 0){
+				$items[intval($arr[$i])] = intval($stock_available);
+			}else{
+				$items[intval($arr[$i])] = 0;
+			}
+		}
+		$this->layout="ajax";
+		$this->set('response',array('status'=>1,'data'=>$items));
+		$this->render('default');
+	}
 	//dummy for selling player
 	public function test_buy(){
 		$game_team = $this->Game->getTeam($fb_id);

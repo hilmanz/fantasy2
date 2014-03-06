@@ -6,7 +6,14 @@
 	<a href="<?=$this->Html->url('/merchandises/categories')?>" class="button">Categories</a>
 	<a href="<?=$this->Html->url('/merchandises/orders')?>" class="button">Purchase Orders</a>
 </div>
-
+<div class="row">
+<a href="javascript:;" class="button" onclick="resetData();getdata(0);">Pending</a>
+<a href="javascript:;" class="button" onclick="resetData();getdata(1);">Order Accepted, Ready to Ship</a>
+<a href="javascript:;" class="button" onclick="resetData();getdata(2);">Delivered</a>
+<a href="javascript:;" class="button" onclick="resetData();getdata(3);">Closed</a>
+<a href="javascript:;" class="button" onclick="resetData();getdata(4);">Canceled</a>
+</div>
+<div class="progress">Loading data..</div>
 <div class="row">
 	<table 
 		width="100%" border="0" cellspacing="0" cellpadding="0" 
@@ -25,8 +32,29 @@ $item_url = $this->Html->url('/merchandises/edit/');
 <script>
 	var start = 0;
 	var data = [];
-	function getdata(){
-		api_call("<?=$this->Html->url('/merchandises/get_orders/?start=')?>"+start,
+	var order_status = 0;
+	var tbl = $('#tbl').dataTable( {
+		"fnDrawCallback":function(){
+			//initClickEvents();
+		},
+		"aoColumns": [
+			{ "sTitle": "Date" },
+			{ "sTitle": "PO" },
+			{ "sTitle": "ItemId" },
+			{ "sTitle": "ItemName" },
+			{ "sTitle": "User" },
+			{ "sTitle": "Status" },
+			{ "sTitle": "Action"}
+		]
+	} );
+	function resetData(){
+		start = 0;
+		data = [];
+	}
+	function getdata(n_status){
+		$(".progress").show();
+		order_status = n_status;
+		api_call("<?=$this->Html->url('/merchandises/get_orders/?start=')?>"+start+'&status='+order_status,
 			function(response){
 				if(response.status==1){
 					if(response.data.length > 0){
@@ -61,7 +89,7 @@ $item_url = $this->Html->url('/merchandises/edit/');
 						}
 						start = response.next_offset;
 						$(".progress").html($(".progress").html()+'.');
-						getdata();
+						getdata(order_status);
 					}else{
 						//draw table
 						draw_table();
@@ -72,22 +100,9 @@ $item_url = $this->Html->url('/merchandises/edit/');
 			});
 	}
 	function draw_table(){
-		$('#tbl').dataTable( {
-			"fnDrawCallback":function(){
-				//initClickEvents();
-			},
-
-			"aaData": data,
-			"aoColumns": [
-				{ "sTitle": "Date" },
-				{ "sTitle": "PO" },
-				{ "sTitle": "ItemId" },
-				{ "sTitle": "ItemName" },
-				{ "sTitle": "User" },
-				{ "sTitle": "Status" },
-				{ "sTitle": "Action"}
-			]
-		} );
+		tbl.fnClearTable();
+		tbl.fnAddData(data);
+		tbl.fnDraw();
 	}
-	getdata();
+	getdata(0);
 </script>

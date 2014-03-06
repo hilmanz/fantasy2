@@ -208,7 +208,7 @@ class MerchandisesController extends AppController {
 	
 
 	//Buy Merchandise Page.
-	public function buy($item_id){
+	public function buy(){
 		$this->loadModel('MerchandiseItem');
 		$this->loadModel('MerchandiseCategory');
 
@@ -232,16 +232,58 @@ class MerchandisesController extends AppController {
 		$this->set('email',$this->userDetail['User']['email']);
 		
 		//attach the item_id
-		$this->Session->write('po_item_id',$item_id);
+		//$this->Session->write('po_item_id',$item_id);
 		//dont forget to clear po_item_id session when the order is done.
 
 
 		//if digital item, we display different view
 		if($item['MerchandiseItem']['merchandise_type']==1){
-			//the perk can only be bought when the transfer window is on.
-			
 			$this->render('redeem_perk');
 		}
+	}
+	/*
+	* add item to shopping cart
+	*/
+	public function select($item_id){
+		$shopping_cart = $this->Session->read('shopping_cart');
+		$can_add = false;
+
+		if($shopping_cart == null){
+			$shopping_cart = array();
+			$can_add = true;
+
+		}else{
+			//make sure that the item is not in the cart yet
+			$can_add = true;
+			for($i=0;$i<sizeof($shopping_cart);$i++){
+				if($shopping_cart[$i]['item_id'] == $item_id){
+					$can_add = false;
+					break;
+				}
+			}
+		}
+
+
+		if($can_add){
+			$shopping_cart[] = array(
+				'item_id'=>$item_id,
+				'qty'=>1
+			);	
+		}
+		
+		$this->Session->write('shopping_cart',$shopping_cart);
+
+		$this->loadModel('MerchandiseItem');
+		$this->loadModel('MerchandiseCategory');
+
+		//parno mode.
+		$item_id = Sanitize::clean($item_id);
+
+		//get the item detail
+		$item = $this->MerchandiseItem->findById($item_id);
+		$this->set('item',$item['MerchandiseItem']);
+
+		
 	}
 	public function order(){
 		$this->loadModel('MerchandiseItem');
@@ -291,6 +333,88 @@ class MerchandisesController extends AppController {
 
 		//reset the item_id in session (disable these for debug only)
 		$this->Session->write('po_item_id',0);
+	}
+
+	public function cart(){
+		$this->loadModel('MerchandiseItem');
+		$this->loadModel('MerchandiseCategory');
+		$shopping_cart = array();
+		if($this->request->is('post')){
+			$item_id = $this->request->data['item_id'];
+			$qty = $this->request->data['qty'];
+			for($i=0;$i<sizeof($item_id);$i++){
+				$shopping_cart[] = array('item_id'=>intval($item_id[$i]),
+										  'qty'=>intval($qty[$i]));
+			}
+			$this->Session->write('shopping_cart',$shopping_cart);
+		}else{
+			$shopping_cart = $this->Session->read('shopping_cart');
+		}
+		if($this->request->data['update_type']==1){
+
+			$this->checkout($shopping_cart);
+
+		}else{
+
+			for($i=0;$i<sizeof($shopping_cart);$i++){
+				$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
+			}
+
+			$this->set('shopping_cart',$shopping_cart);	
+		}
+		
+	}
+	/*
+	* checkout procedure
+	* 1. make sure that all items stock are available
+	* 2. if stock available, redirect to order
+	*/
+	private function checkout(){
+		$stocks = $this->getItemsStock();
+		$stock_available = true;
+		$out_of_stock = array();
+		if(sizeof($stocks)>0){
+			foreach($stocks as $item_id=>$stock){
+				if($stock==0){
+					$stock_available = false;
+					$out_of_stock[] = $this->MerchandiseItem->findById($item_id);
+				}
+			}
+		}
+		if($stock_available){
+			$this->redirect('/merchandises/order');
+		}else{
+			$str = "Mohon maaf, barang - barang berikut sudah habis :<br/>";
+			for($i=0;$i<sizeof($out_of_stock);$i++){
+				$str .= $out_of_stock[$i]['MerchandiseItem']['name']."<br/>";
+			}
+			$this->Session->setFlash($str);
+		}
+	}
+	/*
+	* check items stocks
+	*/
+	private function getItemsStock(){
+		$this->loadModel('MerchandiseOrder');
+		$items = $this->Session->read('shopping_cart');
+		$rs = array();
+		for($i=0;$i<sizeof($items);$i++){
+			$item = $this->MerchandiseItem->findById(intval($items[$i]['item_id']));
+			$total_order = $this->MerchandiseOrder->find('count',
+														array('conditions'=>
+																array('merchandise_item_id'=>
+																		$item['MerchandiseItem']['id'],
+										  								'n_status <> 4')
+															)
+														);
+			$stock_available = $item['MerchandiseItem']['stock'] - $total_order;
+			if($stock_available > 0){
+				$rs[intval($arr[$i])] = intval($stock_available);
+			}else{
+				$rs[intval($arr[$i])] = 0;
+			}
+		}
+		return $rs;
 	}
 	private function ReduceStock($item_id,$item){
 		$item_id = intval($item_id);

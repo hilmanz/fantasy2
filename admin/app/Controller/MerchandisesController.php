@@ -270,7 +270,17 @@ class MerchandisesController extends AppController {
 		$this->MerchandiseOrder->bindModel(
 			array('belongsTo'=>array('MerchandiseItem'))
 		);
-		$rs = $this->MerchandiseOrder->find('all',array('offset'=>$start,'limit'=>$limit));
+		if(!isset($this->request->query['status'])){
+			$n_status = array(0,1,2,3,4);
+		}else{
+			$n_status= $this->request->query['status'];
+		}
+		$rs = $this->MerchandiseOrder->find('all',
+											array('conditions'=>array(
+														'MerchandiseOrder.n_status'=>$n_status
+												  ),
+												  'offset'=>$start,
+												  'limit'=>$limit));
 		
 		$this->set('response',array('status'=>1,'data'=>$rs,'next_offset'=>$start+$limit,'rows_per_page'=>$limit));
 		$this->render('response');

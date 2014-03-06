@@ -135,8 +135,8 @@ function isStaffExist($staff_token,$name){
                             <span>Point: <strong><?=number_format($USER_POINTS)?></strong></span>
                         </td>
                         <td colspan="2" class="pendapatan">
-                        	<p title="Gaji Minggu Lalu"><span class="ico icon-coin">&nbsp;</span>
-                            	<strong class="amounts">ss$ <?=number_format($weekly_salaries)?></strong></p>
+                        	<!--<p title="Gaji Minggu Lalu"><span class="ico icon-coin">&nbsp;</span>
+                            	<strong class="amounts">ss$ <?=number_format($weekly_salaries)?></strong></p>-->
                             <p title="Pendapatan Minggu Lalu"><span class="ico icon-plus-alt">&nbsp;</span>
                             	<strong class="amounts">ss$ <?=number_format($last_earning)?></strong></p>
                             <p title="Pengeluaran Minggu Lalu"><span class="ico icon-minus-alt">&nbsp;</span>
@@ -165,8 +165,11 @@ function isStaffExist($staff_token,$name){
 
                 <div class="row">
 					<div class="col3 fl">
-            <div class="banner300x250">
-              <a href="javascript:banner_click(<?=$info_banner[0]['Banners']['id']?>,'<?=$info_banner[0]['Banners']['url']?>');">
+            <div class="banner250x250">
+          
+                <a 
+                href="<?=$this->Html->url('/sponsors/jump/1/'.$info_banner[0]['Banners']['id'])?>" 
+                    target="_blank">
                     <img src="<?=$this->Html->url(Configure::read('avatar_web_url').
                                 $info_banner[0]['Banners']['banner_file'])?>" />
                 </a>
@@ -598,8 +601,12 @@ function isStaffExist($staff_token,$name){
                     <div class="col3">
                     	<div class="fr">
                             <?php for($i=0;$i<sizeof($sidebar_banner);$i++):?>
-                            <div class="banner300x250">
-                             <a href="javascript:banner_click(<?=$sidebar_banner[$i]['Banners']['id']?>,'<?=$sidebar_banner[$i]['Banners']['url']?>');" target="_blank">
+                            <div class="banner250x250">
+                
+
+                               <a 
+                href="<?=$this->Html->url('/sponsors/jump/1/'.$sidebar_banner[$i]['Banners']['id'])?>" 
+                    target="_blank">
                                       <img src="<?=$this->Html->url(Configure::read('avatar_web_url').
                                                   $sidebar_banner[$i]['Banners']['banner_file'])?>" />
                                   </a>
@@ -682,7 +689,11 @@ function isStaffExist($staff_token,$name){
                   <?php for($i=0;$i<sizeof($long_banner);$i++):?>
                 	<div class="col2">
                         <div class="mediumBanner">
-                          <a href="javascript:banner_click(<?=$long_banner[$i]['Banners']['id']?>,'<?=$long_banner[$i]['Banners']['url']?>');">
+                             <a 
+                href="<?=$this->Html->url('/sponsors/jump/1/'.$long_banner[$i]['Banners']['id'])?>" 
+                    target="_blank">
+
+
                               <img src="<?=$this->Html->url(Configure::read('avatar_web_url').
                                 $long_banner[$i]['Banners']['banner_file'])?>" />
                           </a>

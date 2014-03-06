@@ -156,6 +156,31 @@ class SponsorsController extends AppController {
 		$this->set('response',array('status'=>1,'type'=>$type));
 		$this->render('response');
 	}
+	public function jump($type=1,$banner_id=0){
+
+		$this->layout = "ajax";
+		$this->loadModel('Banner');
+		$banner = $this->Banner->findById($banner_id);
+		$location = Sanitize::clean(strtolower($this->parseLocation($this->userDetail['User']['location'])));
+		if($type==2){
+			//click
+			$t_click = 1;
+			$t_view = 0;
+		}else{
+			$t_click = 0;
+			$t_view = 1;
+		}
+		$sql = "INSERT INTO ffgame.sponsor_banner_logs
+				(banner_id,current_month,location,t_click,t_view)
+				VALUES
+				({$banner_id},".date('m').",'{$location}',{$t_click},{$t_view})
+				ON DUPLICATE KEY UPDATE
+				t_click = t_click + VALUES(t_click),
+				t_view = t_view + VALUES(t_view)";
+				
+		$this->Game->query($sql);
+		$this->redirect($banner['Banner']['url']);
+	}
 	private function parseLocation($str){
 		$a = explode(",",$str);
 		return trim($a[0]);

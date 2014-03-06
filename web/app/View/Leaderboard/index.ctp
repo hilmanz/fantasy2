@@ -28,8 +28,7 @@ $overall = isset($overall) ? "selected='selected'":"";
                             <span>Point: <strong><?=number_format($USER_POINTS)?></strong></span>
                         </td>
                         <td colspan="2" class="pendapatan">
-                        	<p><span class="ico icon-coin">&nbsp;</span>
-                            	<strong class="amounts">ss$ <?=number_format($weekly_salaries)?></strong></p>
+                        	
                             <p><span class="ico icon-plus-alt">&nbsp;</span>
                             	<strong class="amounts">ss$ <?=number_format($last_earning)?></strong></p>
                             <p><span class="ico icon-minus-alt">&nbsp;</span>

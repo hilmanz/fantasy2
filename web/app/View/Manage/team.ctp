@@ -104,11 +104,12 @@ if(isset($first_time) && $first_time==true):
             <a class="buttonred" href="<?=$this->Html->url('/pages/faq')?>#tabs-howto">KLIK DISINI UNTUK INFO LEBIH LANJUT</a>
         </div><!-- end .howtoBox -->
     </div><!-- end .popup-content -->
+</div><!-- end #popupWelcome -->
 <?php
 endif;
 ?>
 
-</div><!-- end #popupWelcome -->
+
 
 
 <?php
@@ -125,7 +126,7 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
 ?>
 <div id="fillDetailsPage">
       <div class="rowd">
-     	 <?php echo $this->element('infobar'); ?>
+     	 <?php echo $this->element('infobar',array('next_match'=>$next_match)); ?>
       </div>
     <div id="thecontent">
         <div class="box4 fl">
@@ -134,7 +135,9 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
             </div>
             <?php for($i=0;$i<sizeof($sidebar_banner);$i++):?>
         	<div class="banner250x250">
-			     <a href="javascript:banner_click(<?=$sidebar_banner[$i]['Banners']['id']?>,'<?=$sidebar_banner[$i]['Banners']['url']?>');" target="_blank">
+                <a 
+                href="<?=$this->Html->url('/sponsors/jump/1/'.$sidebar_banner[$i]['Banners']['id'])?>" 
+                    target="_blank">
                     <img src="<?=$this->Html->url(Configure::read('avatar_web_url').
                                 $sidebar_banner[$i]['Banners']['banner_file'])?>" />
                 </a>

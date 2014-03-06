@@ -2,6 +2,12 @@
     <h4 class="date-now fl"><?=date("d/m/Y")?></h4>
     <div id="newsticker" <?php if(time() > $open_time):?> <?php else:?> style="width:460px;" <?php endif;?>>
           <ul class="slides">
+          	<?php if(isset($next_match)):?>
+            <li class="newsticker-entry">
+                <h3><a href="#" target="_blank">
+                	Pertandingan berikutnya : <?=__($next_match['home_name'])." VS ".h($next_match['away_name'])?> (Minggu ke <?=$next_match['matchday']?>) Tanggal <?=date("d/m/Y",strtotime($next_match['match_date']))?></a></h3>
+            </li><!-- end .newsticker-entry -->
+        	<?php endif;?>
           	<?php 
           	if(isset($tickers)):
           		foreach($tickers as $ticker):
@@ -12,6 +18,7 @@
             </li><!-- end .newsticker-entry -->
             
             <?php endforeach;endif;?>
+            
           </ul><!-- end #newsticker -->
     </div>
     <?php if(time() > $open_time):?>
