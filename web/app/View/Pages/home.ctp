@@ -42,7 +42,7 @@
 <div id="sidebar">
 	<div id="loginbox" class="tr">
 		<a href="javascript:fb_login();" class="boxButton loginFacebook">&nbsp;</a>
-    <a href="javascript:fb_login();" class="boxButton createAccount last">&nbsp;</a>
+  		<a href="javascript:fb_login();" class="boxButton createAccount">&nbsp;</a>
     </div>
     <div class="widgets tr" id="gameNews">
         <h3>Game News & Update</h3>

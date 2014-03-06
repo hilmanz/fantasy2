@@ -752,6 +752,7 @@ a.download-appstore{
 }
 .loginFacebook{
 	background-image:url(../images/btn_login_facebook.png);
+	margin:0 auto 20px auto;
 }
 .createAccount{
 	background-image:url(../images/btn_create_account.png);
