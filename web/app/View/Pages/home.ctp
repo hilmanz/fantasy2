@@ -6,7 +6,15 @@
 	          <ul class="slides">
               	<li>
                     <div id="videoIntro">
-                        <iframe width="100%" height="350" src="//www.youtube.com/embed/HxwxlVqW0O0" frameborder="0" allowfullscreen></iframe>
+						<div onclick="thevid=document.getElementById('thevideo'); thevid.style.display='block'; this.style.display='none'"><img style="cursor: pointer;" src="<?=$this->Html->url('/content/cover_video.jpg')?>" alt="" /></div>
+						
+<div id="thevideo" style="display: none;">
+<object width="100%" height="350" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0">
+<param name="allowFullScreen" value="true" /><param name="allowscriptaccess" value="always" />
+<param name="src" value="http://www.youtube.com/v/HxwxlVqW0O0?version=3&amp;hl=en_US&amp;autoplay=1" />
+<param name="allowfullscreen" value="true" /><embed width="100%" height="350" type="application/x-shockwave-flash" src="http://www.youtube.com/v/HxwxlVqW0O0?version=3&amp;hl=en_US&amp;autoplay=1" allowFullScreen="true" allowscriptaccess="always" allowfullscreen="true" />
+</object></div>
+			
                     </div>		
     			</li>
             
@@ -32,9 +40,44 @@
         <div class="bannerBox last">
 	               <a href="<?=$small_banner_2[0]['Banners']['url']?>" target="_blank"><img src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner_2[0]['Banners']['banner_file'])?>" /></a>
         </div>
-    		<div class="bannerBox">
-    				<a href="<?=$small_banner_1[0]['Banners']['url']?>" target="_blank"><img src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner_1[0]['Banners']['banner_file'])?>" /></a>
-    		</div>
+		<div class="bannerBox">
+				<a href="<?=$small_banner_1[0]['Banners']['url']?>" target="_blank"><img src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner_1[0]['Banners']['banner_file'])?>" /></a>
+		</div>
+		<div class="widgets tr" id="topManager">
+			<h3>Top Manager Minggu Ini</h3>
+			<div class="topManager">
+				<ul>
+				<?php for($i=0;$i<sizeof($team);$i++):?>
+					<li><?=h($team[$i]['Manager']['name'])?> 
+					  - 
+					  <?=h($team[$i]['Team']['team_name'])?> 
+					  <span class="points">
+						<?=floatval($team[$i]['Weekly_point']['TotalPoints'])?> Pts</span></li>
+				<?php endfor;?>
+				</ul>
+			</div><!-- end .entry -->
+		</div><!-- end .box -->
+		<div class="widgets tr" id="topPlayerWeek">
+			<h3>Pemain Top Minggu Ini</h3>
+			<div class="topPlayerWeek">
+				<ul>
+				  <?php 
+					for($i=0;$i<sizeof($top_players);$i++):
+				  ?>
+					 <li>
+						  <a class="smallerThumb" href="#">
+							<img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$top_players[$i]['team_id'])?>&dimensions=103x155&id=<?=str_replace('p','',$top_players[$i]['player_id'])?>"/></a>
+						   <h3><?=h($top_players[$i]['name'])?> 
+							<span class="points">
+							<?=number_format($top_players[$i]['total'])?> Pts
+						  </span>
+						 </h3>
+						 
+					</li>
+					<?php endfor;?>
+				</ul>
+			</div><!-- end .entry -->
+		</div><!-- end .box -->
     </div><!-- end #listBox -->
 	
 </div><!-- end #content -->
@@ -70,41 +113,6 @@
         </a>
     </div>
     <?php endfor;?>
-    <div class="widgets tr" id="topManager">
-        <h3>Top Manager Minggu Ini</h3>
-        <div class="topManager">
-            <ul>
-            <?php for($i=0;$i<sizeof($team);$i++):?>
-                <li><?=h($team[$i]['Manager']['name'])?> 
-                  - 
-                  <?=h($team[$i]['Team']['team_name'])?> 
-                  <span class="points">
-                    <?=floatval($team[$i]['Weekly_point']['TotalPoints'])?> Pts</span></li>
-            <?php endfor;?>
-            </ul>
-        </div><!-- end .entry -->
-    </div><!-- end .box -->
-    <div class="widgets tr" id="topPlayerWeek">
-        <h3>Pemain Top Minggu Ini</h3>
-        <div class="topPlayerWeek">
-            <ul>
-              <?php 
-                for($i=0;$i<sizeof($top_players);$i++):
-              ?>
-                 <li>
-                      <a class="smallerThumb" href="#">
-                        <img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$top_players[$i]['team_id'])?>&dimensions=103x155&id=<?=str_replace('p','',$top_players[$i]['player_id'])?>"/></a>
-                       <h3><?=h($top_players[$i]['name'])?> 
-                     	<span class="points">
-                        <?=number_format($top_players[$i]['total'])?> Pts
-                      </span>
-                     </h3>
-                     
-                </li>
-                <?php endfor;?>
-            </ul>
-        </div><!-- end .entry -->
-    </div><!-- end .box -->
     
 </div><!-- end #sidebar -->
 
