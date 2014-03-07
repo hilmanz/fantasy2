@@ -2436,14 +2436,29 @@ table.dataTable{
 	min-height:195px;
 	margin:0 20px 20px 0;
 }
-#listBox .topPlayerWeek h3{
+#listBox .topPlayerWeek h3,#listBox .topManager h3{
 	font-size:16px;
 	color:#fff;
 	float:left;
-	line-height:45px;
+	padding:3px 0 0 0;
+}
+#listBox .topManager h3 span{
+	line-height:16px;
+}
+#listBox .topManager h3 span.manager_name{
+	display:block;
+}
+#listBox .topManager h3 span.team_name{
+	padding:0 5px 0 0;
+}
+#listBox .topManager h3 span.points{
+	color:#fdcb02;
+	padding:0 0 0 5px;
 }
 #listBox .topPlayerWeek h3 span.points{
 	color:#fdcb02;
+	line-height:20px;
+	display:block;
 }
 #topPlayerWeek li{
 	padding:5px 0;
@@ -2456,6 +2471,12 @@ table.dataTable{
 	background:#000;
 	float:left;
 	margin:0 10px 0 0;
+	text-align:center;
+	overflow:hidden;
+}
+#listBox .topManager .smallerThumb img{
+	width:auto;
+	height:45px;
 }
 .smallerThumb img{
 	width:100%;

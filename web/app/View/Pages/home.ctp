@@ -43,41 +43,45 @@
 		<div class="bannerBox">
 				<a href="<?=$small_banner_1[0]['Banners']['url']?>" target="_blank"><img src="<?=$this->Html->url(Configure::read('avatar_web_url').$small_banner_1[0]['Banners']['banner_file'])?>" /></a>
 		</div>
-		<div class="widgets tr" id="topManager">
-			<h3>Top Manager Minggu Ini</h3>
-			<div class="topManager">
-				<ul>
-				<?php for($i=0;$i<sizeof($team);$i++):?>
-					<li><?=h($team[$i]['Manager']['name'])?> 
-					  - 
-					  <?=h($team[$i]['Team']['team_name'])?> 
-					  <span class="points">
-						<?=floatval($team[$i]['Weekly_point']['TotalPoints'])?> Pts</span></li>
-				<?php endfor;?>
-				</ul>
-			</div><!-- end .entry -->
-		</div><!-- end .box -->
-		<div class="widgets tr" id="topPlayerWeek">
-			<h3>Pemain Top Minggu Ini</h3>
-			<div class="topPlayerWeek">
-				<ul>
-				  <?php 
-					for($i=0;$i<sizeof($top_players);$i++):
-				  ?>
-					 <li>
-						  <a class="smallerThumb" href="#">
-							<img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$top_players[$i]['team_id'])?>&dimensions=103x155&id=<?=str_replace('p','',$top_players[$i]['player_id'])?>"/></a>
-						   <h3><?=h($top_players[$i]['name'])?> 
-							<span class="points">
-							<?=number_format($top_players[$i]['total'])?> Pts
-						  </span>
-						 </h3>
-						 
-					</li>
-					<?php endfor;?>
-				</ul>
-			</div><!-- end .entry -->
-		</div><!-- end .box -->
+    <div class="widgets tr" id="topManager">
+        <h3>Top Manager Minggu Ini</h3>
+        <div class="topManager">
+            <ul>
+            <?php for($i=0;$i<sizeof($team);$i++):?>
+				 <li>
+					<a class="smallerThumb" href="#">
+					<img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/14.png"/>
+					</a>
+				   <h3>
+					<span class="manager_name"><?=h($team[$i]['Manager']['name'])?> Acit Jazz </span>
+					<span class="team_name"> <?=h($team[$i]['Team']['team_name'])?> Sample FC </span> &bull; 
+					<span class="points"> <?=floatval($team[$i]['Weekly_point']['TotalPoints'])?> 1200 Pts</span>
+				  </h3>
+				</li>
+            <?php endfor;?>
+            </ul>
+        </div><!-- end .entry -->
+    </div><!-- end .box -->
+    <div class="widgets tr" id="topPlayerWeek">
+        <h3>Pemain Top Minggu Ini</h3>
+        <div class="topPlayerWeek">
+            <ul>
+              <?php 
+                for($i=0;$i<sizeof($top_players);$i++):
+              ?>
+                 <li>
+                      <a class="smallerThumb" href="#">
+                        <img src="http://omo.akamai.opta.net/image.php?custID=c8bb60c8f6d0184c33a87e6f3041b9cc&sport=football&entity=player&description=<?=str_replace('t','',$top_players[$i]['team_id'])?>&dimensions=103x155&id=<?=str_replace('p','',$top_players[$i]['player_id'])?>"/></a>
+                       <h3>
+						<span><?=h($top_players[$i]['name'])?></span>
+						<span class="points"><?=number_format($top_players[$i]['total'])?> Pts</span>
+                     </h3>
+                     
+                </li>
+                <?php endfor;?>
+            </ul>
+        </div><!-- end .entry -->
+    </div><!-- end .box -->
     </div><!-- end #listBox -->
 	
 </div><!-- end #content -->
