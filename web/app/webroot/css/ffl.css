@@ -1658,11 +1658,12 @@ table td a.button,table td .buttons{
 	opacity:0.8;
 }
 #logoutpage a:hover{
-	opacity:1;
+	opacity:1  !important;
 }
 .download-android{
 	background:url(../images/btn_android.png) no-repeat;
 	left:260px;
+	opacity:0.8 !important;
 }
 .download-apple{
 	background:url(../images/btn_comingsoon.png) no-repeat;
