@@ -26,18 +26,19 @@ var base_coin = {};
 				action="<?=$this->Html->url('/merchandises/cart')?>">
                 <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF">
                     <tr>
-                        <td>No.</td>
+                       
                         <td>Item</td>
                         <td>Harga Satuan</td>
                         <td>Jumlah</td>
                         <td>Total</td>
+                        <td>Hapus</td>
                     </tr>
 					<?php
 					for($i=0;$i<sizeof($shopping_cart);$i++):
                         $item = $shopping_cart[$i]['data']['MerchandiseItem'];
                     ?>
-                    <tr>
-                        <td><?=($i+1)?></td>
+                    <tr class="tr-<?=intval($item['id'])?>">
+                        
                         <td> #<?=h($item['id'])?> -
                             <?=h($item['name'])?>
                         </td>
@@ -61,9 +62,16 @@ var base_coin = {};
                         </td>
                         <td>
                             <input type="hidden" name="item_id[]"  
-                                value="<?=intval($item['id'])?>"/>
-                            <input type="text" name="qty[]" class="qty" data-id="<?=intval($item['id'])?>" 
+                                value="<?=intval($item['id'])?>"
+
+                            />
+                            <?php if($item['merchandise_type']==0):?>
+                            <input style="width:30px;" type="text" name="qty[]" class="qty" data-id="<?=intval($item['id'])?>" 
                                 value="<?=intval($shopping_cart[$i]['qty'])?>"/>
+                            <?php else: ?>
+                            <input style="width:30px;" type="text" name="qty[]" class="qty" data-id="<?=intval($item['id'])?>" 
+                                value="1" readonly="readonly"/>
+                            <?php endif;?>
                         </td>
                         <td>
                             Rp. <span class="prices price-<?=$item['id']?>">
@@ -85,22 +93,24 @@ var base_coin = {};
                                  base_coin['<?=$item['id']?>'] = <?=intval($item['price_credit'])?>;
                             </script>
                         </td>
+                        <td>
+                            <a class="btnDelete button" href="javascript:;" data-id="<?=intval($item['id'])?>">Hapus</a>
+                        </td>
                     </tr>
                     <?php endfor;?>
                     <tr>
                         <td colspan="4">Belanja Total</td>
-                        <td>
+                        <td colspan="2">
                             <span class="total-price">0</span>
                         </td>
                     </tr>
 
                 </table>
                 <input type="hidden" name="update_type" value="0"/>
-                <input id="btnUpdate" style="float:left;" 
-                    type="button" 
-                    class="button" value="Update Keranjang Belanja"/>
-                <input id="btnCheckout" 
-                        type="button" name="btnCheckout" value="Checkout" class="button"/>
+                <a href="<?=$this->Html->url('/merchandises')?>" class="button">Kembali Belanja</a>
+                <a href="javascript:;" id="btnUpdate"class="button">Update Keranjang Belanja</a>
+                <a href="javascript:;" id="btnCheckout"class="button">Checkout</a>
+               
                 </form>
 					</div><!-- end .widget -->
 				</div><!-- end .col-content -->
@@ -156,6 +166,10 @@ $("#btnUpdate").on('click',function(e){
 });
 $("#btnCheckout").on('click',function(e){
     checkout();
+});
+$(".btnDelete").on('click',function(e){
+    var id = $(this).attr('data-id');
+    $(".tr-"+id).remove();
 });
 $(document).ready(function(){
     updateCost();

@@ -25,7 +25,7 @@ if(isset($category_name)){
 						$pic = Configure::read('avatar_web_url').
 										"merchandise/thumbs/0_".
 										$item['MerchandiseItem']['pic'];
-						$buy_url = $this->Html->url('/merchandises/buy/'.$item['MerchandiseItem']['id']);
+						$buy_url = $this->Html->url('/merchandises/select/'.$item['MerchandiseItem']['id']);
 					?>
 					<div class="catalog-item">
 						<div class="imagesCatalog tr widget">

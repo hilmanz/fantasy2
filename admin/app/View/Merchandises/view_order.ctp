@@ -1,11 +1,20 @@
-<?php
-$pic = Configure::read('avatar_web_url')."merchandise/thumbs/1_".$rs['MerchandiseItem']['pic'];
-?>
 <form class="shipaddress" 
 	action="<?=$this->Html->url('/merchandises/view_order/'.$rs['MerchandiseOrder']['id'])?>"
 	method="post" 
 	enctype="application/x-www-form-urlencoded">
-	<h3>View Order - <?=h($rs['MerchandiseOrder']['po_number'])?></h3>
+<h3>View Order - <?=h($rs['MerchandiseOrder']['po_number'])?></h3>
+<h4>Payment Method : <?=h($rs['MerchandiseOrder']['payment_method'])?></h4>
+<h4>Shipping : Rp. 0</h4>
+<?php
+
+$rs['MerchandiseOrder']['data'] = unserialize($rs['MerchandiseOrder']['data']);
+
+if($rs['MerchandiseOrder']['data'] == null):
+	$pic = Configure::read('avatar_web_url')."merchandise/thumbs/1_".$rs['MerchandiseItem']['pic'];	
+
+
+?>
+
 	<div class="row">
 		<img src="<?=$pic?>"/>
 	</div>
@@ -39,7 +48,52 @@ $pic = Configure::read('avatar_web_url')."merchandise/thumbs/1_".$rs['Merchandis
 		<?=h($rs['MerchandiseItem']['stock'])?>
 	</div><!-- end .row -->
 
+<?php else:?>
+	<div class="row">
+		<table width="100%" class="table">
+			<tr>
+				<td>
+					Item
+				</td>
+				<td>
+					Qty
+				</td>
+				<td>
+					Price
+				</td>
+				<td>
+					Total Price
+				</td>
+			</tr>
+			<?php 
+			for($i=0;$i<sizeof($rs['MerchandiseOrder']['data']); $i++):
+				$item = $rs['MerchandiseOrder']['data'][$i];
+			
+			?>
+			<tr>
+				<td>
+					<?=h($item['data']['MerchandiseItem']['id'])?> - 
+					<?=h($item['data']['MerchandiseItem']['name'])?>
+				</td>
+				<td>
+					<?=intval($item['qty'])?>
+				</td>
+				<td>
+					Rp. <?=number_format($item['data']['MerchandiseItem']['price_money'])?> / 
+					<?=number_format($item['data']['MerchandiseItem']['price_credit'])?> Coins
+				</td>
+				<td>
+					Rp. <?=number_format(intval($item['data']['MerchandiseItem']['price_money']) * 
+											intval($item['qty']))?> / 
+					 <?=number_format(intval($item['data']['MerchandiseItem']['price_credit']) * 
+											intval($item['qty']))?>  Coins
+				</td>
+			</tr>
+			<?php endfor;?>
+		</table>
+	</div>
 
+<?php endif;?>
 
 	<h4>Shipping Info</h4>
 	<div class="row">

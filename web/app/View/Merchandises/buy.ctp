@@ -17,6 +17,98 @@ $pic = Configure::read('avatar_web_url').
             <div class="rowd">
 				<div class="col-content">
 					<div class="tr widget">
+			
+		                <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF">
+		                    <tr>
+		                       
+		                        <td>Item</td>
+		                        <td>Harga Satuan</td>
+		                        <td>Jumlah</td>
+		                        <td>Total</td>
+		                      
+		                    </tr>
+							<?php
+							$total_price = 0;
+		                    $total_coins = 0;
+							for($i=0;$i<sizeof($shopping_cart);$i++):
+		                        $item = $shopping_cart[$i]['data']['MerchandiseItem'];
+		                    	$coins = 0;
+		                    	$price = 0;
+		                    	
+		                    ?>
+		                    <tr class="tr-<?=intval($item['id'])?>">
+		                        
+		                        <td> #<?=h($item['id'])?> -
+		                            <?=h($item['name'])?>
+		                        </td>
+		                        <td>
+		                            <?php if($item['price_money']>0):?>
+		                            <p class="price">   
+		                                Rp. <?=number_format(intval($item['price_money']))?> 
+		                            </p> 
+		                            <?php endif;?>
+		                            <?php if($item['price_credit']>0):?>
+		                            <p class="price">   
+		                                <?php if($item['price_money'] > 0):?>
+		                                    (<?=number_format(intval($item['price_credit']))?> Coins)
+		                                <?php else:?>
+		                                    <?=number_format(intval($item['price_credit']))?> Coins
+		                                <?php endif;?>
+
+		                            </p> 
+		                            <?php endif;?>
+		                            
+		                        </td>
+		                        <td>
+		                            <?=(intval($shopping_cart[$i]['qty']))?>
+		                            <?php
+		                            	$coins = intval($shopping_cart[$i]['qty']) * 
+		                            						intval($item['price_credit']);
+		                            	$total_coins += $coins;
+		                            	$price = intval($shopping_cart[$i]['qty']) * 
+		                            						intval($item['price_money']);
+
+		                            	$total_price += $price;
+		                            ?>
+		                        </td>
+		                        <td>
+		                            Rp. <span class="prices price-<?=$item['id']?>">
+		                                <?=number_format(intval($price))?>
+		                            </span>
+		                            <?php if($item['price_credit']>0):?>
+		                                <?php if($item['price_money']>0):?>
+		                                    (<span class="coins coin-<?=$item['id']?>">
+		                                        <?=number_format(intval($coins))?>
+		                                    </span> Coins)
+		                                <?php else:?>
+		                                    <span class="coins coin-<?=$item['id']?>">
+		                                        <?=number_format(intval($coins))?>
+		                                    </span> Coins
+		                                <?php endif;?>
+		                            <?php endif;?>
+		                           
+		                        </td>
+		                        
+		                    </tr>
+		                    <?php endfor;?>
+		                    <tr>
+		                        <td colspan="3">Belanja Total</td>
+		                        <td>
+		                            <span class="total-price">
+		                            	
+		                            	<?php if($total_price > 0):?>
+		                            		Rp. <?=number_format($total_price)?>
+		                                    (<?=number_format(intval($total_coins))?> Coins)
+		                                <?php else:?>
+		                                    <?=number_format(intval($total_coins))?> Coins
+		                                <?php endif;?>
+		                            </span>
+		                        </td>
+		                    </tr>
+		                </table>
+ 
+					</div><!-- end .widget -->
+					<div class="tr widget">
 					<form class="shipaddress" 
 						action="<?=$this->Html->url('/merchandises/order')?>" 
 						method="post" 
@@ -60,6 +152,13 @@ $pic = Configure::read('avatar_web_url').
 							<input type="text" name="zip" value=""/>
 						</div><!-- end .row -->
 						<div class="row">
+							<label>Metode Pembayaran</label>
+							<div>
+							<input type="radio" name="payment_method" value="coins" checked="checked"/> Coins
+							<input type="radio" name="payment_method" value="ecash"/> Ecash Mandiri (Rupiah)
+							</div>
+						</div><!-- end .row -->
+						<div class="row">
 							<input type="hidden" name="ct" value="<?=$csrf_token?>"/>
 							<input type="button" value="Cancel" class="button" onclick="cancel();"/>
 							<input type="submit" value="Confirm" class="button"/>
@@ -94,4 +193,7 @@ $pic = Configure::read('avatar_web_url').
 function cancel(){
 	document.location="<?=$this->Html->url('/merchandises')?>";
 }
+
+
+
 </script>

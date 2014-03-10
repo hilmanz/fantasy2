@@ -30,6 +30,7 @@ $view_url = $this->Html->url('/merchandises/view_order/');
 $item_url = $this->Html->url('/merchandises/edit/');
 ?>
 <script>
+	var item_url = "<?=$item_url?>";
 	var start = 0;
 	var data = [];
 	var order_status = 0;
@@ -40,7 +41,7 @@ $item_url = $this->Html->url('/merchandises/edit/');
 		"aoColumns": [
 			{ "sTitle": "Date" },
 			{ "sTitle": "PO" },
-			{ "sTitle": "ItemId" },
+			
 			{ "sTitle": "ItemName" },
 			{ "sTitle": "User" },
 			{ "sTitle": "Status" },
@@ -60,6 +61,23 @@ $item_url = $this->Html->url('/merchandises/edit/');
 					if(response.data.length > 0){
 						for(var i in response.data){
 							var status = 'Pending';
+							var item_details = '<a href="<?=$item_url?>'+
+												response.data[i].MerchandiseItem.id+'">'+
+												response.data[i].MerchandiseItem.id+' - '+response.data[i].MerchandiseItem.name+'</a>';
+							
+							if(response.data[i].MerchandiseOrder.data!=null){
+								item_details = '';
+								for(var t in response.data[i].MerchandiseOrder.data){
+								console.log(response.data[i].MerchandiseOrder.data[t]);
+								item_details+= "<a href='"+
+								item_url+
+								response.data[i].MerchandiseOrder.data[t].data.MerchandiseItem.id+"'>"+
+								response.data[i].MerchandiseOrder.data[t].data.MerchandiseItem.id
+										+' - '+
+								response.data[i].MerchandiseOrder.data[t].data.MerchandiseItem.name+
+										'</a><br/>';
+								}
+							}
 							switch(response.data[i].MerchandiseOrder.n_status){
 								case '1':
 									status = 'Order Accepted, waiting for shipping';
@@ -80,8 +98,8 @@ $item_url = $this->Html->url('/merchandises/edit/');
 							data.push([
 									response.data[i].MerchandiseOrder.order_date,
 									response.data[i].MerchandiseOrder.po_number,
-									response.data[i].MerchandiseItem.id,
-									'<a href="<?=$item_url?>'+response.data[i].MerchandiseItem.id+'">'+response.data[i].MerchandiseItem.name+'</a>',
+									
+									item_details,
 									(parseInt(response.data[i].MerchandiseOrder.game_team_id)+139670)+' - '+response.data[i].MerchandiseOrder.first_name+' '+response.data[i].MerchandiseOrder.last_name,
 									status,
 									'<a href="<?=$view_url?>'+response.data[i].MerchandiseOrder.id+'">View</a>'

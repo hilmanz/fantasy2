@@ -281,7 +281,11 @@ class MerchandisesController extends AppController {
 												  ),
 												  'offset'=>$start,
 												  'limit'=>$limit));
-		
+		for($i=0; $i<sizeof($rs); $i++){
+			if($rs[$i]['MerchandiseOrder']['data']!=null){
+				$rs[$i]['MerchandiseOrder']['data'] = unserialize($rs[$i]['MerchandiseOrder']['data']);
+			}
+		}
 		$this->set('response',array('status'=>1,'data'=>$rs,'next_offset'=>$start+$limit,'rows_per_page'=>$limit));
 		$this->render('response');
 	}
@@ -307,6 +311,7 @@ class MerchandisesController extends AppController {
 
 		return $refund_ok;
 	}
+
 	private function refund_game_cash($order){
 		$refund_ok = false;
 		//make sure that the deducted fund is exists
@@ -314,7 +319,7 @@ class MerchandisesController extends AppController {
 										$order['MerchandiseOrder']['po_number']);
 			
 		if(intval($statement['id']) > 0){
-
+			$refund_amount = intval($statement['amount']) * -1;
 			//if everything is fine, then we process the refund
 			$rs = $this->Game->query("
 				INSERT IGNORE INTO ffgame.game_transactions
@@ -324,7 +329,7 @@ class MerchandisesController extends AppController {
 				({$order['MerchandiseOrder']['game_team_id']},
 				  'purchase_{$order['MerchandiseOrder']['po_number']} - refunded',
 				  NOW(),
-				  {$order['MerchandiseItem']['price_credit']},
+				  {$refund_amount},
 				  'purchase merchandise - {$order['MerchandiseOrder']['po_number']} - refunded'
 				  );",false);
 			//then set n_status of order to 4 (canceled)
@@ -394,8 +399,9 @@ class MerchandisesController extends AppController {
 		$sql = "SELECT * FROM ffgame.game_transactions a
 				WHERE game_team_id={$game_team_id} AND 
 				transaction_name ='purchase_{$po_number}' LIMIT 1;";
-				
+		
 		$rs = $this->Game->query($sql,false);
+
 		if(sizeof($rs)>0){
 			return $rs[0]['a'];
 		}else{

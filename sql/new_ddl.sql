@@ -98,3 +98,7 @@ ALTER TABLE `ffgame_stats`.`master_match_player_points` ADD INDEX `IDX_PLAYER_ID
 CREATE TABLE `ffgame`.`digital_perks_group`(     `id` BIGINT(21) NOT NULL AUTO_INCREMENT ,     `master_perk_id` BIGINT(21) ,     `category` VARCHAR(32) ,     PRIMARY KEY (`id`)  );
 
 ALTER TABLE `ffgame`.`digital_perks_group` ADD UNIQUE `UNIQUE_GROUP` (`master_perk_id`, `category`);
+
+
+ALTER TABLE `fantasy`.`merchandise_orders`     ADD COLUMN `data` TEXT NULL AFTER `notes`;
+ALTER TABLE `fantasy`.`merchandise_orders`     ADD COLUMN `payment_method` VARCHAR(12) DEFAULT 'coins' NULL AFTER `data`,     ADD COLUMN `total_sale` INT(11) DEFAULT '0' NULL AFTER `payment_method`;

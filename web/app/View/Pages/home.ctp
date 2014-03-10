@@ -49,13 +49,15 @@
             <ul>
             <?php for($i=0;$i<sizeof($team);$i++):?>
 				 <li>
+          <!--
 					<a class="smallerThumb" href="#">
 					<img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/14.png"/>
 					</a>
+        -->
 				   <h3>
-					<span class="manager_name"><?=h($team[$i]['Manager']['name'])?> Acit Jazz </span>
-					<span class="team_name"> <?=h($team[$i]['Team']['team_name'])?> Sample FC </span> &bull; 
-					<span class="points"> <?=floatval($team[$i]['Weekly_point']['TotalPoints'])?> 1200 Pts</span>
+					<span class="manager_name"><?=h($team[$i]['Manager']['name'])?>  </span>
+					<span class="team_name"> <?=h($team[$i]['Team']['team_name'])?> </span> &bull; 
+					<span class="points"> <?=floatval($team[$i]['Weekly_point']['TotalPoints'])?> Pts</span>
 				  </h3>
 				</li>
             <?php endfor;?>
