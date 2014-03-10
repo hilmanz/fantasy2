@@ -510,12 +510,16 @@ a.download-appstore{
 	margin:0;
 }
 .squad-team{
-	min-height:811px;
+	min-height:750px;
 	position:relative;
+	margin:0 0 2px 0;
+}
+.squad-team-name{
+	margin:0 0 2px 0;
 }
 .squad-team .jersey-player{
 	position:relative;
-	width:112px;
+	width:130px;
 	float:left;
 }
 .squad-team .jersey{
@@ -1859,7 +1863,7 @@ h3.tabtitle{
 #starterTeam .slides li{
 	clear:both;
 	position:relative;
-	width:225px !important;
+	width:265px !important;
 }
 .thumbPlayers,.thumbPlayersSmall{
 	display:block;
@@ -2099,10 +2103,10 @@ h3.tabtitle{
 }
 .banner250x250{
 	width:250px; height:250px;
-	margin:0 auto 20px auto;
+	margin:0 0 10px 0;
 	background:#000;
 	overflow:hidden;
-	padding:10px;
+	padding:2px;
 }
 .smallBanner a{
 	display:block;
@@ -2202,7 +2206,7 @@ table.dataTable{
 	height:20px;
 	background:url(../images/icon_mail.png) no-repeat;
 	float:right;
-	margin:7px 0 0;
+	margin:5px 0 0;
 	color:#fff;
 	line-height:22px;
 	opacity:0.7;
@@ -2213,6 +2217,8 @@ table.dataTable{
 }
 #btn_save{
 	line-height:28px;
+	width:170px;
+	text-align:center;
 }
 #tablePoint td{
 	text-align:center;
@@ -2588,4 +2594,16 @@ table.dataTable{
 .entry-home strong{
 	color:#fdcb02;
 	font-weight:bold;
+}
+#formationBox{
+	height:915px;
+	margin:0 0 0 20px;
+}
+#boxSquad{
+	float:left;
+	margin:0 0 0 20px;
+	width:305px;
+}
+#bannerBox{
+	width:254px;
 }

@@ -129,7 +129,7 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
      	 <?php echo $this->element('infobar',array('next_match'=>$next_match)); ?>
       </div>
     <div id="thecontent">
-        <div class="box4 fl">
+        <div class="box4 fl" id="bannerBox">
         	<div class="banner250x250">
 			<?=$this->element('sponsor_banner',array('slot'=>'TEAM_SMALL','game_team_id'=>$game_team_id));?>
             </div>
@@ -146,7 +146,7 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
         	
             
         </div><!-- end .box4 -->
-        <div class="box3 tr fl drop" style="height:906px;">
+        <div class="box3 tr fl drop" id="formationBox">
             <div class="field-container">
                 <div class="selectFormation">
                 <select name="formations" id="formation-select" class="styled">
@@ -182,7 +182,7 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
                 </div><!-- end .field-formation -->
             </div><!-- end .field-container -->
         </div><!-- end .box3 -->
-        <div class="box4 fr">
+        <div class="box4 fr" id="boxSquad">
             <div class="widget tr squad-team-name">
                 <h2><?=h($club['team_name'])?></h2>
                 <div class="RingkasanKlab" id="RingkasanKlab">
