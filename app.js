@@ -94,6 +94,8 @@ app.get('/game/rank',user.list);
 app.post('/sale',[auth.canAccess],gameplay.sale);
 app.post('/buy',[auth.canAccess],gameplay.buy);
 app.get('/cash/:game_team_id', [auth.canAccess],gameplay.getCash);
+app.get('/getEcashUrl', [auth.canAccess],gameplay.getEcashUrl);
+app.get('/ecash_validate', [auth.canAccess],gameplay.EcashValidate);
 
 app.get('/transfer_window',[auth.canAccess],gameplay.getTransferWindow);
 

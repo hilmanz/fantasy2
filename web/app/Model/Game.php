@@ -439,5 +439,16 @@ class Game extends AppModel {
 		$rs = $this->api_call('/getInputAttempt',array('name'=>$name));
 		return $rs;
 	}
+	/*
+	* $params - transaction_id,amount,clientIpAddress,description
+	*/
+	public function getEcashUrl($params){
+		$rs = $this->api_call('/getEcashUrl',$params);
+		return $rs;
+	}
+	public function EcashValidate($id){
+		$rs = $this->api_call('/ecash_validate',array('id'=>$id));
+		return $rs;	
+	}
 }
 

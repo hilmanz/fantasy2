@@ -41,7 +41,7 @@ if(isset($category_name)){
 					<div class="detailCatalog" style="width:440px;">
 							<h4><?=h($item['MerchandiseItem']['name'])?></h4>
 							<p class="price"><?=number_format($item['MerchandiseItem']['price_credit'])?> Coins</p>
-							<!--<p class="idrprice">(or buy now for IDR <?=number_format($item['MerchandiseItem']['price_money'])?>)</p>-->
+							<p class="idrprice">(or buy now for Rp. <?=number_format($item['MerchandiseItem']['price_money'])?>)</p>
 							<div>
 							<?php if($item['MerchandiseItem']['available'] > 0):?>
 							<a class="buyBtn button" href="<?=$buy_url?>">BUY</a>
@@ -55,8 +55,7 @@ if(isset($category_name)){
 							
 							
 						</div>
-					
-					
+
 					
 				</div><!-- end .box4 -->
 				<div class="box4 fr">

@@ -28,6 +28,7 @@
     "msgpack": "latest",
     "express-validator":"latest",
     "validator":"latest",
-    "php-unserialize":"latest"
+    "php-unserialize":"latest",
+    "request":"latest"
   }
 }

@@ -1,8 +1,4 @@
-<?php
-$pic = Configure::read('avatar_web_url').
-				"merchandise/thumbs/0_".
-				$item['pic'];
-?>
+
 
 <div id="catalogPage">
       <div class="rowd">
@@ -11,6 +7,14 @@ $pic = Configure::read('avatar_web_url').
     <div id="thecontent">
         <div class="content">
         	<div class="titlePage">
+        		<?php 
+        		$msg = $this->Session->flash();
+        		if(strlen($msg) > 0):
+        		?>
+        		<div class="error">
+        			<?php echo $msg;?>
+        		</div>
+        		<?php endif;?>
 				<h1 class="red">Online Catalog</h1>
 				<h4>Where shall we ship your merchandise?</h4>
             </div>
@@ -20,7 +24,7 @@ $pic = Configure::read('avatar_web_url').
 			
 		                <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF">
 		                    <tr>
-		                       
+		                        <td></td>
 		                        <td>Item</td>
 		                        <td>Harga Satuan</td>
 		                        <td>Jumlah</td>
@@ -34,10 +38,15 @@ $pic = Configure::read('avatar_web_url').
 		                        $item = $shopping_cart[$i]['data']['MerchandiseItem'];
 		                    	$coins = 0;
 		                    	$price = 0;
+		                    	$pic = Configure::read('avatar_web_url').
+										"merchandise/thumbs/0_".
+										$item['pic'];
 		                    	
 		                    ?>
 		                    <tr class="tr-<?=intval($item['id'])?>">
-		                        
+		                        <td>
+		                        	<img src="<?=$pic?>" width="100px"/>
+		                        </td>
 		                        <td> #<?=h($item['id'])?> -
 		                            <?=h($item['name'])?>
 		                        </td>
@@ -92,7 +101,8 @@ $pic = Configure::read('avatar_web_url').
 		                    </tr>
 		                    <?php endfor;?>
 		                    <tr>
-		                        <td colspan="3">Belanja Total</td>
+		                    	<td></td>
+		                        <td colspan="3" align="right">Belanja Total</td>
 		                        <td>
 		                            <span class="total-price">
 		                            	

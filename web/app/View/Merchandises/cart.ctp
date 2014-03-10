@@ -1,8 +1,4 @@
-<?php
-$pic = Configure::read('avatar_web_url').
-				"merchandise/thumbs/0_".
-				$item['pic'];
-?>
+
 <script>
 var base_price = {};
 var base_coin = {};

@@ -1,6 +1,6 @@
 var path = require('path');
 var gameplay = require(path.resolve('./libs/api/gameplay'));
-
+var ecash = require(path.resolve('./libs/api/ecash'));
 
 exports.setPool = function(pool){
 	gameplay.setPool(pool);
@@ -776,4 +776,24 @@ exports.setPostponedStatus = function(req,res){
 									res.json(200,{status:1});
 								});
 	
+}
+
+exports.getEcashUrl = function(req,res){
+	ecash.getEcashUrl(req.query.transaction_id,
+						req.query.clientIpAddress,
+						req.query.description,
+						req.query.amount,
+						function(err,rs){
+							if(!err){
+								res.json(200,{status:1,data:rs});	
+							}else{
+								res.json(200,{status:0,data:rs});
+							}
+							
+						});
+}
+exports.EcashValidate = function(req,res){
+	ecash.validate(req.query.id,function(err,rs){
+		res.json(200,rs);
+	});
 }

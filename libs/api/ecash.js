@@ -1,0 +1,129 @@
+var http = require('http');
+var path = require('path');
+var S = require('string');
+var async = require('async');
+var crypto = require('crypto')
+  , shasum = crypto.createHash('sha1');
+var xmlparser = require('xml2json');
+var request = require('request');
+
+var payment_URI = '/ecommgateway/payment.html';
+var validation_URI = '/ecommgateway/validation.html';
+var auth_URI = '/ecommgateway/services/ecommgwws';
+
+var config = require('../../config').config;
+var service = config.ecash;
+
+
+
+exports.getEcashUrl = function(transaction_id,clientIpAddress,description,amount,callback){
+	process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+	async.waterfall([
+		function(cb){
+			step1(transaction_id,clientIpAddress,description,amount,
+					function(err,body,statusCode){
+				cb(err,body,statusCode);
+			});
+		},
+		function(body,statusCode,cb){
+			var response = JSON.parse(xmlparser.toJson(body));
+			var retId = response['soap:Envelope']['soap:Body']['ns2:generateResponse']['return'];
+			console.log('ecash return id',retId);
+			console.log('redirect url : ',service.protocol+'://'+service.host+payment_URI+'?id='+retId);
+			cb(null,service.protocol+'://'+service.host+payment_URI+'?id='+retId);
+		}
+
+	],
+	function(err,returnUrl){
+		callback(err,returnUrl);
+	});
+}
+
+function step1(transaction_id,clientIpAddress,description,amount,callback){
+	console.log('STEP1');
+	//step 1 - user memilih proses ecash, 
+	// maka system akan meminta transaction id dari ecash webservice.
+	// 
+	var request_call = service.protocol+'://'+service.host+auth_URI;
+	var postData = "\
+	<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\
+	 xmlns:ws=\"http://ws.service.gateway.ecomm.ptdam.com/\">\
+	<soapenv:Header/>\
+	<soapenv:Body>\
+	<ws:generate>\
+	<params>\
+	<amount>"+amount+"</amount>\
+	<clientAddress>"+clientIpAddress+"</clientAddress>\
+	<description>"+description+"</description>\
+	<memberAddress>202.43.162.250</memberAddress>\
+	<returnUrl>"+service.returnUrl+"</returnUrl>\
+	<toUsername>supersoccer</toUsername>\
+	<trxid>"+transaction_id+"</trxid>\
+	<hash>"+getSHA1Hash('SUPERSOCCER'+amount+clientIpAddress)+"</hash>\
+	</params>\
+	</ws:generate>\
+	</soapenv:Body>\
+	</soapenv:Envelope>\
+	";
+
+
+	console.log('CALL',request_call);
+	console.log('CALL',postData);
+	request({
+		 		url:request_call,
+		 		method:'POST',
+		 		headers: {'Content-Type': 'text/xml'},
+		 		auth:{
+		 			username:service.username,
+		 			password:service.password
+		 		},
+		 		body:postData
+		 		
+			}, function (error, response, body) {
+					if(!error){
+						//console.log(response);
+						console.log('CALL','status : '+response.statusCode);
+						console.log('CALL',body);
+					}else{
+						console.log('CALL',error.message);
+					}
+					if (!error && response.statusCode == 200) {
+					    //console.log('CALL',body) // Print the google web page.
+					    console.log('CALL','FINISHED');
+					}
+					callback(error,body,response.statusCode);
+			});
+}
+exports.validate = function(id,callback){
+		process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+		console.log('ECASH','VALIDATE');
+		var request_call = service.protocol+'://'+service.host+validation_URI+'?id='+id;
+		request({
+	 		url:request_call,
+	 		method:'GET'
+		}, function (error, response, body) {
+				if(!error){
+					//console.log(response);
+					console.log('CALL','status : '+response.statusCode);
+					console.log('CALL',body);
+				}else{
+					console.log('CALL',error.message);
+				}
+				if (!error && response.statusCode == 200) {
+				    //console.log('CALL',body) // Print the google web page.
+				    console.log('CALL','FINISHED');
+				}
+				callback(error,{data:body});
+		});
+}
+
+function getSHA1Hash(str){
+	console.log('CALL',str);
+	try{
+		return require('crypto').createHash('sha1').update(str).digest('hex');
+	}catch(e){
+		console.log('CALL','ERROR',e.message);
+		return '';
+	}
+	
+}

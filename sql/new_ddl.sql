@@ -102,3 +102,5 @@ ALTER TABLE `ffgame`.`digital_perks_group` ADD UNIQUE `UNIQUE_GROUP` (`master_pe
 
 ALTER TABLE `fantasy`.`merchandise_orders`     ADD COLUMN `data` TEXT NULL AFTER `notes`;
 ALTER TABLE `fantasy`.`merchandise_orders`     ADD COLUMN `payment_method` VARCHAR(12) DEFAULT 'coins' NULL AFTER `data`,     ADD COLUMN `total_sale` INT(11) DEFAULT '0' NULL AFTER `payment_method`;
+
+ALTER TABLE `fantasy`.`merchandise_orders`     ADD COLUMN `trace_code` VARCHAR(30) NULL AFTER `total_sale`;

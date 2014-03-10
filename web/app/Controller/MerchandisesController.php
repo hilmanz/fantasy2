@@ -271,9 +271,10 @@ class MerchandisesController extends AppController {
 
 
 		//if digital item, we display different view
+		/*
 		if($item['MerchandiseItem']['merchandise_type']==1){
 			$this->render('redeem_perk');
-		}
+		}*/
 	}
 
 	/*
@@ -339,7 +340,7 @@ class MerchandisesController extends AppController {
 		//	(strlen($this->request->data['ct']) > 0)
 		//		&& ($this->Session->read('po_csrf') == $this->request->data['ct'])
 		//  ){
-
+		if($this->request->data['payment_method']=='coins'){
 			$result = $this->pay_with_coins();
 			$is_transaction_ok = $result['is_transaction_ok'];
 			$no_fund = $result['no_fund'];
@@ -349,26 +350,189 @@ class MerchandisesController extends AppController {
 				//check accross the items, we apply the perk for all digital items
 				$this->process_items($result['items']);
 			}
-		//}else{
-		//	$is_transaction_ok = false;
-		//}
+
+			
+			//}else{
+			//	$is_transaction_ok = false;
+			//}
 		
+			$this->set('apply_digital_perk_error',$this->Session->read('apply_digital_perk_error'));
+			$this->set('is_transaction_ok',$is_transaction_ok);
+			$this->set('no_fund',$no_fund);
+			$this->Session->write('apply_digital_perk_error',null);
+			//reset the csrf token
+			$this->Session->write('po_csrf',null);
+			//-->
+
+			//reset the shopping_cart in session (disable these for debug only)
+			$this->Session->write('shopping_cart',null);
+		}else{
+			$this->pay_with_ecash();
+			$this->render('ecash');
+		}
+	}
+	private function pay_with_ecash(){
+
+		$this->loadModel('MerchandiseItem');
+		$this->loadModel('MerchandiseCategory');
+		$this->loadModel('MerchandiseOrder');
+		
+
+		$result = array('is_transaction_ok'=>false,
+						'no_fund'=>false);
+
+		//display the cart content
+		$shopping_cart = $this->Session->read('shopping_cart');
+
+		
+
+		//get total coins to be spent.
+		$total_price = 0;
+		$all_digital = true;
+		
+		for($i=0;$i<sizeof($shopping_cart);$i++){
+
+			$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
+			$item = $shopping_cart[$i]['data']['MerchandiseItem'];
+
+			$total_price += (intval($shopping_cart[$i]['qty']) * intval($item['price_money']));
+			//is there any non-digital item ?
+			if($item['merchandise_type']==0){
+				$all_digital = false;
+			}
+		}
+		$admin_fee = 50000;
+		if($all_digital){
+			$admin_fee = 0;
+		}
+		$total_price += $admin_fee;
+		$this->set('shopping_cart',$shopping_cart);
+		//add shipping and handling cost
+		$this->set('admin_fee',$admin_fee);
+		
+
+		//1. create transaction ID
+		$data = $this->request->data;
+
+		$transaction_id = $this->userData['team']['id'].'-'.date("ymdhis");
+		$this->Session->write($transaction_id,
+								serialize(array('data'=>$data,'shopping_cart'=>$shopping_cart))
+							 );
+
+		if(Configure::read('debug') != 0){
+			$total_price = 10000;
+		}
+		$rs = $this->Game->getEcashUrl(array(
+			'transaction_id'=>$transaction_id,
+			'amount'=>$total_price,
+			'clientIpAddress'=>$this->request->clientIp(),
+			'description'=>'Purchase Order #'.$transaction_id
+		));
+		$this->set('transaction_id',$transaction_id);
+		$this->set('ecash_url',$rs['data']);
+	}
+	public function payment(){
+		
+		$rs  = $this->Game->EcashValidate($this->request->query['id']);
+		list($id,$trace_number,$nohp,$transaction_id,$status) = explode(',',$rs['data']);
+
+		$result = array(
+			'id'=>trim($id),
+			'trace_number'=>trim($trace_number),
+			'nohp'=>trim($nohp),
+			'transaction_id'=>trim($transaction_id),
+			'status'=>trim($status)
+		);
+	
+		if(strtoupper($result['status'])!='SUCCESS'){
+			
+			$this->Session->setFlash("Pembayaran anda gagal diproses, silahkan coba kembali !");
+			$this->redirect('/merchandises/buy');
+
+		}else{
+			$this->pay_with_ecash_completed($result);
+
+		}
+	}
+	private function pay_with_ecash_completed($ecash_data){
+		$this->loadModel('MerchandiseItem');
+		$this->loadModel('MerchandiseCategory');
+		$this->loadModel('MerchandiseOrder');
+		
+		
+
+		//get transaction data from session
+		$sess = unserialize($this->Session->read($ecash_data['transaction_id']));
+		if($ecash_data['status']=="SUCCESS"){
+			$is_transaction_ok = true;
+		}else{
+			$is_transaction_ok = false;
+		}
+
+		$data = $sess['data'];
+		$shopping_cart = $sess['shopping_cart'];
+		$total_price = 0;
+		
+		$all_digital = true;
+
+		for($i=0;$i<sizeof($shopping_cart);$i++){
+
+			
+			$item = $shopping_cart[$i]['data']['MerchandiseItem'];
+			$total_price += (intval($shopping_cart[$i]['qty']) * intval($item['price_money']));
+			//is there any non-digital item ?
+			if($item['merchandise_type']==0){
+				$all_digital = false;
+			}
+		}
+		
+		$admin_fee = 50000;
+		if($all_digital){
+			$admin_fee = 0;
+		}
+		$total_price += $admin_fee;
+
+		$data['merchandise_item_id'] = 0;
+		$data['game_team_id'] = $this->userData['team']['id'];
+		$data['user_id'] = $this->userDetail['User']['id'];
+		$data['order_type'] = 1;
+
+		if($all_digital){
+			$data['n_status'] = 3;	
+		}else{
+			$data['n_status'] = 1;
+		}
+
+		$data['order_date'] = date("Y-m-d H:i:s");
+		$data['data'] = serialize($shopping_cart);
+		$data['po_number'] = $ecash_data['transaction_id'];
+		$data['total_sale'] = intval($total_price);
+		$data['payment_method'] = 'ecash';
+		$data['trace_code'] = $ecash_data['trace_number'];
+		$this->MerchandiseOrder->create();
+		$rs = $this->MerchandiseOrder->save($data);	
+		
+
+		$this->process_items($shopping_cart);
+			
+	
 		$this->set('apply_digital_perk_error',$this->Session->read('apply_digital_perk_error'));
-		$this->set('is_transaction_ok',$is_transaction_ok);
-		$this->set('no_fund',$no_fund);
+
 		$this->Session->write('apply_digital_perk_error',null);
 		//reset the csrf token
 		$this->Session->write('po_csrf',null);
 		//-->
 
 		//reset the shopping_cart in session (disable these for debug only)
-		//$this->Session->write('shopping_cart',null);
+		$this->Session->write('shopping_cart',null);
+		
+		
 	}
 	private function pay_with_coins(){
 		$this->loadModel('MerchandiseItem');
 		$this->loadModel('MerchandiseCategory');
 		$this->loadModel('MerchandiseOrder');
-
+		
 
 		$result = array('is_transaction_ok'=>false);
 
@@ -398,6 +562,7 @@ class MerchandisesController extends AppController {
 		
 		//2. if fund is available, we create transaction id and order detail.
 		if(!$no_fund){
+
 			$data = $this->request->data;
 			$data['merchandise_item_id'] = 0;
 			$data['game_team_id'] = $this->userData['team']['id'];
@@ -531,7 +696,7 @@ class MerchandisesController extends AppController {
 		}else{
 			$shopping_cart = $this->Session->read('shopping_cart');
 		}
-
+		$this->request->data['update_type'] = intval(@$this->request->data['update_type']);
 		if($this->request->data['update_type']==1){
 
 			$this->checkout($shopping_cart);
@@ -579,6 +744,7 @@ class MerchandisesController extends AppController {
 	private function getItemsStock(){
 		$this->loadModel('MerchandiseOrder');
 		$items = $this->Session->read('shopping_cart');
+
 		$rs = array();
 		for($i=0;$i<sizeof($items);$i++){
 			$item = $this->MerchandiseItem->findById(intval($items[$i]['item_id']));
@@ -591,9 +757,9 @@ class MerchandisesController extends AppController {
 														);
 			$stock_available = $item['MerchandiseItem']['stock'] - $total_order;
 			if($stock_available > 0){
-				$rs[intval($arr[$i])] = intval($stock_available);
+				$rs[intval($item['MerchandiseItem']['id'])] = intval($stock_available);
 			}else{
-				$rs[intval($arr[$i])] = 0;
+				$rs[intval($item['MerchandiseItem']['id'])] = 0;
 			}
 		}
 		return $rs;
