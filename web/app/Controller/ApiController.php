@@ -2369,7 +2369,7 @@ class ApiController extends AppController {
 			$category_id = 0;
 		}
 		
-		$merchandise = $this->MerchandiseItem->find('count');
+		$merchandise = $this->MerchandiseItem->find('count',array('conditions'=>array('merchandise_type'=>0)));
 		if($merchandise > 0){
 			$response['has_merchandise'] = true;
 		}else{
@@ -2389,7 +2389,8 @@ class ApiController extends AppController {
 
 		$total_rows = 0;
 		//if category is set, we filter the query by category_id
-		if($category_id != 0){
+		if($category_id != 0 && 
+			intval($category_id) != intval(Configure::read('DIGITAL_ITEM_CATEGORY'))){
 			$category_ids = array($category_id);
 			//check for child ids, and add it into category_ids
 			$category_ids = $this->getChildCategoryIds($category_id,$category_ids);
@@ -2520,69 +2521,428 @@ class ApiController extends AppController {
 		$this->set('response',array('status'=>1,'data'=>$response));
 		$this->render('default');
 	}
-	//api call for send purchase order to buy online catalog's items
-	public function catalog_order($item_id){
+
+	public function ecash_url($game_team_id){
+		$this->loadModel('MerchandiseItem');
+		$this->loadModel('MerchandiseCategory');
+		$this->loadModel('MerchandiseOrder');
+
+
+		$shopping_cart = unserialize(decrypt_param($this->request->data['param']));
+		$transaction_id = intval($game_team_id).'-'.date("YmdHis").'-'.rand(0,99);
+		$description = 'Purchase Order #'.$transaction_id;
+		
+		
+
+		//get total coins to be spent.
+		$total_price = 0;
+		$all_digital = true;
+		
+		for($i=0;$i<sizeof($shopping_cart);$i++){
+
+			$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
+			$item = $shopping_cart[$i]['data']['MerchandiseItem'];
+
+			$total_price += (intval($shopping_cart[$i]['qty']) * intval($item['price_money']));
+			//is there any non-digital item ?
+			if($item['merchandise_type']==0){
+				$all_digital = false;
+			}
+		}
+
+		$admin_fee = 50000;
+		if($all_digital){
+			$admin_fee = 0;
+		}
+		$total_price += $admin_fee;
+
+		$rs = $this->Game->getEcashUrl(array(
+			'transaction_id'=>$transaction_id,
+			'description'=>$description,
+			'amount'=>$total_price,
+			'clientIpAddress'=>$this->request->clientIp(),
+			'source'=>'fm'
+		));
+		$this->layout="ajax";
+		$this->set('response',array('status'=>1,'data'=>$rs['data'],'transaction_id'=>$transaction_id));
+		$this->render('default');
+	}
+	/*
+	* validate ecash id
+	*/
+	public function ecash_validate(){
+		$id = $this->request->query['id'];
+		$rs = $this->Game->EcashValidate($id);
+		list($id,$trace_number,$nohp,$transaction_id,$status) = explode(',',$rs['data']);
+
+		$result = array(
+			'id'=>trim($id),
+			'trace_number'=>trim($trace_number),
+			'nohp'=>trim($nohp),
+			'transaction_id'=>trim($transaction_id),
+			'status'=>trim($status)
+		);
+		
+		$is_valid = true;
+		
+		if(Configure::read('debug')==0){
+			/*
+			todo - besok dinyalain
+
+			$ecash_validate = $this->Session->read('ecash_return');
+			if($result['id']==$ecash_validate['id'] &&
+				$result['trace_number']==$ecash_validate['trace_number'] &&
+				$result['nohp']==$ecash_validate['nohp'] &&
+				$result['transaction_id']==$ecash_validate['transaction_id'] &&
+				$result['status']==$ecash_validate['status']
+				){
+				$is_valid = true;
+			}else{
+				
+				$is_valid = false;
+			}*/
+		}
+		CakeLog::write('debug',json_encode($result));
+		CakeLog::write('debug','is valid : '.json_encode($is_valid));
+		CakeLog::write('debug',strtoupper(trim($result['status'])).' <-> SUCCESS');
+		$this->layout="ajax";
+		if(strtoupper(trim($result['status']))=='SUCCESS' && $is_valid){
+			CakeLog::write('debug','foo');
+			$status = "SUCCESS";
+			$this->set('response',array('status'=>1,'data'=>$result));
+		}else{
+			CakeLog::write('debug','bar');
+			$status = "FAILED";
+			$this->set('response',array('status'=>0,'data'=>$result));
+		}
+		
+		
+		$this->render('default');
+	}
+	public function catalog_save_order($game_team_id){
+		
+
+		$rs = $this->pay_with_ecash_completed($game_team_id,$this->request->data);
+		CakeLog::write('debug','finished '.json_encode($rs));
+		$this->layout="ajax";
+		if($rs){
+			CakeLog::write('debug','status : 1');
+			$this->set('response',array('status'=>1));
+		}else{
+			CakeLog::write('debug','status : 0');
+			$this->set('response',array('status'=>0));
+		}
+		
+		$this->render('default');
+	}
+	private function pay_with_ecash_completed($game_team_id,$ecash_data){
 		$this->loadModel('MerchandiseItem');
 		$this->loadModel('MerchandiseCategory');
 		$this->loadModel('MerchandiseOrder');
 		
-		if(isset($this->request->query['ctoken'])){
-			$catalog_token = unserialize(decrypt_param($this->request->query['ctoken']));	
-		}else{
-			$catalog_token = '';
-		}
-		$item_id = $this->Session->read('po_item_id');
+		CakeLog::write('debug','data : '.json_encode($ecash_data));
+		$shopping_cart = unserialize(decrypt_param($ecash_data['param']));
 		
-		//parno mode.
-		$item_id = Sanitize::clean($item_id);
-
-		//get the item detail
-		$item = $this->MerchandiseItem->findById($item_id);
-		if(isset($item['MerchandiseItem'])){
-			$response['item'] = $item['MerchandiseItem'];	
-		}
+		CakeLog::write('debug',json_encode($shopping_cart));
 		
-		//these is our flags
-		$is_transaction_ok = true;
-		$no_fund = false;
+		$total_price = 0;
+		
+		$all_digital = true;
 
-		//make sure the csrf token still valid
-
-		//-> csrf check di disable dulu selama development
-		if(
-			(strlen($this->request->data['ct']) > 0)
-				&& ($this->Session->read('po_csrf') == $this->request->data['ct'])
-		  ){
-
-			$result = $this->pay_with_game_cash($item_id,$item);
-			$is_transaction_ok = $result['is_transaction_ok'];
-			$no_fund = $result['no_fund'];
-			if($is_transaction_ok == true){
-				//we reduce the stock in front
-				//$this->ReduceStock($item_id,$item['MerchandiseItem']);
+		for($i=0;$i<sizeof($shopping_cart);$i++){
+			$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
+			$item = $shopping_cart[$i]['data']['MerchandiseItem'];
+			$total_price += (intval($shopping_cart[$i]['qty']) * intval($item['price_money']));
+			//is there any non-digital item ?
+			if($item['merchandise_type']==0){
+				$all_digital = false;
 			}
-		}else{
-			$is_transaction_ok = false;
 		}
 		
-		$response['apply_digital_perk_error'] = $this->Session->read('apply_digital_perk_error');
-		$response['is_transaction_ok'] = $is_transaction_ok;
-		$response['no_fund'] = $no_fund;
-		
-		
-		$this->Session->write('apply_digital_perk_error',null);
-		//reset the csrf token
-		$this->Session->write('po_csrf',null);
-		//-->
+		$admin_fee = 50000;
+		if($all_digital){
+			$admin_fee = 0;
+		}
+		$total_price += $admin_fee;
+		$data = unserialize(decrypt_param($ecash_data['profile']));
+		$data['merchandise_item_id'] = 0;
+		$data['user_id'] = 0;
+		$data['order_type'] = 1;
+		$data['game_team_id'] = intval($game_team_id);
+		if($all_digital){
+			$data['n_status'] = 3;	
+		}else{
+			$data['n_status'] = 1;
+		}
 
-		//reset the item_id in session (disable these for debug only)
-		$this->Session->write('po_item_id',0);
+		$data['order_date'] = date("Y-m-d H:i:s");
+		$data['data'] = serialize($shopping_cart);
+		$data['po_number'] = $ecash_data['transaction_id'];
+		$data['total_sale'] = intval($total_price);
+		$data['payment_method'] = 'ecash';
+		$data['trace_code'] = $ecash_data['trace_number'];
+		$this->MerchandiseOrder->create();
+		$rs = $this->MerchandiseOrder->save($data);	
+		
+		CakeLog::write('debug','INPUT : '.json_encode($rs));
+
+		$this->process_items($shopping_cart);
+			
+		if(isset($rs['MerchandiseOrder'])){
+			return true;
+		}
+		
+		
+	}
+	/*api call for purchasing item using coins
+	$game_team_id -> user's game_team_id
+	we can require the game_team_id after calling get_fm_profile api.
+	
+	$param -> encrypted serialized array of :
+	$items[0]['item_id']
+	$items[0]['qty']
+	$items[1]['item_id']
+	$items[1]['qty']
+	*/
+	public function catalog_purchase($game_team_id){
+		
+		$param = unserialize(decrypt_param($this->request->data['param']));
+
+		$result = $this->pay_with_coins($game_team_id,$param);
+		CakeLog::write('debug',$game_team_id);
+		CakeLog::write('debug',json_encode($this->request->data));
+		CakeLog::write('debug','catalog - '.json_encode($result));
+		$is_transaction_ok = $result['is_transaction_ok'];
+		$no_fund = @$result['no_fund'];
+		$order_id = @$result['order_id'];
+		
+		if($is_transaction_ok == true){
+			//check accross the items, we apply the perk for all digital items
+			$this->process_items($result['items']);
+		}
 
 		$this->layout="ajax";
-		$this->set('response',array('status'=>1,'data'=>$response));
+		$this->set('response',array('status'=>1,'data'=>$result));
 		$this->render('default');
 	}
+	/*
+	* process digital items
+	* when the digital items redeemed, we reduce its stock.
+	*/
+	private function process_items($items){	
+		CakeLog::write('debug',json_encode($items));
+		for($i=0; $i<sizeof($items); $i++){
+			$item = $items[$i]['data']['MerchandiseItem'];
+			if($item['merchandise_type']==1){
+				$this->apply_digital_perk($this->userData['team']['id'],
+											$item['perk_id']);
+			}
+			$this->reduceStock($item['id']);
+		}
+	}
 
+	private function ReduceStock($item_id){
+		$item_id = intval($item_id);
+		$sql = "UPDATE merchandise_items SET stock = stock - 1 WHERE id = {$item_id}";
+		$this->MerchandiseItem->query($sql);
+
+		$sql = "UPDATE merchandise_items SET stock = 0 WHERE id = {$item_id} AND stock < 0";
+		$this->MerchandiseItem->query($sql);
+		
+	}
+
+	private function pay_with_coins($game_team_id,$shopping_cart){
+		$game_team_id = intval($game_team_id);
+
+
+		$this->loadModel('MerchandiseItem');
+		$this->loadModel('MerchandiseCategory');
+		$this->loadModel('MerchandiseOrder');
+		
+
+		$result = array('is_transaction_ok'=>false);
+
+		//get total coins to be spent.
+		$total_coins = 0;
+		$all_digital = true;
+		for($i=0;$i<sizeof($shopping_cart);$i++){
+
+			$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
+			$item = $shopping_cart[$i]['data']['MerchandiseItem'];
+			$total_coins += (intval($shopping_cart[$i]['qty']) * intval($item['price_credit']));
+			//is there any non-digital item ?
+			if($item['merchandise_type']==0){
+				$all_digital = false;
+			}
+		}
+		$cash = $this->Game->getCash($game_team_id);
+		//1. check if the coins are sufficient
+		if(intval($cash) >= $total_coins){
+			$no_fund = false;
+		}else{
+			$no_fund = true;
+		}
+		
+		//2. if fund is available, we create transaction id and order detail.
+		if(!$no_fund){
+
+			$data = $this->request->data;
+			$data['merchandise_item_id'] = 0;
+			$data['game_team_id'] = $game_team_id;
+			$data['user_id'] = 0;
+			$data['order_type'] = 1;
+
+			if($all_digital){
+				$data['n_status'] = 3;	
+			}else{
+				$data['n_status'] = 0;
+			}
+			$data['order_date'] = date("Y-m-d H:i:s");
+			$data['data'] = serialize($shopping_cart);
+			$data['po_number'] = $game_team_id.'-'.date("ymdhis");
+			$data['total_sale'] = intval($total_coins);
+			$data['payment_method'] = 'coins';
+
+			$this->MerchandiseOrder->create();
+			$rs = $this->MerchandiseOrder->save($data);	
+			if($rs){
+				$result['order_id'] = $this->MerchandiseOrder->id;
+				//time to deduct the money
+				$this->Game->query("
+				INSERT IGNORE INTO ffgame.game_transactions
+				(game_team_id,transaction_name,transaction_dt,amount,
+				 details)
+				VALUES
+				({$game_team_id},'purchase_{$data['po_number']}',
+					NOW(),
+					-{$total_coins},
+					'{$data['po_number']} - {$result['order_id']}');");
+				
+				//update cash summary
+				$this->Game->query("INSERT INTO ffgame.game_team_cash
+				(game_team_id,cash)
+				SELECT game_team_id,SUM(amount) AS cash 
+				FROM ffgame.game_transactions
+				WHERE game_team_id = {$game_team_id}
+				GROUP BY game_team_id
+				ON DUPLICATE KEY UPDATE
+				cash = VALUES(cash);");
+
+				//flag transaction as ok
+				$is_transaction_ok = true;
+				$result['is_transaction_ok'] = $is_transaction_ok;
+				$result['items'] = $shopping_cart;
+			}
+		}
+
+		$result['no_fund'] = $no_fund;
+		return $result;
+	}
+
+	private function apply_digital_perk($game_team_id,$perk_id){
+		$this->loadModel('MasterPerk');
+
+		$perk = $this->MasterPerk->findById($perk_id);
+		$perk['MasterPerk']['data'] = unserialize($perk['MasterPerk']['data']);
+		switch($perk['MasterPerk']['data']['type']){
+			case "jersey":
+				return $this->apply_jersey_perk($game_team_id,$perk['MasterPerk']);
+			break;
+			default:
+				//for everything else, let the game API handle the task
+				$rs = $this->Game->apply_digital_perk($game_team_id,$perk_id);
+
+				if($rs['data']['can_add'] && $rs['data']['success']){
+					return true;
+				}else if(!$rs['data']['can_add']){
+					//tells us that the perk cannot be redeemed because these perk is already redeemed before
+					$this->Session->write('apply_digital_perk_error','1');
+				}else{
+					//tells us that the perk cannot be redeemed because we cannot save the perk.
+					$this->Session->write('apply_digital_perk_error','2');
+				}
+			break;
+		}
+		
+	}
+	private function apply_jersey_perk($game_team_id,$perk_data){
+		$this->loadModel('DigitalPerk');
+		$this->DigitalPerk->cache = false;
+
+
+		//only 1 jersey can be used
+
+
+		//so we disabled all existing jersey
+		$this->loadModel('DigitalPerk');
+		$this->DigitalPerk->bindModel(
+			array('belongsTo'=>array(
+				'MasterPerk'=>array(
+					'type'=>'inner',
+					'foreignKey'=>false,
+					'conditions'=>array(
+						"MasterPerk.id = DigitalPerk.master_perk_id",
+						"MasterPerk.perk_name = 'ACCESSORIES'"
+					)
+				)
+			))
+		);
+		$current_perks = $this->DigitalPerk->find('all',array(
+			'conditions'=>array('game_team_id'=>$game_team_id),
+			'limit'=>40
+		));
+		$has_bought = false;
+		$bought_id = 0;
+		//we only take the jersey perks
+		$jerseys = array();
+		while(sizeof($current_perks)>0){
+			$p = array_pop($current_perks);
+			$p['MasterPerk']['data'] = unserialize($p['MasterPerk']['data']);
+			if($p['MasterPerk']['data']['type']=='jersey'){
+				$jerseys[] = $p['DigitalPerk']['id'];
+			}
+			if($p['DigitalPerk']['master_perk_id'] == $perk_data['id']){
+				$has_bought = true;
+				$bought_id = $p['DigitalPerk']['id'];
+			}
+		}
+		//check if these jersy has been bought before.
+		
+		//disable the current jerseys
+		for($i=0;$i<sizeof($jerseys);$i++){
+
+			$this->DigitalPerk->id = intval($jerseys[$i]);
+			$this->DigitalPerk->save(array(
+				'n_status'=>0
+			));
+		}
+
+
+		//add new jersey
+		if(!$has_bought){
+			$this->DigitalPerk->create();
+			$rs = $this->DigitalPerk->save(
+				array('game_team_id'=>$game_team_id,
+					  'master_perk_id'=>$perk_data['id'],
+					  'n_status'=>1,
+					  'redeem_dt'=>date("Y-m-d H:i:s"),
+					  'available'=>99999)
+			);
+			if(isset($rs['DigitalPerk'])){
+				return true;
+			}
+		}else{
+			//update the status only
+			$this->DigitalPerk->id = intval($bought_id);
+			$rs = $this->DigitalPerk->save(array(
+				'n_status'=>1
+			));
+			if($rs){
+				return true;
+			}
+		}
+		
+	}
 	/**
 	*	get catalog's main categories
 	*/
@@ -2624,6 +2984,37 @@ class ApiController extends AppController {
 
 	}
 	/*
+	* getting ecash payment url
+	*/
+	public function ecash_geturl($fb_id){
+
+	}
+
+	public function get_fm_profile(){
+		$data = unserialize(decrypt_param($this->request->query['param']));
+		$fb_id = $data['fb_id'];
+		$team = $this->Game->getTeam($fb_id);
+		$cash = $this->Game->getCash($team['id']);
+		$this->layout="ajax";
+		$this->set('response',array('status'=>1,'data'=>array('team'=>$team,'coins'=>$cash)));
+		$this->render('default');
+	}
+	/*
+	public function test_fm_profile(){
+		$data['fb_id']='622088280';
+		print encrypt_param(serialize($data));
+		die();
+
+	}*/
+
+	public function test_shopping_cart(){
+		$shopping_cart[] = array('item_id'=>58,'qty'=>1);
+		$shopping_cart[] = array('item_id'=>59,'qty'=>1);
+		print encrypt_param(serialize($shopping_cart));
+		die();
+
+	}
+	/*
 	*	method for checking the items availability
 	*  if the item is available, we flag the item_id with 1, else we flag it with 0
 	*/
@@ -2638,19 +3029,14 @@ class ApiController extends AppController {
 
 		for($i=0;$i<sizeof($arr);$i++){
 			$item = $this->MerchandiseItem->findById(intval($arr[$i]));
-			$total_order = $this->MerchandiseOrder->find('count',
-														array('conditions'=>
-																array('merchandise_item_id'=>
-																		$item['MerchandiseItem']['id'],
-										  								'n_status <> 4')
-															)
-														);
-			$stock_available = $item['MerchandiseItem']['stock'] - $total_order;
-			if($stock_available > 0){
-				$items[intval($arr[$i])] = intval($stock_available);
+
+			if($item['MerchandiseItem']['stock'] > 0){
+				$items[intval($arr[$i])] = intval($item['MerchandiseItem']['stock']);
 			}else{
 				$items[intval($arr[$i])] = 0;
 			}
+
+
 		}
 		$this->layout="ajax";
 		$this->set('response',array('status'=>1,'data'=>$items));

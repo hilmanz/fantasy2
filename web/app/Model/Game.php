@@ -324,7 +324,19 @@ class Game extends AppModel {
 	public function apply_digital_perk($game_team_id,$perk_id){
 		
 		$response = $this->api_call('/apply_perk/'.$game_team_id.'/'.$perk_id);
+
 		return $response;
+	}
+	/*
+	* check if we can apply these perk
+	* @return $response
+	*/
+	public function can_apply_perk($game_team_id,$perk_id){
+		$response = $this->api_call('/check_perk/'.$game_team_id.'/'.$perk_id);
+		
+		if($response['status']==1){
+			return true;
+		}
 	}
 	/*
 	returns the hardcoded custom jersey CSS style
@@ -440,7 +452,7 @@ class Game extends AppModel {
 		return $rs;
 	}
 	/*
-	* $params - transaction_id,amount,clientIpAddress,description
+	* $params - transaction_id,amount,clientIpAddress,description,source
 	*/
 	public function getEcashUrl($params){
 		$rs = $this->api_call('/getEcashUrl',$params);

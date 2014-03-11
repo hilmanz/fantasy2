@@ -16,11 +16,11 @@ var service = config.ecash;
 
 
 
-exports.getEcashUrl = function(transaction_id,clientIpAddress,description,amount,callback){
+exports.getEcashUrl = function(transaction_id,clientIpAddress,description,amount,source,callback){
 	process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 	async.waterfall([
 		function(cb){
-			step1(transaction_id,clientIpAddress,description,amount,
+			step1(transaction_id,clientIpAddress,description,amount,source,
 					function(err,body,statusCode){
 				cb(err,body,statusCode);
 			});
@@ -39,12 +39,19 @@ exports.getEcashUrl = function(transaction_id,clientIpAddress,description,amount
 	});
 }
 
-function step1(transaction_id,clientIpAddress,description,amount,callback){
+function step1(transaction_id,clientIpAddress,description,amount,source,callback){
 	console.log('STEP1');
 	//step 1 - user memilih proses ecash, 
 	// maka system akan meminta transaction id dari ecash webservice.
 	// 
 	var request_call = service.protocol+'://'+service.host+auth_URI;
+	var returnUrl = '';
+	if(source=='FM'){
+		returnUrl = service.returnUrl;
+	}else{
+		returnUrl = service.returnUrl2;
+	}
+
 	var postData = "\
 	<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"\
 	 xmlns:ws=\"http://ws.service.gateway.ecomm.ptdam.com/\">\
@@ -56,7 +63,7 @@ function step1(transaction_id,clientIpAddress,description,amount,callback){
 	<clientAddress>"+clientIpAddress+"</clientAddress>\
 	<description>"+description+"</description>\
 	<memberAddress>202.43.162.250</memberAddress>\
-	<returnUrl>"+service.returnUrl+"</returnUrl>\
+	<returnUrl>"+returnUrl+"</returnUrl>\
 	<toUsername>supersoccer</toUsername>\
 	<trxid>"+transaction_id+"</trxid>\
 	<hash>"+getSHA1Hash('SUPERSOCCER'+amount+clientIpAddress)+"</hash>\
@@ -98,6 +105,7 @@ exports.validate = function(id,callback){
 		process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 		console.log('ECASH','VALIDATE');
 		var request_call = service.protocol+'://'+service.host+validation_URI+'?id='+id;
+		console.log('CALL',request_call);
 		request({
 	 		url:request_call,
 	 		method:'GET'

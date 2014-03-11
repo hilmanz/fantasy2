@@ -108,27 +108,15 @@ if(isset($category_name)){
 						</ul>
 					</div><!-- end .widget -->
 					<?php endif;?>
-					<?php if(isset($orders) && sizeof($orders) > 0 ):?>
 					<div class="widget tr catalog-list">
-						<h2>Your Order(s) : </h2>
-						<ul>
-							<?php foreach($orders as $order):?>
-							<li>
-								
-								<a href="#" title="<?=$order['MerchandiseOrder']['notes']?>">
-									<?=h($order['MerchandiseOrder']['po_number'])?> 
-									-
-									<?php
-									$status = array('Pending','Processing / On Delivery','Delivered','Closed',
-													'Canceled');
-									echo $status[$order['MerchandiseOrder']['n_status']];
-									?>
-								</a>
-							</li>
-							<?php endforeach;?>
-						</ul>
-					</div><!-- end .widget -->
-					<?php endif;?>
+						<a href="<?=$this->Html->url('/merchandises/cart')?>" class="button">
+							Keranjang Belanja
+						</a>
+						<a href="<?=$this->Html->url('/merchandises/history')?>" class="button">
+							Order Tracking
+						</a>
+					</div>
+					
                     <?php for($i=0;$i<sizeof($sidebar_banner);$i++):?>
 			        	<div class="banner300x250">
 						     <a href="javascript:banner_click(<?=$sidebar_banner[$i]['Banners']['id']?>,'<?=$sidebar_banner[$i]['Banners']['url']?>');" target="_blank">

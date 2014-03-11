@@ -149,7 +149,12 @@ class MerchandisesController extends AppController {
 		$this->set('category_name',h($category['MerchandiseCategory']['name']));
 
 		
-
+		if($item['MerchandiseItem']['merchandise_type']==1){
+			
+			$this->set('can_update_formation',$this->can_update_formation());
+		}else{
+			$this->set('can_update_formation',true);
+		}
 
 	}
 
@@ -281,18 +286,36 @@ class MerchandisesController extends AppController {
 	* add item to shopping cart
 	* if the selected item is a digital item, we check if the user is permitted to buy that perk.
 	* for example, you cannot buy point booster while the point booster in the same category is in active.
+	* if the cart is already exists in shopping cart, no need to re-add it.
 	*/
 	public function select($item_id){
+		$this->loadModel('MerchandiseItem');
+		$this->loadModel('MerchandiseCategory');
 		$shopping_cart = $this->Session->read('shopping_cart');
 		$can_add = false;
+		$canAddPerk = true;
+
+		//parno mode.
+		$item_id = Sanitize::clean($item_id);
+
+		//get the item detail
+		$item = $this->MerchandiseItem->findById($item_id);
+
+		//if its digital item, we need to make sure that these 
+		if($item['MerchandiseItem']['merchandise_type'] == 1){
+			$canAddPerk = $this->Game->can_apply_perk($this->userData['team']['id'],
+										$item['MerchandiseItem']['perk_id']);
+			
+		}
+
 
 		if($shopping_cart == null){
 			$shopping_cart = array();
 			$can_add = true;
 
 		}else{
-			//make sure that the item is not in the cart yet
 			$can_add = true;
+			//make sure that the item is not in the cart yet
 			for($i=0;$i<sizeof($shopping_cart);$i++){
 				if($shopping_cart[$i]['item_id'] == $item_id){
 					$can_add = false;
@@ -302,7 +325,7 @@ class MerchandisesController extends AppController {
 		}
 
 
-		if($can_add){
+		if($can_add && $canAddPerk){
 			$shopping_cart[] = array(
 				'item_id'=>$item_id,
 				'qty'=>1
@@ -310,16 +333,10 @@ class MerchandisesController extends AppController {
 		}
 		
 		$this->Session->write('shopping_cart',$shopping_cart);
-
-		$this->loadModel('MerchandiseItem');
-		$this->loadModel('MerchandiseCategory');
-
-		//parno mode.
-		$item_id = Sanitize::clean($item_id);
-
-		//get the item detail
-		$item = $this->MerchandiseItem->findById($item_id);
+		$this->set('canAddPerk',$canAddPerk);
 		$this->set('item',$item['MerchandiseItem']);
+
+		
 
 		
 	}
@@ -426,33 +443,74 @@ class MerchandisesController extends AppController {
 			'transaction_id'=>$transaction_id,
 			'amount'=>$total_price,
 			'clientIpAddress'=>$this->request->clientIp(),
-			'description'=>'Purchase Order #'.$transaction_id
+			'description'=>'Purchase Order #'.$transaction_id,
+			'source'=>'FM'
 		));
 		$this->set('transaction_id',$transaction_id);
 		$this->set('ecash_url',$rs['data']);
 	}
 	public function payment(){
 		
-		$rs  = $this->Game->EcashValidate($this->request->query['id']);
-		list($id,$trace_number,$nohp,$transaction_id,$status) = explode(',',$rs['data']);
 
-		$result = array(
-			'id'=>trim($id),
-			'trace_number'=>trim($trace_number),
-			'nohp'=>trim($nohp),
-			'transaction_id'=>trim($transaction_id),
-			'status'=>trim($status)
-		);
-	
-		if(strtoupper($result['status'])!='SUCCESS'){
-			
-			$this->Session->setFlash("Pembayaran anda gagal diproses, silahkan coba kembali !");
-			$this->redirect('/merchandises/buy');
+		$body = file_get_contents('php://input');
 
+		if(!empty($body)) {
+		  $data = explode(",", $body);
+		  $ticket = $data[0];
+		  $phone_no = $data[1];
+		  $trace_no = $data[2];
+		  $order_id = trim($data[3]);
+		  $status = trim($data[4]);
+		  
+		  $returnid = $ticket;
+		  $this->Session->write('ecash_return',array(
+		  							'id'=>$ticket,
+		  							'nohp'=>$phone_no,
+		  							'transaction_id'=>$order_id,
+		  							'trace_number'=>$trace_no,
+		  							'status'=>$status
+		  						));
+
+		  die();
 		}else{
-			$this->pay_with_ecash_completed($result);
+			$rs  = $this->Game->EcashValidate($this->request->query['id']);
+			list($id,$trace_number,$nohp,$transaction_id,$status) = explode(',',$rs['data']);
 
+			$result = array(
+				'id'=>trim($id),
+				'trace_number'=>trim($trace_number),
+				'nohp'=>trim($nohp),
+				'transaction_id'=>trim($transaction_id),
+				'status'=>trim($status)
+			);
+			
+			$is_valid = true;
+			if(Configure::read('debug')==0){
+				$ecash_validate = $this->Session->read('ecash_return');
+				if($result['id']==$ecash_validate['id'] &&
+					$result['trace_number']==$ecash_validate['trace_number'] &&
+					$result['nohp']==$ecash_validate['nohp'] &&
+					$result['transaction_id']==$ecash_validate['transaction_id'] &&
+					$result['status']==$ecash_validate['status']
+					){
+					$is_valid = true;
+				}else{
+					$is_valid = false;
+				}
+			}
+
+			if(strtoupper($result['status'])=='SUCCESS' && $is_valid){
+				$this->pay_with_ecash_completed($result);
+
+			}else{
+				$this->Session->setFlash("Pembayaran anda gagal diproses, silahkan coba kembali !");
+				$this->redirect('/merchandises/buy');
+				
+
+			}
 		}
+
+		
 	}
 	private function pay_with_ecash_completed($ecash_data){
 		$this->loadModel('MerchandiseItem');
@@ -477,7 +535,6 @@ class MerchandisesController extends AppController {
 
 		for($i=0;$i<sizeof($shopping_cart);$i++){
 
-			
 			$item = $shopping_cart[$i]['data']['MerchandiseItem'];
 			$total_price += (intval($shopping_cart[$i]['qty']) * intval($item['price_money']));
 			//is there any non-digital item ?

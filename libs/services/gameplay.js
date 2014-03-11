@@ -687,6 +687,29 @@ exports.apply_perk = function(req,res){
 		}		
 	});
 }
+/*
+* check if the perk is already in used (or currently active)
+* returns status 1 if in use, and 0 if not in use.
+*/
+exports.check_perk = function(req,res){
+	gameplay.check_perk(req.params.game_team_id,
+						req.params.perk_id,
+						function(err,rs){
+		if(err){
+			handleError(res);
+		}else{
+			if(rs!=null){
+				if(rs==true){
+					res.json(200,{status:1});	
+				}else{
+					res.json(200,{status:0});	
+				}
+			}else{
+				res.send(200,{status:0});
+			}
+		}		
+	});
+}
 //other functions
 function filterAccumulativeStats(stats){
 	var teamstats = {};
@@ -783,6 +806,7 @@ exports.getEcashUrl = function(req,res){
 						req.query.clientIpAddress,
 						req.query.description,
 						req.query.amount,
+						req.query.source,
 						function(err,rs){
 							if(!err){
 								res.json(200,{status:1,data:rs});	

@@ -2100,7 +2100,110 @@ function apply_perk(game_team_id,perk_id,done){
 						console.log('GET_PERK',S(this.sql).collapseWhitespace().s);
 						var group_name = '';
 						if(perk_group!=null){
-							group_name = perk_group[0].category;
+							try{
+								group_name = perk_group[0].category;
+							}catch(e){
+								group_name = '';
+							}
+						}
+						cb(err,perk,canAddPerk,group_name);
+				});
+			},
+			function(perk,canAddPerk,group_name,cb){
+				//cari apakah perk dari category ini uda pernah dibeli apa belum.
+				if(group_name!=''){
+					conn.query("SELECT * FROM ffgame.digital_perks a\
+								INNER JOIN ffgame.digital_perks_group b \
+								ON a.master_perk_id = b.master_perk_id\
+								WHERE category = ? \
+								AND game_team_id=? AND a.available > 0\
+								AND a.n_status = 1 LIMIT 1;",
+					[group_name,game_team_id],
+					function(err,rs){
+						console.log('GET_PERK',game_team_id,S(this.sql).collapseWhitespace().s);
+						if(rs!=null && rs.length==1){
+							console.log('GET_PERK',game_team_id,"cannot add perk");
+							canAddPerk =false;
+						}
+						cb(err,perk,canAddPerk);
+					});
+				}else{
+					console.log('GET_PERK',game_team_id,'group name empty');
+					cb(null,perk,canAddPerk);
+				}
+			},
+			function(perk,canAddPerk,cb){
+				if(canAddPerk){
+					conn.query("INSERT INTO ffgame.digital_perks\
+								(game_team_id,master_perk_id,redeem_dt,available,n_status)\
+								VALUES\
+								(?,?,NOW(),?,1);",
+								[game_team_id,perk_id,perk.data.duration],
+								function(err,rs){
+									console.log('GET_PERK',game_team_id,S(this.sql).collapseWhitespace().s);
+									if(!err){
+										cb(null,{perk:perk,can_add:canAddPerk,success:true});
+									}else{
+										cb(null,{perk:perk,can_add:canAddPerk,success:false});
+									}
+								});
+				}else{
+					cb(null,{perk:perk,can_add:canAddPerk,success:false});
+				}
+			}
+		],
+		function(err,rs){
+			done(err,rs);
+		});
+	});
+}
+/*
+* similar to apply_perk, but it just checks if we can apply the perk or not.
+* returns false if we cannot apply the perk, otherwise returns true.
+*/
+function check_perk(game_team_id,perk_id,done){
+	prepareDb(function(conn){
+		async.waterfall([
+			function(cb){
+				//first we get the perk detail
+				conn.query("SELECT * FROM ffgame.master_perks WHERE id = ? LIMIT 1;",
+							[perk_id],
+							function(err,rs){
+								console.log('GET_PERK',S(this.sql).collapseWhitespace().s);
+								var perk = rs[0];
+								perk.data = PHPUnserialize.unserialize(perk.data);
+								cb(err,perk);
+							});
+			},
+			function(perk,cb){
+				//check if the team has apply the perk. if it has, make sure all of it are disabled.
+				conn.query("SELECT * FROM ffgame.digital_perks \
+							WHERE game_team_id=?\
+							AND master_perk_id=?\
+							AND available > 0\
+							AND n_status=1 LIMIT 1",
+							[game_team_id,perk_id],
+							function(err,rs){
+								console.log('GET_PERK',S(this.sql).collapseWhitespace().s);
+								if(rs!=null && rs.length > 0){
+									cb(err,perk,false);
+								}else{
+									cb(err,perk,true);
+								}
+							});
+			},
+			function(perk,canAddPerk,cb){
+				conn.query("SELECT * FROM ffgame.digital_perks_group WHERE master_perk_id = ? LIMIT 1",
+					[perk_id],function(err,perk_group){
+						console.log('GET_PERK',S(this.sql).collapseWhitespace().s);
+						var group_name = '';
+						if(perk_group!=null){
+							try{
+								group_name = perk_group[0].category;
+							}catch(e){
+								group_name = '';
+							}
+							
 						}
 						cb(err,perk,canAddPerk,group_name);
 				});
@@ -2123,26 +2226,14 @@ function apply_perk(game_team_id,perk_id,done){
 						cb(err,perk,canAddPerk);
 					});
 				}else{
-					cb(err,perk,canAddPerk);
+					cb(null,perk,canAddPerk);
 				}
 			},
 			function(perk,canAddPerk,cb){
 				if(canAddPerk){
-					conn.query("INSERT INTO ffgame.digital_perks\
-								(game_team_id,master_perk_id,redeem_dt,available,n_status)\
-								VALUES\
-								(?,?,NOW(),?,1);",
-								[game_team_id,perk_id,perk.data.duration],
-								function(err,rs){
-									console.log(S(this.sql).collapseWhitespace().s);
-									if(!err){
-										cb(null,{perk:perk,can_add:canAddPerk,success:true});
-									}else{
-										cb(null,{perk:perk,can_add:canAddPerk,success:false});
-									}
-								});
+					cb(null,true);
 				}else{
-					cb(null,{perk:perk,can_add:canAddPerk,success:false});
+					cb(null,false);
 				}
 			}
 		],
@@ -2151,7 +2242,6 @@ function apply_perk(game_team_id,perk_id,done){
 		});
 	});
 }
-
 //method to postponed the match
 exports.setPostponedStatus = function(redisClient,game_id,toggle,callback){
 	if(toggle==1){
@@ -2255,6 +2345,7 @@ exports.getTransferWindow = getTransferWindow;
 exports.matchstatus = matchstatus;
 exports.redeemCode = redeemCode;
 exports.apply_perk = apply_perk;
+exports.check_perk = check_perk;
 
 exports.setPool = function(p){
 	pool = p;

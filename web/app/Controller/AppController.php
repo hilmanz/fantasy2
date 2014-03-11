@@ -621,16 +621,15 @@ class AppController extends Controller {
 
 	public function can_update_formation(){
 		$can_update_formation = true;
-
-		if(time() > $close_time['ts'] && Configure::read('debug') == 0){
+	
+		if(time() > $this->closeTime['ts'] && Configure::read('debug') == 0){
 		    
 		    $can_update_formation = false;
-		    if(time() > $open_time){
-		       
+		    if(time() > $this->openTime){
 		        $can_update_formation = true;
 		    }
 		}else{
-		    if(time() < $open_time){
+		    if(time() < $this->openTime){
 		       
 		        $can_update_formation = false;
 		    }

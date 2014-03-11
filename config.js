@@ -22,6 +22,7 @@ exports.config = {
 		host:'182.253.203.90:9443',
 		username:'supersoccer',
 		password: '123456',
-		returnUrl: 'http://localhost/fantasy/merchandises/payment'
+		returnUrl: 'http://localhost/fantasy/merchandises/payment',
+		returnUrl2: 'http://localhost/duf/supersoccer_fork/onlinecatalog/payment'
 	}
 };

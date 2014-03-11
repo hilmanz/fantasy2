@@ -43,8 +43,15 @@ if(isset($category_name)){
 							<p class="price"><?=number_format($item['MerchandiseItem']['price_credit'])?> Coins</p>
 							<p class="idrprice">(or buy now for Rp. <?=number_format($item['MerchandiseItem']['price_money'])?>)</p>
 							<div>
+
 							<?php if($item['MerchandiseItem']['available'] > 0):?>
+							<?php
+							if($can_update_formation):
+							?>
 							<a class="buyBtn button" href="<?=$buy_url?>">BUY</a>
+							<?php else:?>
+							Maaf, Tidak dapat membeli ketika pertandingan sedang berlangsung.
+							<?php endif;?>
 							<?php else:?>
 							SOLD OUT
 							<?php endif;?>

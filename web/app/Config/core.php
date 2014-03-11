@@ -33,7 +33,7 @@
  * In production mode, flash messages redirect after a time interval.
  * In development mode, you need to click the flash message to continue.
  */
-	Configure::write('debug', 2);
+	Configure::write('debug', 0);
 
 /**
  * Configure the Error handler used to handle errors for your application. By default
@@ -375,3 +375,6 @@ Configure::write('reCaptcha_PRIVATE_KEY','6Ldike4SAAAAAG9XwrYy8h_c0uOp012WNeleWA
 
 //Redeem Code settings
 Configure::write('REDEEM_MAXIMUM_TRY',5); //how many time user can attempt to redeem the code.
+
+//Digital Item Category
+Configure::write('DIGITAL_ITEM_CATEGORY',5);
