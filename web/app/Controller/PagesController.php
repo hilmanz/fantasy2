@@ -188,6 +188,17 @@ class PagesController extends AppController {
 		    //store to cache
 		   	$this->Session->write('last_week_rank',$rs);
 		}
+		for($i=0;$i<sizeof($rs);$i++){
+			$pic = $rs[$i]['Manager']['avatar_img'];
+			$fb_id = $rs[$i]['Manager']['fb_id'];
+			$team_id = str_replace("t_","", $rs[$i]['Team']['team_id']);
+			if($pic=='0'){
+				$pic = "http://graph.facebook.com/".$fb_id."/picture";
+			}else{
+				$pic = Configure::read('avatar_web_url')."120x120_".$pic;
+			}
+			$rs[$i]['pic'] = $pic;
+		}
 		//assign team ranking list to template
 	    $this->set('team',$rs);
 	}

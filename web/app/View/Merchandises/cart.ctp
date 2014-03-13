@@ -59,7 +59,6 @@ var base_coin = {};
                         <td>
                             <input type="hidden" name="item_id[]"  
                                 value="<?=intval($item['id'])?>"
-
                             />
                             <?php if($item['merchandise_type']==0):?>
                             <input style="width:30px;" type="text" name="qty[]" class="qty" data-id="<?=intval($item['id'])?>" 
@@ -94,6 +93,22 @@ var base_coin = {};
                         </td>
                     </tr>
                     <?php endfor;?>
+                    <tr>
+                        <td></td>
+                        <td>Ongkos Kirim</td>
+                        <td colspan="2">
+                            <select name="city_id">
+                                <?php foreach($ongkir as $cost):?>
+                                    <option value="<?=intval($cost['Ongkir']['id'])?>">
+                                        <?=strtoupper($cost['Ongkir']['city'])?>
+                                    </option>
+                                <?php endforeach;?>
+                            </select>
+                        </td>
+                        <td>
+                            <span class="shipping"></span>
+                        </td>
+                    </tr>
                     <tr>
                         <td colspan="4">Belanja Total</td>
                         <td colspan="2">

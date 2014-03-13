@@ -102,12 +102,32 @@
 		                    <?php endfor;?>
 		                    <tr>
 		                    	<td></td>
+		                    	<td>Ongkos Kirim</td>
+		                    	<td colspan="2">
+		                    		
+		                    	</td>
+		                    	<td>
+		                    		<?php
+		                    		$ongkos = 0;
+		                    		foreach($ongkir as $cost){
+
+		                    			if($cost['Ongkir']['id']==$city_id){
+		                    				$ongkos = $cost['Ongkir']['cost'];
+		                    				break;
+		                    			}
+		                    		}
+		                    		?>
+		                    		<span class="shipping">Rp. <?=number_format($ongkos)?></span>
+		                    	</td>
+		                    </tr>
+		                    <tr>
+		                    	<td></td>
 		                        <td colspan="3" align="right">Belanja Total</td>
 		                        <td>
 		                            <span class="total-price">
 		                            	
 		                            	<?php if($total_price > 0):?>
-		                            		Rp. <?=number_format($total_price)?>
+		                            		Rp. <?=number_format($total_price+$ongkos)?>
 		                                    (<?=number_format(intval($total_coins))?> Coins)
 		                                <?php else:?>
 		                                    <?=number_format(intval($total_coins))?> Coins

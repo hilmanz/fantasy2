@@ -108,3 +108,7 @@ ALTER TABLE `fantasy`.`merchandise_orders` ADD COLUMN `trace_code` VARCHAR(30) N
 ALTER TABLE `fantasy`.`merchandise_orders`     ADD COLUMN `fb_id` BIGINT(21) NULL AFTER `id`;
 
 ALTER TABLE `fantasy`.`merchandise_orders` ADD INDEX `IDX_FB` (`fb_id`);
+
+ALTER TABLE `fantasy`.`merchandise_orders`    ADD COLUMN `ongkir_id` INT(11) DEFAULT '0' NULL AFTER `trace_code`;
+
+ALTER TABLE `fantasy`.`merchandise_orders` ADD INDEX `IDX_CITY_ID` (`ongkir_id`);

@@ -471,7 +471,9 @@ class AppController extends Controller {
 			$params['access_token'] = $this->getAccessToken();
 		}
 		$params['api_key'] = $this->getAPIKey();
+		
 		$response = json_decode(curlGet($this->getAPIUrl().$uri,$params,$cookie_file,$timeout),true);
+
 		return $response;
 	}
 	/*
@@ -484,6 +486,7 @@ class AppController extends Controller {
 		}
 		$params['api_key'] = $this->getAPIKey();
 		$response = curlGet($this->getAPIUrl().$uri,$params,$cookie_file,$timeout);
+
 		return $response;
 	}
 	public function salt(){
@@ -623,14 +626,13 @@ class AppController extends Controller {
 		$can_update_formation = true;
 	
 		if(time() > $this->closeTime['ts'] && Configure::read('debug') == 0){
-		    
 		    $can_update_formation = false;
 		    if(time() > $this->openTime){
 		        $can_update_formation = true;
 		    }
 		}else{
-		    if(time() < $this->openTime){
-		       
+		    if(time() < $this->openTime && Configure::read('debug') == 0){
+
 		        $can_update_formation = false;
 		    }
 		}

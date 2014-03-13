@@ -61,23 +61,32 @@ exports.create = function(req,res){
 }
 exports.getUserTeam = function(req,res){
 	team.getUserTeam(req.params.fb_id,function(err,team){
-		console.log(team);
-		if(err) handleError(res);
-		if(team!=null){
-			res.send(200,team);
-		}else{
+		console.log('getUserTeam',req.params.fb_id,team);
+		if(err){
+			console.log('getUserTeam',req.params.fb_id,'team is not available yet. please create one.');
 			res.send(200,{error:'team is not available yet. please create one.'});
+		}else{
+			if(team!=null){
+				res.send(200,team);
+			}else{
+				res.send(200,{error:'team is not available yet. please create one.'});
+			}
 		}
+		
 	});
 }
 exports.getUserTeamPoints = function(req,res){
 	team.getUserTeamPoints(req.params.fb_id,function(err,result){
-		if(err) handleError(res);
-		if(result!=null){
-			res.send(200,result);
+		if(err) {
+			handleError(res);
 		}else{
-			res.send(200,{error:'points is not available'});
+			if(result!=null){
+			res.send(200,result);
+			}else{
+				res.send(200,{error:'points is not available'});
+			}
 		}
+		
 	});
 }
 function handleError(res){

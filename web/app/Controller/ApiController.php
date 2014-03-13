@@ -2521,7 +2521,43 @@ class ApiController extends AppController {
 		$this->set('response',array('status'=>1,'data'=>$response));
 		$this->render('default');
 	}
+	/*
+	* ecash url untuk pembayaran ongkir
+	*/
+	public function payment_url($order_id){
+		$this->loadModel('MerchandiseOrder');
+		$this->loadModel('Ongkir');
+		$ongkir = $this->Ongkir->find('all',array('limit'=>10000));
+		$rs = $this->MerchandiseOrder->findById($order_id);
+		
+		
+		foreach($ongkir as $ok){
+			if($ok['Ongkir']['id'] == $rs['MerchandiseOrder']['ongkir_id']){
+				$city = $ok['Ongkir'];
+			}
+		}
+	
 
+		//add suffix -1 to define that its the payment for shipping for these po number.
+		$transaction_id =  $rs['MerchandiseOrder']['po_number'].'-1';
+
+		//ecash url
+		$rs = $this->Game->getEcashUrl(array(
+			'transaction_id'=>$transaction_id,
+			'amount'=>$city['cost'],
+			'clientIpAddress'=>$this->request->clientIp(),
+			'description'=>'Shipping Fee #'.$transaction_id,
+			'source'=>'SSPAY'
+		));
+
+		$this->set('transaction_id',$transaction_id);
+		$this->set('ecash_url',$rs['data']);
+
+		$this->layout="ajax";
+		$this->set('response',array('status'=>1,'data'=>$rs['data'],'transaction_id'=>$transaction_id));
+		$this->render('default');
+
+	}
 	public function ecash_url($game_team_id){
 		$this->loadModel('MerchandiseItem');
 		$this->loadModel('MerchandiseCategory');
@@ -2556,6 +2592,17 @@ class ApiController extends AppController {
 		}
 		$total_price += $admin_fee;
 
+		//include ongkir
+		$ongkirList = $this->getOngkirList();
+		$total_ongkir = 0;
+		foreach($ongkirList as $ongkir){
+			if($ongkir['Ongkir']['id'] == intval($this->request->data['city_id'])){
+				$total_ongkir = intval($ongkir['Ongkir']['cost']);
+				break;
+			}
+		}
+		$total_price += $total_ongkir;
+
 		$rs = $this->Game->getEcashUrl(array(
 			'transaction_id'=>$transaction_id,
 			'description'=>$description,
@@ -2563,9 +2610,16 @@ class ApiController extends AppController {
 			'clientIpAddress'=>$this->request->clientIp(),
 			'source'=>'fm'
 		));
+
 		$this->layout="ajax";
 		$this->set('response',array('status'=>1,'data'=>$rs['data'],'transaction_id'=>$transaction_id));
 		$this->render('default');
+	}
+	/**get ongkir list **/
+	private function getOngkirList(){
+		$this->loadModel('Ongkir');
+		$ongkir = $this->Ongkir->find('all',array('limit'=>10000));
+		return $ongkir;
 	}
 	/*
 	* validate ecash id
@@ -2664,7 +2718,25 @@ class ApiController extends AppController {
 			$admin_fee = 0;
 		}
 		$total_price += $admin_fee;
+
+		
+
+
 		$data = unserialize(decrypt_param($ecash_data['profile']));
+
+		//calculate ongkir
+		$ongkirList = $this->getOngkirList();
+		$total_ongkir = 0;
+		foreach($ongkirList as $ongkir){
+			if($ongkir['Ongkir']['id'] == intval($data['city_id'])){
+				$total_ongkir = intval($ongkir['Ongkir']['cost']);
+				break;
+			}
+		}
+		$total_price += $total_ongkir;
+
+
+
 		$data['merchandise_item_id'] = 0;
 		$data['user_id'] = 0;
 		$data['order_type'] = 1;
@@ -2681,6 +2753,8 @@ class ApiController extends AppController {
 		$data['total_sale'] = intval($total_price);
 		$data['payment_method'] = 'ecash';
 		$data['trace_code'] = $ecash_data['trace_number'];
+		$data['ongkir_id'] = $data['city_id'];
+
 		$this->MerchandiseOrder->create();
 		$rs = $this->MerchandiseOrder->save($data);	
 		
@@ -2709,8 +2783,8 @@ class ApiController extends AppController {
 		$param = unserialize(decrypt_param($this->request->data['param']));
 
 		$result = $this->pay_with_coins($game_team_id,$param);
-		CakeLog::write('debug',$game_team_id);
-		CakeLog::write('debug',json_encode($this->request->data));
+		CakeLog::write('debug',$game_team_id.'-team_id');
+		CakeLog::write('debug',$game_team_id,'data ->'.json_encode($this->request->data));
 		CakeLog::write('debug','catalog - '.json_encode($result));
 		$is_transaction_ok = $result['is_transaction_ok'];
 		$no_fund = @$result['no_fund'];
@@ -2752,6 +2826,8 @@ class ApiController extends AppController {
 	}
 
 	private function pay_with_coins($game_team_id,$shopping_cart){
+
+		CakeLog::write('debug',$game_team_id.' - pay with coins');
 		$game_team_id = intval($game_team_id);
 
 
@@ -2776,6 +2852,9 @@ class ApiController extends AppController {
 			}
 		}
 		$cash = $this->Game->getCash($game_team_id);
+		CakeLog::write('debug',$game_team_id.' cash : '.$cash);
+		CakeLog::write('debug',$game_team_id.' total coins : '.$total_coins);
+
 		//1. check if the coins are sufficient
 		if(intval($cash) >= $total_coins){
 			$no_fund = false;
@@ -2802,7 +2881,7 @@ class ApiController extends AppController {
 			$data['po_number'] = $game_team_id.'-'.date("ymdhis");
 			$data['total_sale'] = intval($total_coins);
 			$data['payment_method'] = 'coins';
-
+			$data['ongkir_id'] = $this->request->data['city_id'];
 			$this->MerchandiseOrder->create();
 			$rs = $this->MerchandiseOrder->save($data);	
 			if($rs){
@@ -2980,21 +3059,174 @@ class ApiController extends AppController {
 
 		return $category_ids;
 	}
-	public function order(){
+	/*
+	* API for showing the order history
+	*/
+	public function order_history($fb_id){
+		$since_id = intval(@$this->request->query['since_id']);
+		$this->loadModel('MerchandiseOrder');
+		$this->loadModel('MerchandiseItem');
+		$this->loadModel('MerchandiseCategory');
+
+		$rs = $this->MerchandiseOrder->find('all',array(
+					'conditions'=>array('fb_id'=>$fb_id,'id > '.$since_id),
+					'limit'=>20,
+					'order'=>array('MerchandiseOrder.id'=>'DESC')
+				));
+		$result = array();
+		$since_id = 0;
+
+		while(sizeof($rs)>0){
+			$p = array_shift($rs);
+			$since_id = intval($p['MerchandiseOrder']['id']);
+			$p['MerchandiseOrder']['data'] = unserialize($p['MerchandiseOrder']['data']);
+			$result[] = $p['MerchandiseOrder'];
+		}
+
+		$this->layout="ajax";
+		$this->set('response',array('status'=>1,'data'=>$result,'since_id'=>$since_id));
+		$this->render('default');
+	}
+	public function view_order($order_id){
+		$this->loadModel('MerchandiseOrder');
+		$this->loadModel('Ongkir');
+		//attach order detail
+		$rs = $this->MerchandiseOrder->findById($order_id);
+
+		$rs['MerchandiseOrder']['data'] = unserialize($rs['MerchandiseOrder']['data']);
+			
+
+		$ongkir = $this->Ongkir->find('all');
+		foreach($ongkir as $o){
+			if($o['Ongkir']['id'] == $rs['MerchandiseOrder']['ongkir_id']){
+				$deliverTo = $o['Ongkir'];
+			}
+		}
+
+		$this->layout="ajax";
+		$this->set('response',array('status'=>1,'data'=>$rs,'deliveryTo'=>$deliverTo));
+		$this->render('default');
 
 	}
 	/*
-	* getting ecash payment url
+	* returns data required for delivery fee payment page with ecash
 	*/
-	public function ecash_geturl($fb_id){
+	public function ecash_ongkir_payment($order_id){
+		$this->loadModel('MerchandiseOrder');
+		$this->loadModel('Ongkir');
 
+		//fb_id
+		$fb_profile = @unserialize(@decrypt_param(@$this->request->query['req']));
+		
+		//attach order detail
+		$rs = $this->MerchandiseOrder->findById($order_id);
+		$this->layout="ajax";
+
+
+		if(isset($fb_profile) && $rs['MerchandiseOrder']['fb_id'] == $fb_profile['id']){
+			$rs['MerchandiseOrder']['data'] = unserialize($rs['MerchandiseOrder']['data']);
+				
+
+			$ongkir = $this->Ongkir->find('all');
+			foreach($ongkir as $o){
+				if($o['Ongkir']['id'] == $rs['MerchandiseOrder']['ongkir_id']){
+					$deliverTo = $o['Ongkir'];
+				}
+			}
+			//add suffix -1 to define that its the payment for shipping for these po number.
+			$transaction_id =  $rs['MerchandiseOrder']['po_number'].'-1';
+			
+			
+			//ecash url
+			$ecash_url = $this->Game->getEcashUrl(array(
+				'transaction_id'=>$transaction_id,
+				'amount'=>$deliverTo['cost'],
+				'clientIpAddress'=>$this->request->clientIp(),
+				'description'=>'Shipping Fee #'.$transaction_id,
+				'source'=>'SSPAY'
+			));
+			
+			$this->set('response',array('status'=>1,
+						'data'=>$rs['MerchandiseOrder'],
+						'ecash_url'=>$ecash_url['data'],
+						'transaction_id'=>$transaction_id,'deliveryTo'=>$deliverTo));
+		}else{
+			$this->set('response',array('status'=>0));
+		}
+		
+		$this->render('default');
 	}
+	public function ecash_ongkir_payment_complete(){
+		$this->loadModel('MerchandiseOrder');
+		$this->loadModel('MerchandiseItem');
+		$this->loadModel('MerchandiseCategory');
 
+		
+		$id = $this->request->query['returnId'];
+		//this is the secret data we sent, 
+		//an object that consist the transaction_id and it's related order_id
+		$ecash_data = unserialize(decrypt_param($this->request->query['ecash_data']));
+
+		//these the data sent-back by ecash after user complete the payment by entering OTP.
+		$sendData = unserialize(decrypt_param($this->request->query['sendData']));
+
+		//now validate the ecash returnId
+		$rs  = $this->Game->EcashValidate($id);
+		list($id,$trace_number,$nohp,$transaction_id,$status) = explode(',',$rs['data']);
+
+		if(Configure::read('debug')!=0){
+			$sendData = array('id'=>trim($id),
+								'trace_number'=>trim($trace_number),
+								'nohp'=>trim($nohp),
+								'transaction_id'=>trim($transaction_id),
+								'status'=>trim($status));
+		}
+		if(trim($transaction_id)==$sendData['transaction_id']
+				&& $transaction_id==$ecash_data['transaction_id']
+					&& strtoupper(trim($status)) =='SUCCESS'){
+
+			//transaction complete, we update the order status
+			$data['n_status'] = 1;
+			$this->MerchandiseOrder->id = intval($ecash_data['order_id']);
+			$updateResult = $this->MerchandiseOrder->save($data);
+			if(isset($updateResult)){
+				$response_status = 1;
+			}else{
+				$response_status = 0;
+			}
+		}else{
+			//transaction incomplete , return error
+			$response_status = 0;
+		}
+		$this->layout="ajax";
+		$this->set('response',array('status'=>$response_status,'data'=>$sendData));
+		$this->render('default');
+	}
+	public function get_ongkir(){
+		$this->loadModel('Ongkir');
+		$rs = $this->Ongkir->find('all');
+		$ongkir = array();
+		while(sizeof($rs)>0){
+			$p = array_shift($rs);
+			$ongkir[] = $p['Ongkir'];
+		}	
+		$this->layout="ajax";
+		$this->set('response',array('status'=>1,'data'=>$ongkir));
+		$this->render('default');
+	}
 	public function get_fm_profile(){
-		$data = unserialize(decrypt_param($this->request->query['param']));
+		$data = unserialize(decrypt_param($this->request->query['req']));
 		$fb_id = $data['fb_id'];
+		$team = array();
+		
 		$team = $this->Game->getTeam($fb_id);
-		$cash = $this->Game->getCash($team['id']);
+
+		if(isset($team['id'])){
+			$cash = $this->Game->getCash($team['id']);
+		}else{
+			$cash = 0;
+		}
+		
 		$this->layout="ajax";
 		$this->set('response',array('status'=>1,'data'=>array('team'=>$team,'coins'=>$cash)));
 		$this->render('default');

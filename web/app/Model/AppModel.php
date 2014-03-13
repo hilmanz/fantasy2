@@ -55,6 +55,7 @@ class AppModel extends Model {
 		}
 		$params['api_key'] = $this->getAPIKey();
 		$response = json_decode(curlGet($this->getAPIUrl().$uri,$params,$cookie_file,$timeout),true);
+		
 		return $response;
 	}
 	/*

@@ -25,6 +25,11 @@ class MerchandisesController extends AppController {
 		parent::beforeFilter();
 		$this->loadModel('Team');
 		$this->loadModel('User');
+		$this->loadModel('MerchandiseItem');
+		$this->loadModel('MerchandiseCategory');
+		$this->loadModel('MerchandiseOrder');
+		$this->loadModel('Ongkir');
+
 		$userData = $this->getUserData();
 		$user = $this->userDetail;
 		$this->set('user',$user['User']);
@@ -35,6 +40,8 @@ class MerchandisesController extends AppController {
 		//banners
 		$sidebar_banner = $this->getBanners('CATALOG_SIDEBAR',3,true);
 		$this->set('sidebar_banner',$sidebar_banner);
+
+		$this->loadModel('Ongkir');
 	}
 	public function hasTeam(){
 		$userData = $this->getUserData();
@@ -46,8 +53,8 @@ class MerchandisesController extends AppController {
 	* the index page will display all available (in-stock) merchandises.
 	*/
 	public function index(){
-		$this->loadModel('MerchandiseItem');
-		$this->loadModel('MerchandiseCategory');
+
+		
 		if(isset($this->request->query['cid'])){
 			$category_id = intval($this->request->query['cid']);
 		}else{
@@ -118,11 +125,141 @@ class MerchandisesController extends AppController {
 
 
 	}
+	public function history(){
+		
+		$fb_id = $this->userDetail['User']['fb_id'];
+		$this->paginate = array('conditions'=>array('fb_id'=>$fb_id),
+								 'limit'=>20);
 
+		$fb_id = $this->userDetail['User']['fb_id'];
+
+		$rs = $this->Paginate('MerchandiseOrder');
+
+		$this->set('rs',$rs);
+	}
+
+	public function view_order($order_id){
+
+		//attach order detail
+		$rs = $this->MerchandiseOrder->findById($order_id);
+		$this->set('rs',$rs);
+
+		//attach chosen delivery city
+		$this->set('city_id',$rs['MerchandiseOrder']['ongkir_id']);
+
+		//attach ongkos kirim list.
+		$this->getOngkirList();
+
+
+	}
+	public function pay($type,$order_id=0){
+
+		if($type=='ongkir'){
+			$this->payOngkirPage($order_id);
+		}else{
+			//ecash return page
+			$this->handlePayment();
+		}
+		
+	}
+	private function handlePayment(){
+		$body = file_get_contents('php://input');
+
+		if(!empty($body)) {
+		  $data = explode(",", $body);
+		  $ticket = $data[0];
+		  $phone_no = $data[1];
+		  $trace_no = $data[2];
+		  $order_id = trim($data[3]);
+		  $status = trim($data[4]);
+		  
+		  $returnid = $ticket;
+		  $this->Session->write('ecash_return',array(
+		  							'id'=>$ticket,
+		  							'nohp'=>$phone_no,
+		  							'transaction_id'=>$order_id,
+		  							'trace_number'=>$trace_no,
+		  							'status'=>$status
+		  						));
+
+		  die();
+		}else{
+			$rs  = $this->Game->EcashValidate($this->request->query['id']);
+			list($id,$trace_number,$nohp,$transaction_id,$status) = explode(',',$rs['data']);
+
+			$result = array(
+				'id'=>trim($id),
+				'trace_number'=>trim($trace_number),
+				'nohp'=>trim($nohp),
+				'transaction_id'=>trim($transaction_id),
+				'status'=>trim($status)
+			);
+			
+			$is_valid = true;
+			if(Configure::read('debug')==0){
+				$ecash_validate = $this->Session->read('ecash_return');
+				if($result['id']==$ecash_validate['id'] &&
+					$result['trace_number']==$ecash_validate['trace_number'] &&
+					$result['nohp']==$ecash_validate['nohp'] &&
+					$result['transaction_id']==$ecash_validate['transaction_id'] &&
+					$result['status']==$ecash_validate['status']
+					){
+					$is_valid = true;
+				}else{
+					$is_valid = false;
+				}
+			}
+
+			if(strtoupper($result['status'])=='SUCCESS' && $is_valid){
+				//update order status
+				$data['n_status'] = 1;
+				$this->MerchandiseOrder->id = intval($this->Session->read($result['transaction_id']));
+				$rs = $this->MerchandiseOrder->save($data);
+				if(isset($rs)){
+					$this->Session->setFlash('Pembayaran Telah Berhasil ! Terima Kasih !');
+				}else{
+					$this->Session->setFlash('Transaksi Ecash Berhasil, namun kami gagal menyimpan transaksi anda, silahkan hubungi soccerdesk@supersoccer.co.id untuk bantuan. Mohon maaf atas ketidaknyamanannya.');
+				}
+				$this->redirect('/merchandises/history');
+
+			}else{
+				$this->Session->setFlash("Pembayaran anda gagal diproses, silahkan coba kembali !");
+				$this->redirect('/merchandises/history');
+				
+
+			}
+		}
+
+	}
+	private function payOngkirPage($order_id){
+		$ongkir = $this->Ongkir->find('all',array('limit'=>10000));
+		$rs = $this->MerchandiseOrder->findById($order_id);
+		
+		$this->set('rs',$rs);
+		foreach($ongkir as $ok){
+			if($ok['Ongkir']['id'] == $rs['MerchandiseOrder']['ongkir_id']){
+				$city = $ok['Ongkir'];
+			}
+		}
+		$this->set('city',$city);
+
+		//add suffix -1 to define that its the payment for shipping for these po number.
+		$transaction_id =  $rs['MerchandiseOrder']['po_number'].'-1';
+		//ecash url
+		$rs = $this->Game->getEcashUrl(array(
+			'transaction_id'=>$transaction_id,
+			'amount'=>$city['cost'],
+			'clientIpAddress'=>$this->request->clientIp(),
+			'description'=>'Shipping Fee #'.$transaction_id,
+			'source'=>'FMPAY'
+		));
+		$this->set('transaction_id',$transaction_id);
+		$this->set('ecash_url',$rs['data']);
+
+		$this->Session->write($transaction_id,$order_id);
+	}
 	public function view($item_id){
-		$this->loadModel('MerchandiseItem');
-		$this->loadModel('MerchandiseCategory');
-		$this->loadModel('MerchandiseOrder');
+		
 
 
 		//we need to populate the category
@@ -157,9 +294,18 @@ class MerchandisesController extends AppController {
 		}
 
 	}
-
+	private function get_ongkir(){
+		
+		$rs = $this->Ongkir->find('all');
+		$ongkir = array();
+		while(sizeof($rs)>0){
+			$p = array_shift($rs);
+			$ongkir[] = $p['Ongkir'];
+		}	
+		return $ongkir;
+	}
 	private function getPreviousOrders(){
-		$this->loadModel('MerchandiseOrder');
+	
 		$game_team_id = $this->userData['team']['id'];
 		
 		//we need to link the order with the item
@@ -244,9 +390,7 @@ class MerchandisesController extends AppController {
 	//11. distribute the digital items
 
 	public function buy(){
-		$this->loadModel('MerchandiseItem');
-		$this->loadModel('MerchandiseCategory');
-		$this->loadModel('MerchandiseOrder');
+	
 
 
 		//display the cart content
@@ -270,16 +414,12 @@ class MerchandisesController extends AppController {
 		$this->set('phone_number',$this->userDetail['User']['phone_number']);
 		$this->set('email',$this->userDetail['User']['email']);
 		
-		//attach the item_id
-		//$this->Session->write('po_item_id',$item_id);
-		//dont forget to clear po_item_id session when the order is done.
+		//attach chosen delivery city
+		$this->set('city_id',$this->Session->read('city_id'));
 
+		//attach ongkos kirim list.
+		$this->getOngkirList();
 
-		//if digital item, we display different view
-		/*
-		if($item['MerchandiseItem']['merchandise_type']==1){
-			$this->render('redeem_perk');
-		}*/
 	}
 
 	/*
@@ -289,8 +429,7 @@ class MerchandisesController extends AppController {
 	* if the cart is already exists in shopping cart, no need to re-add it.
 	*/
 	public function select($item_id){
-		$this->loadModel('MerchandiseItem');
-		$this->loadModel('MerchandiseCategory');
+		
 		$shopping_cart = $this->Session->read('shopping_cart');
 		$can_add = false;
 		$canAddPerk = true;
@@ -343,13 +482,15 @@ class MerchandisesController extends AppController {
 	//create purchase order and make payment.
 	//1. if payment method is ecash, we only generate the ecash payment url for user.
 	public function order(){
-		$this->loadModel('MerchandiseItem');
-		$this->loadModel('MerchandiseCategory');
+		
 		
 		//these is our flags
 		$is_transaction_ok = true;
 		$no_fund = false;
 		
+
+		
+
 		//make sure the csrf token still valid
 
 		//-> csrf check di disable dulu selama development
@@ -357,8 +498,16 @@ class MerchandisesController extends AppController {
 		//	(strlen($this->request->data['ct']) > 0)
 		//		&& ($this->Session->read('po_csrf') == $this->request->data['ct'])
 		//  ){
+
 		if($this->request->data['payment_method']=='coins'){
-			$result = $this->pay_with_coins();
+			$this->process_with_coins();
+		}else{
+			$this->pay_with_ecash();
+			$this->render('ecash');
+		}
+	}
+	private function process_with_coins(){
+		$result = $this->pay_with_coins();
 			$is_transaction_ok = $result['is_transaction_ok'];
 			$no_fund = $result['no_fund'];
 			$order_id = $result['order_id'];
@@ -368,10 +517,7 @@ class MerchandisesController extends AppController {
 				$this->process_items($result['items']);
 			}
 
-			
-			//}else{
-			//	$is_transaction_ok = false;
-			//}
+		
 		
 			$this->set('apply_digital_perk_error',$this->Session->read('apply_digital_perk_error'));
 			$this->set('is_transaction_ok',$is_transaction_ok);
@@ -380,20 +526,26 @@ class MerchandisesController extends AppController {
 			//reset the csrf token
 			$this->Session->write('po_csrf',null);
 			//-->
+			//attach chosen delivery city
+			$this->set('city_id',$this->Session->read('city_id'));
 
+			//attach ongkos kirim list.
+			$this->getOngkirList();
 			//reset the shopping_cart in session (disable these for debug only)
 			$this->Session->write('shopping_cart',null);
-		}else{
-			$this->pay_with_ecash();
-			$this->render('ecash');
-		}
+
 	}
 	private function pay_with_ecash(){
 
-		$this->loadModel('MerchandiseItem');
-		$this->loadModel('MerchandiseCategory');
-		$this->loadModel('MerchandiseOrder');
 		
+		
+		//attach chosen delivery city
+		$this->set('city_id',$this->Session->read('city_id'));
+
+		//attach ongkos kirim list.
+		$this->getOngkirList();
+
+
 
 		$result = array('is_transaction_ok'=>false,
 						'no_fund'=>false);
@@ -419,10 +571,26 @@ class MerchandisesController extends AppController {
 			}
 		}
 		$admin_fee = 50000;
+		
 		if($all_digital){
 			$admin_fee = 0;
 		}
+
+
 		$total_price += $admin_fee;
+		
+		$total_ongkir = 0;
+		foreach($this->ongkirList as $ongkir){
+			if($ongkir['Ongkir']['id'] == intval($this->Session->read('city_id'))){
+				$total_ongkir = intval($ongkir['Ongkir']['cost']);
+				break;
+			}
+		}
+
+		//tambahkan harga ongkir kedalam total price
+		$total_price+=$total_ongkir;
+
+
 		$this->set('shopping_cart',$shopping_cart);
 		//add shipping and handling cost
 		$this->set('admin_fee',$admin_fee);
@@ -436,9 +604,9 @@ class MerchandisesController extends AppController {
 								serialize(array('data'=>$data,'shopping_cart'=>$shopping_cart))
 							 );
 
-		if(Configure::read('debug') != 0){
-			$total_price = 10000;
-		}
+		
+		
+
 		$rs = $this->Game->getEcashUrl(array(
 			'transaction_id'=>$transaction_id,
 			'amount'=>$total_price,
@@ -513,11 +681,11 @@ class MerchandisesController extends AppController {
 		
 	}
 	private function pay_with_ecash_completed($ecash_data){
-		$this->loadModel('MerchandiseItem');
-		$this->loadModel('MerchandiseCategory');
-		$this->loadModel('MerchandiseOrder');
 		
 		
+		//attach ongkos kirim list.
+		$this->getOngkirList();
+
 
 		//get transaction data from session
 		$sess = unserialize($this->Session->read($ecash_data['transaction_id']));
@@ -549,11 +717,24 @@ class MerchandisesController extends AppController {
 		}
 		$total_price += $admin_fee;
 
+		$total_ongkir = 0;
+		foreach($this->ongkirList as $ongkir){
+			if($ongkir['Ongkir']['id'] == intval($this->Session->read('city_id'))){
+				$total_ongkir = intval($ongkir['Ongkir']['cost']);
+				break;
+			}
+		}
+		
+		//tambahkan harga ongkir kedalam total price
+		$total_price+=$total_ongkir;
+
+
+		$data['fb_id'] = $this->userDetail['User']['fb_id'];
 		$data['merchandise_item_id'] = 0;
 		$data['game_team_id'] = $this->userData['team']['id'];
 		$data['user_id'] = $this->userDetail['User']['id'];
 		$data['order_type'] = 1;
-
+		$data['ongkir_id'] = intval($this->Session->read('city_id')); //the related ongkir_id
 		if($all_digital){
 			$data['n_status'] = 3;	
 		}else{
@@ -586,9 +767,7 @@ class MerchandisesController extends AppController {
 		
 	}
 	private function pay_with_coins(){
-		$this->loadModel('MerchandiseItem');
-		$this->loadModel('MerchandiseCategory');
-		$this->loadModel('MerchandiseOrder');
+		
 		
 
 		$result = array('is_transaction_ok'=>false);
@@ -625,6 +804,7 @@ class MerchandisesController extends AppController {
 			$data['game_team_id'] = $this->userData['team']['id'];
 			$data['user_id'] = $this->userDetail['User']['id'];
 			$data['order_type'] = 1;
+			$data['fb_id'] = $this->userDetail['User']['fb_id'];
 
 			if($all_digital){
 				$data['n_status'] = 3;	
@@ -739,8 +919,7 @@ class MerchandisesController extends AppController {
 	}
 	*/
 	public function cart(){
-		$this->loadModel('MerchandiseItem');
-		$this->loadModel('MerchandiseCategory');
+		
 		$shopping_cart = array();
 		if($this->request->is('post')){
 			$item_id = $this->request->data['item_id'];
@@ -763,10 +942,16 @@ class MerchandisesController extends AppController {
 			for($i=0;$i<sizeof($shopping_cart);$i++){
 				$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
 			}
-
-			$this->set('shopping_cart',$shopping_cart);	
+			$this->set('shopping_cart',$shopping_cart);
+			$this->getOngkirList();
 		}
 		
+	}
+	private function getOngkirList(){
+		
+		$ongkir = $this->Ongkir->find('all',array('limit'=>10000));
+		$this->ongkirList = $ongkir;
+		$this->set('ongkir',$ongkir);
 	}
 	/*
 	* checkout procedure
@@ -777,6 +962,10 @@ class MerchandisesController extends AppController {
 		$stocks = $this->getItemsStock();
 		$stock_available = true;
 		$out_of_stock = array();
+
+		//capture the city_id (of ongkir)
+		$this->Session->write('city_id',intval($this->request->data['city_id']));
+		
 		if(sizeof($stocks)>0){
 			foreach($stocks as $item_id=>$stock){
 				if($stock==0){
@@ -799,7 +988,7 @@ class MerchandisesController extends AppController {
 	* check items stocks
 	*/
 	private function getItemsStock(){
-		$this->loadModel('MerchandiseOrder');
+		
 		$items = $this->Session->read('shopping_cart');
 
 		$rs = array();
@@ -853,7 +1042,7 @@ class MerchandisesController extends AppController {
 		}
 		
 
-		$this->loadModel('MerchandiseOrder');
+		
 		
 		if(!$no_fund){
 			//ok the user has enough fund... purchase it now.

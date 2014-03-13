@@ -11,7 +11,9 @@ class Game extends AppModel {
 	public $useTable = false; //kita gak pake table database, karena nembak API langsung.
 
 	public function getTeam($fb_id){
+
 		$response = $this->api_call('/team/get/'.$fb_id,array());
+		
 		if(!isset($response['error'])){
 			return $response;	
 		}
@@ -455,7 +457,12 @@ class Game extends AppModel {
 	* $params - transaction_id,amount,clientIpAddress,description,source
 	*/
 	public function getEcashUrl($params){
-		$rs = $this->api_call('/getEcashUrl',$params);
+		
+		if($params['amount']>0){
+			$rs = $this->api_call('/getEcashUrl',$params);	
+		}else{
+			$rs = array('status'=>0);
+		}
 		return $rs;
 	}
 	public function EcashValidate($id){

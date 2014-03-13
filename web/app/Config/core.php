@@ -33,7 +33,7 @@
  * In production mode, flash messages redirect after a time interval.
  * In development mode, you need to click the flash message to continue.
  */
-	Configure::write('debug', 0);
+	Configure::write('debug', 2);
 
 /**
  * Configure the Error handler used to handle errors for your application. By default
@@ -378,3 +378,6 @@ Configure::write('REDEEM_MAXIMUM_TRY',5); //how many time user can attempt to re
 
 //Digital Item Category
 Configure::write('DIGITAL_ITEM_CATEGORY',5);
+
+//Administration & Handling Fee
+Configure::write('PO_ADMIN_FEE',50000);

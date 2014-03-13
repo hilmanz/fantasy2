@@ -23,6 +23,8 @@ exports.config = {
 		username:'supersoccer',
 		password: '123456',
 		returnUrl: 'http://localhost/fantasy/merchandises/payment',
-		returnUrl2: 'http://localhost/duf/supersoccer_fork/onlinecatalog/payment'
+		returnUrl2: 'http://localhost/duf/supersoccer_fork/onlinecatalog/payment',
+		returnUrl3: 'http://localhost/fantasy/merchandises/pay/return',
+		returnUrl4: 'http://localhost/duf/supersoccer_fork/onlinecatalog/pay/success'
 	}
 };

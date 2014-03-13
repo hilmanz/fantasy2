@@ -48,6 +48,10 @@ function step1(transaction_id,clientIpAddress,description,amount,source,callback
 	var returnUrl = '';
 	if(source=='FM'){
 		returnUrl = service.returnUrl;
+	}else if(source=='FMPAY'){
+		returnUrl = service.returnUrl3;
+	}else if(source=='SSPAY'){
+		returnUrl = service.returnUrl4;
 	}else{
 		returnUrl = service.returnUrl2;
 	}
