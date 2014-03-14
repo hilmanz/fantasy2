@@ -76,14 +76,28 @@ if(isset($category_name)){
 				<div class="box4 fr">
 					<div class="widget tr catalog-categories">
 						<form>
+							
 							<select name="cid" class="styled">
 								<option value="0">Categories</option>
 								<?php
 								foreach($categories as $category):
+									;
 								?>
 								<option value="<?=$category['MerchandiseCategory']['id']?>">
 									<?=h($category['MerchandiseCategory']['name'])?>
 								</option>
+
+									<?php 
+
+										if(sizeof($category['Child'])>0):
+											$child = $category['Child'];
+
+											foreach($child as $c):
+									?>
+										<option value="<?=$c['MerchandiseCategory']['id']?>">
+											&nbsp;&nbsp;&nbsp;<?=h($c['MerchandiseCategory']['name'])?>
+										</option>
+									<?php endforeach;endif;?>
 								<?php
 								endforeach;
 								?>

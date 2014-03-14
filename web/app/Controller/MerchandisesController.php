@@ -264,7 +264,7 @@ class MerchandisesController extends AppController {
 
 		//we need to populate the category
 		$this->populate_main_categories();
-
+		
 		
 		//parno mode.
 		$item_id = Sanitize::clean($item_id);
@@ -322,7 +322,7 @@ class MerchandisesController extends AppController {
 		return $orders;
 	}
 	/**
-	*	get the list of child categories, 1 level under only.
+	*	get the list of child category_ids, 1 level under only.
 	*/
 	private function getChildCategories($category_id,$category_ids){
 		$categories = $this->MerchandiseCategory->find('all',
@@ -335,7 +335,16 @@ class MerchandisesController extends AppController {
 
 		return $category_ids;
 	}
-
+	/**
+	*	get the list of child categories, 1 level under only.
+	*/
+	private function getSubCategories($category_id){
+		$categories = $this->MerchandiseCategory->find('all',
+														array('conditions'=>array('parent_id'=>$category_id),
+															  'limit'=>100)
+													);
+		return $categories;
+	}
 	/**
 	* populate main categories (all categories that has parent_id = 0)
 	*/
@@ -345,8 +354,13 @@ class MerchandisesController extends AppController {
 														array('conditions'=>array('parent_id'=>0),
 															  'limit'=>100)
 													);
+		for($i=0;$i<sizeof($categories);$i++){
+			$categories[$i]['Child'] = $this->getSubCategories($categories[$i]['MerchandiseCategory']['id']);
+		}
+		
 		$this->set('categories',$categories);
 	}
+
 	private function populate_sub_categories($category_id){
 		//retrieve main categories
 		$categories = $this->MerchandiseCategory->find('all',

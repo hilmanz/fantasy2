@@ -3033,6 +3033,9 @@ class ApiController extends AppController {
 						array('conditions'=>array('parent_id'=>0),
 							  'limit'=>100)
 					);
+		for($i=0;$i<sizeof($categories);$i++){
+			$categories[$i]['Child'] = $this->getChildCategories($categories[$i]['MerchandiseCategory']['id']);
+		}
 		return $categories;
 	}
 	/*
