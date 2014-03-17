@@ -24,7 +24,7 @@ $pic = Configure::read('avatar_web_url').
 						<h3>We've also
 deducted the balance from your Supersoccer Football manager
 funds.</br> Thanks for your purchase!</h3>
-						<p><a class="button" href="<?=$this->Html->url('/manage/team')?>">Back to the Game</a></p>
+						<p><a class="button" href="<?=$this->Html->url('/merchandises/history')?>">Back to the Game</a></p>
 					</div><!-- end .widget -->
 				</div><!-- end .col-content -->
 				<div class="box4 fr">
@@ -67,7 +67,7 @@ funds.</br> Thanks for your purchase!</h3>
 						<?php else:?>
 						<h3>Maaf, transaksi loe tidak dapat diproses. Silahkan coba lagi nanti !</h3>
 						<?php endif;?>
-						<p><a class="button" href="<?=$this->Html->url('/manage/team')?>">Back to the Game</a></p>
+						<p><a class="button" href="<?=$this->Html->url('/merchandises/history')?>">Back to the Game</a></p>
 					</div><!-- end .widget -->
 				</div><!-- end .col-content -->
 				<div class="box4 fr">

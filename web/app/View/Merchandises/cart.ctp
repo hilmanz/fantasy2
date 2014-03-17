@@ -16,6 +16,14 @@ var base_coin = {};
             <div class="rowd">
 				<div class="col-content">
 					<div class="tr widget">
+                        <?php
+                            $msg = $this->Session->flash();
+                            if(isset($msg)):
+                        ?>
+                        <div class="error">
+                            <?=($msg)?>
+                        </div>
+                        <?php endif;?>
 			<form 
                 id="frm" method="post" 
                 enctype="application/x-www-form-urlencoded"
@@ -31,13 +39,21 @@ var base_coin = {};
                     </tr>
 					<?php
 					for($i=0;$i<sizeof($shopping_cart);$i++):
+
                         $item = $shopping_cart[$i]['data']['MerchandiseItem'];
                     ?>
                     <tr class="tr-<?=intval($item['id'])?>">
-                        
-                        <td> #<?=h($item['id'])?> -
+                        <?php if(@$shopping_cart[$i]['out_of_stock']):?>
+                        <td style="text-decoration:line-through"> 
+                            #<?=h($item['id'])?> -
                             <?=h($item['name'])?>
                         </td>
+                        <?php else:?>
+                        <td> 
+                            #<?=h($item['id'])?> -
+                            <?=h($item['name'])?>
+                        </td>
+                        <?php endif;?>
                         <td>
                             <?php if($item['price_money']>0):?>
                             <p class="price">   
@@ -65,7 +81,7 @@ var base_coin = {};
                                 value="<?=intval($shopping_cart[$i]['qty'])?>"/>
                             <?php else: ?>
                             <input style="width:30px;" type="text" name="qty[]" class="qty" data-id="<?=intval($item['id'])?>" 
-                                value="1" readonly="readonly"/>
+                                value="<?=intval($shopping_cart[$i]['qty'])?>" readonly="readonly"/>
                             <?php endif;?>
                         </td>
                         <td>
@@ -98,8 +114,19 @@ var base_coin = {};
                         <td>Ongkos Kirim</td>
                         <td colspan="2">
                             <select name="city_id">
+                                <?php if($city_id==0):?>
+                                    <option value="0" selected="selected">Pilih Kota</a>
+                                <?php else:?>
+                                    <option value="0">Pilih Kota</a>
+                                <?php endif;?>
+
                                 <?php foreach($ongkir as $cost):?>
+                                    <?php if($city_id == $cost['Ongkir']['id']):?>
+                                    <option value="<?=intval($cost['Ongkir']['id'])?>" 
+                                            selected="selected">
+                                    <?php else:?>
                                     <option value="<?=intval($cost['Ongkir']['id'])?>">
+                                    <?php endif;?>
                                         <?=strtoupper($cost['Ongkir']['city'])?>
                                     </option>
                                 <?php endforeach;?>
@@ -142,6 +169,8 @@ var base_coin = {};
 </div><!-- end #catalogPage -->
 
 <script>
+var ongkir = <?=json_encode($ongkir)?>;
+var total_ongkir = 0;
 function cancel(){
 	document.location="<?=$this->Html->url('/merchandises')?>";
 }
@@ -149,6 +178,17 @@ function updateCart(){
     $("input[name=update_type]").val(0);
     $("#frm").submit();
 
+}
+function updateOngkir(){
+    var city_id = $("select[name=city_id]").val();
+    var cost = 0;
+    for(var i in ongkir){
+        if(ongkir[i].Ongkir.id == city_id){
+            cost = ongkir[i].Ongkir.cost;
+        }
+    }
+    total_ongkir = cost;
+    $('.shipping').html('Rp. '+number_format(cost));
 }
 function checkout(){
     $("input[name=update_type]").val(1);
@@ -163,6 +203,7 @@ function totalCost(callback){
         total_coins += parseInt(base_coin[id]) * parseInt($(item).val());
         total_price += parseInt(base_price[id]) * parseInt($(item).val());
         if(parseInt(i) == (n_total - 1)){
+           total_price += parseInt(total_ongkir);
             callback(total_price,total_coins);
         }
     });
@@ -181,9 +222,6 @@ $("#btnCheckout").on('click',function(e){
 $(".btnDelete").on('click',function(e){
     var id = $(this).attr('data-id');
     $(".tr-"+id).remove();
-});
-$(document).ready(function(){
-    updateCost();
 });
 
 function updateCost(){
@@ -205,5 +243,16 @@ function updateCost(){
         $(".total-price").html(str);
     });
 }
+
+$('select[name=city_id]').on('change',function(e){
+    updateOngkir();
+    updateCost();
+});
+
+$(document).ready(function(){
+    updateOngkir();    
+    updateCost();
+});
+
 
 </script>

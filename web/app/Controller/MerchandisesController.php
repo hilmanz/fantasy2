@@ -21,6 +21,7 @@ class MerchandisesController extends AppController {
  * @var array
  */
 	public $uses = array();
+	
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->loadModel('Team');
@@ -53,7 +54,6 @@ class MerchandisesController extends AppController {
 	* the index page will display all available (in-stock) merchandises.
 	*/
 	public function index(){
-
 		
 		if(isset($this->request->query['cid'])){
 			$category_id = intval($this->request->query['cid']);
@@ -119,16 +119,12 @@ class MerchandisesController extends AppController {
 		}
 		//assign it.
 		$this->set('rs',$rs);
-
-
-		
-
-
 	}
 	public function history(){
 		
 		$fb_id = $this->userDetail['User']['fb_id'];
 		$this->paginate = array('conditions'=>array('fb_id'=>$fb_id),
+								  'order'=>array('MerchandiseOrder.id'=>'DESC'),
 								 'limit'=>20);
 
 		$fb_id = $this->userDetail['User']['fb_id'];
@@ -431,6 +427,11 @@ class MerchandisesController extends AppController {
 		//attach chosen delivery city
 		$this->set('city_id',$this->Session->read('city_id'));
 
+		//attaching ongkir
+		$ongkir = $this->Ongkir->findById($this->Session->read('city_id'));
+
+		$this->set('city',$ongkir['Ongkir']);
+
 		//attach ongkos kirim list.
 		$this->getOngkirList();
 
@@ -488,7 +489,7 @@ class MerchandisesController extends AppController {
 		$this->Session->write('shopping_cart',$shopping_cart);
 		$this->set('canAddPerk',$canAddPerk);
 		$this->set('item',$item['MerchandiseItem']);
-
+		$this->Session->write('out_of_stock',null);
 		
 
 		
@@ -503,50 +504,57 @@ class MerchandisesController extends AppController {
 		$no_fund = false;
 		
 
-		
+		//recheck the stock of all items.
+		$stock_status = $this->recheckStockBeforePayment();
+		//if all items are available, we can continute the purchase.
+		if($stock_status){
+			//make sure the csrf token still valid
 
-		//make sure the csrf token still valid
+			//-> csrf check di disable dulu selama development
+			//if(
+			//	(strlen($this->request->data['ct']) > 0)
+			//		&& ($this->Session->read('po_csrf') == $this->request->data['ct'])
+			//  ){
 
-		//-> csrf check di disable dulu selama development
-		//if(
-		//	(strlen($this->request->data['ct']) > 0)
-		//		&& ($this->Session->read('po_csrf') == $this->request->data['ct'])
-		//  ){
+			if($this->request->data['payment_method']=='coins'){
 
-		if($this->request->data['payment_method']=='coins'){
-			$this->process_with_coins();
+				$this->process_with_coins();
+			}else{
+				$this->pay_with_ecash();
+				$this->render('ecash');
+			}
 		}else{
-			$this->pay_with_ecash();
-			$this->render('ecash');
+			//we will already be redirected back to shopping cart.
 		}
+		
 	}
 	private function process_with_coins(){
 		$result = $this->pay_with_coins();
-			$is_transaction_ok = $result['is_transaction_ok'];
-			$no_fund = $result['no_fund'];
-			$order_id = $result['order_id'];
-			
-			if($is_transaction_ok == true){
-				//check accross the items, we apply the perk for all digital items
-				$this->process_items($result['items']);
-			}
-
+		$is_transaction_ok = $result['is_transaction_ok'];
+		$no_fund = $result['no_fund'];
+		$order_id = $result['order_id'];
 		
-		
-			$this->set('apply_digital_perk_error',$this->Session->read('apply_digital_perk_error'));
-			$this->set('is_transaction_ok',$is_transaction_ok);
-			$this->set('no_fund',$no_fund);
-			$this->Session->write('apply_digital_perk_error',null);
-			//reset the csrf token
-			$this->Session->write('po_csrf',null);
-			//-->
-			//attach chosen delivery city
-			$this->set('city_id',$this->Session->read('city_id'));
+		if($is_transaction_ok == true){
+			//check accross the items, we apply the perk for all digital items
+			$this->process_items($result['items']);
+		}
 
-			//attach ongkos kirim list.
-			$this->getOngkirList();
-			//reset the shopping_cart in session (disable these for debug only)
-			$this->Session->write('shopping_cart',null);
+	
+	
+		$this->set('apply_digital_perk_error',$this->Session->read('apply_digital_perk_error'));
+		$this->set('is_transaction_ok',$is_transaction_ok);
+		$this->set('no_fund',$no_fund);
+		$this->Session->write('apply_digital_perk_error',null);
+		//reset the csrf token
+		$this->Session->write('po_csrf',null);
+		//-->
+		//attach chosen delivery city
+		$this->set('city_id',$this->Session->read('city_id'));
+
+		//attach ongkos kirim list.
+		$this->getOngkirList();
+		//reset the shopping_cart in session (disable these for debug only)
+		$this->Session->write('shopping_cart',null);
 
 	}
 	private function pay_with_ecash(){
@@ -711,72 +719,81 @@ class MerchandisesController extends AppController {
 
 		$data = $sess['data'];
 		$shopping_cart = $sess['shopping_cart'];
-		$total_price = 0;
 		
-		$all_digital = true;
+		if(sizeof($shopping_cart) > 0){
+			$total_price = 0;
+		
+			$all_digital = true;
 
-		for($i=0;$i<sizeof($shopping_cart);$i++){
+			for($i=0;$i<sizeof($shopping_cart);$i++){
 
-			$item = $shopping_cart[$i]['data']['MerchandiseItem'];
-			$total_price += (intval($shopping_cart[$i]['qty']) * intval($item['price_money']));
-			//is there any non-digital item ?
-			if($item['merchandise_type']==0){
-				$all_digital = false;
+				$item = $shopping_cart[$i]['data']['MerchandiseItem'];
+				$total_price += (intval($shopping_cart[$i]['qty']) * intval($item['price_money']));
+				//is there any non-digital item ?
+				if($item['merchandise_type']==0){
+					$all_digital = false;
+				}
 			}
-		}
-		
-		$admin_fee = 50000;
-		if($all_digital){
-			$admin_fee = 0;
-		}
-		$total_price += $admin_fee;
-
-		$total_ongkir = 0;
-		foreach($this->ongkirList as $ongkir){
-			if($ongkir['Ongkir']['id'] == intval($this->Session->read('city_id'))){
-				$total_ongkir = intval($ongkir['Ongkir']['cost']);
-				break;
-			}
-		}
-		
-		//tambahkan harga ongkir kedalam total price
-		$total_price+=$total_ongkir;
-
-
-		$data['fb_id'] = $this->userDetail['User']['fb_id'];
-		$data['merchandise_item_id'] = 0;
-		$data['game_team_id'] = $this->userData['team']['id'];
-		$data['user_id'] = $this->userDetail['User']['id'];
-		$data['order_type'] = 1;
-		$data['ongkir_id'] = intval($this->Session->read('city_id')); //the related ongkir_id
-		if($all_digital){
-			$data['n_status'] = 3;	
-		}else{
-			$data['n_status'] = 1;
-		}
-
-		$data['order_date'] = date("Y-m-d H:i:s");
-		$data['data'] = serialize($shopping_cart);
-		$data['po_number'] = $ecash_data['transaction_id'];
-		$data['total_sale'] = intval($total_price);
-		$data['payment_method'] = 'ecash';
-		$data['trace_code'] = $ecash_data['trace_number'];
-		$this->MerchandiseOrder->create();
-		$rs = $this->MerchandiseOrder->save($data);	
-		
-
-		$this->process_items($shopping_cart);
 			
-	
-		$this->set('apply_digital_perk_error',$this->Session->read('apply_digital_perk_error'));
+			$admin_fee = 50000;
+			if($all_digital){
+				$admin_fee = 0;
+			}
+			$total_price += $admin_fee;
 
-		$this->Session->write('apply_digital_perk_error',null);
-		//reset the csrf token
-		$this->Session->write('po_csrf',null);
-		//-->
+			$total_ongkir = 0;
+			foreach($this->ongkirList as $ongkir){
+				if($ongkir['Ongkir']['id'] == intval($this->Session->read('city_id'))){
+					$total_ongkir = intval($ongkir['Ongkir']['cost']);
+					break;
+				}
+			}
+			
+			//tambahkan harga ongkir kedalam total price
+			$total_price+=$total_ongkir;
 
-		//reset the shopping_cart in session (disable these for debug only)
-		$this->Session->write('shopping_cart',null);
+
+			$data['fb_id'] = $this->userDetail['User']['fb_id'];
+			$data['merchandise_item_id'] = 0;
+			$data['game_team_id'] = $this->userData['team']['id'];
+			$data['user_id'] = $this->userDetail['User']['id'];
+			$data['order_type'] = 1;
+			$data['ongkir_id'] = intval($this->Session->read('city_id')); //the related ongkir_id
+			if($all_digital){
+				$data['n_status'] = 3;	
+			}else{
+				$data['n_status'] = 1;
+			}
+
+			$data['order_date'] = date("Y-m-d H:i:s");
+			$data['data'] = serialize($shopping_cart);
+			$data['po_number'] = $ecash_data['transaction_id'];
+			$data['total_sale'] = intval($total_price);
+			$data['payment_method'] = 'ecash';
+			$data['trace_code'] = $ecash_data['trace_number'];
+
+			$this->MerchandiseOrder->create();
+			$rs = $this->MerchandiseOrder->save($data);	
+			
+
+			$this->process_items($shopping_cart);
+				
+		
+			$this->set('apply_digital_perk_error',$this->Session->read('apply_digital_perk_error'));
+
+			$this->Session->write('apply_digital_perk_error',null);
+			//reset the csrf token
+			$this->Session->write('po_csrf',null);
+			//-->
+
+			//reset the shopping_cart in session (disable these for debug only)
+			$this->Session->write('shopping_cart',null);
+			$this->Session->write($ecash_data['transaction_id'],null);
+
+		}else{
+			$is_transaction_ok = false;
+		}
+		$this->set('is_transaction_ok',$is_transaction_ok);
 		
 		
 	}
@@ -788,82 +805,88 @@ class MerchandisesController extends AppController {
 
 		//display the cart content
 		$shopping_cart = $this->Session->read('shopping_cart');
+		if(sizeof($shopping_cart) > 0){
+			//get total coins to be spent.
+			$total_coins = 0;
+			$all_digital = true;
+			for($i=0;$i<sizeof($shopping_cart);$i++){
 
-		//get total coins to be spent.
-		$total_coins = 0;
-		$all_digital = true;
-		for($i=0;$i<sizeof($shopping_cart);$i++){
-
-			$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
-			$item = $shopping_cart[$i]['data']['MerchandiseItem'];
-			$total_coins += (intval($shopping_cart[$i]['qty']) * intval($item['price_credit']));
-			//is there any non-digital item ?
-			if($item['merchandise_type']==0){
-				$all_digital = false;
+				$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
+				$item = $shopping_cart[$i]['data']['MerchandiseItem'];
+				$total_coins += (intval($shopping_cart[$i]['qty']) * intval($item['price_credit']));
+				//is there any non-digital item ?
+				if($item['merchandise_type']==0){
+					$all_digital = false;
+				}
 			}
-		}
-		
-		//1. check if the coins are sufficient
-		if(intval($this->cash) >= $total_coins){
-			$no_fund = false;
-		}else{
-			$no_fund = true;
-		}
-		
-		//2. if fund is available, we create transaction id and order detail.
-		if(!$no_fund){
-
-			$data = $this->request->data;
-			$data['merchandise_item_id'] = 0;
-			$data['game_team_id'] = $this->userData['team']['id'];
-			$data['user_id'] = $this->userDetail['User']['id'];
-			$data['order_type'] = 1;
-			$data['fb_id'] = $this->userDetail['User']['fb_id'];
-
-			if($all_digital){
-				$data['n_status'] = 3;	
+			
+			//1. check if the coins are sufficient
+			if(intval($this->cash) >= $total_coins){
+				$no_fund = false;
 			}else{
-				$data['n_status'] = 0;
+				$no_fund = true;
 			}
-			$data['order_date'] = date("Y-m-d H:i:s");
-			$data['data'] = serialize($shopping_cart);
-			$data['po_number'] = $data['game_team_id'].'-'.date("ymdhis");
-			$data['total_sale'] = intval($total_coins);
-			$data['payment_method'] = 'coins';
+			
+			//2. if fund is available, we create transaction id and order detail.
+			if(!$no_fund){
 
-			$this->MerchandiseOrder->create();
-			$rs = $this->MerchandiseOrder->save($data);	
-			if($rs){
-				$result['order_id'] = $this->MerchandiseOrder->id;
-				//time to deduct the money
-				$this->Game->query("
-				INSERT IGNORE INTO ffgame.game_transactions
-				(game_team_id,transaction_name,transaction_dt,amount,
-				 details)
-				VALUES
-				({$data['game_team_id']},'purchase_{$data['po_number']}',
-					NOW(),
-					-{$total_coins},
-					'{$data['po_number']} - {$result['order_id']}');");
-				
-				//update cash summary
-				$this->Game->query("INSERT INTO ffgame.game_team_cash
-				(game_team_id,cash)
-				SELECT game_team_id,SUM(amount) AS cash 
-				FROM ffgame.game_transactions
-				WHERE game_team_id = {$data['game_team_id']}
-				GROUP BY game_team_id
-				ON DUPLICATE KEY UPDATE
-				cash = VALUES(cash);");
+				$data = $this->request->data;
+				$data['merchandise_item_id'] = 0;
+				$data['game_team_id'] = $this->userData['team']['id'];
+				$data['user_id'] = $this->userDetail['User']['id'];
+				$data['order_type'] = 1;
+				$data['fb_id'] = $this->userDetail['User']['fb_id'];
+				$data['ongkir_id'] = intval($this->Session->read('city_id'));
 
-				//flag transaction as ok
-				$is_transaction_ok = true;
-				$result['is_transaction_ok'] = $is_transaction_ok;
-				$result['items'] = $shopping_cart;
+				if($all_digital){
+					$data['n_status'] = 3;	
+				}else{
+					$data['n_status'] = 0;
+				}
+				$data['order_date'] = date("Y-m-d H:i:s");
+				$data['data'] = serialize($shopping_cart);
+				$data['po_number'] = $data['game_team_id'].'-'.date("ymdhis");
+				$data['total_sale'] = intval($total_coins);
+				$data['payment_method'] = 'coins';
+
+				$this->MerchandiseOrder->create();
+				$rs = $this->MerchandiseOrder->save($data);	
+				if($rs){
+					$result['order_id'] = $this->MerchandiseOrder->id;
+					//time to deduct the money
+					$this->Game->query("
+					INSERT IGNORE INTO ffgame.game_transactions
+					(game_team_id,transaction_name,transaction_dt,amount,
+					 details)
+					VALUES
+					({$data['game_team_id']},'purchase_{$data['po_number']}',
+						NOW(),
+						-{$total_coins},
+						'{$data['po_number']} - {$result['order_id']}');");
+					
+					//update cash summary
+					$this->Game->query("INSERT INTO ffgame.game_team_cash
+					(game_team_id,cash)
+					SELECT game_team_id,SUM(amount) AS cash 
+					FROM ffgame.game_transactions
+					WHERE game_team_id = {$data['game_team_id']}
+					GROUP BY game_team_id
+					ON DUPLICATE KEY UPDATE
+					cash = VALUES(cash);");
+
+					//flag transaction as ok
+					$is_transaction_ok = true;
+					$result['is_transaction_ok'] = $is_transaction_ok;
+					$result['items'] = $shopping_cart;
+				}
 			}
+
+			$result['no_fund'] = $no_fund;
+		}else{
+			$result['no_fund'] = false;
+			$result['order_id'] = 0;
 		}
-
-		$result['no_fund'] = $no_fund;
+		
 		return $result;
 	}
 
@@ -933,33 +956,55 @@ class MerchandisesController extends AppController {
 	}
 	*/
 	public function cart(){
-		
 		$shopping_cart = array();
 		if($this->request->is('post')){
+
 			$item_id = $this->request->data['item_id'];
 			$qty = $this->request->data['qty'];
 			for($i=0;$i<sizeof($item_id);$i++){
 				$shopping_cart[] = array('item_id'=>intval($item_id[$i]),
 										  'qty'=>intval($qty[$i]));
 			}
-			$this->Session->write('shopping_cart',$shopping_cart);
-		}else{
-			$shopping_cart = $this->Session->read('shopping_cart');
+			
+			$this->Session->write('shopping_cart',$shopping_cart);	
+			$this->Session->write('city_id',intval($this->request->data['city_id']));	
+			
+			
 		}
+		
+		$shopping_cart = $this->Session->read('shopping_cart');
+			
+		
 		$this->request->data['update_type'] = intval(@$this->request->data['update_type']);
+
+
 		if($this->request->data['update_type']==1){
 
 			$this->checkout($shopping_cart);
 
 		}else{
 
-			for($i=0;$i<sizeof($shopping_cart);$i++){
-				$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
-			}
-			$this->set('shopping_cart',$shopping_cart);
-			$this->getOngkirList();
+			$this->displayShoppingCartContent($shopping_cart);
 		}
 		
+	}
+	private function displayShoppingCartContent($shopping_cart){
+		for($i=0;$i<sizeof($shopping_cart);$i++){
+			$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
+			$out_of_stock = $this->Session->read('out_of_stock');
+
+			for($j=0;$j<sizeof($out_of_stock);$j++){
+				$shopping_cart[$i]['out_of_stock'] = false;
+				if($out_of_stock[$j]['MerchandiseItem']['id'] == $shopping_cart[$i]['item_id']){
+					$shopping_cart[$i]['qty'] = $out_of_stock[$j]['MerchandiseItem']['stock'];
+					$shopping_cart[$i]['out_of_stock'] = true;
+					break;
+				}
+			}
+		}
+		$this->set('shopping_cart',$shopping_cart);
+		$this->set('city_id',intval($this->Session->read('city_id')));
+		$this->getOngkirList();
 	}
 	private function getOngkirList(){
 		
@@ -972,7 +1017,7 @@ class MerchandisesController extends AppController {
 	* 1. make sure that all items stock are available
 	* 2. if stock available, redirect to order
 	*/
-	private function checkout(){
+	private function checkout($shopping_cart){
 		$stocks = $this->getItemsStock();
 		$stock_available = true;
 		$out_of_stock = array();
@@ -991,11 +1036,47 @@ class MerchandisesController extends AppController {
 		if($stock_available){
 			$this->redirect('/merchandises/buy');
 		}else{
-			$str = "Mohon maaf, barang - barang berikut sudah habis :<br/>";
+			$str = "Mohon maaf, stok barang - barang berikut tidak mencukupi :<br/>";
 			for($i=0;$i<sizeof($out_of_stock);$i++){
-				$str .= $out_of_stock[$i]['MerchandiseItem']['name']."<br/>";
+				$str .= $out_of_stock[$i]['MerchandiseItem']['name']." - Sisa : ".
+						$out_of_stock[$i]['MerchandiseItem']['stock']."<br/>";
 			}
+			$this->Session->write('out_of_stock',$out_of_stock);
 			$this->Session->setFlash($str);
+			
+
+			$this->displayShoppingCartContent($shopping_cart);
+		}
+	}
+	/*
+	* recheck the items stock just before we close the order.
+	*/
+	private function recheckStockBeforePayment(){
+		$stocks = $this->getItemsStock();
+		$stock_available = true;
+		$out_of_stock = array();
+
+		
+		
+		if(sizeof($stocks)>0){
+			foreach($stocks as $item_id=>$stock){
+				if($stock==0){
+					$stock_available = false;
+					$out_of_stock[] = $this->MerchandiseItem->findById($item_id);
+				}
+			}
+		}
+		if($stock_available){
+			return true;
+		}else{
+			$str = "Mohon maaf, stok barang - barang berikut tidak mencukupi :<br/>";
+			for($i=0;$i<sizeof($out_of_stock);$i++){
+				$str .= $out_of_stock[$i]['MerchandiseItem']['name']." - Sisa : ".
+						$out_of_stock[$i]['MerchandiseItem']['stock']."<br/>";
+			}
+			$this->Session->write('out_of_stock',$out_of_stock);
+			$this->Session->setFlash($str);
+			$this->redirect('/merchandises/cart');
 		}
 	}
 	/*
@@ -1008,16 +1089,9 @@ class MerchandisesController extends AppController {
 		$rs = array();
 		for($i=0;$i<sizeof($items);$i++){
 			$item = $this->MerchandiseItem->findById(intval($items[$i]['item_id']));
-			$total_order = $this->MerchandiseOrder->find('count',
-														array('conditions'=>
-																array('merchandise_item_id'=>
-																		$item['MerchandiseItem']['id'],
-										  								'n_status <> 4')
-															)
-														);
-			$stock_available = $item['MerchandiseItem']['stock'] - $total_order;
-			if($stock_available > 0){
-				$rs[intval($item['MerchandiseItem']['id'])] = intval($stock_available);
+		
+			if(($item['MerchandiseItem']['stock'] - $items[$i]['qty']) >= 0){
+				$rs[intval($item['MerchandiseItem']['id'])] = intval($item['MerchandiseItem']['stock']);
 			}else{
 				$rs[intval($item['MerchandiseItem']['id'])] = 0;
 			}

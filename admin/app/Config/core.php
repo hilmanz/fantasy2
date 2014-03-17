@@ -373,3 +373,6 @@ Configure::write('RANK_RANDOM_NUM',139670);
 
 Configure::write('CSV_DIR','/home/duf/node_workspace/fantasy_fork/admin/app/webroot/files/');
 Configure::write('CSV_WWW','http://localhost/fantasy_admin/files/');
+
+//Administration & Handling Fee
+Configure::write('PO_ADMIN_FEE',50000);

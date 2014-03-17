@@ -68,14 +68,17 @@ $item_url = $this->Html->url('/merchandises/edit/');
 							if(response.data[i].MerchandiseOrder.data!=null){
 								item_details = '';
 								for(var t in response.data[i].MerchandiseOrder.data){
-								console.log(response.data[i].MerchandiseOrder.data[t]);
-								item_details+= "<a href='"+
-								item_url+
-								response.data[i].MerchandiseOrder.data[t].data.MerchandiseItem.id+"'>"+
-								response.data[i].MerchandiseOrder.data[t].data.MerchandiseItem.id
-										+' - '+
-								response.data[i].MerchandiseOrder.data[t].data.MerchandiseItem.name+
-										'</a><br/>';
+									console.log(response.data[i].MerchandiseOrder.data[t]);
+									try{
+										item_details+= "<a href='"+
+										item_url+
+										response.data[i].MerchandiseOrder.data[t].data.MerchandiseItem.id+"'>"+
+										response.data[i].MerchandiseOrder.data[t].data.MerchandiseItem.id
+												+' - '+
+										response.data[i].MerchandiseOrder.data[t].data.MerchandiseItem.name+
+												'</a><br/>';
+									}catch(e){}
+									
 								}
 							}
 							switch(response.data[i].MerchandiseOrder.n_status){

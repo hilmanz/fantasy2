@@ -216,7 +216,7 @@ class MerchandisesController extends AppController {
 	}
 	public function view_order($order_id){
 		$this->loadModel('MerchandiseOrder');
-
+		$this->loadModel('Ongkir');
 		if($this->request->is('post')){
 			if($this->request->data['n_status']==4){
 				if($this->refund($order_id)){
@@ -234,6 +234,9 @@ class MerchandisesController extends AppController {
 			array('belongsTo'=>array('MerchandiseItem'))
 		);
 		$rs = $this->MerchandiseOrder->findById($order_id);
+		//get ongkir
+		$ongkir = $this->Ongkir->findById($rs['MerchandiseOrder']['ongkir_id']);
+		$this->set('ongkir',$ongkir['Ongkir']);
 		$this->set('rs',$rs);
 	}
 	private function restock($order_id){

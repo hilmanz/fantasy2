@@ -166,8 +166,12 @@
 							<input type="text" name="address" value=""/>
 						</div><!-- end .row -->
 						<div class="row">
+							
 							<label>City</label>
-							<input type="text" name="city" value=""/>
+							<input type="text" 
+									name="city" 
+									value="<?=h($city['city'])?>" 
+									readonly='true'/>
 						</div><!-- end .row -->
 						<div class="row">
 							<label>Province</label>
