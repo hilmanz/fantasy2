@@ -175,7 +175,51 @@ class MerchandisesController extends AppController {
 
 	}
 	public function view_ongkir(){
-		
+
+	}
+	/*
+	* the page for updating ongkir database
+	* provide csv file with the following fields
+	* "city";"cost";
+	* example : 
+	* "jakarta";"10000";
+	* "bandung";"10000";
+	*/
+	public function update_ongkir(){
+		$this->loadModel('Ongkir');
+		if($this->request->is('post')){
+			if(isset($_FILES['file']['tmp_name'])){
+				$str = file_get_contents($_FILES['file']['tmp_name']);
+				$lines = explode(PHP_EOL,$str);
+				$this->Ongkir->query("TRUNCATE TABLE ongkir");
+				$sqlStr = "";
+				$i = 0;
+				while(sizeof($lines) > 0){
+					$a = explode(";",array_shift($lines));
+					if($a[0]!=null){
+						if($i<100){
+							if($i>0){
+								$sqlStr.=",";
+							}
+							$sqlStr.= "('".Sanitize::clean($a[0])."',
+										'".Sanitize::clean($a[1])."',
+										'".Sanitize::clean($a[2])."')";
+							$i++;
+						}else{
+							$this->Ongkir->query("
+								INSERT INTO ongkir(city,kecamatan,cost)
+								VALUES
+								{$sqlStr}
+							");	
+							$i = 0;
+							$sqlStr = "";
+						}
+						
+					}
+				}
+				$this->Session->setFlash('update completed !');
+			}
+		}
 	}
 	public function add_category(){
 		if($this->request->is('post')){
