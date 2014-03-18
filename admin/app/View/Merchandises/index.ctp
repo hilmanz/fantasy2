@@ -5,6 +5,7 @@
 	<a href="<?=$this->Html->url('/merchandises/create')?>" class="button">Add Merchandise</a>
 	<a href="<?=$this->Html->url('/merchandises/categories')?>" class="button">Categories</a>
 	<a href="<?=$this->Html->url('/merchandises/orders')?>" class="button">Purchase Orders</a>
+	<a href="<?=$this->Html->url('/merchandises/ongkir')?>" class="button">Ongkos Kirim</a>
 </div>
 
 <div class="row">

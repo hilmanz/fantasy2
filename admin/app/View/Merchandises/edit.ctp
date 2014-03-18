@@ -105,7 +105,7 @@
 				Stock
 			</td>
 			<td>
-				<h3><?=intval($current_stock)?></h3>
+				<h3><?=intval($rs['MerchandiseItem']['stock'])?></h3>
 			</td>
 		</tr>
 		<tr>

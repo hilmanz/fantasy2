@@ -126,11 +126,11 @@ class MerchandisesController extends AppController {
 		$this->paginate = array('conditions'=>array('fb_id'=>$fb_id),
 								  'order'=>array('MerchandiseOrder.id'=>'DESC'),
 								 'limit'=>20);
-
+		
 		$fb_id = $this->userDetail['User']['fb_id'];
 
 		$rs = $this->Paginate('MerchandiseOrder');
-
+		
 		$this->set('rs',$rs);
 	}
 

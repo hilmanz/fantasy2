@@ -62,24 +62,18 @@ class MerchandisesController extends AppController {
 		
 		$rs = $this->MerchandiseItem->findById($id);
 
-		$total_item = $this->MerchandiseOrder->
-									find('count',
-										array('conditions'=>
-												array('merchandise_item_id'=>
-															$rs['MerchandiseItem']['id'],
-														'n_status <> 4'))
-										);
-		$available_item = $rs['MerchandiseItem']['stock'] - $total_item;
+		
+
 		if($this->request->is('post')){
 			$this->MerchandiseItem->id = $id;
-			if((intval($this->request->data['new_stock']) + $available_item) >= 0){
-				//add stock with additional new stock.
-				$this->request->data['stock'] = $rs['MerchandiseItem']['stock'] + 
-												intval($this->request->data['new_stock']);
+			
+			//add stock with additional new stock.
+			$this->request->data['stock'] = $rs['MerchandiseItem']['stock'] + 
+											intval($this->request->data['new_stock']);
 
 
 
-			}
+			
 			if(isset($_FILES['pic']['name'])){
 				$this->update_pic($id);
 			}
@@ -94,11 +88,18 @@ class MerchandisesController extends AppController {
 		$this->set('perks',$perks);
 
 		$this->set('rs',$rs);
-		$this->set('current_stock',$available_item);
+		
 		$this->loadModel('MerchandiseCategory');
 		$categories = $this->MerchandiseCategory->find('all',array('limit'=>100));
 		$this->set('categories',$categories);
 
+
+	}
+	/*
+	* database ongkos kirim 
+	* saat ini ongkos kirim kita pakai JNE Reguler
+	*/
+	public function ongkir(){
 
 	}
 	private function update_pic($id){
