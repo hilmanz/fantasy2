@@ -77,7 +77,7 @@ class MerchandisesController extends AppController {
 			if(isset($_FILES['pic']['name'])){
 				$this->update_pic($id);
 			}
-			$this->Session->setFlash('Update Completed !');
+			$this->Session->setFlash('Update Completfed !');
 			$this->MerchandiseItem->save($this->request->data);
 			$this->redirect('/merchandises/');
 		}
@@ -101,6 +101,22 @@ class MerchandisesController extends AppController {
 	*/
 	public function ongkir(){
 
+	}
+	/*
+	* ajax call for getting the list of delivery cost.
+	*/
+	public function get_ongkir(){
+		$this->loadModel('Ongkir');
+		$this->layout = 'ajax';
+		$start = intval($this->request->query['start']);
+
+		$rs = $this->Ongkir->find('all',array(
+				'limit'=>100,
+				'offset'=>$start,
+			));
+
+		$this->set('response',array('status'=>1,'data'=>$rs,'next_offset'=>$start+100));
+		$this->render('response');
 	}
 	private function update_pic($id){
 		$dir_path = Configure::read('avatar_img_dir')."merchandise/";
@@ -157,6 +173,9 @@ class MerchandisesController extends AppController {
 		$perks = $this->MasterPerk->find('all',array('limit'=>300));
 		$this->set('perks',$perks);
 
+	}
+	public function view_ongkir(){
+		
 	}
 	public function add_category(){
 		if($this->request->is('post')){

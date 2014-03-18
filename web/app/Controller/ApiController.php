@@ -2695,6 +2695,7 @@ class ApiController extends AppController {
 		$this->loadModel('MerchandiseItem');
 		$this->loadModel('MerchandiseCategory');
 		$this->loadModel('MerchandiseOrder');
+		$this->loadModel('Ongkir');
 		
 		CakeLog::write('debug','data : '.json_encode($ecash_data));
 		$shopping_cart = unserialize(decrypt_param($ecash_data['param']));
@@ -2756,7 +2757,10 @@ class ApiController extends AppController {
 		$data['payment_method'] = 'ecash';
 		$data['trace_code'] = $ecash_data['trace_number'];
 		$data['ongkir_id'] = $data['city_id'];
-
+		//we need ongkir value
+		$ok = $this->Ongkir->findById($data['city_id']);
+		$data['ongkir_value'] = $ok['Ongkir']['cost'];
+			
 		$this->MerchandiseOrder->create();
 		$rs = $this->MerchandiseOrder->save($data);	
 		
@@ -2884,6 +2888,10 @@ class ApiController extends AppController {
 			$data['total_sale'] = intval($total_coins);
 			$data['payment_method'] = 'coins';
 			$data['ongkir_id'] = $this->request->data['city_id'];
+			//we need ongkir value
+			$ok = $this->Ongkir->findById($data['ongkir_id']);
+			$data['ongkir_value'] = $ok['Ongkir']['cost'];
+			
 			$this->MerchandiseOrder->create();
 			$rs = $this->MerchandiseOrder->save($data);	
 			if($rs){

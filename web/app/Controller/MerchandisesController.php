@@ -759,6 +759,11 @@ class MerchandisesController extends AppController {
 			$data['user_id'] = $this->userDetail['User']['id'];
 			$data['order_type'] = 1;
 			$data['ongkir_id'] = intval($this->Session->read('city_id')); //the related ongkir_id
+
+			//we need ongkir value
+			$ok = $this->Ongkir->findById($this->Session->read('city_id'));
+			$data['ongkir_value'] = $ok['Ongkir']['cost'];
+			
 			if($all_digital){
 				$data['n_status'] = 3;	
 			}else{
@@ -837,7 +842,10 @@ class MerchandisesController extends AppController {
 				$data['order_type'] = 1;
 				$data['fb_id'] = $this->userDetail['User']['fb_id'];
 				$data['ongkir_id'] = intval($this->Session->read('city_id'));
-
+				//we need ongkir value
+				$ok = $this->Ongkir->findById($this->Session->read('city_id'));
+				$data['ongkir_value'] = $ok['Ongkir']['cost'];
+			
 				if($all_digital){
 					$data['n_status'] = 3;	
 				}else{

@@ -4,7 +4,7 @@
 	enctype="application/x-www-form-urlencoded">
 <h3>View Order - <?=h($rs['MerchandiseOrder']['po_number'])?></h3>
 <h4>Payment Method : <?=h($rs['MerchandiseOrder']['payment_method'])?></h4>
-<h4>Shipping : Rp. <?=number_format(h($ongkir['cost']))?></h4>
+<h4>Shipping : Rp. <?=number_format(h($rs['MerchandiseOrder']['ongkir_value']))?></h4>
 <?php 
 if(strtoupper($rs['MerchandiseOrder']['payment_method'])=='ECASH'):
 ?>
