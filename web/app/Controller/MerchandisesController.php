@@ -1016,7 +1016,9 @@ class MerchandisesController extends AppController {
 	}
 	private function getOngkirList(){
 		
-		$ongkir = $this->Ongkir->find('all',array('limit'=>10000));
+		$ongkir = $this->Ongkir->find('all',
+									array('limit'=>10000,
+									'order'=>array('Ongkir.kecamatan'=>'ASC')));
 		$this->ongkirList = $ongkir;
 		$this->set('ongkir',$ongkir);
 	}

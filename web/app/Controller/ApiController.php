@@ -2891,7 +2891,7 @@ class ApiController extends AppController {
 			//we need ongkir value
 			$ok = $this->Ongkir->findById($data['ongkir_id']);
 			$data['ongkir_value'] = $ok['Ongkir']['cost'];
-			
+
 			$this->MerchandiseOrder->create();
 			$rs = $this->MerchandiseOrder->save($data);	
 			if($rs){
@@ -3217,7 +3217,7 @@ class ApiController extends AppController {
 	}
 	public function get_ongkir(){
 		$this->loadModel('Ongkir');
-		$rs = $this->Ongkir->find('all');
+		$rs = $this->Ongkir->find('all',array('limit'=>10000,'order'=>array('Ongkir.kecamatan')));
 		$ongkir = array();
 		while(sizeof($rs)>0){
 			$p = array_shift($rs);

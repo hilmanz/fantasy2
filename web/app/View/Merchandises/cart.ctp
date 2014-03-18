@@ -110,9 +110,10 @@ var base_coin = {};
                     </tr>
                     <?php endfor;?>
                     <tr>
-                        <td></td>
-                        <td>Ongkos Kirim</td>
-                        <td colspan="2">
+                        <td colspan="3">
+                            <div>
+                                Ongkos Kirim
+                            </div>
                             <select name="city_id">
                                 <?php if($city_id==0):?>
                                     <option value="0" selected="selected">Pilih Kota</a>
@@ -127,18 +128,20 @@ var base_coin = {};
                                     <?php else:?>
                                     <option value="<?=intval($cost['Ongkir']['id'])?>">
                                     <?php endif;?>
-                                        <?=strtoupper($cost['Ongkir']['city'])?>
+                                        <?=strtoupper($cost['Ongkir']['kecamatan']." - ".$cost['Ongkir']['city'])?>
                                     </option>
                                 <?php endforeach;?>
                             </select>
                         </td>
-                        <td>
+                        
+                        
+                        <td colspan="2">
                             <span class="shipping"></span>
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="4">Belanja Total</td>
-                        <td colspan="2">
+                        <td colspan="3">Belanja Total</td>
+                        <td colspan="3">
                             <span class="total-price">0</span>
                         </td>
                     </tr>
