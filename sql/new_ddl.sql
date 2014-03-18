@@ -112,3 +112,14 @@ ALTER TABLE `fantasy`.`merchandise_orders` ADD INDEX `IDX_FB` (`fb_id`);
 ALTER TABLE `fantasy`.`merchandise_orders`    ADD COLUMN `ongkir_id` INT(11) DEFAULT '0' NULL AFTER `trace_code`;
 
 ALTER TABLE `fantasy`.`merchandise_orders` ADD INDEX `IDX_CITY_ID` (`ongkir_id`);
+
+
+CREATE TABLE fantasy.ongkir (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `city` varchar(64) DEFAULT NULL,
+  `kecamatan` varchar(64) DEFAULT NULL,
+  `province` varchar(64) DEFAULT NULL,
+  `cost` int(11) DEFAULT '10000',
+  PRIMARY KEY (`id`),
+  KEY `IDX_CITY` (`city`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
