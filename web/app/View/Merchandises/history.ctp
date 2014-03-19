@@ -8,10 +8,9 @@ var base_coin = {};
      	 <?php echo $this->element('infobar'); ?>
       </div>
     <div id="thecontent">
-        <div class="content">
+        <div class="content pad20">
         	<div class="titlePage">
-				<h1 class="red">Keranjang Belanja</h1>
-				<h4></h4>
+				<h1 class="yellow">Keranjang Belanja</h1>
                 <?php 
                 $msg = $this->Session->flash();
                 if(strlen($msg) > 0):
@@ -23,21 +22,24 @@ var base_coin = {};
             </div>
             <div class="rowd">
 				<div class="contents">
-					<div class="tr widget">
+					<div class="tr widgets">
         			<form 
                         id="frm" method="post" 
                         enctype="application/x-www-form-urlencoded"
         				action="<?=$this->Html->url('/merchandises/cart')?>">
-                        <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable footable">
+							<thead>
                             <tr>
                                
-                                <td>Tanggal</td>
-                                <td>Kode Transaksi</td>
-                                <td>Daftar Barang</td>
-                                <td>Payment Method</td>
-                                <td>Status</td>
-                                <td>Aksi</td>
+                                <th>Tanggal</th>
+                                <th>Kode Transaksi</th>
+                                <th>Daftar Barang</th>
+                                <th>Payment Method</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
                             </tr>
+							</thead>
+							<tbody>
                             <?php for($i=0;$i<sizeof($rs);$i++):?>
                             <tr>
                                 <td><?=date("d/m/Y",strtotime($rs[$i]['MerchandiseOrder']['order_date']))?></td>
@@ -87,12 +89,13 @@ var base_coin = {};
                                 </td>
                             </tr>
                             <?php endfor;?>
+							</tbody>
                         </table>
               
                        
                         </form>
         		  </div><!-- end .widget -->
-                   <div class="widget action-button tr">
+                   <div class="widgets action-button tr">
                       <?php
                       echo $this->Paginator->prev(__('Sebelumnya'), array(), null, 
                                                   array('class' => 'prev'));

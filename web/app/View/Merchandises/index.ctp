@@ -124,10 +124,10 @@ if(isset($category_name)){
 					<?php endif;?>
 					<div class="widget tr catalog-list">
 						<a href="<?=$this->Html->url('/merchandises/cart')?>" class="button">
-							Keranjang Belanja
+							<span class="ico icon-cart">&nbsp;</span> Keranjang Belanja
 						</a>
 						<a href="<?=$this->Html->url('/merchandises/history')?>" class="button">
-							Order Tracking
+							<span class="ico icon-airplane">&nbsp;</span> Order Tracking
 						</a>
 					</div>
 					
