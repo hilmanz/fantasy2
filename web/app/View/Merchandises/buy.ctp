@@ -189,7 +189,9 @@
 							<label>Metode Pembayaran</label>
 							<div>
 							<input type="radio" name="payment_method" value="coins" checked="checked"/> Coins
+							<?php if($can_use_ecash):?>
 							<input type="radio" name="payment_method" value="ecash"/> Ecash Mandiri (Rupiah)
+							<?php endif;?>
 							</div>
 						</div><!-- end .row -->
 						<div class="row">

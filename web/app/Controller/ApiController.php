@@ -3378,4 +3378,16 @@ class ApiController extends AppController {
 		$this->set('response',$rs);
 		$this->render('default');
 	}
+
+	//below is the list of `tebak-skor` minigame APIs
+	function submit_bet($game_id){
+		$req = unserialize(decrypt_param($this->request->query['req']));
+		$fb_id = $req['fb_id'];
+		$bet_data = $req['data'];
+		for($i=0;$i<sizeof($bet_data);$i++){
+			//$this->Game->query("")
+		}
+	}
+
+	//--> and of `tebak-skor` minigame APIs
 }

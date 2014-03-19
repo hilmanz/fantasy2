@@ -37,14 +37,16 @@ class MerchandisesController extends AppController {
 		if(!$this->hasTeam()){
 			$this->redirect('/login/expired');
 		}
-
+		
 		//banners
 		$sidebar_banner = $this->getBanners('CATALOG_SIDEBAR',3,true);
 		$this->set('sidebar_banner',$sidebar_banner);
 
 		$this->loadModel('Ongkir');
 		
-		if(!Configure::read('MERCHANDISE_ENABLE') && $this->request->params['action'] != 'offline'){
+		if(!Configure::read('MERCHANDISE_ENABLE') 
+				&& $this->request->params['action'] != 'offline' 
+				&& $this->userDetail['Team']['id'] != 264){
 			$this->redirect('/merchandises/offline');
 		}
 	}
@@ -114,12 +116,8 @@ class MerchandisesController extends AppController {
 		$rs = $this->paginate('MerchandiseItem');
 		for($i=0;$i<sizeof($rs);$i++){
 			//get the available stock
-			// stock_available = stock - total_order
-			$total_order = $this->MerchandiseOrder->find('count',
-				array('conditions'=>array('merchandise_item_id'=>$rs[$i]['MerchandiseItem']['id'],
-										  'n_status <> 4')));
 			
-			$rs[$i]['MerchandiseItem']['available'] = $rs[$i]['MerchandiseItem']['stock'] - $total_order;
+			$rs[$i]['MerchandiseItem']['available'] = $rs[$i]['MerchandiseItem']['stock'];
 		}
 		//assign it.
 		$this->set('rs',$rs);
@@ -272,11 +270,9 @@ class MerchandisesController extends AppController {
 		//get the item detail
 		$item = $this->MerchandiseItem->findById($item_id);
 		
-		$total_order = $this->MerchandiseOrder->find('count',
-				array('conditions'=>array('merchandise_item_id'=>$item['MerchandiseItem']['id'],
-										  'n_status <> 4')));
+		
 			
-		$item['MerchandiseItem']['available'] = $item['MerchandiseItem']['stock'] - $total_order;
+		$item['MerchandiseItem']['available'] = $item['MerchandiseItem']['stock'];
 
 
 
@@ -405,12 +401,16 @@ class MerchandisesController extends AppController {
 
 	public function buy(){
 	
-
+		$can_use_ecash = true;
 
 		//display the cart content
 		$shopping_cart = $this->Session->read('shopping_cart');
 		for($i=0;$i<sizeof($shopping_cart);$i++){
 			$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
+			$price_money = intval($shopping_cart[$i]['data']['MerchandiseItem']['price_money']);
+			if($price_money==0){
+				$can_use_ecash = false;
+			}
 		}
 		$this->set('shopping_cart',$shopping_cart);
 
@@ -439,7 +439,8 @@ class MerchandisesController extends AppController {
 		//attach ongkos kirim list.
 		$this->getOngkirList();
 
-	}
+		$this->set('can_use_ecash',$can_use_ecash);
+	}	
 
 	/*
 	* add item to shopping cart
@@ -636,11 +637,12 @@ class MerchandisesController extends AppController {
 		$rs = $this->Game->getEcashUrl(array(
 			'transaction_id'=>$transaction_id,
 			'amount'=>$total_price,
-			'clientIpAddress'=>$this->request->clientIp(),
+			'clientIpAddress'=>$this->request->clientIp(false),
 			'description'=>'Purchase Order #'.$transaction_id,
 			'source'=>'FM'
 		));
 		$this->set('transaction_id',$transaction_id);
+		
 		$this->set('ecash_url',$rs['data']);
 	}
 	public function payment(){

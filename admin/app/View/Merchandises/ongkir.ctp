@@ -35,7 +35,7 @@ $view_url = $this->Html->url('/merchandises/view_ongkir/');
 		},
 		"aoColumns": [
 			{ "sTitle": "Lokasi" },
-			{ "sTitle": "Harga" },
+			{ "sTitle": "Harga per kg" },
 			{ "sTitle": "Action"}
 		]
 	} );
@@ -53,7 +53,7 @@ $view_url = $this->Html->url('/merchandises/view_ongkir/');
 						for(var i in response.data){
 							console.log(response.data[i]);
 							data.push([
-									response.data[i].Ongkir.city,
+									response.data[i].Ongkir.kecamatan+' - '+response.data[i].Ongkir.city,
 									'Rp.'+number_format(response.data[i].Ongkir.cost),
 									'<a href="<?=$view_url?>'+response.data[i].Ongkir.id+'">View</a>'
 								]);

@@ -28,9 +28,14 @@ exports.getEcashUrl = function(transaction_id,clientIpAddress,description,amount
 		function(body,statusCode,cb){
 			var response = JSON.parse(xmlparser.toJson(body));
 			var retId = response['soap:Envelope']['soap:Body']['ns2:generateResponse']['return'];
-			console.log('ecash return id',retId);
-			console.log('redirect url : ',service.protocol+'://'+service.host+payment_URI+'?id='+retId);
-			cb(null,service.protocol+'://'+service.host+payment_URI+'?id='+retId);
+			console.log('CALL','ecash return id',retId);
+			console.log('CALL','redirect url : ',service.protocol+'://'+service.host+payment_URI+'?id='+retId);
+			if(retId!=null){
+				cb(null,service.protocol+'://'+service.host+payment_URI+'?id='+retId);	
+			}else{
+				cb(null,'#');
+			}
+			
 		}
 
 	],
@@ -68,9 +73,9 @@ function step1(transaction_id,clientIpAddress,description,amount,source,callback
 	<description>"+description+"</description>\
 	<memberAddress>202.43.162.250</memberAddress>\
 	<returnUrl>"+returnUrl+"</returnUrl>\
-	<toUsername>supersoccer</toUsername>\
+	<toUsername>"+service.username+"</toUsername>\
 	<trxid>"+transaction_id+"</trxid>\
-	<hash>"+getSHA1Hash('SUPERSOCCER'+amount+clientIpAddress)+"</hash>\
+	<hash>"+getSHA1Hash(service.username.toUpperCase()+amount+clientIpAddress)+"</hash>\
 	</params>\
 	</ws:generate>\
 	</soapenv:Body>\
