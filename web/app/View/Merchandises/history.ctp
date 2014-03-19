@@ -10,7 +10,7 @@ var base_coin = {};
     <div id="thecontent">
         <div class="content pad20">
         	<div class="titlePage">
-				<h1 class="yellow">Keranjang Belanja</h1>
+				<h1 class="yellow">Transaction History</h1>
                 <?php 
                 $msg = $this->Session->flash();
                 if(strlen($msg) > 0):
@@ -70,7 +70,7 @@ var base_coin = {};
                                             echo "Sudah terkirim";
                                         break;
                                         case 3:
-                                            echo "Closed";
+                                            echo "COMPLETED";
                                         break;
                                         case 4:
                                             echo "Dibatalkan";
