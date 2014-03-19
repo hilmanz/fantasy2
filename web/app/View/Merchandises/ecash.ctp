@@ -12,29 +12,31 @@ $pic = Configure::read('avatar_web_url').
       </div>
   
     <div id="thecontent">
-        <div class="content">
+        <div class="content pad20">
         	<div class="titlePage">
-				<h1 class="red">Online Catalog</h1>
+				<h1 class="yellow">Online Catalog</h1>
 				<h4>Proses Pembayaran</h4>
             </div>
             <div class="rowd">
-				<div class="col-content">
-					<div class="tr widget">
+				<div class="col-contents">
+					<div class="tr widgets">
 						<h1>Kode Transaksi : <?=$transaction_id?></h1>
 						<h3>Loe akan diteruskan ke halaman pembayaran Mandiri E-Cash, silahkan klik tombol dibawah untuk melakukan pembayaran
 						</h3>
 					</div>
-					<div class="tr widget">
+					<div class="tr widgets">
 			
-		                <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF">
-		                    <tr>
-		                        <td></td>
-		                        <td>Item</td>
-		                        <td>Harga Satuan</td>
-		                        <td>Jml</td>
-		                        <td>Total</td>
-		                      
-		                    </tr>
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable footable">
+							<thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Item</th>
+                                    <th>Harga Satuan</th>
+                                    <th>Jml</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 							<?php
 							$total_price = 0;
 		                    $total_coins = 0;
@@ -124,20 +126,18 @@ $pic = Configure::read('avatar_web_url').
 		                            </span>
 		                        </td>
 		                    </tr>
+                            </tbody>
 		                </table>
  
 					</div><!-- end .widget -->
-					<div class="tr widget">
+					<div class="tr widgets">
 						<p>
-							<a class="button" href="<?=$ecash_url?>">
+							<a class="button2" href="<?=$ecash_url?>">
 								Bayar Menggunakan E-Cash Mandiri
 							</a>
 						</p>
 					</div><!-- end .widget -->
-				</div><!-- end .col-content -->
-				<div class="box4 fr">
-					
-				</div><!-- end .box4 -->
+				</div><!-- end .col-contents -->
             </div><!-- end .row-3 -->
         </div><!-- end .content -->
     </div><!-- end #thecontent -->

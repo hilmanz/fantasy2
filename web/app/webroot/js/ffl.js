@@ -17,6 +17,21 @@ $(document).ready(function() {
         dropShadows: false
     });
 	$( "#bantuanTab").tabs();
+	// popup
+	$("a.showPopup").click(function(){
+		$("html, body").animate({ scrollTop: 0 }, 600);
+		$(".popup").fadeOut();
+		var targetID = jQuery(this).attr('href');
+		$("#bgPopup").fadeIn();
+		$(targetID).fadeIn();
+		$(targetID).addClass('visible');
+ 	    return false;
+	});
+	$("a.closebtn,#bgPopup").click(function(){
+		$("#bgPopup").fadeOut();
+		$(".popup").fadeOut();
+   	    return false;
+	});
 });
 
 // SLIDER

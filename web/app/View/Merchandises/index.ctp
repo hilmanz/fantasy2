@@ -10,13 +10,15 @@ if(isset($category_name)){
      	 <?php echo $this->element('infobar'); ?>
       </div>
     <div id="thecontent">
-        <div class="content">
+        <div class="content pad20">
         	<div class="titlePage">
 				<h1 class="red">
 					Online Catalog <?=$subtitle?>
 				</h1>
 				<h4>Tukarkan coin elo dan dapatkan merchandise seru dari Supersoccer Football Manager</h4>
 				<h4>Ongkos Kirim Ditanggung Pemenang</h4>
+                <a href="#popup-coins" class="showPopup btnCoin">&nbsp;</a>
+                <a href="#popup-mandiri-cash" class="showPopup btnCoinMandiri">&nbsp;</a>
             </div>
             <div class="rowd">
 				<div class="col-content fr tr widget">
@@ -145,6 +147,29 @@ if(isset($category_name)){
         </div><!-- end .content -->
     </div><!-- end #thecontent -->
 </div><!-- end #catalogPage -->
+<div id="popup-coins" class="popup popups">
+	<a href="#" class="closebtn"><span class="icon-close"></span></a>
+	<div class="popup-content">
+    	<h3>FM  COIN</h3>
+        <p>Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Curabitur blandit tempus porttitor. Etiam porta sem malesuada magna mollis euismod. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+
+<p>Curabitur blandit tempus porttitor. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+
+<p>Nullam quis risus eget urna mollis ornare vel eu leo. Nullam id dolor id nibh ultricies vehicula ut id elit. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+    </div><!-- end .popup-content -->
+</div><!-- end #popup-coins -->
+<div id="popup-mandiri-cash" class="popup popups">
+	<a href="#" class="closebtn"><span class="icon-close"></span></a>
+	<div class="popup-content">
+    	<h3>MANDIRI E-CASH</h3>
+        <p>Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Curabitur blandit tempus porttitor. Etiam porta sem malesuada magna mollis euismod. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+
+<p>Curabitur blandit tempus porttitor. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+
+<p>Nullam quis risus eget urna mollis ornare vel eu leo. Nullam id dolor id nibh ultricies vehicula ut id elit. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+    </div><!-- end .popup-content -->
+</div><!-- end #popup-mandiri-cash -->
+<div id="bgPopup" class="popup"></div>
 
 <script>
 var browse_url = "<?=$browse_url?>";

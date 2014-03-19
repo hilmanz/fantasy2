@@ -17,15 +17,15 @@ $pic = Configure::read('avatar_web_url').
                 <?php if($canAddPerk):?>
       					<h3  class="yellow"><span class="white"><?=h($item['name'])?></span> telah dimasukkan ke dalam keranjang belanja</h3>
 						 <div class="rowButton">
-						  <a href="<?=$this->Html->url('/merchandises')?>" class="button">Kembali Belanja</a>
-						  <a href="<?=$this->Html->url('/merchandises/cart')?>" class="button">Lihat Keranjang Belanja</a>
+						  <a href="<?=$this->Html->url('/merchandises')?>" class="button2"><span class="ico icon-undo-2">&nbsp;</span> Kembali Belanja</a>
+						  <a href="<?=$this->Html->url('/merchandises/cart')?>" class="button2"><span class="ico icon-cart">&nbsp;</span> Lihat Keranjang Belanja</a>
 						</div>
                 <?php else:?>
-                  		<p>Maaf, Perk ini (<?=h($item['name'])?>) sedang aktif di klub loe, perk ini hanya bisa loe beli setelah masa berlakunya telah habis !</p>
+                  		<h3  class="yellow">Maaf, Perk ini <span class="white"><?=h($item['name'])?></span> sedang aktif di klub loe, perk ini hanya bisa loe beli setelah masa berlakunya telah habis !</h3>
 
 						 <div class="rowButton">
-							<a href="<?=$this->Html->url('/merchandises')?>" class="button">
-							  Kembali Belanja
+							<a href="<?=$this->Html->url('/merchandises')?>" class="button2">
+							  <span class="ico icon-undo-2">&nbsp;</span> Kembali Belanja
 							</a>
 						  </div>
                 <?php endif;?>

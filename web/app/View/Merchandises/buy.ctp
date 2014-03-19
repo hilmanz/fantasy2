@@ -5,7 +5,7 @@
      	 <?php echo $this->element('infobar'); ?>
       </div>
     <div id="thecontent">
-        <div class="content">
+        <div class="content pad20">
         	<div class="titlePage">
         		<?php 
         		$msg = $this->Session->flash();
@@ -20,17 +20,20 @@
             </div>
             <div class="rowd">
 				<div class="col-content">
-					<div class="tr widget">
+					<div class="tr widgets">
 			
-		                <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable footable">
+							<thead>
 		                    <tr>
-		                        <td></td>
-		                        <td>Item</td>
-		                        <td>Harga Satuan</td>
-		                        <td>Jumlah</td>
-		                        <td>Total</td>
+		                        <th></th>
+		                        <th>Item</th>
+		                        <th>Harga Satuan</th>
+		                        <th>Jumlah</th>
+		                        <th>Total</th>
 		                      
 		                    </tr>
+                            </thead>
+                            <tbody>
 							<?php
 							$total_price = 0;
 		                    $total_coins = 0;
@@ -47,7 +50,7 @@
 		                        <td>
 		                        	<img src="<?=$pic?>" width="100px"/>
 		                        </td>
-		                        <td> #<?=h($item['id'])?> -
+		                        <td width="120"> #<?=h($item['id'])?> -
 		                            <?=h($item['name'])?>
 		                        </td>
 		                        <td>
@@ -102,10 +105,7 @@
 		                    <?php endfor;?>
 		                    <tr>
 		                    	<td></td>
-		                    	<td>Ongkos Kirim</td>
-		                    	<td colspan="2">
-		                    		
-		                    	</td>
+		                    	<td colspan="3">Ongkos Kirim</td>
 		                    	<td>
 		                    		<?php
 		                    		$ongkos = 0;
@@ -120,7 +120,7 @@
 		                    		<span class="shipping">Rp. <?=number_format($ongkos)?></span>
 		                    	</td>
 		                    </tr>
-		                    <tr>
+		                    <tr class="rowtotal">
 		                    	<td></td>
 		                        <td colspan="3" align="right">Belanja Total</td>
 		                        <td>
@@ -135,10 +135,11 @@
 		                            </span>
 		                        </td>
 		                    </tr>
+                            </tbody>
 		                </table>
  
 					</div><!-- end .widget -->
-					<div class="tr widget">
+					<div class="tr widgets">
 					<form class="shipaddress" 
 						action="<?=$this->Html->url('/merchandises/order')?>" 
 						method="post" 
@@ -203,7 +204,7 @@
 					</div><!-- end .widget -->
 				</div><!-- end .col-content -->
 				<div class="box4 fr">
-					<div class="tr widget order-detail">
+					<div class="tr widgets order-detail">
 						<h2>Your Order</h2>
 						<h4><?=h($item['name'])?></h4>
 						<p class="price"><?=number_format($item['price_credit'])?> Coins</p>

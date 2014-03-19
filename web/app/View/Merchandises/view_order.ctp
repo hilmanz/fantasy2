@@ -4,7 +4,7 @@
      	 <?php echo $this->element('infobar'); ?>
       </div>
     <div id="thecontent">
-        <div class="content">
+        <div class="content pad20">
         	<div class="titlePage">
 				<h1 class="red">
 					Online Catalog
@@ -14,7 +14,7 @@
             </div>
             <div class="rowd">
 				<div class="col-content">
-					<div class="tr widget">
+					<div class="tr widgets">
 						<h1>Kode Transaksi : <?=h($rs['MerchandiseOrder']['po_number'])?></h1>
 						
 					</div>
@@ -22,15 +22,17 @@
 						<?php
 							$shopping_cart = unserialize($rs['MerchandiseOrder']['data']);
 						?>
-		                <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF">
-		                    <tr>
-		                        <td></td>
-		                        <td>Item</td>
-		                        <td>Harga Satuan</td>
-		                        <td>Jml</td>
-		                        <td>Total</td>
-		                      
-		                    </tr>
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable footable">
+							<thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Item</th>
+                                    <th>Harga Satuan</th>
+                                    <th>Jml</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 							<?php
 							$total_price = 0;
 		                    $total_coins = 0;
@@ -132,13 +134,14 @@
 		                            </span>
 		                        </td>
 		                    </tr>
+                            </tbody>
 		                </table>
  
 					</div><!-- end .widget -->
-					<div class="tr widget">
+					<div class="tr widgets">
 						<p>
-							<a class="button" href="<?=$this->Html->url('/merchandises/history')?>">
-								Kembali ke Daftar Transaksi
+							<a class="button2" href="<?=$this->Html->url('/merchandises/history')?>">
+								<span class="ico icon-undo-2">&nbsp;</span> Kembali ke Daftar Transaksi
 							</a>
 						</p>
 					</div><!-- end .widget -->

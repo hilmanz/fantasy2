@@ -10,7 +10,7 @@ if(isset($category_name)){
      	 <?php echo $this->element('infobar'); ?>
       </div>
     <div id="thecontent">
-        <div class="content">
+        <div class="content pad20">
         	<div class="titlePage">
 				<h1 class="red">
 					Online Catalog <?=$subtitle?>
@@ -19,7 +19,7 @@ if(isset($category_name)){
 				<h4>Ongkos Kirim Ditanggung Pemenang</h4>
             </div>
             <div class="rowd">
-				<div class="col-content fr tr widget">
+				<div class="col-content fr tr widgets">
 					
 					<?php
 						$pic = Configure::read('avatar_web_url').
@@ -39,7 +39,7 @@ if(isset($category_name)){
 						</div>
 					</div>
 					<div class="detailCatalog" style="width:440px;">
-							<h4><?=h($item['MerchandiseItem']['name'])?></h4>
+							<h4 class="MerchandiseItemName"><?=h($item['MerchandiseItem']['name'])?></h4>
 							<p class="price"><?=number_format($item['MerchandiseItem']['price_credit'])?> Coins</p>
 							<?php if(intval($item['MerchandiseItem']['price_money']) > 0):?>
 							<p class="idrprice">(or buy now for Rp. <?=number_format($item['MerchandiseItem']['price_money'])?>)</p>

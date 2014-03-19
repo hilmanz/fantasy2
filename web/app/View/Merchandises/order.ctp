@@ -12,24 +12,24 @@ $pic = Configure::read('avatar_web_url').
       </div>
     <?php if($is_transaction_ok):?>
     <div id="thecontent">
-        <div class="content">
+        <div class="content pad20">
         	<div class="titlePage">
 				<h1 class="red">Online Catalog</h1>
 				<h4>Order Complete!</h4>
             </div>
             <div class="rowd">
 				<div class="col-content">
-					<div class="tr widget">
+					<div class="tr widgets">
 						<h1>Your order has been successfully processed.</h1>
 						<h3>We've also
 deducted the balance from your Supersoccer Football manager
 funds.</br> Thanks for your purchase!</h3>
-						<p><a class="button" href="<?=$this->Html->url('/merchandises/history')?>">Back to the Game</a></p>
+						<p class="mt20"><a class="button2" href="<?=$this->Html->url('/merchandises/history')?>"><span class="ico icon-undo-2">&nbsp;</span> Back to the Game</a></p>
 					</div><!-- end .widget -->
 				</div><!-- end .col-content -->
 				<div class="box4 fr">
 					<?php if(isset($item)):?>
-					<div class="tr widget order-detail">
+					<div class="tr widgets order-detail">
 						<h2>Your Order</h2>
 						<h4><?=h($item['name'])?></h4>
 						<p class="price"><?=number_format($item['price_credit'])?> Coins</p>
@@ -44,14 +44,14 @@ funds.</br> Thanks for your purchase!</h3>
     </div><!-- end #thecontent -->
 	<?php else:?>
 	<div id="thecontent">
-        <div class="content">
+        <div class="content pad20">
         	<div class="titlePage">
 				<h1 class="red">Online Catalog</h1>
 				<h4>Order Failed!</h4>
             </div>
             <div class="rowd">
 				<div class="col-content">
-					<div class="tr widget">
+					<div class="tr widgets">
 						<h1>Pesanan loe tidak dapat di proses</h1>
 						<?php if(isset($apply_digital_perk_error) && $apply_digital_perk_error == 1):?>
 						<h3>
@@ -67,12 +67,12 @@ funds.</br> Thanks for your purchase!</h3>
 						<?php else:?>
 						<h3>Maaf, transaksi loe tidak dapat diproses. Silahkan coba lagi nanti !</h3>
 						<?php endif;?>
-						<p><a class="button" href="<?=$this->Html->url('/merchandises/history')?>">Back to the Game</a></p>
+						<p class="mt20"><a class="button2" href="<?=$this->Html->url('/merchandises/history')?>"><span class="ico icon-undo-2">&nbsp;</span> Back to the Game</a></p>
 					</div><!-- end .widget -->
 				</div><!-- end .col-content -->
 				<div class="box4 fr">
 					<?php if(isset($item)):?>
-					<div class="tr widget order-detail">
+					<div class="tr widgets order-detail">
 						<h2>Your Order</h2>
 						<h4><?=h($item['name'])?></h4>
 						<p class="price"><?=number_format($item['price_credit'])?> Coins</p>
