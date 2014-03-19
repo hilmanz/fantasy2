@@ -2607,3 +2607,34 @@ table.dataTable{
 #bannerBox{
 	width:254px;
 }
+.catalog-list a.button{
+	background:url(../images/tr.png) repeat;
+	line-height:35px;
+	text-transform:uppercase;
+	border-radius:0;
+}
+.button2{
+	line-height:35px;
+	text-transform:uppercase;
+	border-radius:0;
+	display:inline-block;
+	padding:0 20px;
+	text-transform:uppercase;
+	text-shadow:0 1px 1px #000;
+	background:#000;
+	color:#fff;
+}
+.catalog-list a.button:hover,.button2:hover{
+	background:#333;
+	color:#fff;
+	text-decoration:none;
+}
+.rowButton{
+	padding:30px 0 20px 0;
+}
+.pad20{
+	padding:20px;
+}
+.nomargin{
+	margin:0;
+}

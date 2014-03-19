@@ -8,14 +8,13 @@ var base_coin = {};
      	 <?php echo $this->element('infobar'); ?>
       </div>
     <div id="thecontent">
-        <div class="content">
+        <div class="content pad20">
         	<div class="titlePage">
-				<h1 class="red">Keranjang Belanja</h1>
-				<h4></h4>
+				<h1 class="yellow">Keranjang Belanja</h1>
             </div>
             <div class="rowd">
-				<div class="col-content">
-					<div class="tr widget">
+				<div class="col-contents">
+					<div class="widgets tr">
                         <?php
                             $msg = $this->Session->flash();
                             if(isset($msg)):
@@ -28,15 +27,18 @@ var base_coin = {};
                 id="frm" method="post" 
                 enctype="application/x-www-form-urlencoded"
 				action="<?=$this->Html->url('/merchandises/cart')?>">
-                <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable footable nomargin">
+					<thead>
                     <tr>
                        
-                        <td>Item</td>
-                        <td>Harga Satuan</td>
-                        <td>Jumlah</td>
-                        <td>Total</td>
-                        <td>Hapus</td>
+                        <th>Item</th>
+                        <th>Harga Satuan</th>
+                        <th>Jumlah</th>
+                        <th>Total</th>
+                        <th>Hapus</th>
                     </tr>
+					</thead>
+					<tbody>
 					<?php
 					for($i=0;$i<sizeof($shopping_cart);$i++):
 
@@ -111,14 +113,14 @@ var base_coin = {};
                     <?php endfor;?>
                     <tr>
                         <td colspan="3">
-                            <div>
+                            <div class="col3">
                                 Ongkos Kirim
                             </div>
-                            <select name="city_id">
+                            <select name="city_id" class="col3">
                                 <?php if($city_id==0):?>
-                                    <option value="0" selected="selected">Pilih Kota</a>
+                                    <option value="0" selected="selected">Pilih Kota</option>
                                 <?php else:?>
-                                    <option value="0">Pilih Kota</a>
+                                    <option value="0">Pilih Kota</option>
                                 <?php endif;?>
 
                                 <?php foreach($ongkir as $cost):?>
@@ -145,27 +147,17 @@ var base_coin = {};
                             <span class="total-price">0</span>
                         </td>
                     </tr>
+					</tbody>
 
                 </table>
                 <input type="hidden" name="update_type" value="0"/>
-                <a href="<?=$this->Html->url('/merchandises')?>" class="button">Kembali Belanja</a>
-                <a href="javascript:;" id="btnUpdate"class="button">Update Keranjang Belanja</a>
-                <a href="javascript:;" id="btnCheckout"class="button">Checkout</a>
+                <a href="<?=$this->Html->url('/merchandises')?>" class="button2"><span class="ico icon-undo">&nbsp;</span> Kembali Belanja</a>
+                <a href="javascript:;" id="btnUpdate"class="button2"><span class="ico icon-checkmark-circle">&nbsp;</span> Update Keranjang Belanja</a>
+                <a href="javascript:;" id="btnCheckout"class="button2"><span class="ico icon-cart">&nbsp;</span> Checkout</a>
                
                 </form>
 					</div><!-- end .widget -->
 				</div><!-- end .col-content -->
-				<div class="box4 fr">
-					
-                   <?php for($i=0;$i<sizeof($sidebar_banner);$i++):?>
-			        	<div class="banner300x250">
-						     <a href="javascript:banner_click(<?=$sidebar_banner[$i]['Banners']['id']?>,'<?=$sidebar_banner[$i]['Banners']['url']?>');" target="_blank">
-			                    <img src="<?=$this->Html->url(Configure::read('avatar_web_url').
-			                                $sidebar_banner[$i]['Banners']['banner_file'])?>" />
-			                </a>
-			            </div>
-		            <?php endfor;?>
-				</div><!-- end .box4 -->
             </div><!-- end .row-3 -->
         </div><!-- end .content -->
     </div><!-- end #thecontent -->
