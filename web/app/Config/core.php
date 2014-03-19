@@ -381,3 +381,7 @@ Configure::write('DIGITAL_ITEM_CATEGORY',5);
 
 //Administration & Handling Fee
 Configure::write('PO_ADMIN_FEE',50000);
+
+
+//Merchandise page settings
+Configure::write('MERCHANDISE_ENABLE',false);

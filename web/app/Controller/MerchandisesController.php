@@ -43,6 +43,10 @@ class MerchandisesController extends AppController {
 		$this->set('sidebar_banner',$sidebar_banner);
 
 		$this->loadModel('Ongkir');
+		
+		if(!Configure::read('MERCHANDISE_ENABLE') && $this->request->params['action'] != 'offline'){
+			$this->redirect('/merchandises/offline');
+		}
 	}
 	public function hasTeam(){
 		$userData = $this->getUserData();
@@ -1389,6 +1393,9 @@ class MerchandisesController extends AppController {
 		
 	}
 	public function status($order_id){
+
+	}
+	public function offline(){
 
 	}
 

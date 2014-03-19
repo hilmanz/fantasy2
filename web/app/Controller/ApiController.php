@@ -2417,7 +2417,7 @@ class ApiController extends AppController {
 		}else{
 			//if doesnt, we query everything.
 			$options = array(
-						'conditions'=>array('merchandise_type'=>0),
+						'conditions'=>array('merchandise_type'=>0,'price_money > 0'),
 						'offset'=>$start,
 						'limit'=>$total,
 						'order'=>array('MerchandiseItem.id'=>'DESC')
@@ -2438,12 +2438,9 @@ class ApiController extends AppController {
 		//check the stock for each items
 		for($i=0;$i<sizeof($rs);$i++){
 			//get the available stock
-			// stock_available = stock - total_order
-			$total_order = $this->MerchandiseOrder->find('count',
-				array('conditions'=>array('merchandise_item_id'=>$rs[$i]['MerchandiseItem']['id'],
-										  'n_status <> 4')));
 			
-			$rs[$i]['MerchandiseItem']['available'] = $rs[$i]['MerchandiseItem']['stock'] - $total_order;
+			
+			$rs[$i]['MerchandiseItem']['available'] = $rs[$i]['MerchandiseItem']['stock'];
 
 			//prepare the picture url
 			$pic = Configure::read('avatar_web_url').
@@ -2480,6 +2477,7 @@ class ApiController extends AppController {
 									'previous_offset'=>$previous_offset,
 									'total_rows'=>$total_rows));
 
+
 		$this->render('default');
 	}
 	///api for displaying the catalog's item
@@ -2500,11 +2498,9 @@ class ApiController extends AppController {
 		//get the item detail
 		$item = $this->MerchandiseItem->findById($item_id);
 		
-		$total_order = $this->MerchandiseOrder->find('count',
-				array('conditions'=>array('merchandise_item_id'=>$item['MerchandiseItem']['id'],
-										  'n_status <> 4')));
+		
 			
-		$item['MerchandiseItem']['available'] = $item['MerchandiseItem']['stock'] - $total_order;
+		$item['MerchandiseItem']['available'] = $item['MerchandiseItem']['stock'];
 
 		//prepare the picture url
 		$pic = Configure::read('avatar_web_url').
@@ -2840,7 +2836,7 @@ class ApiController extends AppController {
 		$this->loadModel('MerchandiseItem');
 		$this->loadModel('MerchandiseCategory');
 		$this->loadModel('MerchandiseOrder');
-		
+		$this->loadModel('Ongkir');
 
 		$result = array('is_transaction_ok'=>false);
 
