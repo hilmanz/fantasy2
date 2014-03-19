@@ -41,9 +41,10 @@ if(isset($category_name)){
 					<div class="detailCatalog" style="width:440px;">
 							<h4><?=h($item['MerchandiseItem']['name'])?></h4>
 							<p class="price"><?=number_format($item['MerchandiseItem']['price_credit'])?> Coins</p>
+							<?php if(intval($item['MerchandiseItem']['price_money']) > 0):?>
 							<p class="idrprice">(or buy now for Rp. <?=number_format($item['MerchandiseItem']['price_money'])?>)</p>
 							<div>
-
+							<?php endif;?>
 							<?php if($item['MerchandiseItem']['available'] > 0):?>
 							<?php
 							if($can_update_formation):

@@ -57,14 +57,14 @@ var base_coin = {};
                         </td>
                         <?php endif;?>
                         <td>
-                            <?php if($item['price_money']>0):?>
+                            <?php if(intval($item['price_money'])>0):?>
                             <p class="price">   
                                 Rp. <?=number_format(intval($item['price_money']))?> 
                             </p> 
                             <?php endif;?>
                             <?php if($item['price_credit']>0):?>
                             <p class="price">   
-                                <?php if($item['price_money'] > 0):?>
+                                <?php if( intval($item['price_money']) > 0):?>
                                     (<?=number_format(intval($item['price_credit']))?> Coins)
                                 <?php else:?>
                                     <?=number_format(intval($item['price_credit']))?> Coins
@@ -87,9 +87,11 @@ var base_coin = {};
                             <?php endif;?>
                         </td>
                         <td>
+                            <?php if(intval($item['price_money'])>0):?>
                             Rp. <span class="prices price-<?=$item['id']?>">
                                 <?=number_format(intval($item['price_money']))?>
                             </span>
+                            <?php endif;?>
                             <?php if($item['price_credit']>0):?>
                                 <?php if($item['price_money']>0):?>
                                     (<span class="coins coin-<?=$item['id']?>">
@@ -195,6 +197,8 @@ function totalCost(callback){
     var n_total = $(".qty").length;
     $(".qty").each(function(i,item){
         var id = $(item).attr('data-id');
+        $(".price-"+id).html((parseInt(base_price[id]) * parseInt($(item).val())));
+        $(".coin-"+id).html((parseInt(base_coin[id]) * parseInt($(item).val())));
         total_coins += parseInt(base_coin[id]) * parseInt($(item).val());
         total_price += parseInt(base_price[id]) * parseInt($(item).val());
         if(parseInt(i) == (n_total - 1)){

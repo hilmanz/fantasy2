@@ -44,10 +44,11 @@ if(isset($category_name)){
 							<p class="price"><?=number_format($r['MerchandiseItem']['price_credit'])?>
 								Coins
 							</p>
+							<?php if(intval($r['MerchandiseItem']['price_money']) > 0):?>
 							<p class="idrprice">
 								Rp. <?=number_format($r['MerchandiseItem']['price_money'])?>
 							</p>
-
+							<?php endif;?>
 							<?php if($r['MerchandiseItem']['available'] > 0):?>
 								<a class="buyBtn button" href="<?=$view_url?>">VIEW</a>
 							<?php else:?>
