@@ -19,7 +19,7 @@ if(isset($category_name)){
 				<h4>Ongkos Kirim Ditanggung Pemenang</h4>
             </div>
             <div class="rowd">
-				<div class="col-content fr tr widgets">
+				<div class="col-content fr tr widget">
 					
 					<?php
 						$pic = Configure::read('avatar_web_url').
