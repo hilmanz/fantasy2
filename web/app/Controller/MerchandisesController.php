@@ -659,6 +659,8 @@ class MerchandisesController extends AppController {
 		  $status = trim($data[4]);
 		  
 		  $returnid = $ticket;
+
+		  //todo ini harusnya di set di redis saja.
 		  $this->Session->write('ecash_return',array(
 		  							'id'=>$ticket,
 		  							'nohp'=>$phone_no,
@@ -682,7 +684,11 @@ class MerchandisesController extends AppController {
 			
 			$is_valid = true;
 			if(Configure::read('debug')==0){
+				//ini masih blm bisa diimplement,
+				//karena sessionnya akan berbeda dengan session ketika kita mendapat return.
+				/*
 				$ecash_validate = $this->Session->read('ecash_return');
+				print "foo";
 				if($result['id']==$ecash_validate['id'] &&
 					$result['trace_number']==$ecash_validate['trace_number'] &&
 					$result['nohp']==$ecash_validate['nohp'] &&
@@ -693,6 +699,8 @@ class MerchandisesController extends AppController {
 				}else{
 					$is_valid = false;
 				}
+				*/
+				$is_valid = true;
 			}
 
 			if(strtoupper($result['status'])=='SUCCESS' && $is_valid){

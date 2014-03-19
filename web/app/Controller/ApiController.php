@@ -3177,21 +3177,21 @@ class ApiController extends AppController {
 		$ecash_data = unserialize(decrypt_param($this->request->query['ecash_data']));
 
 		//these the data sent-back by ecash after user complete the payment by entering OTP.
-		$sendData = unserialize(decrypt_param($this->request->query['sendData']));
+		//$sendData = unserialize(decrypt_param($this->request->query['sendData']));
 
 		//now validate the ecash returnId
 		$rs  = $this->Game->EcashValidate($id);
 		list($id,$trace_number,$nohp,$transaction_id,$status) = explode(',',$rs['data']);
 
-		if(Configure::read('debug')!=0){
-			$sendData = array('id'=>trim($id),
+		//di comment dulu, gak working kayak gini, sessionnya beda soalnya
+		//if(Configure::read('debug')!=0){
+		/*$sendData = array('id'=>trim($id),
 								'trace_number'=>trim($trace_number),
 								'nohp'=>trim($nohp),
 								'transaction_id'=>trim($transaction_id),
-								'status'=>trim($status));
-		}
-		if(trim($transaction_id)==$sendData['transaction_id']
-				&& $transaction_id==$ecash_data['transaction_id']
+								'status'=>trim($status));*/
+		//}
+		if($transaction_id==$ecash_data['transaction_id']
 					&& strtoupper(trim($status)) =='SUCCESS'){
 
 			//transaction complete, we update the order status
