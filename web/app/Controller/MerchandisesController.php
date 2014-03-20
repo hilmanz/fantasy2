@@ -194,19 +194,7 @@ class MerchandisesController extends AppController {
 			);
 			
 			$is_valid = true;
-			if(Configure::read('debug')==0){
-				$ecash_validate = $this->Session->read('ecash_return');
-				if($result['id']==$ecash_validate['id'] &&
-					$result['trace_number']==$ecash_validate['trace_number'] &&
-					$result['nohp']==$ecash_validate['nohp'] &&
-					$result['transaction_id']==$ecash_validate['transaction_id'] &&
-					$result['status']==$ecash_validate['status']
-					){
-					$is_valid = true;
-				}else{
-					$is_valid = false;
-				}
-			}
+			
 
 			if(strtoupper($result['status'])=='SUCCESS' && $is_valid){
 				//update order status
@@ -408,10 +396,12 @@ class MerchandisesController extends AppController {
 		for($i=0;$i<sizeof($shopping_cart);$i++){
 			$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
 			$price_money = intval($shopping_cart[$i]['data']['MerchandiseItem']['price_money']);
+
 			if($price_money==0){
 				$can_use_ecash = false;
 			}
 		}
+	
 		$this->set('shopping_cart',$shopping_cart);
 
 		
