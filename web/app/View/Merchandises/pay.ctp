@@ -4,7 +4,7 @@
      	 <?php echo $this->element('infobar'); ?>
       </div>
     <div id="thecontent">
-        <div class="content">
+        <div class="content pad20">
         	<div class="titlePage">
 				<h1 class="red">
 					Online Catalog
@@ -14,45 +14,47 @@
             </div>
             <div class="rowd">
 				<div class="col-content">
-					<div class="tr widget">
+					<div class="tr widgets">
 						<h1>Kode Transaksi : <?=h($rs['MerchandiseOrder']['po_number'])?></h1>
 						
 					</div>
-					<div class="tr widget">
+					<div class="tr widgets">
 						<?php
 							$shopping_cart = unserialize($rs['MerchandiseOrder']['data']);
 						?>
-		                <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF">
-		                    <tr>
-		                       
-		                        <td>Item</td>
-		                       <td>Kota Tujuan</td>
-		                        <td>Total</td>
-		                      	<td></td>
-		                    </tr>
-							
-		                    <tr>
-		                        <td>Ongkos Kirim</td>
-		                        <td><?=h($city['city'])?></td>
-		                       
-		                        <td>
-		                        	Rp. <?=number_format($city['cost'])?>
-		                        </td>
-		                      	<td>
-		                      		<a class="button" href="<?=$ecash_url?>">
-										Bayar dengan ECash Mandiri
-									</a>
-		                      	</td>
-		                    </tr>
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable footable">
+							<thead>
+                                <tr>
+                                   
+                                    <th>Item</th>
+                                    <th>Kota Tujuan</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Ongkos Kirim</td>
+                                    <td><?=h($city['city'])?></td>
+                                    <td>
+                                        Rp. <?=number_format($city['cost'])?>
+                                    </td>
+                                    <td>
+                                        <a class="button" href="<?=$ecash_url?>">
+                                            Bayar dengan ECash Mandiri
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
 		                    
 		                </table>
  
 					</div><!-- end .widget -->
-					<div class="tr widget">
+					<div class="tr widgets">
 						<p>
 							
-							<a class="button" href="<?=$this->Html->url('/merchandises/history')?>">
-								Kembali ke Daftar Transaksi
+							<a class="button2" href="<?=$this->Html->url('/merchandises/history')?>">
+								<span class="ico icon-undo-2">&nbsp;</span> Kembali ke Daftar Transaksi
 							</a>
 						</p>
 					</div><!-- end .widget -->

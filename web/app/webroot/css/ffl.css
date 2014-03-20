@@ -678,6 +678,9 @@ a.download-appstore{
 	color:#fff;
 }
 /*============= CONTENT ===============*/
+.titlePage{
+	position:relative;
+}
 .titlePage h1{
 	font-size:30px;
 	margin:0;
@@ -1337,7 +1340,7 @@ table td a.button,table td .buttons{
 	width:100%; height:100%;
 	left:0; top:0;
 }
-#popupWelcome{
+#popupWelcome,.popups{
 	background:#fff;
 	border-radius:10px;
 	padding:30px;
@@ -1349,6 +1352,9 @@ table td a.button,table td .buttons{
 	z-index:1001;
 	color:#666;
 	box-shadow:0 0 90px inset;
+}
+.popups,.popups .popup-content{
+	text-align:left;
 }
 #popupWelcome h3{
 	margin:0 0 10px 0;
@@ -2319,7 +2325,7 @@ table.dataTable{
 }
 .shipaddress h3{
 	font-size:24px;
-	margin:0;
+	margin:20px 0 0 0;
 	color:#fdcb02;
 }
 #popup-verification{
@@ -2635,6 +2641,36 @@ table.dataTable{
 .pad20{
 	padding:20px;
 }
+.mt20{
+	margin:20px 0;
+}
 .nomargin{
 	margin:0;
+}
+.detailCatalog h4.MerchandiseItemName{
+	margin:20px 0 0 0;
+	height:auto;
+	font-size:20px;
+}
+.rowtotal td{
+	background:#c00 !important;
+	color:#fff !important;
+}
+a.btnCoin,a.btnCoinMandiri{
+	background:url(../images/coinfms.png) no-repeat;
+	width:68px; height:68px;
+	display:block;
+	text-decoration:none;
+	position:absolute;
+	right:80px;
+	opacity:0.8;
+	top:0;
+}
+a.btnCoinMandiri{
+	background:url(../images/mandiri-ecash.png) no-repeat;
+	right:0;
+}
+a.btnCoin:hover,a.btnCoinMandiri:hover{
+	text-decoration:none;
+	opacity:1;
 }

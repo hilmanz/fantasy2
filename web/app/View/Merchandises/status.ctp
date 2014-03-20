@@ -8,19 +8,18 @@ $pic = Configure::read('avatar_web_url').
      	 <?php echo $this->element('infobar'); ?>
       </div>
     <div id="thecontent">
-        <div class="content">
+        <div class="content pad20">
         	<div class="titlePage">
 				<h1 class="red">Order Status</h1>
-				<h4></h4>
             </div>
             <div class="rowd">
 				<div class="col-content">
-					<div class="tr widget">
+					<div class="tr widgets">
 					
 					</div><!-- end .widget -->
 				</div><!-- end .col-content -->
 				<div class="box4 fr">
-					<div class="tr widget order-detail">
+					<div class="tr widgets order-detail">
 						<h2>Your Order</h2>
 						<h4><?=h($item['name'])?></h4>
 						<p class="price">ss$<?=number_format($item['price_currency'])?></p>

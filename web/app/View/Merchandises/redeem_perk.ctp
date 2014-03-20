@@ -26,7 +26,7 @@ if(time() > $close_time['ts'] && Configure::read('debug') == 0){
      	 <?php echo $this->element('infobar'); ?>
       </div>
     <div id="thecontent">
-        <div class="content">
+        <div class="content pad20">
         	<div class="titlePage">
 				<h1 class="red">Online Catalog</h1>
 				<?php 
@@ -41,7 +41,7 @@ if(time() > $close_time['ts'] && Configure::read('debug') == 0){
             </div>
             <div class="rowd">
 				<div class="col-content">
-					<div class="tr widget">
+					<div class="tr widgets">
 						<?php
 						if($can_update_formation):
 						?>
@@ -57,12 +57,12 @@ if(time() > $close_time['ts'] && Configure::read('debug') == 0){
 						</div><!-- end .row -->
 					</form>
 					<?php else:?>
-						<a href="<?=$this->Html->url('/merchandises')?>" class="button">Kembali ke Online Catalog</a>
+						<a href="<?=$this->Html->url('/merchandises')?>" class="button2"><span class="ico icon-undo-2">&nbsp;</span>  Kembali ke Online Catalog</a>
 					<?php endif;?>
 					</div><!-- end .widget -->
 				</div><!-- end .col-content -->
 				<div class="box4 fr">
-					<div class="tr widget order-detail">
+					<div class="tr widgets order-detail">
 						<h2>Your Order</h2>
 						<h4><?=h($item['name'])?></h4>
 						<p class="price"><?=number_format($item['price_credit'])?> Coins</p>
