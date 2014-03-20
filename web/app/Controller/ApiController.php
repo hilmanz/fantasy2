@@ -2396,7 +2396,7 @@ class ApiController extends AppController {
 			$category_ids = $this->getChildCategoryIds($category_id,$category_ids);
 			$options = array('conditions'=>array(
 									'merchandise_category_id'=>$category_ids,
-									'merchandise_type'=>0),
+									'merchandise_type'=>0,'price_money > 0'),
 									'offset'=>$start,
 									'limit'=>$total,
 									'order'=>array('MerchandiseItem.id'=>'DESC')
@@ -2682,7 +2682,7 @@ class ApiController extends AppController {
 			$this->set('response',array('status'=>1));
 		}else{
 			CakeLog::write('debug','status : 0');
-			$this->set('response',array('status'=>0));
+			$this->set('response',array('status'=>0,'error'=>$rs['error']));
 		}
 		
 		$this->render('default');
@@ -2696,7 +2696,7 @@ class ApiController extends AppController {
 		CakeLog::write('debug','data : '.json_encode($ecash_data));
 		$shopping_cart = unserialize(decrypt_param($ecash_data['param']));
 		
-		CakeLog::write('debug',json_encode($shopping_cart));
+		CakeLog::write('debug','shopping_cart : '.json_encode($shopping_cart));
 		
 		$total_price = 0;
 		
@@ -2722,7 +2722,8 @@ class ApiController extends AppController {
 
 
 		$data = unserialize(decrypt_param($ecash_data['profile']));
-
+		CakeLog::write('debug','profile : '.json_encode($shopping_cart));
+		
 		//calculate ongkir
 		$ongkirList = $this->getOngkirList();
 		$total_ongkir = 0;
@@ -2756,11 +2757,20 @@ class ApiController extends AppController {
 		//we need ongkir value
 		$ok = $this->Ongkir->findById($data['city_id']);
 		$data['ongkir_value'] = $ok['Ongkir']['cost'];
-			
-		$this->MerchandiseOrder->create();
-		$rs = $this->MerchandiseOrder->save($data);	
 		
-		CakeLog::write('debug','INPUT : '.json_encode($rs));
+
+		CakeLog::write('debug','TO BE SAVED : '.json_encode($data));
+
+		$this->MerchandiseOrder->create();
+		try{
+			$rs = $this->MerchandiseOrder->save($data);	
+		}catch(Exception $e){
+			//$rs = array('MerchandiseOrder'=>$data);
+			$rs['error'] = $e->getMessage();
+		}
+		
+		
+		CakeLog::write('debug','INPUT : '.json_encode(@$rs));
 
 		$this->process_items($shopping_cart);
 			

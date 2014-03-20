@@ -111,4 +111,3 @@ var base_coin = {};
         </div><!-- end .content -->
     </div><!-- end #thecontent -->
 </div><!-- end #catalogPage -->
-
