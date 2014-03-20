@@ -151,22 +151,47 @@ if(isset($category_name)){
 	<a href="#" class="closebtn"><span class="icon-close"></span></a>
 	<div class="popup-content">
     	<h3>FM  COIN</h3>
-        <p>Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Curabitur blandit tempus porttitor. Etiam porta sem malesuada magna mollis euismod. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
-
-<p>Curabitur blandit tempus porttitor. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-
-<p>Nullam quis risus eget urna mollis ornare vel eu leo. Nullam id dolor id nibh ultricies vehicula ut id elit. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+        <p>
+Untuk memperoleh FM Coins, lo harus ikutan main FM Super Soccer. Caranya langsung aja daftar di <a href="http://fm.supersoccer.co.id/" target="_blank">fm.supersoccer.co.id</a> isi data lengkap dan tim yang akan lo tangani sebagai manajer.
+</p>
+<p>
+Setelah terdaftar, lo akan memperoleh poin dari tiap pertandingan. Poin tiap pekan yang lo peroleh berdasarkan performa dari pemain lo. Poin yang lo dapet otomatis akan menambah Coin lo. Coin inilah yang bisa lo gunakan untuk belanja di Super Soccer Store.
+</p>
     </div><!-- end .popup-content -->
 </div><!-- end #popup-coins -->
 <div id="popup-mandiri-cash" class="popup popups">
 	<a href="#" class="closebtn"><span class="icon-close"></span></a>
 	<div class="popup-content">
     	<h3>MANDIRI E-CASH</h3>
-        <p>Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Curabitur blandit tempus porttitor. Etiam porta sem malesuada magna mollis euismod. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
-
-<p>Curabitur blandit tempus porttitor. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Aenean lacinia bibendum nulla sed consectetur. Etiam porta sem malesuada magna mollis euismod. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-
-<p>Nullam quis risus eget urna mollis ornare vel eu leo. Nullam id dolor id nibh ultricies vehicula ut id elit. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+       <h4>
+	Cara Pendaftaran Account mandiri ecash di handphone
+</h4>
+<ol>
+	<li>Tekan *141*6#</li>
+    <li>Pilih ecash</li>
+    <li>Pilih admin</li>
+    <li>Pilih daftar</li>
+    <li>Tekan 1 untuk konfirmasi penerimaan syarat dan ketentuan</li>
+    <li>Masukkan nama (cukup nama depan)</li>
+    <li>Masukkan kata rahasia – digunakan nanti untuk melakukan reset PIN jika lupa PIN(minimum 8 huruf, disarankan berupa kata atau kalimat)</li>
+    <li>Masukkan PIN baru</li>
+    <li>Masukkan PIN sekali lagi</li>
+    <li>Pendaftaran selesai</li>
+</ol>
+<h4>Pengisian ecash</h4>
+<ol>
+	<li>Datangi ATM Mandiri</li>
+    <li>Masukkan kartu</li>
+    <li>Masukkan PIN</li>
+    <li>Pilih uang elektronik</li>
+    <li>Pilih isi / Top up</li>
+    <li>Masukkan nomor HP yang didaftarkan diatas</li>
+    <li>Masukkan jumlah pengisian</li>
+    <li>Muncul layar konfirmasi nomor HP dan Nama yang didaftarkan sebelumnya</li>
+    <li>Tekan benar</li>
+    <li>Masukkan PIN ATM</li>
+    <li>Transaksi selesai</li>
+</ol>
     </div><!-- end .popup-content -->
 </div><!-- end #popup-mandiri-cash -->
 <div id="bgPopup" class="popup"></div>
