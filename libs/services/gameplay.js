@@ -710,6 +710,31 @@ exports.check_perk = function(req,res){
 		}		
 	});
 }
+
+/*
+* getting bet information including 
+* live match score, corner, fouls, yellow card,interceptions, shot on target
+* also the list of the winners when the match's period is FullTime
+*/
+exports.bet_info = function(req,res){
+	gameplay.bet_info(req.redisClient,
+					  req.params.game_id,
+						function(err,rs){
+		if(err){
+			handleError(res);
+		}else{
+			if(rs!=null){
+				if(rs==true){
+					res.json(200,{status:1,data:rs});	
+				}else{
+					res.json(200,{status:0,data:rs});	
+				}
+			}else{
+				res.send(200,{status:0,data:rs});
+			}
+		}		
+	});
+}
 //other functions
 function filterAccumulativeStats(stats){
 	var teamstats = {};

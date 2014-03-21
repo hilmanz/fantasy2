@@ -42,12 +42,8 @@ class MerchandisesController extends AppController {
 		//for each items, we need to calculate its stock availability.
 		//so we need the total purchased item so far each.
 		for($i=0; $i<sizeof($rs);$i++){
-			$total_item = $this->MerchandiseOrder->find('count',
-											array('conditions'=>
-											array('merchandise_item_id'=>$rs[$i]['MerchandiseItem']['id'],
-													'n_status <> 4'))
-											);
-			$available_item = $rs[$i]['MerchandiseItem']['stock'] - $total_item;
+			
+			$available_item = $rs[$i]['MerchandiseItem']['stock'];
 			$rs[$i]['stock'] = $available_item;
 		}
 

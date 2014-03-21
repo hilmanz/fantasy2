@@ -2312,6 +2312,43 @@ exports.setPostponedStatus = function(redisClient,game_id,toggle,callback){
 }
 //-->
 
+exports.bet_info = function(redisClient,game_id,callback){
+	redisClient.get('bet_info_'+game_id,function(err,rs){
+		console.log('bet_info',game_id,'result : ',rs);
+		if(rs==null){
+			rs = {
+				SCORE_GUESS:{
+					home:0,
+					away:0
+				},
+				CORNERS_GUESS:{
+					home:0,
+					away:0
+				},
+				SHOT_ON_TARGET_GUESS:{
+					home:0,
+					away:0
+				},
+				CROSSING_GUESS:{
+					home:0,
+					away:0
+				},
+				INTERCEPTION_GUESS:{
+					home:0,
+					away:0
+				},
+				YELLOWCARD_GUESS:{
+					home:0,
+					away:0
+				},
+				winners:[]
+			};
+		}else{
+			rs = JSON.parse(rs);
+		}
+		callback(err,rs);
+	});
+}
 
 var match = require(path.resolve('./libs/api/match'));
 var officials = require(path.resolve('./libs/api/officials'));

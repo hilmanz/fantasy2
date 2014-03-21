@@ -469,5 +469,10 @@ class Game extends AppModel {
 		$rs = $this->api_call('/ecash_validate',array('id'=>$id));
 		return $rs;	
 	}
+
+	public function getBetInfo($game_id){
+		$rs = $this->api_call('/bet_info/'.$game_id,array());
+		return $rs;	
+	}
 }
 

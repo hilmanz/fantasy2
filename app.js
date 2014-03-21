@@ -96,6 +96,8 @@ app.post('/buy',[auth.canAccess],gameplay.buy);
 app.get('/cash/:game_team_id', [auth.canAccess],gameplay.getCash);
 app.get('/getEcashUrl', [auth.canAccess],gameplay.getEcashUrl);
 app.get('/ecash_validate', [auth.canAccess],gameplay.EcashValidate);
+app.get('/bet_info/:game_id',[auth.canAccess],gameplay.bet_info);
+
 
 app.get('/transfer_window',[auth.canAccess],gameplay.getTransferWindow);
 

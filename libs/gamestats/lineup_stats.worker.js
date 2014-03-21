@@ -708,6 +708,17 @@ function getPlayerDailyTeamStats(conn,game_team_id,player_id,player_pos,matchday
 										}
 										cb(err);
 									});
+				},
+				function(cb){
+					console.log('lineup_stats','reset cache','getPlayers_'+game_team_id);
+					redisClient.set('getPlayers_'+game_team_id,
+									JSON.stringify(null),
+									function(err,rs){
+										if(err){
+											console.log('getPlayers_',err.message);
+										}
+										cb(err);
+									});
 				}
 			],
 

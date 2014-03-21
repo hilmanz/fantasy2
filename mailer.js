@@ -94,6 +94,7 @@ function runLoop(){
 							n_sent++;
 							total_sent++;
 							console.log(queue.id,'elapsed : ',td,'total sent : ',n_sent);
+							
 							if(td < 1 && n_sent > 5){
 								console.log('sleep for 1s');
 								//sleep 1 second

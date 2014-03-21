@@ -3389,14 +3389,179 @@ class ApiController extends AppController {
 		$this->render('default');
 	}
 
+	public function bet_match(){
+		$this->layout="ajax";
+		$n = intval(@$this->request->query['flag']);
+
+		$this->set('response',array('status'=>1,'data'=>array(
+			'game_id'=>'f695203',
+			'home_id'=>'t8',
+			'away_id'=>'t3',
+			'home_name'=>'Chelsea',
+			'away_name'=>'Arsenal',
+			'home_logo'=>'http://widgets-images.s3.amazonaws.com/football/team/badges_65/8.png',
+			'away_logo'=>'http://widgets-images.s3.amazonaws.com/football/team/badges_65/3.png'
+		)));
+
+		$this->render('default');
+	}
 	//below is the list of `tebak-skor` minigame APIs
-	function submit_bet($game_id){
+	public function submit_bet($game_id){
+		$game_id = Sanitize::clean($game_id);
 		$req = unserialize(decrypt_param($this->request->query['req']));
 		$fb_id = $req['fb_id'];
 		$bet_data = $req['data'];
-		for($i=0;$i<sizeof($bet_data);$i++){
-			//$this->Game->query("")
+		/*
+		$fb_id = "1234567890";
+		$data = array(
+			'SCORE_GUESS'=>array('home'=>1,'away'=>0,'coin'=>50),
+			'CORNERS_GUESS'=>array('home'=>1,'away'=>0,'coin'=>10),
+			'SHOT_ON_TARGET_GUESS'=>array('home'=>1,'away'=>0,'coin'=>0),
+			'CROSSING_GUESS'=>array('home'=>1,'away'=>0,'coin'=>10),
+			'INTERCEPTION_GUESS'=>array('home'=>1,'away'=>0,'coin'=>10),
+			'YELLOWCARD_GUESS'=>array('home'=>1,'away'=>0,'coin'=>0)
+		);
+		$req = encrypt_param(serialize(array('fb_id'=>$fb_id,'data'=>$data)));
+		*/
+
+		
+		
+		foreach($bet_data as $name=>$val){
+			$sql = "INSERT IGNORE INTO ffgame.tmp_game_bets
+					(game_id,fb_id,bet_name,home,away,coins,submit_dt)
+					VALUES
+					('{$game_id}',
+						'{$fb_id}',
+						'{$name}',
+						'{$val['home']}',
+						'{$val['away']}',
+						'{$val['coin']}',
+						NOW())";
+			$this->Game->query($sql,false);
 		}
+		
+		$this->layout="ajax";
+		
+
+		$this->set('response',array('status'=>1,'game_id'=>$game_id,'fb_id'=>$fb_id));
+		$this->render('default');
+	}
+
+	public function bet_info($game_id){
+		$this->layout="ajax";
+
+
+		
+		$fb_id = $this->request->query['fb_id'];
+
+		$matches = $this->Game->getMatches();
+		$the_match = array();
+		
+		foreach($matches['matches'] as $match){
+			if($match['game_id'] == $game_id){
+				$the_match = $match;
+				break;
+			}
+			
+		}
+		unset($matches);
+		
+		if($the_match['period']=='PreMatch'){
+			$n = 1;
+		}else{
+			$n = 0;
+		}
+
+		$the_match['home_logo'] = 'http://widgets-images.s3.amazonaws.com/football/team/badges_65/'.
+									str_replace('t','',$the_match['home_id']).'.png';
+		$the_match['away_logo'] = 'http://widgets-images.s3.amazonaws.com/football/team/badges_65/'.
+									str_replace('t','',$the_match['away_id']).'.png';
+
+
+		//check if the user can place the bet
+		$sql = "SELECT fb_id FROM ffgame.tmp_game_bets a
+				WHERE game_id='{$game_id}' AND fb_id='{$fb_id}' LIMIT 1;";
+
+	
+
+		$check = $this->Game->query($sql,false);
+		
+		if(isset($check[0]['a']) && $check[0]['a']['fb_id'] == $fb_id){
+			$can_place_bet = false;
+			$n = 0;
+		}else{
+			$can_place_bet = true;
+			$n=1;
+		}
+
+
+
+		if($n==1){
+			$items = array(
+				array('bet_name'=>'SCORE_GUESS'),
+				array('bet_name'=>'CORNERS_GUESS'),
+				array('bet_name'=>'SHOT_ON_TARGET_GUESS'),
+				array('bet_name'=>'CROSSING_GUESS'),
+				array('bet_name'=>'INTERCEPTION_GUESS'),
+				array('bet_name'=>'YELLOWCARD_GUESS')
+			);
+
+			$this->set('response',array('status'=>1,
+								'game_id'=>$game_id,
+								'data'=>$items,
+								'match'=>$the_match,
+								'fb_id'=>$fb_id,
+								'can_place_bet'=>$can_place_bet)
+			);
+
+		}else{
+
+			$rs = $this->Game->getBetInfo($game_id);
+			
+
+			$items = array(
+				array('bet_name'=>'SCORE_GUESS',
+												'home'=>intval($rs['data']['SCORE_GUESS']['home']),
+												'away'=>intval($rs['data']['SCORE_GUESS']['away'])),
+				array('bet_name'=>'CORNERS_GUESS',
+												'home'=>intval($rs['data']['CORNERS_GUESS']['home']),
+												'away'=>intval($rs['data']['CORNERS_GUESS']['away'])),
+				array('bet_name'=>'SHOT_ON_TARGET_GUESS',
+												'home'=>intval($rs['data']['SHOT_ON_TARGET_GUESS']['home']),
+												'away'=>intval($rs['data']['SHOT_ON_TARGET_GUESS']['away'])),
+				array('bet_name'=>'CROSSING_GUESS',
+												'home'=>intval($rs['data']['CROSSING_GUESS']['home']),
+												'away'=>intval($rs['data']['CROSSING_GUESS']['away'])),
+				array('bet_name'=>'INTERCEPTION_GUESS',
+												'home'=>intval($rs['data']['INTERCEPTION_GUESS']['home']),
+												'away'=>intval($rs['data']['INTERCEPTION_GUESS']['away'])),
+				array('bet_name'=>'YELLOWCARD_GUESS',
+												'home'=>intval($rs['data']['YELLOWCARD_GUESS']['home']),
+												'away'=>intval($rs['data']['YELLOWCARD_GUESS']['away'])),
+
+
+			);
+			$winners = array();
+			if(isset($rs['data']['winners'])){
+				$winners = $rs['data']['winners'];
+			}
+
+			//dummy
+			/*$winners = array(array('fb_id'=>'100000807572975','score'=>100),
+							array('fb_id'=>'100000213094071','score'=>90),
+							array('fb_id'=>'100001023465395','score'=>80));
+			//-->*/
+			$this->set('response',array('status'=>1,
+								'game_id'=>$game_id,
+								'data'=>$items,
+								'match'=>$the_match,
+								'winners'=>$winners,
+								'fb_id'=>$fb_id,
+								'can_place_bet'=>$can_place_bet)
+			);
+		}
+		
+		$this->render('default');
 	}
 
 	//--> and of `tebak-skor` minigame APIs

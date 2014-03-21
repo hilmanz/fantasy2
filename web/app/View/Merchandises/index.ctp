@@ -201,4 +201,20 @@ var browse_url = "<?=$browse_url?>";
 $("select[name=cid]").change(function(e){
 	document.location = browse_url+''+parseInt($(this).val());
 });
+
+// popup
+$("a.showPopup").click(function(){
+	$("html, body").animate({ scrollTop: 0 }, 600);
+	$(".popup").fadeOut();
+	var targetID = jQuery(this).attr('href');
+	$("#bgPopup").fadeIn();
+	$(targetID).fadeIn();
+	$(targetID).addClass('visible');
+	    return false;
+});
+$("a.closebtn,#bgPopup").click(function(){
+	$("#bgPopup").fadeOut();
+	$(".popup").fadeOut();
+	    return false;
+});
 </script>
