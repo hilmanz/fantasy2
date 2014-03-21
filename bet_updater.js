@@ -76,10 +76,20 @@ pool.getConnection(function(err,conn){
 
 function generateStats(conn,matchday,game_id,done){
 	console.log('generateStats',matchday,game_id);
+
 	async.eachSeries(game_id,function(gid,next){
-		processGameStats(conn,matchday,gid.game_id,function(err,rs){
-			next();
-		})
+		redisClient.get('bet_info_done_'+gid.game_id,function(e,cek){
+			if(cek!=1){
+				console.log('generateStats',gid.game_id,' ONGOING');
+				processGameStats(conn,matchday,gid.game_id,function(err,rs){
+					next();
+				});
+			}else{
+				console.log('generateStats',gid.game_id,' FULLTIME');
+				next();
+			}
+		});
+		
 	},function(err){
 		done(err);
 	});
@@ -147,6 +157,15 @@ function processGameStats(conn,matchday,game_id,done){
 					}
 					cb(err,matchinfo,goals);
 				});
+		},
+		function(matchinfo,goals,cb){
+			if(goals.period=='FullTime'){
+				redisClient.set('bet_info_done_'+game_id,1,function(err,rs){
+					cb(err,matchinfo,goals);
+				});
+			}else{
+				cb(null,matchinfo,goals);
+			}
 		},
 		function(matchinfo,goals,cb){
 			console.log('goals',goals);
@@ -250,7 +269,8 @@ function processGameStats(conn,matchday,game_id,done){
 			function(err,rs){
 				cb(err,stats);
 			});
-		}
+		},
+
 	],
 	function(err,rs){
 		console.log(game_id,rs);
