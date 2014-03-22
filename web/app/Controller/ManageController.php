@@ -198,6 +198,7 @@ class ManageController extends AppController {
 	            'matchday' => 'asc'
 	        ));
 		$weekly_points = $this->Weekly_point->find('all',$options);
+		
 		$weekly_team_points = array();
 		while(sizeof($weekly_points) > 0){
 			$p = array_shift($weekly_points);

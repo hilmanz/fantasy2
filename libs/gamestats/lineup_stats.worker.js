@@ -444,7 +444,7 @@ function update_team_stats(queue_id,game_id,team,player_stats,team_summary,done)
 																		'BALANCE_IS_BELOW_ZERO',
 																		penalty
 																	],function(err,r){
-																		//console.log('-----',this.sql,'---');
+																		
 																		cb(err,true);
 																	});
 													}else{
@@ -454,12 +454,14 @@ function update_team_stats(queue_id,game_id,team,player_stats,team_summary,done)
 												function(all_ok,cb){
 													//send notification that the player has recieved the extra points
 													if(is_all_player_started){
-														msg = "Selamat, anda baru saja mendapatkan bonus poin sebesar 20 dipertandingan lalu.";
-														conn.query("INSERT INTO "+config.database.frontend_schema+".notifications\
-																	(content,url,dt,game_team_id)\
+														var msg_id = "ALL_PLAYER_STARTED_"+matchday;
+														var msg = "Selamat, anda baru saja mendapatkan bonus poin sebesar 20 dipertandingan lalu.";
+														conn.query("INSERT IGNORE INTO "+config.database.frontend_schema+".notifications\
+																	(content,url,dt,game_team_id,msg_id)\
 																	VALUES\
-																	(?,'#',NOW(),?)",[msg,item.id],function(err,rs){
+																	(?,'#',NOW(),?,?)",[msg,item.id,msg_id],function(err,rs){
 																		//console.log('---',this.sql,'----');
+																		console.log('extra_point_notification',S(this.sql).collapseWhitespace().s);
 																		cb(err,true);
 															});
 													}else{
@@ -470,12 +472,14 @@ function update_team_stats(queue_id,game_id,team,player_stats,team_summary,done)
 													//send notification that the player has recieved the extra points
 													if(is_team_budget_below_zero){
 														var penalty = Math.floor(balance/100000) * 100;
-														msg = "Kamu mendapatkan potongan poin sebesar "+penalty+" karena keuangan kamu negatif";
-														conn.query("INSERT INTO "+config.database.frontend_schema+".notifications\
-																	(content,url,dt,game_team_id)\
+														var msg_id = "BUDGET_BELOW_ZERO_"+matchday;
+														var msg = "Kamu mendapatkan potongan poin sebesar "+penalty+" karena keuangan kamu negatif";
+														conn.query("INSERT IGNORE INTO "+config.database.frontend_schema+".notifications\
+																	(content,url,dt,game_team_id,msg_id)\
 																	VALUES\
-																	(?,'#',NOW(),?)",[msg,item.id],function(err,rs){
+																	(?,'#',NOW(),?,?)",[msg,item.id,msg_id],function(err,rs){
 																		//console.log('---',this.sql,'----');
+																		console.log('extra_point_notification',S(this.sql).collapseWhitespace().s);
 																		cb(err,true);
 															});
 													}else{

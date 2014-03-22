@@ -819,7 +819,9 @@ class MerchandisesController extends AppController {
 			$total_coins = 0;
 			$all_digital = true;
 			for($i=0;$i<sizeof($shopping_cart);$i++){
-
+				if($shopping_cart[$i]['qty']<=0){
+					$shopping_cart[$i]['qty'] = 1;
+				}
 				$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
 				$item = $shopping_cart[$i]['data']['MerchandiseItem'];
 				$total_coins += (intval($shopping_cart[$i]['qty']) * intval($item['price_credit']));
