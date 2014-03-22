@@ -3424,26 +3424,46 @@ class ApiController extends AppController {
 		$req = encrypt_param(serialize(array('fb_id'=>$fb_id,'data'=>$data)));
 		*/
 
+		$matches = $this->Game->getMatches();
+		$the_match = array();
+		
+		foreach($matches['matches'] as $match){
+			if($match['game_id'] == $game_id){
+				$the_match = $match;
+				break;
+			}
+			
+		}
+		unset($matches);
+		
+		if($the_match['period']=='PreMatch'){
+			
 		
 		
-		foreach($bet_data as $name=>$val){
-			$sql = "INSERT IGNORE INTO ffgame.tmp_game_bets
-					(game_id,fb_id,bet_name,home,away,coins,submit_dt)
-					VALUES
-					('{$game_id}',
-						'{$fb_id}',
-						'{$name}',
-						'{$val['home']}',
-						'{$val['away']}',
-						'{$val['coin']}',
-						NOW())";
-			$this->Game->query($sql,false);
+			foreach($bet_data as $name=>$val){
+				$sql = "INSERT INTO ffgame.tmp_game_bets
+						(game_id,fb_id,bet_name,home,away,coins,submit_dt)
+						VALUES
+						('{$game_id}',
+							'{$fb_id}',
+							'{$name}',
+							'{$val['home']}',
+							'{$val['away']}',
+							'{$val['coin']}',
+							NOW())
+						ON DUPLICATE KEY UPDATE
+						home = VALUES(home),
+						away = VALUES(away),
+						coins = VALUES(coins)";
+				$this->Game->query($sql,false);
+			}
+			$this->set('response',array('status'=>1,'game_id'=>$game_id,'fb_id'=>$fb_id));
+		}else{
+			$this->set('response',array('status'=>0,'game_id'=>$game_id,'fb_id'=>$fb_id));
 		}
 		
 		$this->layout="ajax";
-		
-
-		$this->set('response',array('status'=>1,'game_id'=>$game_id,'fb_id'=>$fb_id));
+	
 		$this->render('default');
 	}
 
@@ -3479,8 +3499,8 @@ class ApiController extends AppController {
 
 
 		//check if the user can place the bet
-		$sql = "SELECT fb_id FROM ffgame.tmp_game_bets a
-				WHERE game_id='{$game_id}' AND fb_id='{$fb_id}' LIMIT 1;";
+		$sql = "SELECT * FROM ffgame.tmp_game_bets a
+				WHERE game_id='{$game_id}' AND fb_id='{$fb_id}' LIMIT 10;";
 
 	
 
@@ -3494,7 +3514,14 @@ class ApiController extends AppController {
 			$n=1;
 		}
 
-
+		$my_bet = array();
+		
+		$my_bet[] = $this->getBetValue('SCORE_GUESS',$check);
+		$my_bet[] = $this->getBetValue('CORNERS_GUESS',$check);
+		$my_bet[] = $this->getBetValue('SHOT_ON_TARGET_GUESS',$check);
+		$my_bet[] = $this->getBetValue('CROSSING_GUESS',$check);
+		$my_bet[] = $this->getBetValue('INTERCEPTION_GUESS',$check);
+		$my_bet[] = $this->getBetValue('YELLOWCARD_GUESS',$check);
 
 		if($n==1){
 			$items = array(
@@ -3547,22 +3574,32 @@ class ApiController extends AppController {
 			}
 
 			//dummy
-			/*$winners = array(array('fb_id'=>'100000807572975','score'=>100),
+			/*
+			$winners = array(array('fb_id'=>'100000807572975','score'=>100),
 							array('fb_id'=>'100000213094071','score'=>90),
-							array('fb_id'=>'100001023465395','score'=>80));
-			//-->*/
+							array('fb_id'=>'100001023465395','score'=>80));*/
+			//->
 			$this->set('response',array('status'=>1,
 								'game_id'=>$game_id,
 								'data'=>$items,
 								'match'=>$the_match,
 								'winners'=>$winners,
 								'fb_id'=>$fb_id,
+								'my_bet'=>$my_bet,
 								'can_place_bet'=>$can_place_bet)
 			);
 		}
 		
 		$this->render('default');
 	}
-
+	private function getBetValue($bet_name,$bets){
+		for($i=0;$i<sizeof($bets);$i++){
+			if($bets[$i]['a']['bet_name']==$bet_name){
+				return $bets[$i]['a'];
+			}
+		}
+	}
 	//--> and of `tebak-skor` minigame APIs
 }
+
+

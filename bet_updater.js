@@ -279,7 +279,7 @@ function processGameStats(conn,matchday,game_id,done){
 }
 function calculateWinner(conn,game_id,done){
 	conn.query("SELECT fb_id,score FROM ffgame.tmp_bet_winners\
-				 WHERE game_id=? ORDER BY score DESC LIMIT 100;",
+				 WHERE game_id=? ORDER BY score DESC LIMIT 10;",
 				 [game_id],function(err,rs){
 				 	done(err,rs);
 				 });
