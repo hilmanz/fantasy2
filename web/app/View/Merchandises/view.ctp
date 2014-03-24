@@ -40,11 +40,18 @@ if(isset($category_name)){
 					</div>
 					<div class="detailCatalog" style="width:440px;">
 							<h4 class="MerchandiseItemName"><?=h($item['MerchandiseItem']['name'])?></h4>
+							<?php if($item['MerchandiseItem']['price_credit'] == 0):?>
+							<p class="idrprice">Rp. <?=number_format($item['MerchandiseItem']['price_money'])?></p>
+							<p>* Tidak bisa dibeli dengan Coins.</p>
+							<?php else:?>
 							<p class="price"><?=number_format($item['MerchandiseItem']['price_credit'])?> Coins</p>
 							<?php if(intval($item['MerchandiseItem']['price_money']) > 0):?>
 							<p class="idrprice">(or buy now for Rp. <?=number_format($item['MerchandiseItem']['price_money'])?>)</p>
-							<div>
+							<?php else:?>
+							<p>* hanya bisa dibeli dengan Coins.</p>
 							<?php endif;?>
+							<?php endif;?>
+							<div>
 							<?php if($item['MerchandiseItem']['available'] > 0):?>
 							<?php
 							if($can_update_formation):

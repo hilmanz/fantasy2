@@ -127,3 +127,5 @@ CREATE TABLE fantasy.ongkir (
 
 ALTER TABLE `fantasy`.`notifications` ADD COLUMN `msg_id` VARCHAR(140) NULL AFTER `game_team_id`;
 ALTER TABLE `fantasy`.`notifications` ADD UNIQUE `UNIQUE_MSG_ID` (`game_team_id`, `msg_id`);
+
+ALTER TABLE `fantasy`.`merchandise_items`     ADD COLUMN `weight` FLOAT(4,2) DEFAULT '1.0' NULL AFTER `stock`;

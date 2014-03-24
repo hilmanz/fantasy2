@@ -390,15 +390,18 @@ class MerchandisesController extends AppController {
 	public function buy(){
 	
 		$can_use_ecash = true;
-
+		$can_use_coin = true;
 		//display the cart content
 		$shopping_cart = $this->Session->read('shopping_cart');
 		for($i=0;$i<sizeof($shopping_cart);$i++){
 			$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
 			$price_money = intval($shopping_cart[$i]['data']['MerchandiseItem']['price_money']);
-
+			$price_credit = intval($shopping_cart[$i]['data']['MerchandiseItem']['price_credit']);
 			if($price_money==0){
 				$can_use_ecash = false;
+			}
+			if($price_credit ==0){
+				$can_use_coin = false;
 			}
 		}
 	
@@ -430,6 +433,7 @@ class MerchandisesController extends AppController {
 		$this->getOngkirList();
 
 		$this->set('can_use_ecash',$can_use_ecash);
+		$this->set('can_use_coin',$can_use_coin);
 	}	
 
 	/*
@@ -575,12 +579,12 @@ class MerchandisesController extends AppController {
 		//get total coins to be spent.
 		$total_price = 0;
 		$all_digital = true;
-		
+		$kg = 0;
 		for($i=0;$i<sizeof($shopping_cart);$i++){
 
 			$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
 			$item = $shopping_cart[$i]['data']['MerchandiseItem'];
-
+			$kg += floatval($item['weight']);
 			$total_price += (intval($shopping_cart[$i]['qty']) * intval($item['price_money']));
 			//is there any non-digital item ?
 			if($item['merchandise_type']==0){
@@ -605,7 +609,7 @@ class MerchandisesController extends AppController {
 		}
 
 		//tambahkan harga ongkir kedalam total price
-		$total_price+=$total_ongkir;
+		$total_price+= ($kg * $total_ongkir);
 
 
 		$this->set('shopping_cart',$shopping_cart);

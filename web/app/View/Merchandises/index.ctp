@@ -43,9 +43,11 @@ if(isset($category_name)){
 						</div>
 						<div class="detailCatalog">
 							<h4><?=h($r['MerchandiseItem']['name'])?></h4>
+							<?php if(intval($r['MerchandiseItem']['price_credit']) > 0):?>
 							<p class="price"><?=number_format($r['MerchandiseItem']['price_credit'])?>
 								Coins
 							</p>
+							<?php endif;?>
 							<?php if(intval($r['MerchandiseItem']['price_money']) > 0):?>
 							<p class="idrprice">
 								Rp. <?=number_format($r['MerchandiseItem']['price_money'])?>

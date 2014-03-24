@@ -84,9 +84,11 @@
 		                            ?>
 		                        </td>
 		                        <td>
+		                        	<?php if($price > 0):?>
 		                            Rp. <span class="prices price-<?=$item['id']?>">
 		                                <?=number_format(intval($price))?>
 		                            </span>
+		                        	<?php endif;?>
 		                            <?php if($item['price_credit']>0):?>
 		                                <?php if($item['price_money']>0):?>
 		                                    (<span class="coins coin-<?=$item['id']?>">
@@ -189,7 +191,9 @@
 						<div class="row">
 							<label>Metode Pembayaran</label>
 							<div>
+							<?php if($can_use_coin):?>
 							<input type="radio" name="payment_method" value="coins" checked="checked"/> Coins
+							<?php endif;?>
 							<?php if($can_use_ecash):?>
 							<input type="radio" name="payment_method" value="ecash"/> Ecash Mandiri (Rupiah)
 							<?php endif;?>
@@ -198,7 +202,13 @@
 						<div class="row">
 							<input type="hidden" name="ct" value="<?=$csrf_token?>"/>
 							<input type="button" value="Cancel" class="button" onclick="cancel();"/>
+							<?php if(!$can_use_coin && !$can_use_ecash):?>
+							<p>
+								Mohon Maaf, satu atau lebih barang hanya bisa dibayar menggunakan coins saja, 
+							atau ecash saja.</p>
+							<?php else:?>
 							<input type="submit" value="Confirm" class="button"/>
+							<?php endif;?>
 						</div><!-- end .row -->
 					</form>
 					</div><!-- end .widget -->

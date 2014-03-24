@@ -2571,12 +2571,12 @@ class ApiController extends AppController {
 		//get total coins to be spent.
 		$total_price = 0;
 		$all_digital = true;
-		
+		$kg = 0;
 		for($i=0;$i<sizeof($shopping_cart);$i++){
 
 			$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
 			$item = $shopping_cart[$i]['data']['MerchandiseItem'];
-
+			$kg += floatval($item['weight']) * intval($shopping_cart[$i]['qty']);
 			$total_price += (intval($shopping_cart[$i]['qty']) * intval($item['price_money']));
 			//is there any non-digital item ?
 			if($item['merchandise_type']==0){
@@ -2599,7 +2599,7 @@ class ApiController extends AppController {
 				break;
 			}
 		}
-		$total_price += $total_ongkir;
+		$total_price += ($kg*$total_ongkir);
 
 		$rs = $this->Game->getEcashUrl(array(
 			'transaction_id'=>$transaction_id,
