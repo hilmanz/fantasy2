@@ -40,9 +40,11 @@ var base_coin = {};
 					</thead>
 					<tbody>
 					<?php
+                    $kg = 0;
 					for($i=0;$i<sizeof($shopping_cart);$i++):
 
                         $item = $shopping_cart[$i]['data']['MerchandiseItem'];
+                        $kg += $item['weight'] * $shopping_cart[$i]['qty'];
                     ?>
                     <tr class="tr-<?=intval($item['id'])?>">
                         <?php if(@$shopping_cart[$i]['out_of_stock']):?>
@@ -166,6 +168,7 @@ var base_coin = {};
 </div><!-- end #catalogPage -->
 
 <script>
+var kg = <?=floatval($kg)?>;
 var ongkir = <?=json_encode($ongkir)?>;
 var total_ongkir = 0;
 function cancel(){
@@ -184,8 +187,8 @@ function updateOngkir(){
             cost = ongkir[i].Ongkir.cost;
         }
     }
-    total_ongkir = cost;
-    $('.shipping').html('Rp. '+number_format(cost));
+    total_ongkir = cost * kg;
+    $('.shipping').html('Rp. '+number_format(total_ongkir));
 }
 function checkout(){
     $("input[name=update_type]").val(1);

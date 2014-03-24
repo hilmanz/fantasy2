@@ -37,8 +37,10 @@
 							<?php
 							$total_price = 0;
 		                    $total_coins = 0;
+		                    $kg = 0;
 							for($i=0;$i<sizeof($shopping_cart);$i++):
 		                        $item = $shopping_cart[$i]['data']['MerchandiseItem'];
+		                    	$kg  += $item['weight'] * $shopping_cart[$i]['qty'];
 		                    	$coins = 0;
 		                    	$price = 0;
 		                    	$pic = Configure::read('avatar_web_url').
@@ -118,8 +120,9 @@
 		                    				break;
 		                    			}
 		                    		}
+		                    		$total_ongkos = ceil($kg) * intval($ongkos);
 		                    		?>
-		                    		<span class="shipping">Rp. <?=number_format($ongkos)?></span>
+		                    		<span class="shipping">Rp. <?=number_format($total_ongkos)?></span>
 		                    	</td>
 		                    </tr>
 		                    <tr class="rowtotal">
@@ -129,7 +132,7 @@
 		                            <span class="total-price">
 		                            	
 		                            	<?php if($total_price > 0):?>
-		                            		Rp. <?=number_format($total_price+$ongkos)?>
+		                            		Rp. <?=number_format(intval($total_price)+floatval($total_ongkos))?>
 		                                    (<?=number_format(intval($total_coins))?> Coins)
 		                                <?php else:?>
 		                                    <?=number_format(intval($total_coins))?> Coins
@@ -217,7 +220,7 @@
 					<div class="tr widgets order-detail">
 						<h2>Your Order</h2>
 						<h4><?=h($item['name'])?></h4>
-						<p class="price"><?=number_format($item['price_credit'])?> Coins</p>
+						<p class="price"><?=number_format(@$item['price_credit'])?> Coins</p>
 						<div class="imagesCatalog tr widget">
 							  <img src="<?=$pic?>" />
 						</div>

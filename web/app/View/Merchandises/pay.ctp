@@ -37,7 +37,7 @@
                                     <td>Ongkos Kirim</td>
                                     <td><?=h($city['city'])?></td>
                                     <td>
-                                        Rp. <?=number_format($city['cost'])?>
+                                        Rp. <?=number_format($total_ongkir)?>
                                     </td>
                                     <td>
                                         <a class="button" href="<?=$ecash_url?>">

@@ -221,24 +221,39 @@ class MerchandisesController extends AppController {
 		$ongkir = $this->Ongkir->find('all',array('limit'=>10000));
 		$rs = $this->MerchandiseOrder->findById($order_id);
 		
+		$items = unserialize($rs['MerchandiseOrder']['data']);
+
+		$kg = 0;
+		for($i=0;$i<sizeof($items);$i++){
+			$kg = intval($items[$i]['qty']) * ceil(floatval(@$items[$i]['data']['MerchandiseItem']['weight']));
+		}
+
 		$this->set('rs',$rs);
 		foreach($ongkir as $ok){
 			if($ok['Ongkir']['id'] == $rs['MerchandiseOrder']['ongkir_id']){
 				$city = $ok['Ongkir'];
 			}
 		}
+		$total_ongkir = $kg * $city['cost'];
+
 		$this->set('city',$city);
+		$this->set('total_ongkir',$total_ongkir);
 
 		//add suffix -1 to define that its the payment for shipping for these po number.
 		$transaction_id =  $rs['MerchandiseOrder']['po_number'].'-1';
 		//ecash url
 		$rs = $this->Game->getEcashUrl(array(
 			'transaction_id'=>$transaction_id,
-			'amount'=>$city['cost'],
+			'amount'=>$total_ongkir,
 			'clientIpAddress'=>$this->request->clientIp(),
 			'description'=>'Shipping Fee #'.$transaction_id,
 			'source'=>'FMPAY'
 		));
+
+		if($rs['status']==0){
+			$rs['data'] = "#";
+		}
+
 		$this->set('transaction_id',$transaction_id);
 		$this->set('ecash_url',$rs['data']);
 
@@ -584,7 +599,7 @@ class MerchandisesController extends AppController {
 
 			$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
 			$item = $shopping_cart[$i]['data']['MerchandiseItem'];
-			$kg += floatval($item['weight']);
+			$kg += ceil(floatval($item['weight'])) * intval($shopping_cart[$i]['qty']);
 			$total_price += (intval($shopping_cart[$i]['qty']) * intval($item['price_money']));
 			//is there any non-digital item ?
 			if($item['merchandise_type']==0){
@@ -732,10 +747,11 @@ class MerchandisesController extends AppController {
 			$total_price = 0;
 		
 			$all_digital = true;
-
+			$kg = 0;
 			for($i=0;$i<sizeof($shopping_cart);$i++){
 
 				$item = $shopping_cart[$i]['data']['MerchandiseItem'];
+				$kg += intval($shopping_cart[$i]['qty']) * ceil(floatval($item['weight']));
 				$total_price += (intval($shopping_cart[$i]['qty']) * intval($item['price_money']));
 				//is there any non-digital item ?
 				if($item['merchandise_type']==0){
@@ -757,6 +773,8 @@ class MerchandisesController extends AppController {
 				}
 			}
 			
+			$total_ongkir  = $total_ongkir * ceil(floatval($kg));
+
 			//tambahkan harga ongkir kedalam total price
 			$total_price+=$total_ongkir;
 
@@ -770,7 +788,7 @@ class MerchandisesController extends AppController {
 
 			//we need ongkir value
 			$ok = $this->Ongkir->findById($this->Session->read('city_id'));
-			$data['ongkir_value'] = $ok['Ongkir']['cost'];
+			$data['ongkir_value'] = $total_ongkir;
 			
 			if($all_digital){
 				$data['n_status'] = 3;	
@@ -822,12 +840,15 @@ class MerchandisesController extends AppController {
 			//get total coins to be spent.
 			$total_coins = 0;
 			$all_digital = true;
+			$kg = 0;
 			for($i=0;$i<sizeof($shopping_cart);$i++){
 				if($shopping_cart[$i]['qty']<=0){
 					$shopping_cart[$i]['qty'] = 1;
 				}
 				$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
 				$item = $shopping_cart[$i]['data']['MerchandiseItem'];
+				$kg += intval($shopping_cart[$i]['qty']) * ceil(floatval($item['weight']));
+
 				$total_coins += (intval($shopping_cart[$i]['qty']) * intval($item['price_credit']));
 				//is there any non-digital item ?
 				if($item['merchandise_type']==0){
@@ -854,7 +875,9 @@ class MerchandisesController extends AppController {
 				$data['ongkir_id'] = intval($this->Session->read('city_id'));
 				//we need ongkir value
 				$ok = $this->Ongkir->findById($this->Session->read('city_id'));
-				$data['ongkir_value'] = $ok['Ongkir']['cost'];
+
+
+				$data['ongkir_value'] = $kg * $ok['Ongkir']['cost'];
 			
 				if($all_digital){
 					$data['n_status'] = 3;	

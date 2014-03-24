@@ -36,8 +36,10 @@
 							<?php
 							$total_price = 0;
 		                    $total_coins = 0;
+		                    $kg = 0;
 							for($i=0;$i<sizeof($shopping_cart);$i++):
 		                        $item = $shopping_cart[$i]['data']['MerchandiseItem'];
+		                    	$kg += ceil(floatval($item['weight'])) * intval($shopping_cart[$i]['qty']);
 		                    	$coins = 0;
 		                    	$price = 0;
 		                    	$pic = Configure::read('avatar_web_url').
@@ -96,8 +98,9 @@
 		                    				break;
 		                    			}
 		                    		}
+		                    		$total_ongkos = intval($ongkos) * floatval($kg);
 		                    		?>
-		                        	Rp. <?=number_format($ongkos)?>
+		                        	Rp. <?=number_format($total_ongkos)?>
 		                        </td>
 		                      
 		                    </tr>
@@ -128,7 +131,7 @@
 		                            <span class="total-price">
 		                            	
 		                            	
-		                            		Rp. <?=number_format($total_price+$admin_fee+$ongkos)?>
+		                            		Rp. <?=number_format($total_price+$admin_fee+$total_ongkos)?>
 		                                   
 		                               
 		                            </span>

@@ -2535,14 +2535,19 @@ class ApiController extends AppController {
 			}
 		}
 	
+		$kg = 0;
+		for($i=0;$i<sizeof($items);$i++){
+			$kg = intval($items[$i]['qty']) * ceil(floatval(@$items[$i]['data']['MerchandiseItem']['weight']));
+		}
 
+		$total_ongkir = $kg * $city['cost'];
 		//add suffix -1 to define that its the payment for shipping for these po number.
 		$transaction_id =  $rs['MerchandiseOrder']['po_number'].'-1';
 
 		//ecash url
 		$rs = $this->Game->getEcashUrl(array(
 			'transaction_id'=>$transaction_id,
-			'amount'=>$city['cost'],
+			'amount'=>$total_ongkir,
 			'clientIpAddress'=>$this->request->clientIp(),
 			'description'=>'Shipping Fee #'.$transaction_id,
 			'source'=>'SSPAY'
@@ -2576,7 +2581,7 @@ class ApiController extends AppController {
 
 			$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
 			$item = $shopping_cart[$i]['data']['MerchandiseItem'];
-			$kg += floatval($item['weight']) * intval($shopping_cart[$i]['qty']);
+			$kg += ceil(floatval($item['weight'])) * intval($shopping_cart[$i]['qty']);
 			$total_price += (intval($shopping_cart[$i]['qty']) * intval($item['price_money']));
 			//is there any non-digital item ?
 			if($item['merchandise_type']==0){
@@ -2624,7 +2629,10 @@ class ApiController extends AppController {
 	*/
 	public function ecash_validate(){
 		$id = $this->request->query['id'];
+
 		$rs = $this->Game->EcashValidate($id);
+		CakeLog::write('debug','ecash_validate - '.$id.' - '.json_encode($rs));
+
 		list($id,$trace_number,$nohp,$transaction_id,$status) = explode(',',$rs['data']);
 
 		$result = array(
@@ -2654,16 +2662,16 @@ class ApiController extends AppController {
 				$is_valid = false;
 			}*/
 		}
-		CakeLog::write('debug',json_encode($result));
-		CakeLog::write('debug','is valid : '.json_encode($is_valid));
+		CakeLog::write('debug','ecash_validate - '.$id.' - '.json_encode($result));
+		CakeLog::write('debug','ecash_validate - is valid : '.$id.' - '.json_encode($is_valid));
 		CakeLog::write('debug',strtoupper(trim($result['status'])).' <-> SUCCESS');
 		$this->layout="ajax";
 		if(strtoupper(trim($result['status']))=='SUCCESS' && $is_valid){
-			CakeLog::write('debug','foo');
+			CakeLog::write('debug','ecash_validate - '.$id.' - '.'success');
 			$status = "SUCCESS";
 			$this->set('response',array('status'=>1,'data'=>$result));
 		}else{
-			CakeLog::write('debug','bar');
+			CakeLog::write('debug','ecash_validate - '.$id.' - '.'failed');
 			$status = "FAILED";
 			$this->set('response',array('status'=>0,'data'=>$result));
 		}
@@ -2675,14 +2683,14 @@ class ApiController extends AppController {
 		
 
 		$rs = $this->pay_with_ecash_completed($game_team_id,$this->request->data);
-		CakeLog::write('debug','finished '.json_encode($rs));
+		CakeLog::write('debug','pay_with_ecash_completed - finished '.json_encode($rs));
 		$this->layout="ajax";
 		if($rs){
-			CakeLog::write('debug','status : 1');
+			CakeLog::write('debug','pay_with_ecash_completed - status : 1');
 			$this->set('response',array('status'=>1));
 		}else{
-			CakeLog::write('debug','status : 0');
-			$this->set('response',array('status'=>0,'error'=>$rs['error']));
+			CakeLog::write('debug','pay_with_ecash_completed - status : 0');
+			$this->set('response',array('status'=>0,'error'=>@$rs['error']));
 		}
 		
 		$this->render('default');
@@ -2693,18 +2701,20 @@ class ApiController extends AppController {
 		$this->loadModel('MerchandiseOrder');
 		$this->loadModel('Ongkir');
 		
-		CakeLog::write('debug','data : '.json_encode($ecash_data));
+		CakeLog::write('debug','pay_with_ecash_completed - data : '.json_encode($ecash_data));
 		$shopping_cart = unserialize(decrypt_param($ecash_data['param']));
 		
-		CakeLog::write('debug','shopping_cart : '.json_encode($shopping_cart));
+		CakeLog::write('debug','pay_with_ecash_completed - shopping_cart : '.json_encode($shopping_cart));
 		
 		$total_price = 0;
 		
 		$all_digital = true;
 
+		$kg = 0;
 		for($i=0;$i<sizeof($shopping_cart);$i++){
 			$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
 			$item = $shopping_cart[$i]['data']['MerchandiseItem'];
+			$kg += intval($shopping_cart[$i]['qty']) * ceil(floatval($item['weight']));
 			$total_price += (intval($shopping_cart[$i]['qty']) * intval($item['price_money']));
 			//is there any non-digital item ?
 			if($item['merchandise_type']==0){
@@ -2722,7 +2732,7 @@ class ApiController extends AppController {
 
 
 		$data = unserialize(decrypt_param($ecash_data['profile']));
-		CakeLog::write('debug','profile : '.json_encode($shopping_cart));
+		CakeLog::write('debug','pay_with_ecash_completed - profile : '.json_encode($shopping_cart));
 		
 		//calculate ongkir
 		$ongkirList = $this->getOngkirList();
@@ -2733,6 +2743,8 @@ class ApiController extends AppController {
 				break;
 			}
 		}
+		$total_ongkir = $total_ongkir * $kg;
+
 		$total_price += $total_ongkir;
 
 
@@ -2756,7 +2768,7 @@ class ApiController extends AppController {
 		$data['ongkir_id'] = $data['city_id'];
 		//we need ongkir value
 		$ok = $this->Ongkir->findById($data['city_id']);
-		$data['ongkir_value'] = $ok['Ongkir']['cost'];
+		$data['ongkir_value'] = $total_ongkir;
 		
 
 		CakeLog::write('debug','TO BE SAVED : '.json_encode($data));
@@ -2853,12 +2865,14 @@ class ApiController extends AppController {
 		//get total coins to be spent.
 		$total_coins = 0;
 		$all_digital = true;
+		$kg = 0;
 		for($i=0;$i<sizeof($shopping_cart);$i++){
 			if(intval($shopping_cart[$i]['qty']) <= 0){
 				$shopping_cart[$i]['qty'] = 1;
 			}
 			$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
 			$item = $shopping_cart[$i]['data']['MerchandiseItem'];
+			$kg += ceil(floatval($item['weight'])) * intval($shopping_cart[$i]['qty']);
 			$total_coins += (intval($shopping_cart[$i]['qty']) * intval($item['price_credit']));
 			//is there any non-digital item ?
 			if($item['merchandise_type']==0){
@@ -2898,7 +2912,8 @@ class ApiController extends AppController {
 			$data['ongkir_id'] = $this->request->data['city_id'];
 			//we need ongkir value
 			$ok = $this->Ongkir->findById($data['ongkir_id']);
-			$data['ongkir_value'] = $ok['Ongkir']['cost'];
+
+			$data['ongkir_value'] = $kg * intval($ok['Ongkir']['cost']);
 
 			$this->MerchandiseOrder->create();
 			$rs = $this->MerchandiseOrder->save($data);	
@@ -3161,7 +3176,7 @@ class ApiController extends AppController {
 			//ecash url
 			$ecash_url = $this->Game->getEcashUrl(array(
 				'transaction_id'=>$transaction_id,
-				'amount'=>$deliverTo['cost'],
+				'amount'=>$rs['MerchandiseOrder']['ongkir_value'],
 				'clientIpAddress'=>$this->request->clientIp(),
 				'description'=>'Shipping Fee #'.$transaction_id,
 				'source'=>'SSPAY'
@@ -3184,6 +3199,7 @@ class ApiController extends AppController {
 
 		
 		$id = $this->request->query['returnId'];
+		CakeLog::write('debug','ecash_ongkir_payment_complete'.$id);
 		//this is the secret data we sent, 
 		//an object that consist the transaction_id and it's related order_id
 		$ecash_data = unserialize(decrypt_param($this->request->query['ecash_data']));
@@ -3193,33 +3209,43 @@ class ApiController extends AppController {
 
 		//now validate the ecash returnId
 		$rs  = $this->Game->EcashValidate($id);
+		
+		//CakeLog::write('debug','ecash_ongkir_payment_complete'.@$id.' - '.@$rs);
 		list($id,$trace_number,$nohp,$transaction_id,$status) = explode(',',$rs['data']);
 
 		//di comment dulu, gak working kayak gini, sessionnya beda soalnya
 		//if(Configure::read('debug')!=0){
-		/*$sendData = array('id'=>trim($id),
+		$sendData = array('id'=>trim($id),
 								'trace_number'=>trim($trace_number),
 								'nohp'=>trim($nohp),
 								'transaction_id'=>trim($transaction_id),
-								'status'=>trim($status));*/
+								'status'=>trim($status));
 		//}
+		
 		if($transaction_id==$ecash_data['transaction_id']
 					&& strtoupper(trim($status)) =='SUCCESS'){
-
+			CakeLog::write('debug','ecash_ongkir_payment_complete'.$id.' - SUCCESS');
 			//transaction complete, we update the order status
 			$data['n_status'] = 1;
 			$this->MerchandiseOrder->id = intval($ecash_data['order_id']);
 			$updateResult = $this->MerchandiseOrder->save($data);
 			if(isset($updateResult)){
+				CakeLog::write('debug','ecash_ongkir_payment_complete'.$id.' - DBSUCCESS');
 				$response_status = 1;
 			}else{
+				CakeLog::write('debug','ecash_ongkir_payment_complete'.$id.' - DBERROR');
 				$response_status = 0;
 			}
 		}else{
+			CakeLog::write('debug','ecash_ongkir_payment_complete'.$id.' - FAILED');
 			//transaction incomplete , return error
 			$response_status = 0;
 		}
 		$this->layout="ajax";
+
+		CakeLog::write('debug','ecash_ongkir_payment_complete'.$id.' - '.$response_status.' - '.
+						json_encode(array('status'=>$response_status,'data'=>$sendData)));
+
 		$this->set('response',array('status'=>$response_status,'data'=>$sendData));
 		$this->render('default');
 	}
