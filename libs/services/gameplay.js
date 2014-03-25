@@ -2,6 +2,7 @@ var path = require('path');
 var gameplay = require(path.resolve('./libs/api/gameplay'));
 var ecash = require(path.resolve('./libs/api/ecash'));
 
+
 exports.setPool = function(pool){
 	gameplay.setPool(pool);
 }
@@ -122,6 +123,8 @@ exports.fire_staff = function(req,res){
 			}
 	});
 }
+
+
 exports.getBudget = function(req,res){
 	gameplay.getBudget(req.params.game_team_id,
 		function(err,rs){

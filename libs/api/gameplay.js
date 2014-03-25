@@ -18,6 +18,8 @@ var pool = {};
 var frontend_schema = config.database.frontend_schema;
 var PHPUnserialize = require('php-unserialize');
 var redisClient = {};
+
+
 function prepareDb(callback){
 	pool.getConnection(function(err,conn){
 		callback(conn);
@@ -347,7 +349,7 @@ function getBudget(game_team_id,callback){
 		conn.query(sql,
 				[game_team_id,game_team_id],
 				function(err,rs){
-					console.log(this.sql);
+					console.log(S(this.sql).collapseWhitespace().s);
 					conn.end(function(e){
 						callback(err,rs);	
 					});

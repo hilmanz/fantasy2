@@ -110,17 +110,24 @@
 		                        <td></td>
 		                        <td></td>
 		                        <td>
+
 		                        	<?php
 		                        	$admin_fee = 0;
+		                        	
 		                        	if($rs['MerchandiseOrder']['payment_method']=='ecash'){
 		                        		$admin_fee = Configure::read('PO_ADMIN_FEE');
+		                        		if($admin_fee==0){
+		                        			$admin_fee = 50000;
+		                        		}
 		                        	}
 		                        	?>
+
 		                        	<?php if($admin_fee==0):?>
 		                        	GRATIS
 		                        	<?php else:?>
 		                        	Rp. <?=number_format($admin_fee)?>
 		                        	<?php endif;?>
+		                        	
 		                        </td>
 		                      
 		                    </tr>

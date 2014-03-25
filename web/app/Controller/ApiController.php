@@ -2396,7 +2396,7 @@ class ApiController extends AppController {
 			$category_ids = $this->getChildCategoryIds($category_id,$category_ids);
 			$options = array('conditions'=>array(
 									'merchandise_category_id'=>$category_ids,
-									'merchandise_type'=>0,'price_money > 0'),
+									'merchandise_type'=>0),
 									'offset'=>$start,
 									'limit'=>$total,
 									'order'=>array('MerchandiseItem.id'=>'DESC')
