@@ -3419,18 +3419,42 @@ class ApiController extends AppController {
 
 	public function bet_match(){
 		$this->layout="ajax";
-		$n = intval(@$this->request->query['flag']);
+		
+		
 
-		$this->set('response',array('status'=>1,'data'=>array(
-			'game_id'=>'f695203',
-			'home_id'=>'t8',
-			'away_id'=>'t3',
-			'home_name'=>'Chelsea',
-			'away_name'=>'Arsenal',
-			'home_logo'=>'http://widgets-images.s3.amazonaws.com/football/team/badges_65/8.png',
-			'away_logo'=>'http://widgets-images.s3.amazonaws.com/football/team/badges_65/3.png'
-		)));
-
+		$rs = $this->Game->getMatches();
+		$matches = $rs['matches'];
+		unset($rs);
+		$bet_matches = array();
+		$n=0;
+		//we display the previous match and upcoming match
+		//so we got 20 matches displayed.
+		$matchday = 0;
+		for($i=0;$i<sizeof($matches);$i++){
+			if($matches[$i]['period']!='FullTime'){
+				$matchday = $matches[$i]['matchday'];
+				break;
+			}
+		}
+		//now retrieve the matches
+		for($i=0;$i<sizeof($matches);$i++){
+			if($matches[$i]['matchday'] == $matchday || 
+					$matches[$i]['matchday'] == ($matchday - 1)){
+				$bet_matches[] = array(
+				'game_id'=>$matches[$i]['game_id'],
+				'home_id'=>$matches[$i]['home_id'],
+				'away_id'=>$matches[$i]['away_id'],
+				'home_name'=>$matches[$i]['home_name'],
+				'away_name'=>$matches[$i]['away_name'],
+				'home_logo'=>'http://widgets-images.s3.amazonaws.com/football/team/badges_65/'.
+									str_replace('t','',$matches[$i]['home_id']).'.png',
+				'away_logo'=>'http://widgets-images.s3.amazonaws.com/football/team/badges_65/'.
+									str_replace('t','',$matches[$i]['away_id']).'.png'
+				);
+			}
+			
+		}
+		$this->set('response',array('status'=>1,'data'=>$bet_matches));
 		$this->render('default');
 	}
 	//below is the list of `tebak-skor` minigame APIs
@@ -3469,7 +3493,7 @@ class ApiController extends AppController {
 		
 		
 			foreach($bet_data as $name=>$val){
-				$sql = "INSERT INTO ffgame.tmp_game_bets
+				$sql = "INSERT INTO ffgame.game_bets
 						(game_id,fb_id,bet_name,home,away,coins,submit_dt)
 						VALUES
 						('{$game_id}',
@@ -3527,7 +3551,7 @@ class ApiController extends AppController {
 
 
 		//check if the user can place the bet
-		$sql = "SELECT * FROM ffgame.tmp_game_bets a
+		$sql = "SELECT * FROM ffgame.game_bets a
 				WHERE game_id='{$game_id}' AND fb_id='{$fb_id}' LIMIT 10;";
 
 	

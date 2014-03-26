@@ -247,7 +247,7 @@ function processGameStats(conn,matchday,game_id,done){
 		function(stats,cb){
 			console.log('BLAH',stats);
 			console.log(game_id,stats);
-			conn.query("UPDATE ffgame.tmp_bet_winners SET score=0 WHERE game_id=?",
+			conn.query("UPDATE ffgame.game_bet_winners SET score=0 WHERE game_id=?",
 						[game_id],function(err,rs){
 							console.log('calculate',S(this.sql).collapseWhitespace().s);
 							cb(err,stats);
@@ -278,7 +278,7 @@ function processGameStats(conn,matchday,game_id,done){
 	});
 }
 function calculateWinner(conn,game_id,done){
-	conn.query("SELECT fb_id,score FROM ffgame.tmp_bet_winners\
+	conn.query("SELECT fb_id,score FROM ffgame.game_bet_winners\
 				 WHERE game_id=? ORDER BY score DESC LIMIT 10;",
 				 [game_id],function(err,rs){
 				 	done(err,rs);
@@ -294,7 +294,7 @@ function calculateUserBetScore(conn,game_id,stats,cb){
 		return has_data;
 	},
 	function(next){
-		conn.query("SELECT * FROM ffgame.tmp_game_bets WHERE id > ? AND game_id=? ORDER BY id LIMIT 1",
+		conn.query("SELECT * FROM ffgame.game_bets WHERE id > ? AND game_id=? ORDER BY id LIMIT 1",
 					[since_id,game_id],
 					function(err,rs){
 			console.log('calculate',S(this.sql).collapseWhitespace().s);
@@ -385,7 +385,7 @@ function assignScore(conn,game_id,stats,bet,done){
 			}
 		break;
 	}
-	conn.query("INSERT INTO ffgame.tmp_bet_winners\
+	conn.query("INSERT INTO ffgame.game_bet_winners\
 				(game_id,fb_id,score)\
 				VALUES\
 				(?,?,?)\
