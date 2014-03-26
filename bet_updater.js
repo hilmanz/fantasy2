@@ -15,6 +15,8 @@ var redis = require('redis');
 var player_stats_category = require(path.resolve('./libs/game_config')).player_stats_category;
 var S = require('string');
 var argv = require('optimist').argv;
+var cash = require(path.resolve('./libs/gamestats/game_cash'));
+
 
 var pool  = mysql.createPool({
    host     : config.database.host,
@@ -385,21 +387,50 @@ function assignScore(conn,game_id,stats,bet,done){
 			}
 		break;
 	}
-	conn.query("INSERT INTO ffgame.game_bet_winners\
-				(game_id,fb_id,score)\
+	async.waterfall([
+		function(cb){
+			conn.query("INSERT INTO ffgame.game_bet_winners\
+				(game_id,game_team_id,score)\
 				VALUES\
 				(?,?,?)\
 				ON DUPLICATE KEY UPDATE\
 				score = score + VALUES(score)",
 				[
 				 game_id,
-				 bet.fb_id,
+				 bet.game_team_id,
 				 score
 				],
+				function(err,rs){
+					console.log('calculate',S(this.sql).collapseWhitespace().s);
+					cb(err,score);
+				});
+		},
+		function(score,cb){
+
+			cash.adding_cash(conn,
+							 bet.game_team_id,
+							 'BET_'+game_id,score,
+							 'TEBAK SKOR WINS',
+							 function(err,rs){
+								cb(err,rs);
+								console.log('calculate',game_id,bet.game_team_id, score ,'adding_cash',rs);
+							});
+			
+		},
+		function(result,cb){
+			cash.update_cash_summary(conn,
+							 bet.game_team_id,
+							 function(err,rs){
+								cb(err,rs);
+								console.log('calculate',game_id,bet.game_team_id, score ,'adding_cash',rs);
+							});
+		}
+		
+	],
 	function(err,rs){
-		console.log('calculate',S(this.sql).collapseWhitespace().s);
 		done(err,score);
 	});
+	
 	
 }
 
