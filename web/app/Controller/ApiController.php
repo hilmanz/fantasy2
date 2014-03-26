@@ -3460,58 +3460,92 @@ class ApiController extends AppController {
 	//below is the list of `tebak-skor` minigame APIs
 	public function submit_bet($game_id){
 		$game_id = Sanitize::clean($game_id);
-		$req = unserialize(decrypt_param($this->request->query['req']));
-		$fb_id = $req['fb_id'];
-		$bet_data = $req['data'];
-		/*
-		$fb_id = "1234567890";
-		$data = array(
-			'SCORE_GUESS'=>array('home'=>1,'away'=>0,'coin'=>50),
-			'CORNERS_GUESS'=>array('home'=>1,'away'=>0,'coin'=>10),
-			'SHOT_ON_TARGET_GUESS'=>array('home'=>1,'away'=>0,'coin'=>0),
-			'CROSSING_GUESS'=>array('home'=>1,'away'=>0,'coin'=>10),
-			'INTERCEPTION_GUESS'=>array('home'=>1,'away'=>0,'coin'=>10),
-			'YELLOWCARD_GUESS'=>array('home'=>1,'away'=>0,'coin'=>0)
-		);
-		$req = encrypt_param(serialize(array('fb_id'=>$fb_id,'data'=>$data)));
-		*/
 
-		$matches = $this->Game->getMatches();
-		$the_match = array();
+
 		
-		foreach($matches['matches'] as $match){
-			if($match['game_id'] == $game_id){
-				$the_match = $match;
-				break;
+		
+		if(isset($this->request->query['req'])){
+			$req = unserialize(decrypt_param(@$this->request->query['req']));
+			$fb_id = $req['fb_id'];
+			$bet_data = $req['data'];
+			
+
+			/*
+			$fb_id = "100001023465395";
+			$data = array(
+				'SCORE_GUESS'=>array('home'=>1,'away'=>0,'coin'=>50),
+				'CORNERS_GUESS'=>array('home'=>1,'away'=>0,'coin'=>10),
+				'SHOT_ON_TARGET_GUESS'=>array('home'=>1,'away'=>0,'coin'=>0),
+				'CROSSING_GUESS'=>array('home'=>1,'away'=>0,'coin'=>10),
+				'INTERCEPTION_GUESS'=>array('home'=>1,'away'=>0,'coin'=>10),
+				'YELLOWCARD_GUESS'=>array('home'=>1,'away'=>0,'coin'=>0)
+			);
+			$req = encrypt_param(serialize(array('fb_id'=>$fb_id,'data'=>$data)));
+			$bet_data = $data;
+			*/
+			$game_team = $this->Game->getTeam($fb_id);
+			$game_team_id = $game_team['id'];
+
+			
+
+			$matches = $this->Game->getMatches();
+			$the_match = array();
+			
+			foreach($matches['matches'] as $match){
+				if($match['game_id'] == $game_id){
+					$the_match = $match;
+					break;
+				}
+				
 			}
-			
-		}
-		unset($matches);
-		
-		if($the_match['period']=='PreMatch'){
-			
-		
-		
+			unset($matches);
+			$coin_ok = false;
+
+			//make sure that the coin is sufficient
+			$cash = $this->Game->getCash($game_team_id);
+			$total_bets = 0;
 			foreach($bet_data as $name=>$val){
-				$sql = "INSERT INTO ffgame.game_bets
-						(game_id,fb_id,bet_name,home,away,coins,submit_dt)
-						VALUES
-						('{$game_id}',
-							'{$fb_id}',
-							'{$name}',
-							'{$val['home']}',
-							'{$val['away']}',
-							'{$val['coin']}',
-							NOW())
-						ON DUPLICATE KEY UPDATE
-						home = VALUES(home),
-						away = VALUES(away),
-						coins = VALUES(coins)";
-				$this->Game->query($sql,false);
+				$total_bets += intval($val['coin']);
 			}
-			$this->set('response',array('status'=>1,'game_id'=>$game_id,'fb_id'=>$fb_id));
+
+			
+			if($total_bets <= 100 
+				&& $total_bets < intval($cash)){
+				$coin_ok = true;
+			}
+
+			if($the_match['period']=='PreMatch' && $coin_ok){
+				
+			
+				foreach($bet_data as $name=>$val){
+					//all negative coins will be invalid
+					if($val['coin']<0){
+						$val['coint'] = 0;
+					}
+
+					$sql = "INSERT INTO ffgame.game_bets
+							(game_id,game_team_id,bet_name,home,away,coins,submit_dt)
+							VALUES
+							('{$game_id}',
+								'{$game_team_id}',
+								'{$name}',
+								'{$val['home']}',
+								'{$val['away']}',
+								'{$val['coin']}',
+								NOW())
+							ON DUPLICATE KEY UPDATE
+							home = VALUES(home),
+							away = VALUES(away),
+							coins = VALUES(coins)";
+					$this->Game->query($sql,false);
+				}
+				$this->set('response',array('status'=>1,'game_id'=>$game_id,'fb_id'=>$fb_id));
+			}else{
+				$this->set('response',array('status'=>0,'game_id'=>$game_id,'fb_id'=>$fb_id));
+			}
+			
 		}else{
-			$this->set('response',array('status'=>0,'game_id'=>$game_id,'fb_id'=>$fb_id));
+			$this->set('response',array('status'=>0,'game_id'=>$game_id,'fb_id'=>0,'error'=>'no request specified'));
 		}
 		
 		$this->layout="ajax";
@@ -3525,6 +3559,11 @@ class ApiController extends AppController {
 
 		
 		$fb_id = $this->request->query['fb_id'];
+
+		//get the game_team_id
+		$game_team = $this->Game->getTeam($fb_id);
+		$game_team_id = $game_team['id'];
+
 
 		$matches = $this->Game->getMatches();
 		$the_match = array();
@@ -3552,7 +3591,7 @@ class ApiController extends AppController {
 
 		//check if the user can place the bet
 		$sql = "SELECT * FROM ffgame.game_bets a
-				WHERE game_id='{$game_id}' AND fb_id='{$fb_id}' LIMIT 10;";
+				WHERE game_id='{$game_id}' AND game_team_id='{$game_team_id}' LIMIT 10;";
 
 	
 
