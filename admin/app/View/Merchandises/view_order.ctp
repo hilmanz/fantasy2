@@ -13,7 +13,7 @@ if(strtoupper($rs['MerchandiseOrder']['payment_method'])=='ECASH'):
 <?php
 
 $rs['MerchandiseOrder']['data'] = unserialize($rs['MerchandiseOrder']['data']);
-print_r($rs['MerchandiseOrder']);
+
 if($rs['MerchandiseOrder']['data'] == null):
 	$pic = Configure::read('avatar_web_url')."merchandise/thumbs/1_".$rs['MerchandiseItem']['pic'];	
 
