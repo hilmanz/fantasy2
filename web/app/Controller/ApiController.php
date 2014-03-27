@@ -3459,9 +3459,11 @@ class ApiController extends AppController {
 	}
 	//below is the list of `tebak-skor` minigame APIs
 	public function submit_bet($game_id){
+
 		$game_id = Sanitize::clean($game_id);
+		CakeLog::write('debug',date("Y-m-d H:i:s - ").'submit_bet - '.$game_id);
 
-
+		CakeLog::write('debug',date("Y-m-d H:i:s - ").'submit_bet - '.json_encode($this->request->query['req']));
 		
 		
 		if(isset($this->request->query['req'])){
@@ -3469,7 +3471,7 @@ class ApiController extends AppController {
 			$fb_id = $req['fb_id'];
 			$bet_data = $req['data'];
 			
-
+			CakeLog::write("debug",json_encode($req));
 			/*
 			$fb_id = "100001023465395";
 			$data = array(
@@ -3486,11 +3488,11 @@ class ApiController extends AppController {
 			$game_team = $this->Game->getTeam($fb_id);
 			$game_team_id = $game_team['id'];
 
-			
+			CakeLog::write("debug","1");
 
 			$matches = $this->Game->getMatches();
 			$the_match = array();
-			
+			CakeLog::write("debug","2");			
 			foreach($matches['matches'] as $match){
 				if($match['game_id'] == $game_id){
 					$the_match = $match;
@@ -3498,17 +3500,28 @@ class ApiController extends AppController {
 				}
 				
 			}
+			CakeLog::write("debug","3");
 			unset($matches);
 			$coin_ok = false;
 
 			//make sure that the coin is sufficient
 			$cash = $this->Game->getCash($game_team_id);
+			CakeLog::write("debug",json_encode($cash));
+
 			$total_bets = 0;
+
+			CakeLog::write('debug',json_encode($bet_data));
 			foreach($bet_data as $name=>$val){
 				$total_bets += intval($val['coin']);
 			}
 
-			
+			CakeLog::write("debug",json_encode($cash));
+
+			CakeLog::write('debug',date("Y-m-d H:i:s").
+									' - submit_bet - '.
+									$game_id.' - fb_id:'.$fb_id.' - game_team_id : '.
+									$game_team_id.' - cash : '.$cash.' - bet : '.$total_bets. 
+									' - '.json_encode($bet_data));
 			if($total_bets <= 100 
 				&& $total_bets < intval($cash)){
 				$coin_ok = true;
@@ -3538,6 +3551,11 @@ class ApiController extends AppController {
 							away = VALUES(away),
 							coins = VALUES(coins)";
 					$this->Game->query($sql,false);
+					CakeLog::write('debug',date("Y-m-d H:i:s - ").
+											'submit_bet - '.$game_id.
+											' - fb_id:'.$fb_id.' - game_team_id : '.
+									$game_team_id.' - cash : '.$cash.' - bet : '.$total_bets. 
+									' - '.$sql);
 				}
 				$this->set('response',array('status'=>1,'game_id'=>$game_id,'fb_id'=>$fb_id));
 			}else{
@@ -3545,6 +3563,7 @@ class ApiController extends AppController {
 			}
 			
 		}else{
+			CakeLog::write('debug',date("Y-m-d H:i:s - ").'submit_bet - '.$game_id.' - no request');
 			$this->set('response',array('status'=>0,'game_id'=>$game_id,'fb_id'=>0,'error'=>'no request specified'));
 		}
 		
@@ -3577,32 +3596,39 @@ class ApiController extends AppController {
 		}
 		unset($matches);
 		
-		if($the_match['period']=='PreMatch'){
-			$n = 1;
-		}else{
-			$n = 0;
-		}
 
 		$the_match['home_logo'] = 'http://widgets-images.s3.amazonaws.com/football/team/badges_65/'.
 									str_replace('t','',$the_match['home_id']).'.png';
 		$the_match['away_logo'] = 'http://widgets-images.s3.amazonaws.com/football/team/badges_65/'.
 									str_replace('t','',$the_match['away_id']).'.png';
 
-
+		if($the_match['period'] == 'PreMatch'){
+			$can_place_bet = true;
+		}else{
+			$can_place_bet = false;
+		}
 		//check if the user can place the bet
 		$sql = "SELECT * FROM ffgame.game_bets a
 				WHERE game_id='{$game_id}' AND game_team_id='{$game_team_id}' LIMIT 10;";
 
-	
-
-		$check = $this->Game->query($sql,false);
 		
-		if(isset($check[0]['a']) && $check[0]['a']['fb_id'] == $fb_id){
+		CakeLog::write('debug',date("Y-m-d H:i:s - ").'bet_info - '.$game_id.' - '.$fb_id.' - '.$game_team_id.' - '.$sql);
+		$check = $this->Game->query($sql,false);
+		CakeLog::write('debug',date("Y-m-d H:i:s - ").'bet_info - '.$game_id.' - '.$fb_id.' - '.$game_team_id.' - '.json_encode($the_match). ' - '.json_encode(@$check[0]['a']));
+		
+		if(isset($check[0]['a']) 
+				&& $check[0]['a']['game_team_id'] == $game_team_id){
+			
+			$n = 0;
+			CakeLog::write('debug',date("Y-m-d H:i:s - ").'bet_info - '.$game_id.' - '.$fb_id.' - '.$game_team_id.' - has place bet');	
+		}else if($the_match['period'] != 'PreMatch'){
 			$can_place_bet = false;
 			$n = 0;
+			CakeLog::write('debug',date("Y-m-d H:i:s - ").'bet_info - '.$game_id.' - '.$fb_id.' - '.$game_team_id.' - cannot place bet :(');	
 		}else{
-			$can_place_bet = true;
+			
 			$n=1;
+			CakeLog::write('debug',date("Y-m-d H:i:s - ").'bet_info - '.$game_id.' - '.$fb_id.' - '.$game_team_id.' - can place bet');	
 		}
 
 		$my_bet = array();
