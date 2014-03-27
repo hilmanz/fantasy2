@@ -169,7 +169,10 @@
 		            <?php endfor;?>
 				</div><!-- end .box4 -->
             </div><!-- end .row-3 -->
+
+            
         </div><!-- end .content -->
+       
     </div><!-- end #thecontent -->
 </div><!-- end #catalogPage -->
 

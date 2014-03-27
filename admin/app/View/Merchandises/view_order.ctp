@@ -6,9 +6,10 @@
 <h4>Payment Method : <?=h($rs['MerchandiseOrder']['payment_method'])?></h4>
 <h4>Shipping : Rp. <?=number_format(h($rs['MerchandiseOrder']['ongkir_value']))?></h4>
 <?php 
+
 if(strtoupper($rs['MerchandiseOrder']['payment_method'])=='ECASH'):
 ?>
-<h4>Admin Fee : Rp. <?=number_format(Configure::read('PO_ADMIN_FEE'))?></h4>
+<h4>Admin Fee : Rp. <?=number_format($admin_fee)?></h4>
 <?php endif;?>
 <?php
 

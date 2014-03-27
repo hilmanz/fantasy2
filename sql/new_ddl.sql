@@ -129,3 +129,26 @@ ALTER TABLE `fantasy`.`notifications` ADD COLUMN `msg_id` VARCHAR(140) NULL AFTE
 ALTER TABLE `fantasy`.`notifications` ADD UNIQUE `UNIQUE_MSG_ID` (`game_team_id`, `msg_id`);
 
 ALTER TABLE `fantasy`.`merchandise_items`     ADD COLUMN `weight` FLOAT(4,2) DEFAULT '1.0' NULL AFTER `stock`;
+
+
+CREATE TABLE ffgame.game_bet_winners (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `game_id` varchar(32) DEFAULT NULL,
+  `game_team_id` bigint(21) DEFAULT NULL,
+  `score` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE_USER` (`game_id`,`game_team_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE ffgame.game_bets (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `game_id` varchar(32) DEFAULT NULL,
+  `game_team_id` bigint(21) DEFAULT NULL,
+  `bet_name` varchar(64) DEFAULT NULL,
+  `home` int(3) DEFAULT '0',
+  `away` int(3) DEFAULT '0',
+  `coins` int(5) DEFAULT '0',
+  `submit_dt` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE_BET` (`game_id`,`game_team_id`,`bet_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

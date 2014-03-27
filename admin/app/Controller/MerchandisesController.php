@@ -297,6 +297,7 @@ class MerchandisesController extends AppController {
 		//get ongkir
 		$ongkir = $this->Ongkir->findById($rs['MerchandiseOrder']['ongkir_id']);
 		$this->set('ongkir',$ongkir['Ongkir']);
+		$this->set('admin_fee',Configure::read('PO_ADMIN_FEE'));
 		$this->set('rs',$rs);
 	}
 	private function restock($order_id){

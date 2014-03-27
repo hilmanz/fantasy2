@@ -106,7 +106,10 @@ var base_coin = {};
                       ?>
                     </div><!-- end .widget -->
 				</div><!-- end .contents -->
-				
+				 <div class="widget tr catalog-list" style="padding:10px;">
+                        Jika ada pertanyaan atau keluhan, kirimkan email ke 
+                        <span class="yellow">store@supersoccer.co.id</span>
+                    </div>
             </div><!-- end .row-3 -->
         </div><!-- end .content -->
     </div><!-- end #thecontent -->

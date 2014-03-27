@@ -135,7 +135,10 @@ if(isset($category_name)){
 							<span class="ico icon-airplane">&nbsp;</span> Order Tracking
 						</a>
 					</div>
-					
+					<div class="widget tr catalog-list">
+						Jika ada pertanyaan atau keluhan, <br> kirimkan email ke 
+						<span class="yellow">store@supersoccer.co.id</span>
+					</div>
                     <?php for($i=0;$i<sizeof($sidebar_banner);$i++):?>
 			        	<div class="banner300x250">
 						     <a href="javascript:banner_click(<?=$sidebar_banner[$i]['Banners']['id']?>,'<?=$sidebar_banner[$i]['Banners']['url']?>');" target="_blank">
