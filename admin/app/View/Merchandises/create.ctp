@@ -134,7 +134,7 @@
 				Name
 			</td>
 			<td>
-				<input type="text" name="name" value=""/>
+				<input type="text" name="perk_ident" value=""/>
 			</td>
 		</tr>
 		<tr class="attributes">
@@ -142,7 +142,7 @@
 				Description
 			</td>
 			<td>
-				<textarea name="description"></textarea>
+				<textarea name="perk_description"></textarea>
 			</td>
 		</tr>
 		<tr class="attributes">
@@ -150,7 +150,7 @@
 				Amount
 			</td>
 			<td valign="top">
-				<input type="text" name="amount" value="1"/>
+				<input type="text" name="perk_amount" value="1"/>
 			</td>
 		</tr>
 		<tr class="attributes">
@@ -159,36 +159,39 @@
 			</td>
 			<td>
 				<div>
-				<input type="text" name="attributes[]" value="type" placeholder="name" style="width:300px;" 
+				<input type="text" data-id="txt-1" name="attributes[]" value="type" placeholder="name" style="width:300px;" 
 				class="txt-attr"/> &nbsp;
 				
-				<input type="text" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
+				<input type="text" data-id="val-1" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
 				</div>
 				<div>
-				<input type="text" name="attributes[]" value="category" placeholder="name" style="width:300px;"
+				<input type="text" data-id="txt-2" name="attributes[]" value="category" placeholder="name" style="width:300px;"
 				class="txt-attr"/> &nbsp;
-				<input type="text" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
+				<input type="text" data-id="val-2" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
 				
 				</div>
 				<div>
-				<input type="text" name="attributes[]" value="point_percentage" placeholder="name" style="width:300px;"
+				<input type="text" data-id="txt-3" name="attributes[]" value="point_percentage" placeholder="name" style="width:300px;"
 				class="txt-attr"/> &nbsp;
-				<input type="text" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
+				<input type="text" data-id="val-3" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
 				</div>
 				<div>
-				<input type="text" name="attributes[]" value="point_value" placeholder="name" style="width:300px;"
+				<input type="text" data-id="txt-4" name="attributes[]" value="point_value" placeholder="name" style="width:300px;"
 				class="txt-attr"/> &nbsp;
-				<input type="text" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
+				<input type="text" data-id="val-4" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
 				</div>
 				<div>
-				<input type="text" name="attributes[]" value="duration" placeholder="name" style="width:300px;"
+				<input type="text" data-id="txt-5" name="attributes[]" value="duration" placeholder="name" style="width:300px;"
 				class="txt-attr"/> &nbsp;
-				<input type="text" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
+				<input type="text" data-id="val-5" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
 				</div>
 				<div>
-				<input type="text" name="attributes[]" value="" placeholder="name" style="width:300px;"
+				<input type="text" data-id="txt-6" name="attributes[]" value="" placeholder="name" style="width:300px;"
 				class="txt-attr"/> &nbsp;
-				<input type="text" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
+				<input type="text" data-id="val-6" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
+				</div>
+				<div>
+					<input type="button" name="btn-add-attributes" value="ADD ATTRIBUTES" class="button" />
 				</div>
 			</td>
 		</tr>
@@ -209,6 +212,9 @@ var options = {
 		'passing_and_attacking','defending','goalkeeping','mistakes_and_errors'
 	]
 };
+
+var perks = [];
+
 $(document).ready(function(e){
 	$(".attributes").hide();
 	$(".txt-attr").keyup(function(e){
@@ -222,20 +228,52 @@ $(document).ready(function(e){
 			$('.attributes').hide();
 		}
 	});
+
+	$('.txt-attr').each(function(i,k){
+		addValueField($(k).val(),k);
+	});
+
+	$("input[name=btn-add-attributes]").click(function(e){
+		console.log($("select[name=perk_name]").val());
+		console.log($("input[name=perk_ident]").val());
+		console.log($("textarea[name=perk_description]").val());
+		console.log($("input[name=perk_amount]").val());
+		var new_attributes = {};
+		$('.txt-attr').each(function(i,k){
+			var t = $(k).attr('data-id').split('-');
+			var id = t[1];
+			if($('.txt-attr-val-'+id).val()!=""){
+				new_attributes[$(k).val()] = $('.txt-attr-val-'+id).val();	
+			}
+			
+		});
+		perks.push({
+				perk_name:$("select[name=perk_name]").val(),
+				name:$("input[name=perk_ident]").val(),
+				description:$("textarea[name=perk_description]").val(),
+				amount:$("input[name=perk_amount]").val(),
+				attributes:new_attributes
+			});
+
+		console.log(perks);
+	});
 });
 function addValueField(name,obj){
 	console.log(name);
 	$(obj).next().remove();
+
+	var t = $(obj).attr('data-id').split('-');
+
 	if(typeof options[name] !== 'undefined'){
 		var el = options[name];
-		var str = "<select name='attribute_values[]'>";
+		var str = "<select name='attribute_values[]' data-id='val-"+t[1]+"' class='txt-attr-val-"+t[1]+"'>";
 		for(var i in el){
 			str += "<option value='"+el[i]+"'>"+el[i]+"</option>";
 		}
 		str += "</select>";
 		$(obj).after("&nbsp;"+str);
 	}else{
-		$(obj).after('&nbsp;<input type="text" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>');
+		$(obj).after('&nbsp;<input type="text" name="attribute_values[]" data-id="val-'+t[1]+'" value="" placeholder="value" style="width:300px;" class="txt-attr-val-'+t[1]+'"/>');
 	}
 }
 </script>

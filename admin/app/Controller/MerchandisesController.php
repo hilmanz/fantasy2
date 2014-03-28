@@ -58,8 +58,6 @@ class MerchandisesController extends AppController {
 		
 		$rs = $this->MerchandiseItem->findById($id);
 
-		
-
 		if($this->request->is('post')){
 			$this->MerchandiseItem->id = $id;
 			
