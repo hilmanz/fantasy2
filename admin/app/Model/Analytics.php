@@ -37,7 +37,7 @@ class Analytics extends AppModel {
 	public function daily_registrations(){
 		$sql = "SELECT DATE(register_date) AS dt,COUNT(id) AS total 
 				FROM fantasy.users a
-				GROUP BY DATE(register_date) ORDER BY id ASC LIMIT 100";
+				GROUP BY DATE(register_date) ORDER BY id ASC LIMIT 1000";
 		$rs = $this->query($sql);
 		
 		$results = array();

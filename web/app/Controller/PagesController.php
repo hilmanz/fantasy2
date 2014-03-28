@@ -202,4 +202,7 @@ class PagesController extends AppController {
 		//assign team ranking list to template
 	    $this->set('team',$rs);
 	}
+	public function versus(){
+		
+	}
 }

@@ -328,8 +328,10 @@ function assignScore(conn,game_id,stats,bet,done){
 			var winner = '';
 			if(stats.SCORE_GUESS.home > stats.SCORE_GUESS.away){
 				winner = 'HOME';
-			}else{
+			}else if(stats.SCORE_GUESS.home < stats.SCORE_GUESS.away){
 				winner = 'AWAY';
+			}else{
+				winner = 'DRAW';
 			}
 			if(stats.SCORE_GUESS.home == bet.home){
 				score += bet.coins;
@@ -340,6 +342,8 @@ function assignScore(conn,game_id,stats,bet,done){
 			if(bet.home > bet.away && winner == 'HOME'){
 				score += bet.coins;
 			}else if(bet.home < bet.away && winner == 'AWAY'){
+				score += bet.coins;
+			}else if(bet.home == bet.away && winner == 'DRAW'){
 				score += bet.coins;
 			}else{
 				//do nothing
@@ -405,11 +409,12 @@ function assignScore(conn,game_id,stats,bet,done){
 					cb(err,score);
 				});
 		},
+		
 		function(score,cb){
 
 			cash.adding_cash(conn,
 							 bet.game_team_id,
-							 'BET_'+game_id,score,
+							 'BET_'+bet.bet_name+'_'+game_id,score,
 							 'TEBAK SKOR WINS',
 							 function(err,rs){
 								cb(err,rs);

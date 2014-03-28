@@ -3444,6 +3444,7 @@ class ApiController extends AppController {
 				'game_id'=>$matches[$i]['game_id'],
 				'home_id'=>$matches[$i]['home_id'],
 				'away_id'=>$matches[$i]['away_id'],
+				'period'=>$matches[$i]['period'],
 				'home_name'=>$matches[$i]['home_name'],
 				'away_name'=>$matches[$i]['away_name'],
 				'home_logo'=>'http://widgets-images.s3.amazonaws.com/football/team/badges_65/'.
@@ -3529,7 +3530,7 @@ class ApiController extends AppController {
 
 			if($the_match['period']=='PreMatch' && $coin_ok){
 				
-			
+				
 				foreach($bet_data as $name=>$val){
 					//all negative coins will be invalid
 					if($val['coin']<0){
@@ -3556,7 +3557,29 @@ class ApiController extends AppController {
 											' - fb_id:'.$fb_id.' - game_team_id : '.
 									$game_team_id.' - cash : '.$cash.' - bet : '.$total_bets. 
 									' - '.$sql);
+
 				}
+				$transaction_name = 'PLACE_BET_'.$game_id;
+				$bet_cost = abs(intval($total_bets)) * -1;
+				$sql = "INSERT INTO ffgame.game_transactions
+						(game_team_id,transaction_dt,transaction_name,amount,details)
+						VALUES
+						('{$game_team_id}',NOW(),'{$transaction_name}',{$bet_cost},'deduction')
+						ON DUPLICATE KEY UPDATE
+						amount = VALUES(amount);";
+				$this->Game->query($sql,false);
+				CakeLog::write('error',$sql);
+				$sql = "INSERT INTO ffgame.game_team_cash
+						(game_team_id,cash)
+						SELECT game_team_id,SUM(amount) AS cash 
+						FROM ffgame.game_transactions
+						WHERE game_team_id = {$game_team_id}
+						GROUP BY game_team_id
+						ON DUPLICATE KEY UPDATE
+						cash = VALUES(cash);";
+				$this->Game->query($sql,false);
+
+
 				$this->set('response',array('status'=>1,'game_id'=>$game_id,'fb_id'=>$fb_id));
 			}else{
 				$this->set('response',array('status'=>0,'game_id'=>$game_id,'fb_id'=>$fb_id));
