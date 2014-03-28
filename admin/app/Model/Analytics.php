@@ -32,6 +32,25 @@ class Analytics extends AppModel {
 		return $results;
 	}
 	
+
+	//retrieving daily registrations
+	public function daily_registrations(){
+		$sql = "SELECT DATE(register_date) AS dt,COUNT(id) AS total 
+				FROM fantasy.users a
+				GROUP BY DATE(register_date) ORDER BY id ASC LIMIT 100";
+		$rs = $this->query($sql);
+		
+		$results = array();
+		for($i=0;$i<sizeof($rs);$i++){
+			$p = $rs[$i][0];
+			$p['total'] = $rs[$i][0]['total'];
+			$results[] = $p;
+		}
+
+		
+		return $results;
+	}
+	//-->
 	//retrieving unique user monthly stats.
 	//we can get the data from fantasy.activity_logs
 	public function unique_user_monthly(){

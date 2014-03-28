@@ -1,7 +1,12 @@
 <h3>
 	User Analytics
 </h3>
-
+<div class="row">
+	<!-- Daily Registrations-->
+	<div class="daily_registrations">
+	</div>
+	<!-- end of unique player daily -->
+</div>
 <div class="row">
 	<!-- Unique Player Daily last 14 days-->
 	<div class="unique_daily">
@@ -106,7 +111,7 @@ $(function () {
 	unique_user_daily();
 	unique_user_weekly();
 	unique_user_monthly();
-
+	daily_registrations();
 	most_buy_player(<?=$transfer_window[0]['id']?>);
 	most_sold_player(<?=$transfer_window[0]['id']?>);
 
@@ -222,6 +227,21 @@ function unique_user_monthly(){
 						xText: "Bulan/Tahun",
 						yText: "Total",
 						title: 'Unique Players Monthly'
+					});
+				}	
+			});
+}
+function daily_registrations(){
+	api_call('<?=$this->Html->url("/analytics/daily_registrations")?>',
+			function(response){
+				if(response.status==1){
+					addChart({
+						target:'.daily_registrations',
+						categories: response.data.categories,
+						xValue: response.data.values,
+						xText: "Tanggal",
+						yText: "Total",
+						title: 'Daily Registrations'
 					});
 				}	
 			});

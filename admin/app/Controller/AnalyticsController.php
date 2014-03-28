@@ -46,6 +46,24 @@ class AnalyticsController extends AppController {
 		$this->set('most_sold',$most_sold);
 		*/
 	}
+
+	public function daily_registrations(){
+		$rs = $this->Analytics->daily_registrations();
+		
+		for($i=0;$i<sizeof($rs);$i++){
+			if($rs[$i]['dt']!=null){
+				$categories[] = $rs[$i]['dt'];
+				$xValue[] = intval($rs[$i]['total']);	
+			}
+		}
+		$this->layout = "ajax";
+		$this->set('response',
+					array('status'=>1,
+						  'data'=>array('categories'=>$categories,
+						  				'values'=>$xValue)));
+		$this->render('response');
+	}
+
 	//getting the most buy players
 	public function most_buy($tw_id){
 		$rs = $this->Analytics->transfer_most_buy($tw_id);
