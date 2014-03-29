@@ -243,22 +243,28 @@ function processGameStats(conn,matchday,game_id,done){
 							}
 						}
 					}
-					cb(err,stats);
+					cb(err,stats,goals);
 				});
 		},
-		function(stats,cb){
+		function(stats,goals,cb){
 			console.log('BLAH',stats);
 			console.log(game_id,stats);
 			conn.query("UPDATE ffgame.game_bet_winners SET score=0 WHERE game_id=?",
 						[game_id],function(err,rs){
 							console.log('calculate',S(this.sql).collapseWhitespace().s);
-							cb(err,stats);
+							cb(err,stats,goals);
 						});
 		},
-		function(stats,cb){
-			calculateUserBetScore(conn,game_id,stats,function(err,stats){
-				cb(err,stats);
-			});
+		function(stats,goals,cb){
+			if(goals.period=='FullTime'){
+				console.log('calculate','period is fulltime, we count the score');
+				calculateUserBetScore(conn,game_id,stats,function(err,stats){
+					cb(err,stats);
+				});
+			}else{
+				console.log('calculate','the game still running');
+				cb(null,stats);
+			}
 		},
 		function(stats,cb){
 			calculateWinner(conn,game_id,function(err,rs){
@@ -409,7 +415,7 @@ function assignScore(conn,game_id,stats,bet,done){
 					cb(err,score);
 				});
 		},
-		
+		//we only adding cash when the game period is FullTime
 		function(score,cb){
 
 			cash.adding_cash(conn,
