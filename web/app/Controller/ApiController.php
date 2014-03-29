@@ -3526,6 +3526,9 @@ class ApiController extends AppController {
 			if($total_bets <= 100 
 				&& $total_bets < intval($cash)){
 				$coin_ok = true;
+			}else{
+				CakeLog::write('debug',date("Y-m-d H:i:s").
+									' - submit_bet - '.'coin not ok -> total_bets : '.$total_bets);
 			}
 
 			if($the_match['period']=='PreMatch' && $coin_ok){
