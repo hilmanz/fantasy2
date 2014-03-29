@@ -97,7 +97,7 @@ function generateStats(conn,matchday,game_id,done){
 	});
 }
 function processGameStats(conn,matchday,game_id,done){
-
+	console.log('calculate','processing',game_id,matchday);
 	var stats = {
 				SCORE_GUESS:{
 					home:0,
@@ -267,6 +267,12 @@ function processGameStats(conn,matchday,game_id,done){
 			}
 		},
 		function(stats,cb){
+			//send earnings notification
+			sendEarningNotification(conn,game_id,function(err,rs){
+				cb(err,stats);
+			});
+		},
+		function(stats,cb){
 			calculateWinner(conn,game_id,function(err,rs){
 				stats.winners = rs;
 				cb(err,stats);
@@ -284,6 +290,19 @@ function processGameStats(conn,matchday,game_id,done){
 		console.log(game_id,rs);
 		done(err,rs);
 	});
+}
+function sendEarningNotification(conn,game_id,done){
+	var msgid = 'tbkskr-'+game_id;
+	conn.query("INSERT IGNORE INTO fantasy.notifications\
+				(content,url,dt,game_team_id,msg_id)\
+				SELECT CONCAT('Selamat ! loe sudah memenangkan ',score,' coins dari tebak skor !') AS content,\
+				'#',NOW(),game_team_id,? \
+				FROM ffgame.game_bet_winners WHERE game_id=?;",
+				[msgid,game_id],
+				function(err,rs){
+					console.log('calculate',S(this.sql).collapseWhitespace().s);
+					done(err,rs);
+				});
 }
 function calculateWinner(conn,game_id,done){
 	conn.query("SELECT fb_id,score FROM ffgame.game_bet_winners\
