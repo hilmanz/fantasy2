@@ -3714,6 +3714,18 @@ class ApiController extends AppController {
 			$winners = array();
 			if(isset($rs['data']['winners'])){
 				$winners = $rs['data']['winners'];
+				
+				if(sizeof($winners)>0){
+					foreach($winners as $n=>$v){
+						$game_user = $this->Game->query("
+									SELECT fb_id FROM ffgame.game_users a
+									INNER JOIN ffgame.game_teams b
+									ON a.id = b.user_id WHERE b.id = {$v['game_team_id']}
+									LIMIT 1;");
+						$winners[$n]['game_team_id'] = null;
+						$winners[$n]['fb_id'] = $game_user[0]['a']['fb_id'];
+					}
+				}
 			}
 
 			//dummy

@@ -26,5 +26,8 @@ exports.config = {
 		returnUrl2: 'http://localhost/duf/supersoccer_fork/onlinecatalog/complete',
 		returnUrl3: 'http://localhost/fantasy/merchandises/pay/return',
 		returnUrl4: 'http://localhost/duf/supersoccer_fork/onlinecatalog/pay/success'
+	},
+	mailer:{
+		host:'http://localhost:3101'
 	}
 };

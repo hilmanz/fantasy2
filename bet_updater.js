@@ -273,21 +273,32 @@ function processGameStats(conn,matchday,game_id,done){
 			});
 		},
 		function(stats,cb){
+			console.log('calculate','calculate winner',stats);
 			calculateWinner(conn,game_id,function(err,rs){
-				stats.winners = rs;
+				console.log('calculate','winner',rs);
+				if(rs!=null){
+					stats.winners = rs;	
+				}
+				console.log('calculate',stats);
+				if(err){
+					console.log(err);
+				}
 				cb(err,stats);
 			});
 		},
 		function(stats,cb){
+			console.log('calculate','nih',stats);
+			console.log('calculate','bet_info stats');
+			console.log('bet_info_'+game_id,stats);
 			redisClient.set('bet_info_'+game_id,JSON.stringify(stats),
 			function(err,rs){
 				cb(err,stats);
 			});
-		},
+		}
 
 	],
 	function(err,rs){
-		console.log(game_id,rs);
+		console.log('done',game_id,rs);
 		done(err,rs);
 	});
 }
@@ -305,7 +316,7 @@ function sendEarningNotification(conn,game_id,done){
 				});
 }
 function calculateWinner(conn,game_id,done){
-	conn.query("SELECT fb_id,score FROM ffgame.game_bet_winners\
+	conn.query("SELECT game_team_id,score FROM ffgame.game_bet_winners\
 				 WHERE game_id=? ORDER BY score DESC LIMIT 10;",
 				 [game_id],function(err,rs){
 				 	done(err,rs);

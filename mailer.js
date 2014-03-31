@@ -25,6 +25,10 @@ var transport = nodemailer.createTransport("SMTP",{
 										    	}
 										    });
 var sleep = require('sleep');
+var secret = 'x4asd1!234@!42b4b00n5';
+var crypto = require('crypto');
+var sha1sum = crypto.createHash('sha1');
+var request = require('request');
 /////DECLARATIONS/////////
 
 
@@ -88,6 +92,57 @@ function runLoop(){
 						    generateTextFromHTML:true,
 						    html: queue.html_text
 						}
+						sha1sum = crypto.createHash('sha1');
+						var send_hash = sha1sum.update(mailOptions.to+mailOptions.subject+mailOptions.html+secret)
+											   .digest('hex');
+
+						request.post(config.mailer.host+'/send', {
+								form:{
+									from:mailOptions.from,
+									to:mailOptions.to,
+									subject:mailOptions.subject,
+									html:mailOptions.html,
+									hash:send_hash
+								}
+							},
+						function (error, response, body) {
+							
+						  if (!error && response.statusCode == 200) {
+						  	
+						    var resp = JSON.parse(body);
+						    console.log(resp);
+						    var td = ((new Date()).getTime() - last_t)/1000;
+							n_sent++;
+							total_sent++;
+							console.log(queue.id,'elapsed : ',td,'total sent : ',n_sent);
+							
+							if(td < 1 && n_sent > 5){
+								console.log('sleep for 1s');
+								//sleep 1 second
+								sleep.sleep(1);
+								console.log(queue.id,'resetting the timewatch and n_sent');
+								n_sent = 0;
+								last_t = (new Date()).getTime();
+							}else if(td > 1 && n_sent < 5){
+								console.log('reset time and counter');
+								last_t = (new Date()).getTime();
+								n_sent = 0;
+							}else{
+								//do nothing
+							}
+							if(!error){
+								console.log(queue.id,'sent');
+								callback(null,error,queue,resp.responseStatus);	
+							}else{
+								console.log(queue.id,'error : ',error.message);
+								callback(null,null,queue,null);
+							}
+						  }else{
+						  	console.log(error.message);
+						  	callback(null,null,queue,null);
+						  }
+						})
+						/*
 						transport.sendMail(mailOptions,function(error, responseStatus){
 							
 							var td = ((new Date()).getTime() - last_t)/1000;
@@ -117,6 +172,7 @@ function runLoop(){
 								callback(null,null,queue,null);
 							}
 						});
+						*/
 					}else{
 						console.log(queue.id,'cannot send ',queue.email);
 						callback(null,null,queue,null);
@@ -132,9 +188,10 @@ function runLoop(){
 				if(errorStatus!=null){
 					console.log('error : ',errorStatus.message);
 				}
+				console.log('responseStatus',responseStatus);
 				if(queue!=null && responseStatus!=null){
 					if(responseStatus.message.search('250 OK')){
-						console.log('SENT !');
+						console.log('SENT ! SUCCESSFULLY !');
 						conn.query("UPDATE ffgame.email_queue SET n_status=2,send_dt=NOW() WHERE id=?",
 									[queue.id],function(err,rs){
 							callback(err,queue);	
