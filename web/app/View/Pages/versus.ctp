@@ -1,66 +1,129 @@
-<div id="fillDetailsPage">
-     <?php echo $this->element('infobar'); ?>
+<div id="versusPage">
     <div id="thecontent">
-        <div id="content">
-            <div class="content">
-                <div class="row-2">
-                    <h1 class="red">Friendly Match</h1>
-                    <p>Pertaruhkan coins loe sekarang dan tantang manager lain. Buktikan bahwa lo yang terbaik.</p>
-                </div><!-- end .row-2 -->
-                
-                <div class="row">
-                    <table cellspacing="0" cellpadding="0" width="100%">
-                        <tr>
-                        	<td align="center">
-                        		<img src="https://graph.facebook.com/737766911/picture"/>
-                        		<h4>PASEBAN FC</h4>
-                        		<div>RANK : 13,020</div>
-                        	</td>
-                        	<td align="center">
-                        		<h4>VS</h4>
-                        	</td>
-                        	<td align="center">
-                        		<img src="https://graph.facebook.com/1317342532/picture"/>
-                        		<h4>VOYAGE CITY</h4>
-                        		<div>RANK : 11,000</div>
-                        	</td>
-                        </tr>
-                        <tr>
-                        	<td align="center">
-                        		<p>KEKUATAN TIM : 1420</p>
-                        		<p>PERK BONUS : +500</p>
-                        		<p>COACHING STAFFS : +100</p>
-                        		<p>YOUR TOTAL POWER : 2020 pts</p>
-                        	</td>
-                        	<td align="center">
-                        		
-                        	</td>
-                        	<td align="center">
-                        		<p>KEKUATAN TIM : 1000 - 1600 pts</p>
-                        	</td>
-                        </tr>
-                        <tr>
-                        	<td colspan="3">
-
-                        		<div style="text-align:center">
-                        		Lo akan dikenakan biaya pertandingan sebesar <span class="red">100 coins</span>.
-                        		</div>
-                        	</td>
-                        </tr>
-                        <tr>
-                        	<td colspan="3">
-                        		<div style="text-align:center">
-                        		<a href="#" class="button">GANTI FORMASI</a>
-                        		<a href="#" class="button">TANDING</a>
-                        		</div>
-                        	</td>
-                        </tr>
-                    </table>
+      <div class="rowd">
+     	 <?php echo $this->element('infobar'); ?>
+      </div>
+        <div class="rowd">
+        	<div class="col-content">
+                <div class="titlePage">
+                    <h1 class="yellow">FRIENDLY MATCH</h1>
+                    <p>Pertaruhkan point lo sekarang dan tantang manager lain. Buktikan bahwa lo yang terbaik.</p>
                 </div>
-            </div><!-- end .content -->
-        </div><!-- end #content -->
-    <div id="sidebar" class="tr">
-        
-    </div><!-- end #sidebar -->
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable" id="tableVersus">
+                    <tbody>
+                      <tr>
+                        <td>
+                        	<a href="#" class="thumbClub">
+                            	<img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/11.png" />
+                            </a>
+                            <h3 class="teamName">Everton</h3>
+                            <h4 class="rank">Rank: 142</h4>
+                        </td>
+                        <td rowspan="2" width="10"><h2 class="vs">Vs</h2></td>
+                        <td>
+                        	<a href="#" class="thumbClub">
+                            	<img src="http://widgets-images.s3.amazonaws.com/football/team/badges_65/3.png" />
+                            </a>
+                            <h3 class="teamName">Arsenal</h3>
+                            <h4 class="rank">Rank: 673</h4>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                        	<div class="teamDesc">
+                            	<span>Kekuatan Team: 1420</span>
+                            	<span>Perk Bonus: +500</span>
+                            	<span>Coaching Staff: +100</span>
+                            	<span class="total">Your Total Power: 2020 pts</span>
+                            </div><!-- end .teamDesc -->
+                        </td>
+                        <td>
+                        	<div class="teamDesc">
+                            	<span>Kekuatan Team: 1420</span>
+                            	<span>Perk Bonus: +500</span>
+                            	<span>Coaching Staff: +100</span>
+                            	<span class="total">Your Total Power: 2020 pts</span>
+                            </div><!-- end .teamDesc -->
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="3">
+                        	<div class="betText">
+                            	<h2>Lo akan dikenakan biaya pertandingan sebesar <span class="points">100 Coins</span></h2>
+                            </div><!-- end .teamDesc -->
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="3">
+                        	<div class="btnAct">
+                            	<a href="#" class="button2">Ganti Formasi</a>
+                            	<a href="#" class="button2">Tanding</a>
+                            </div><!-- end .teamDesc -->
+                        </td>
+                      </tr>
+                    </tbody>
+                </table>
+            </div><!-- end .col-content -->
+            <div class="col3">
+                <div class="widget-title">
+                    <h1 class="yellow">Your Match History</h1>
+                </div>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable tableHistory" >
+                    <tbody>
+                      <tr>
+                        <td width="45%">
+                            <h4 class="score">2</h4>
+                            <h3 class="teamName">Everton</h3>
+                        </td>
+                        <td width="10"><h2 class="vs">Vs</h2></td>
+                        <td width="45%">
+                            <h4 class="score">2</h4>
+                            <h3 class="teamName">Persipura</h3>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td width="45%">
+                            <h4 class="score">5</h4>
+                            <h3 class="teamName">Everton</h3>
+                        </td>
+                        <td width="10"><h2 class="vs">Vs</h2></td>
+                        <td width="45%">
+                            <h4 class="score">1</h4>
+                            <h3 class="teamName">Depok United</h3>
+                        </td>
+                      </tr>
+                    </tbody>
+                </table>
+                <div class="widget-title">
+                    <h1 class="yellow">Match History Your challenge</h1>
+                </div>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable tableHistory" >
+                    <tbody>
+                      <tr>
+                        <td width="45%">
+                            <h4 class="score">2</h4>
+                            <h3 class="teamName">Arsenal</h3>
+                        </td>
+                        <td width="10"><h2 class="vs">Vs</h2></td>
+                        <td width="45%">
+                            <h4 class="score">1</h4>
+                            <h3 class="teamName">Pamulang FC</h3>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td width="45%">
+                            <h4 class="score">4</h4>
+                            <h3 class="teamName">Arsenal</h3>
+                        </td>
+                        <td width="10"><h2 class="vs">Vs</h2></td>
+                        <td width="45%">
+                            <h4 class="score">3</h4>
+                            <h3 class="teamName">Jakarta City</h3>
+                        </td>
+                      </tr>
+                    </tbody>
+                </table>
+            </div><!-- end .col3 -->
+        </div><!-- end .rowd -->
     </div><!-- end #thecontent -->
-</div><!-- end #fillDetailsPage -->
+</div><!-- end #faqPage -->
