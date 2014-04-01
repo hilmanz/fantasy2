@@ -2674,3 +2674,80 @@ a.btnCoin:hover,a.btnCoinMandiri:hover{
 	text-decoration:none;
 	opacity:1;
 }
+#tableVersus{
+	margin:20px 0;
+	width:95%;
+	border:none;
+}
+.tableHistory{
+	border:none;
+}
+#tableVersus td,.tableHistory td{
+	text-align:center;
+	background:#000 !important;
+	color:#fff;
+	padding:5px;
+	border:none;
+	border-bottom:solid 1px #333;
+}
+#tableVersus tr:first-child td{
+	border:none;
+}
+#tableVersus tr:last-child td{
+	background:#333 !important;
+	border:none;
+}
+#tableVersus .button2{
+	background:#900;
+	width:120px;
+	margin:10px 20px;
+}
+#tableVersus .button2:hover{
+	background:#C00;
+}
+.tableHistory tr:last-child td{
+	border:none;
+}
+#tableVersus td .thumbClub{
+	margin:10px auto;
+}
+.tableHistory td .thumbClub{
+	margin:10px auto;
+}
+.tableHistory td .thumbClub{
+	width:40px; height:40px;
+	margin:5px auto;
+}
+.tableHistory td .thumbClub img{
+	height:40px;
+}
+#tableVersus .teamName{
+	margin:0;
+	color:#FC0;
+}
+.tableHistory .teamName{
+	margin:0;
+	color:#ccc;
+	font-size:16px;
+}
+#versusPage .rank,#versusPage .score{
+	margin:0;
+}
+#versusPage .score{
+	color:#FC0;
+}
+#versusPage .points{
+	color:#FC0;
+}
+#versusPage .teamDesc span{
+	display:block;
+}
+.widget-title{
+	background: #333;
+	padding: 5px 20px;
+}
+.widget-title h1{
+	margin: 0;
+	font-size: 20px;
+	color: #fff;
+}
