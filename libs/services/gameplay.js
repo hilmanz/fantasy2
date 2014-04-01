@@ -650,6 +650,18 @@ exports.setInputAttempt = function(req,res){
 		
 	});
 }
+exports.storeToRedisTmp = function(req,res){
+	req.redisClient.set(req.query.name,req.query.value,function(err,rs){
+		req.redisClient.expire(req.query.name, 60*60*24,function(err,rs){
+			res.json(200,{status:1});
+		});
+	});
+}
+exports.getFromRedisTmp = function(req,res){
+	req.redisClient.get(req.query.name,function(err,rs){
+		res.json(200,{status:1,data:rs});
+	});
+}
 exports.getInputAttempt = function(req,res){
 	req.redisClient.get(req.query.name,function(err,rs){
 		res.json(200,{status:1,data:rs});

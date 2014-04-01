@@ -2566,11 +2566,11 @@ class ApiController extends AppController {
 		$this->loadModel('MerchandiseCategory');
 		$this->loadModel('MerchandiseOrder');
 
+		CakeLog::write('debug',json_encode($this->request->data));
 
 		$shopping_cart = unserialize(decrypt_param($this->request->data['param']));
-		$transaction_id = intval($game_team_id).'-'.date("YmdHis").'-'.rand(0,99);
+		$transaction_id = intval(@$game_team_id).'-'.date("YmdHis").'-'.rand(0,99);
 		$description = 'Purchase Order #'.$transaction_id;
-		
 		
 
 		//get total coins to be spent.
@@ -2604,7 +2604,13 @@ class ApiController extends AppController {
 				break;
 			}
 		}
+
 		$total_price += ($kg*$total_ongkir);
+
+		$transaction_data = array('profile'=>$this->request->data,
+								 'shopping_cart'=>$shopping_cart,
+								 'base_ongkir_value'=>$total_ongkir);
+		
 
 		$rs = $this->Game->getEcashUrl(array(
 			'transaction_id'=>$transaction_id,
@@ -2613,6 +2619,10 @@ class ApiController extends AppController {
 			'clientIpAddress'=>$this->request->clientIp(),
 			'source'=>'fm'
 		));
+		if($rs['data']!='#'){
+			$this->Game->storeToTmp(intval(@$game_team_id),$transaction_id,encrypt_param(serialize($transaction_data)));
+		}
+		CakeLog::write('debug',intval(@$game_team_id).'-'.$transaction_id.'-'.encrypt_param(serialize($transaction_data)));
 
 		$this->layout="ajax";
 		$this->set('response',array('status'=>1,'data'=>$rs['data'],'transaction_id'=>$transaction_id));
@@ -2701,8 +2711,15 @@ class ApiController extends AppController {
 		$this->loadModel('MerchandiseOrder');
 		$this->loadModel('Ongkir');
 		
-		CakeLog::write('debug','pay_with_ecash_completed - data : '.json_encode($ecash_data));
-		$shopping_cart = unserialize(decrypt_param($ecash_data['param']));
+		//CakeLog::write('debug','pay_with_ecash_completed - data : '.json_encode($ecash_data));
+
+		$transaction_id = $ecash_data['transaction_id'];
+
+		//get data from redis store
+		$rs = $this->Game->getFromTmp(intval(@$game_team_id),$transaction_id);
+		$transaction_tmp = unserialize(decrypt_param($rs['data']));
+		CakeLog::write('debug','pay_with_ecash_completed'.'-'.json_encode($transaction_tmp));
+		$shopping_cart = unserialize(decrypt_param($transaction_tmp['profile']['param']));
 		
 		CakeLog::write('debug','pay_with_ecash_completed - shopping_cart : '.json_encode($shopping_cart));
 		
@@ -2731,8 +2748,9 @@ class ApiController extends AppController {
 		
 
 
-		$data = unserialize(decrypt_param($ecash_data['profile']));
-		CakeLog::write('debug','pay_with_ecash_completed - profile : '.json_encode($shopping_cart));
+		//$data = unserialize(decrypt_param($ecash_data['profile']));
+		$data = $transaction_tmp['profile'];
+		CakeLog::write('debug','pay_with_ecash_completed - profile : '.json_encode($data));
 		
 		//calculate ongkir
 		$ongkirList = $this->getOngkirList();

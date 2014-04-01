@@ -18,7 +18,7 @@
     "passport": "*",
     "should": "*",
     "crypto": "*",
-    "connect-redis": "*",
+    "connect-redis": "1.4.7",
     "redis": "*",
     "optimist": "0.5.2",
     "winston": "*",

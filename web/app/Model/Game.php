@@ -453,6 +453,19 @@ class Game extends AppModel {
 		$rs = $this->api_call('/getInputAttempt',array('name'=>$name));
 		return $rs;
 	}
+
+	public function storeToTmp($game_team_id,$input_name,$input_value){
+		$rs = $this->api_call('/storeToTmp',array(
+					'name'=>$input_name,
+					'value'=>$input_value
+				));
+		return $rs;
+	}
+	public function getFromTmp($game_team_id,$input_name){
+		
+		$rs = $this->api_call('/getFromTmp',array('name'=>$input_name));
+		return $rs;
+	}
 	/*
 	* $params - transaction_id,amount,clientIpAddress,description,source
 	*/
