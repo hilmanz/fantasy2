@@ -132,6 +132,8 @@ class MerchandisesController extends AppController {
 	}
 	public function create(){
 		$this->loadModel('MerchandiseItem');
+		$this->loadModel('MerchandiseItemPerk');
+		$this->loadModel('MasterPerk');
 		if($this->request->is('post')){
 			$dir_path = Configure::read('avatar_img_dir')."merchandise/";
 			$filename = $_FILES['pic']['name'];
@@ -154,6 +156,30 @@ class MerchandisesController extends AppController {
 			$this->MerchandiseItem->create();
 			$rs = $this->MerchandiseItem->save($this->request->data);
 			if($rs){
+				//add perks
+				$perks = json_decode($this->request->data['perks'],true);
+				$item_id = $this->MerchandiseItem->getInsertID();
+				
+				$added_perk = array();
+				for($i=0;$i<sizeof($perks);$i++){
+					$perk_name = 'perk_'.$item_id.$perks[$i]['perk_name'];
+					$this->MasterPerk->create();
+					$rs = $this->MasterPerk->save(array(
+						'perk_name'=>$perks[$i]['perk_name'],
+						'name'=>$perks[$i]['name'],
+						'description'=>$perks[$i]['description'],
+						'amount'=>$perks[$i]['amount'],
+						'data'=>serialize($perks[$i]['attributes'])
+					));
+					$added_perk[] = $this->MasterPerk->getInsertID();
+				}
+				for($i=0;$i<sizeof($added_perk);$i++){
+					$this->MerchandiseItemPerk->create();
+					$this->MerchandiseItemPerk->save(array(
+						'merchandise_item_id'=>$item_id,
+						'perk_id'=>$added_perk[$i]
+					));
+				}
 				$this->Session->setFlash('New Merchandise has been added successfully !');
 			}else{
 				$this->Session->setFlash('Cannot add the merchandise, please try again later!');

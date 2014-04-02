@@ -121,6 +121,17 @@ class Game extends AppModel {
 		return $response;
 	}
 	/*
+	* add expenditure
+	*/
+	public function add_expenditure($game_team_id,$transaction_name,$amount){
+		$response = $this->api_post('/add_expenditure',array(
+			'game_team_id'=>$game_team_id,
+			'transaction_name'=>$transaction_name,
+			'amount'=>$amount
+		));
+		return $response;
+	}
+	/*
 	* get current lineup settings
 	* @team_id game_team_id 
 	*/

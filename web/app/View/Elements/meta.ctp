@@ -1,10 +1,12 @@
 
 	<meta charset="utf-8">
-	<title>SuperSoccer Football Manager - Show What You Know</title>
+	<title>SuperSoccer Football Manager - Online Football Manager on SuperSoccer</title>
 
     <meta name="viewport" content = "width = device-width, initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no" />	
 	<?php echo $this->Html->meta('icon', '/images/favicon.ico');?>
-	<meta name="description" content="">
+	
+	<meta name="description" content="SuperSoccer Football Manager, football manager online games dari SuperSoccer. Ajang unjuk gigi kemampuan kamu sebagai manager klab liga utama inggris.">
+	<meta name='keywords' content="football manager online, online football manager, fm super soccer, football manager supersoccer"/>
 	<meta name="author" content="">
 	<script>
 	var api_url = "<?=$this->Html->url('/')?>";

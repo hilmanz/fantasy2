@@ -112,6 +112,19 @@
 			</td>
 			
 		</tr>
+		<tr>
+			<td colspan="2">
+				<table width="100%" class="perklist">
+					<tr>
+						<td>Perk</td>
+						<td>Category</td>
+						<td>Amount</td>
+						<td>Attributes</td>
+						<td></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
 		<tr class="attributes">
 			<td>
 				Category
@@ -197,16 +210,36 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				
+				<input type="hidden" name="perks" value=""/>
 				<input type="submit" name="btn" value="UPLOAD"/>
 			</td>
 		</tr>
 	</table>
 </form>
+<script id="tplperkrow" type="text/template">
+<% for(var i in perks){ %>
+	<tr class="perkrows perk-<%=i%>">
+		<td><%=perks[i].name%></td>
+		<td><%=perks[i].perk_name%></td>
+		<td><%=perks[i].amount%></td>
+		<td>
+		<%
+		if(perks[i].attributes != null){
+			for(var j in perks[i].attributes){
+		%>
+			<p><%=j%> : <%=perks[i].attributes[j]%></p>
+		<% }}else{%>
+			N/A
+		<%}%>
+		</td>
+		<td><a href="#" onclick="removeItem(<%=i%>);return false;">Remove</a></td>
+	</tr>
+<% } %>
+</script>
 <script>
 var options = {
 	'type':[
-		'booster','jersey'
+		'booster','jersey','money','free_player','transfer_window'
 	],
 	'category':[
 		'passing_and_attacking','defending','goalkeeping','mistakes_and_errors'
@@ -215,6 +248,20 @@ var options = {
 
 var perks = [];
 
+function removeItem(rowId){
+	var new_perks = [];
+	for(var i=0; i < perks.length;i++){
+		if(i!=rowId){
+			new_perks.push(perks[i]);
+		}
+	}
+	$(".perk-"+rowId).remove();
+	perks = new_perks;
+	updatePerkValues();
+}
+function updatePerkValues(){
+	$("input[name=perks]").val(JSON.stringify(perks));
+}
 $(document).ready(function(e){
 	$(".attributes").hide();
 	$(".txt-attr").keyup(function(e){
@@ -256,8 +303,14 @@ $(document).ready(function(e){
 			});
 
 		console.log(perks);
+		displayPerks(perks);
+		updatePerkValues();
 	});
 });
+function displayPerks(perks){
+	$(".perkrows").remove();
+	append_view(tplperkrow,'.perklist',{perks:perks});
+}
 function addValueField(name,obj){
 	console.log(name);
 	$(obj).next().remove();

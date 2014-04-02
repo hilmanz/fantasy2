@@ -600,6 +600,7 @@ exports.sale = function(req,res){
 		}
 	);
 }
+
 //buy a player
 exports.buy = function(req,res){
 	gameplay.buy(
@@ -623,6 +624,25 @@ exports.buy = function(req,res){
 					res.send(200,{status:1,data:result,message:'the player has been successfully bought.'});
 				}else{
 					res.send(200,{status:0,message:'Oops, cannot buy the player.'});
+				}	
+			}
+		}
+	);
+}
+exports.add_expenditure = function(req,res){
+	gameplay.add_expenditure(
+		req.body.game_team_id,
+		req.body.transaction_name,
+		req.body.amount,
+		function(err,result){
+			if(err){
+				res.send(200,{status:0,message:'transaction failed'});
+				
+			}else{
+				if(result!=null){
+					res.send(200,{status:1,data:result});
+				}else{
+					res.send(200,{status:0,message:'transaction didnt return anything'});
 				}	
 			}
 		}

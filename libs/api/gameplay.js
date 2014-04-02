@@ -2136,11 +2136,16 @@ function apply_perk(game_team_id,perk_id,done){
 			},
 			function(perk,canAddPerk,cb){
 				if(canAddPerk){
+					if(perk.data.duration==null){
+						perk.data.duration = 0;
+					}
 					conn.query("INSERT INTO ffgame.digital_perks\
 								(game_team_id,master_perk_id,redeem_dt,available,n_status)\
 								VALUES\
 								(?,?,NOW(),?,1);",
-								[game_team_id,perk_id,perk.data.duration],
+								[game_team_id,
+									perk_id,
+									perk.data.duration],
 								function(err,rs){
 									console.log('GET_PERK',game_team_id,S(this.sql).collapseWhitespace().s);
 									if(!err){
@@ -2352,6 +2357,81 @@ exports.bet_info = function(redisClient,game_id,callback){
 	});
 }
 
+
+function add_expenditure(game_team_id,transaction_name,amount,done){
+	var async = require('async');
+	prepareDb(function(conn){
+		async.waterfall(
+			[
+				function(callback){
+					
+					//we need to know the next week game_id
+					conn.query("SELECT team_id FROM ffgame.game_teams WHERE id=? LIMIT 1",
+						 [game_team_id],
+						 function(err,rs){
+						 	console.log(S(this.sql).collapseWhitespace().s);
+						 	callback(err,rs[0]['team_id']);
+						 	
+						 });
+					
+				},
+				function(team_id,callback){
+					//we need to know next match's game_id and matchdate
+					conn.query("SELECT a.id,\
+					a.game_id,a.home_id,b.name AS home_name,a.away_id,\
+					c.name AS away_name,a.home_score,a.away_score,\
+					a.matchday,a.period,a.session_id,a.attendance,match_date\
+					FROM ffgame.game_fixtures a\
+					INNER JOIN ffgame.master_team b\
+					ON a.home_id = b.uid\
+					INNER JOIN ffgame.master_team c\
+					ON a.away_id = c.uid\
+					WHERE (home_id = ? OR away_id=?) AND period <> 'FullTime'\
+					ORDER BY a.matchday\
+					LIMIT 1;\
+					",[team_id,team_id],function(err,rs){
+						console.log(S(this.sql).collapseWhitespace().s);
+						callback(err,rs[0]['game_id'],rs[0]['matchday']);
+					});
+				},
+				function(game_id,matchday,callback){
+					//ok now we have all the ingridients..  
+					//lets insert into financial expenditure
+					var item_type = 1;
+					if(amount < 0 ){
+						item_type = 2;
+					}
+					conn.query("INSERT INTO ffgame.game_team_expenditures\
+								(game_team_id,item_name,item_type,amount,game_id,match_day)\
+								VALUES\
+								(?,?,?,?,?,?)\
+								ON DUPLICATE KEY UPDATE\
+								amount = VALUES(amount);",
+								[game_team_id,
+								 transaction_name,
+								 item_type,
+								 amount,
+								 game_id,
+								 matchday
+								],
+								function(err,rs){
+									console.log(S(this.sql).collapseWhitespace().s);
+									//console.log(this.sql);
+									callback(err,{name:transaction_name,amount:amount});
+					});
+				},
+			],
+			function(err,result){
+				conn.end(function(e){
+					done(err,result);
+				});
+			}
+		);
+	});
+	
+}
+
+
 var match = require(path.resolve('./libs/api/match'));
 var officials = require(path.resolve('./libs/api/officials'));
 var sponsorship = require(path.resolve('./libs/api/sponsorship'));
@@ -2385,7 +2465,7 @@ exports.matchstatus = matchstatus;
 exports.redeemCode = redeemCode;
 exports.apply_perk = apply_perk;
 exports.check_perk = check_perk;
-
+exports.add_expenditure = add_expenditure;
 exports.setPool = function(p){
 	pool = p;
 	match.setPool(pool);

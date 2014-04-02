@@ -20,6 +20,7 @@
 	  array('jquery-1.9.1',
 			'jquery-ui-1.10.3.custom.min',
 			'fancybox/jquery.fancybox.js?v=2.1.5',
+			
 			'hoverIntent',
 			'tinymce/jquery.tinymce.min',
           	'tinymce/tinymce.min',

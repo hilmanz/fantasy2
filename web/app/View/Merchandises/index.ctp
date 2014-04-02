@@ -28,7 +28,7 @@ if(isset($category_name)){
 						$pic = Configure::read('avatar_web_url').
 										"merchandise/thumbs/0_".
 										$r['MerchandiseItem']['pic'];
-						$buy_url = $this->Html->url('/merchandises/buy/'.$r['MerchandiseItem']['id']);
+						$buy_url = $this->Html->url('/merchandises/view/'.$r['MerchandiseItem']['id']);
 						$view_url = $this->Html->url('/merchandises/view/'.$r['MerchandiseItem']['id']);
 					?>
 					<div class="catalog-item">

@@ -225,6 +225,11 @@ class MerchandisesController extends AppController {
 
 		$kg = 0;
 		for($i=0;$i<sizeof($items);$i++){
+			
+			if(floatval(@$items[$i]['data']['MerchandiseItem']['weight'])==0){
+				$merchandise_item =  $this->MerchandiseItem->findById($items[$i]['data']['MerchandiseItem']['id']);
+				$items[$i]['data']['MerchandiseItem']['weight'] = $merchandise_item['MerchandiseItem']['weight'];
+			}
 			$kg = intval($items[$i]['qty']) * ceil(floatval(@$items[$i]['data']['MerchandiseItem']['weight']));
 		}
 
@@ -550,7 +555,7 @@ class MerchandisesController extends AppController {
 		
 		if($is_transaction_ok == true){
 			//check accross the items, we apply the perk for all digital items
-			$this->process_items($result['items']);
+			$this->process_items($result['items'],$order_id);
 		}
 
 	
@@ -713,6 +718,7 @@ class MerchandisesController extends AppController {
 			}
 
 			if(strtoupper($result['status'])=='SUCCESS' && $is_valid){
+
 				$this->pay_with_ecash_completed($result);
 
 			}else{
@@ -807,11 +813,12 @@ class MerchandisesController extends AppController {
 			$rs = $this->MerchandiseOrder->save($data);	
 			
 
-			$this->process_items($shopping_cart);
+			$this->process_items($shopping_cart,$ecash_data['transaction_id']);
 				
 		
 			$this->set('apply_digital_perk_error',$this->Session->read('apply_digital_perk_error'));
 
+			
 			$this->Session->write('apply_digital_perk_error',null);
 			//reset the csrf token
 			$this->Session->write('po_csrf',null);
@@ -820,7 +827,7 @@ class MerchandisesController extends AppController {
 			//reset the shopping_cart in session (disable these for debug only)
 			$this->Session->write('shopping_cart',null);
 			$this->Session->write($ecash_data['transaction_id'],null);
-
+			
 		}else{
 			$is_transaction_ok = false;
 		}
@@ -919,6 +926,7 @@ class MerchandisesController extends AppController {
 					$is_transaction_ok = true;
 					$result['is_transaction_ok'] = $is_transaction_ok;
 					$result['items'] = $shopping_cart;
+					$result['order_id'] = $data['po_number'];
 				}
 			}
 
@@ -935,12 +943,26 @@ class MerchandisesController extends AppController {
 	* process digital items
 	* when the digital items redeemed, we reduce its stock.
 	*/
-	private function process_items($items){	
+	private function process_items($items,$order_id){	
+		$this->loadModel('MerchandiseItemPerk');
 		for($i=0; $i<sizeof($items); $i++){
 			$item = $items[$i]['data']['MerchandiseItem'];
 			if($item['merchandise_type']==1){
 				$this->apply_digital_perk($this->userData['team']['id'],
 											$item['perk_id']);
+
+			}else if($item['perk_id'] == 0){
+				$perks = $this->MerchandiseItemPerk->find('all',
+													array('conditions'=>array('merchandise_item_id'=>$item['id']),
+														 'limit'=>20)
+													);
+				CakeLog::write('apply_digital_perk',date("Y-m-d H:i:s").'-'.$item['id'].'-'.json_encode($perks));
+				for($i=0;$i<sizeof($perks);$i++){
+
+					$this->apply_digital_perk($this->userData['team']['id'],
+											$perks[$i]['MerchandiseItemPerk']['perk_id'],$order_id);
+				}
+			
 			}
 			$this->reduceStock($item['id']);
 		}
@@ -1317,31 +1339,71 @@ class MerchandisesController extends AppController {
 		return array('first_name'=>$first_name,
 					 'last_name'=>$last_name);
 	}
-	private function apply_digital_perk($game_team_id,$perk_id){
+	private function apply_digital_perk($game_team_id,$perk_id,$unique=false){
 		$this->loadModel('MasterPerk');
-
+		CakeLog::write('apply_digital_perk',date("Y-m-d H:i:s").' - '.$game_team_id.' - '.$perk_id);
 		$perk = $this->MasterPerk->findById($perk_id);
 		$perk['MasterPerk']['data'] = unserialize($perk['MasterPerk']['data']);
 		switch($perk['MasterPerk']['data']['type']){
 			case "jersey":
 				return $this->apply_jersey_perk($game_team_id,$perk['MasterPerk']);
 			break;
+			case "free_player":
+				$player_id = $perk['MasterPerk']['data']['player_id'];
+				$amount = intval($perk['MasterPerk']['data']['money_reward']);
+				return $this->apply_free_player_perk($game_team_id,$player_id,$unique,$amount);
+			break;
 			default:
-				//for everything else, let the game API handle the task
-				$rs = $this->Game->apply_digital_perk($game_team_id,$perk_id);
-
-				if($rs['data']['can_add'] && $rs['data']['success']){
-					return true;
-				}else if(!$rs['data']['can_add']){
-					//tells us that the perk cannot be redeemed because these perk is already redeemed before
-					$this->Session->write('apply_digital_perk_error','1');
+				//check if it's a money perk
+				if($perk['MasterPerk']['perk_name']=='IMMEDIATE_MONEY'){
+					$this->apply_money_perk($game_team_id,$unique,$perk['MasterPerk']['amount']);
 				}else{
-					//tells us that the perk cannot be redeemed because we cannot save the perk.
-					$this->Session->write('apply_digital_perk_error','2');
+					//for everything else, let the game API handle the task
+					$rs = $this->Game->apply_digital_perk($game_team_id,$perk_id);
+
+					CakeLog::write('apply_digital_perk',date("Y-m-d H:i:s").' - '.json_encode($rs));
+					if($rs['data']['can_add'] && $rs['data']['success']){
+						return true;
+					}else if(!$rs['data']['can_add']){
+						//tells us that the perk cannot be redeemed because these perk is already redeemed before
+						$this->Session->write('apply_digital_perk_error','1');
+					}else{
+						//tells us that the perk cannot be redeemed because we cannot save the perk.
+						$this->Session->write('apply_digital_perk_error','2');
+					}
 				}
+				
 			break;
 		}
 		
+	}
+	/*
+	* $unique_id -> can be item_id, or any unique identifier we can use as transaction name.
+	*/
+	private function apply_money_perk($game_team_id,$unique_id,$amount){
+		$transaction_name = 'apply_money_perk_'.$unique_id;
+		CakeLog::write('apply_digital_perk',date("Y-m-d H:i:s").' - '.$game_team_id.' - apply_money_perk_'.$unique_id.' -> '.$amount);
+		$rs = $this->Game->add_expenditure($game_team_id,$transaction_name,intval($amount));
+		if($rs['status']==1){
+			return true;
+		}
+	}
+	private function apply_free_player_perk($game_team_id,$player_id,$unique_id,$amount){
+		//check if the user has the player
+		$my_player = $this->Game->query("SELECT * FROM ffgame.game_team_players a
+							WHERE game_team_id={$game_team_id} 
+							AND player_id='{$player_id}'",false);
+		if($my_player[0]['a']['player_id'] == $player_id){
+			CakeLog::write('apply_digital_perk',date("Y-m-d H:i:s").' - '.$game_team_id.' - '.$unique_id.' - player exists, reward money instead : '.$amount);
+			//reward money instead
+			return $this->apply_money_perk($game_team_id,$unique_id,$amount);
+		}else{
+			CakeLog::write('apply_digital_perk',date("Y-m-d H:i:s").' - '.$game_team_id.' - '.$unique_id.' - free player : '.$player_id);
+			return $this->Game->query("INSERT IGNORE INTO ffgame.game_team_players
+								(game_team_id,player_id)
+								VALUES({$game_team_id},'{$player_id}')",false);
+		}
+
 	}
 	private function apply_jersey_perk($game_team_id,$perk_data){
 		
