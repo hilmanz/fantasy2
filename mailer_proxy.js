@@ -13,10 +13,10 @@ var express = require('express')
 var fs = require('fs');
 
 var config = require('./config').config;
-var xmlparser = require('xml2json');
-var master = require('./libs/master');
+
+
 var async = require('async');
-var mysql = require('mysql');
+
 var nodemailer = require('nodemailer');
 var validator = require('validator');
 var crypto = require('crypto');
@@ -58,6 +58,7 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 
 app.post('/send', [],function(req,res){
+	
 	sha1sum = crypto.createHash('sha1');
 	var mailOptions = {
 	    from: req.body.from,
