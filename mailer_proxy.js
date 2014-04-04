@@ -11,6 +11,7 @@ var express = require('express')
   , http = require('http')
   , path = require('path');
 var fs = require('fs');
+var S = require('string');
 
 var config = require('./config').config;
 
@@ -65,11 +66,12 @@ app.post('/send', [],function(req,res){
 	    to: req.body.to,
 	    subject: req.body.subject,
 	    generateTextFromHTML:true,
-	    html: req.body.html
+	    html: req.body.html,
+	    forceEmbeddedImages: true
 	};
-	console.log(req.body);
+	
 	var the_hash = sha1sum.update(mailOptions.to+mailOptions.subject+mailOptions.html+secret).digest('hex');
-	console.log(the_hash);
+	
 	if(req.body.hash.length > 20 && the_hash == req.body.hash){
 		sendMail(mailOptions,function(err,responseStatus){
 			res.send(200,{status:1,responseStatus:responseStatus,error:err});
