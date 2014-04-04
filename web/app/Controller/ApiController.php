@@ -2369,7 +2369,7 @@ class ApiController extends AppController {
 			$category_id = 0;
 		}
 		
-		$merchandise = $this->MerchandiseItem->find('count',array('conditions'=>array('merchandise_type'=>0)));
+		$merchandise = $this->MerchandiseItem->find('count',array('conditions'=>array('merchandise_type'=>0,'n_status'=>1)));
 		if($merchandise > 0){
 			$response['has_merchandise'] = true;
 		}else{
@@ -2396,7 +2396,7 @@ class ApiController extends AppController {
 			$category_ids = $this->getChildCategoryIds($category_id,$category_ids);
 			$options = array('conditions'=>array(
 									'merchandise_category_id'=>$category_ids,
-									'merchandise_type'=>0),
+									'merchandise_type'=>0,'n_status'=>1),
 									'offset'=>$start,
 									'limit'=>$total,
 									'order'=>array('MerchandiseItem.id'=>'DESC')
@@ -2417,7 +2417,7 @@ class ApiController extends AppController {
 		}else{
 			//if doesnt, we query everything.
 			$options = array(
-						'conditions'=>array('merchandise_type'=>0,'price_money > 0'),
+						'conditions'=>array('merchandise_type'=>0,'price_money > 0','n_status'=>1),
 						'offset'=>$start,
 						'limit'=>$total,
 						'order'=>array('MerchandiseItem.id'=>'DESC')
