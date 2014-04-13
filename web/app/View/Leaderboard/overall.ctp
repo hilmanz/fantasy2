@@ -53,7 +53,7 @@ $overall = isset($overall) ? "selected='selected'":"";
       </div><!-- end .rowd -->
     <div class="headbar tr">
         <div class="leaderboard-head fl">
-        	<h3>Papan Peringkat Keseluruhan</h3>
+        	<h1>Papan Peringkat Keseluruhan</h1>
             <p>Daftar urutan manajer berdasarkan poin tertinggi secara keseluruhan.<br />Diperbaharui secara mingguan. </p>
         </div>
         <div class="leaderboard-rank fr">

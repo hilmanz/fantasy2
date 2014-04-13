@@ -39,7 +39,7 @@ if(isset($category_name)){
 						</div>
 					</div>
 					<div class="detailCatalog" style="width:440px;">
-							<h4 class="MerchandiseItemName"><?=h($item['MerchandiseItem']['name'])?></h4>
+							<h3 class="MerchandiseItemName"><?=h($item['MerchandiseItem']['name'])?></h3>
 							<?php if($item['MerchandiseItem']['price_credit'] == 0):?>
 							<p class="idrprice">Rp. <?=number_format($item['MerchandiseItem']['price_money'])?></p>
 							<p>* Tidak bisa dibeli dengan Coins.</p>

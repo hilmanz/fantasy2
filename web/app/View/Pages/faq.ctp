@@ -1,4 +1,5 @@
 <div id="faqPage">
+	<h1 class="fake-title">Bantuan Dan FAQ</h1>
     <div id="thecontent">
       <div class="rowd">
      	 <?php echo $this->element('infobar'); ?>
@@ -13,7 +14,7 @@
 				</ul>
 				<div id="tabs-faq">
                     <div class="titlePage">
-                        <h1 class="yellow">FAQ</h1>
+                        <h2 class="yellow">FAQ</h2>
                     </div>
 					<div class="row-3">
 						<h3 class="yellow">Apa itu Super Soccer Football Manager?</h3>
@@ -62,7 +63,7 @@
 				</div><!-- end #tabs-faq -->
 				<div id="tabs-point">
                     <div class="titlePage">
-                        <h1 class="yellow">PENGUMPULAN POINT</h1>
+                        <h2 class="yellow">PENGUMPULAN POINT</h2>
                     </div>
 					<div class="row-3">
 						<table width="100%" border="0" cellspacing="0" cellpadding="0" class="theTable" id="tablePoint">
@@ -569,7 +570,7 @@
 				</div><!-- end #tabs-point -->
 				<div id="tabs-howto">
                     <div class="titlePage">
-                        <h1 class="yellow">HOW TO PLAY</h1>
+                        <h2 class="yellow">HOW TO PLAY</h2>
                     </div>
                     <div class="howtoBox">
                         <div class="row">

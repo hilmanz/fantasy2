@@ -49,7 +49,7 @@
       </div><!-- end .rowd -->
     <div class="headbar tr">
         <div class="leaderboard-head">
-        	<h3>Bursa Transfer</h3>
+        	<h1>Bursa Transfer</h1>
             <p>Bursa Transfer <span class="yellow">Supersoccer Football Manager</span> adalah tempat
                 dimana kamu bisa beli pemain untuk ditambahkan ke line-up team mu.</p>
         </div>

@@ -110,6 +110,7 @@ function isStaffExist($staff_token,$name){
 }
 ?>
 <div id="klabPage">
+	<h1 class="fake-title">Mengelola Klab</h1>
     <div id="thecontent">
       <div class="rows">
      	 <?php echo $this->element('infobar'); ?>

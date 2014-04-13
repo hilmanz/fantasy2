@@ -23,7 +23,7 @@
 	    </div><!-- end #banner -->
 	</div><!-- end #slider -->
 	<div class="rowboxs tr">
-		<h3>Super Soccer Football Manager</h3>
+		<h1>Super Soccer Football Manager</h1>
 		<div class="entry entry-home">
 			<img src="<?=$this->Html->url('/content/hadiah.png')?>" style="float:right; margin:0 0 0 10px; width:170px;"/>
 			<p><strong>Mau dapat hadiah-hadiah keren seperti PS 4, X-Box One,  Jesrey retro dan langka, jersey bertandatangan pemain dan hadiah elektronik lainnya?</strong> Atau elo mau nonton pertandingan  liga Inggris langsung di Inggris? Semuanya bisa elo dapetin di <strong>Super Soccer Football Manager.</strong></p>

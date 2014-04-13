@@ -508,6 +508,7 @@ a.download-appstore{
 }
 .squad-team-name h3{
 	margin:0;
+	font-size:24px;
 }
 .squad-team{
 	min-height:750px;
@@ -680,6 +681,10 @@ a.download-appstore{
 /*============= CONTENT ===============*/
 .titlePage{
 	position:relative;
+}
+#bantuanTab .titlePage h2{
+	font-size:30px;
+	margin:0;
 }
 .titlePage h1{
 	font-size:30px;
@@ -1242,7 +1247,7 @@ table td a.button,table td .buttons{
 .l-act a{
 	margin:0 10px 0 0;
 }
-.leaderboard-head h3{
+.leaderboard-head h1{
 	margin:0;
 	font-size:30px;
 }
@@ -2061,9 +2066,12 @@ h3.tabtitle{
 	text-align:center;
 	position:absolute;
 }
-.instrution h3{
+.instrution h4{
 	font-size:16px;
 	margin:0;
+}
+.fake-title{
+	display:none;
 }
 .inboxNotification h3{
 	background:url(../images/icon_mail.png) left no-repeat;
@@ -2512,6 +2520,11 @@ table.dataTable{
 	font-size:24px;
 	color:#fdcb02;
 }
+.rowboxs h1{
+	font-size:30px;
+	color:#fdcb02;
+	margin:10px 0;
+}
 .rowboxs h4{
 	color:#fdcb02;
 }
@@ -2647,7 +2660,7 @@ table.dataTable{
 .nomargin{
 	margin:0;
 }
-.detailCatalog h4.MerchandiseItemName{
+.detailCatalog h4.MerchandiseItemName,.detailCatalog h3.MerchandiseItemName{
 	margin:20px 0 0 0;
 	height:auto;
 	font-size:20px;

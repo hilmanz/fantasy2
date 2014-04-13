@@ -53,7 +53,7 @@ $overall = isset($overall) ? "selected='selected'":"";
     <div class="headbar tr">
         <div class="leaderboard-head fl">
          
-        	<h3>Papan Peringkat – Minggu ke <?=$matchday?></h3>
+        	<h1>Papan Peringkat – Minggu ke <?=$matchday?></h1>
             <p>Daftar urutan manajer berdasarkan poin tertinggi.<br />Diperbaharui secara mingguan. </p>
         </div>
         <div class="leaderboard-rank fr">

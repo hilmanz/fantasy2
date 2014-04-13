@@ -125,6 +125,7 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
 }
 ?>
 <div id="fillDetailsPage">
+	<h1 class="fake-title">Mengelola Tim</h1>
       <div class="rowd">
      	 <?php echo $this->element('infobar',array('next_match'=>$next_match)); ?>
       </div>
@@ -172,7 +173,7 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
 				<a id="btn_inbox" href="#popup-notifications">&nbsp;</a>
                 </div>
                 <div id="droppable" class="field-formation">
-                	<div class="instrution"><h3>PILIH 11 STARTER & 5 PEMAIN CADANGAN</h3></div>
+                	<div class="instrution"><h4>PILIH 11 STARTER & 5 PEMAIN CADANGAN</h4></div>
                     <div id="the-formation">
                         
                     </div><!-- end .my-formation -->
@@ -184,7 +185,7 @@ if(strlen(@$user['avatar_img'])!=0 && @$user['avatar_img']!='0'){
         </div><!-- end .box3 -->
         <div class="box4 fr" id="boxSquad">
             <div class="widget tr squad-team-name">
-                <h2><?=h($club['team_name'])?></h2>
+                <h3><?=h($club['team_name'])?></h3>
                 <div class="RingkasanKlab" id="RingkasanKlab">
                     <div class="RingkasanKlabWidget">
                         <table width="100%" border="0" cellspacing="0" cellpadding="0">
