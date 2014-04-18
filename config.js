@@ -28,6 +28,7 @@ exports.config = {
 		returnUrl4: 'http://localhost/duf/supersoccer_fork/onlinecatalog/pay/success'
 	},
 	mailer:{
-		host:'http://localhost:3101'
+		host:'http://localhost:3101',
+		queue:'http://localhost:3101'
 	}
 };

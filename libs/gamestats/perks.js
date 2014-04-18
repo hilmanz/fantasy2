@@ -26,11 +26,59 @@ exports.apply_player_perk = function(conn,game_team_id,player_id,new_stats,match
 				process_player_stats_perks(
 					conn,
 					game_team_id,
+					matchday,
 					perks,
 					new_stats,
-					function(err,extra_points){
-						cb(err,perks,extra_points);
+					function(err,extra_points,additional_points){
+						console.log('process_player_stats_perks',game_team_id,player_id,extra_points,additional_points);
+						cb(err,perks,extra_points,additional_points);
 					});
+			},
+			function(perks,extra_points,additional_points,cb){
+				//get the game_id played by the game_team_id
+				conn.query("SELECT game_id FROM ffgame.game_fixtures WHERE matchday = ? AND \
+							(\
+							home_id IN (SELECT team_id FROM ffgame.game_teams WHERE id = ?)\
+							OR\
+							away_id IN (SELECT team_id FROM ffgame.game_teams WHERE id = ?)\
+							)\
+							LIMIT 1;",
+				[
+					matchday,game_team_id,game_team_id
+				],
+				function(err,rs){
+					cb(err,perks,extra_points,additional_points,rs[0].game_id);
+				});
+			},
+			function(perks,extra_points,additional_points,the_game_id,cb){
+				//calculate the bonus point of overall category points 
+				var items = [];
+				for(var i in additional_points){
+					items.push({
+						category: i,
+						total: parseFloat(additional_points[i])
+					});
+				}
+				console.log('bonus_per_category',game_team_id,matchday,items);
+				async.eachSeries(items,function(item,next){
+					if(item.total != 0){
+						var modifier_name = item.category + '_Bonus';
+						saveExtraPoint(conn,
+							           the_game_id,
+							           matchday,
+							           game_team_id,
+							           modifier_name,
+							           item.total,
+						function(err,rs){
+							next();
+						});
+					}else{
+						next();
+					}
+					
+				},function(err,rs){
+					cb(err,perks,extra_points)
+				});
 			},
 			function(perks,extra_points,cb){
 				if(extra_points.length > 0){
@@ -52,15 +100,19 @@ exports.apply_player_perk = function(conn,game_team_id,player_id,new_stats,match
 					}
 					async.eachSeries(items,function(item,next){
 						var modifier_name = item.category + '_' + player_id;
-						saveExtraPoint(conn,
-							           game_id,
-							           matchday,
-							           game_team_id,
-							           modifier_name,
-							           item.total,
-						function(err,rs){
+						if(item.total != 0){
+							saveExtraPoint(conn,
+								           game_id,
+								           matchday,
+								           game_team_id,
+								           modifier_name,
+								           item.total,
+							function(err,rs){
+								next();
+							});
+						}else{
 							next();
-						});
+						}
 					},function(err,rs){
 						cb(err,{perks:perks,extra_points:summary,game_id:game_id,matchday:matchday});	
 					});
@@ -100,8 +152,9 @@ function getAllPerks(conn,game_team_id,callback){
 				});
 }
 
-function process_player_stats_perks(conn,game_team_id,perks,new_stats,callback){
+function process_player_stats_perks(conn,game_team_id,matchday,perks,new_stats,callback){
 	var extra_points = [];
+	var additional_points = {};
 	async.waterfall([
 		function(cb){
 			POINTS_MODIFIER_PER_CATEGORY(
@@ -109,7 +162,9 @@ function process_player_stats_perks(conn,game_team_id,perks,new_stats,callback){
 				game_team_id,
 				perks,
 				new_stats,
-				function(err,points){
+				function(err,points,add_points){
+					additional_points = add_points;
+					console.log('additional_points',game_team_id,matchday,additional_points);
 					for(var i=0; i < points.length; i++){
 						extra_points.push(points[i]);
 					}
@@ -123,7 +178,7 @@ function process_player_stats_perks(conn,game_team_id,perks,new_stats,callback){
 		}
 	],
 	function(err){
-		callback(err,extra_points);
+		callback(err,extra_points,additional_points);
 	});
 }
 /**
@@ -177,9 +232,11 @@ exports.apply_jersey_perks = apply_jersey_perks;
 function POINTS_MODIFIER_PER_CATEGORY(conn,game_team_id,perks,new_stats,callback){
 	console.log('new_stats',new_stats);
 	var extra_points = [];
+	
+
+	var extra_points_value = getExtraPointsByValue(perks);
+
 	if(new_stats.length > 0){
-
-
 		async.eachSeries(
 			new_stats,
 			function(stats,next){
@@ -192,7 +249,10 @@ function POINTS_MODIFIER_PER_CATEGORY(conn,game_team_id,perks,new_stats,callback
 									extra_points.push({
 										passing_and_attacking:getExtraPoints(perks[i].data,
 																			 stats.points)});
+
 								}
+								
+								
 							break;
 							case 'defending':
 								if(stats.category == 'defending'){
@@ -200,6 +260,8 @@ function POINTS_MODIFIER_PER_CATEGORY(conn,game_team_id,perks,new_stats,callback
 										defending:getExtraPoints(perks[i].data,
 																			 stats.points)});
 								}
+								
+
 							break;
 							case 'goalkeeping':
 								if(stats.category == 'goalkeeping'){
@@ -207,6 +269,8 @@ function POINTS_MODIFIER_PER_CATEGORY(conn,game_team_id,perks,new_stats,callback
 										goalkeeping:getExtraPoints(perks[i].data,
 																			 stats.points)});
 								}
+								
+
 							break;
 							case 'mistakes_and_errors':
 								if(stats.category == 'mistakes_and_errors'){
@@ -214,6 +278,8 @@ function POINTS_MODIFIER_PER_CATEGORY(conn,game_team_id,perks,new_stats,callback
 										mistakes_and_errors:getExtraPoints(perks[i].data,
 																			 stats.points)});
 								}
+								
+
 							break;
 							default:
 								//do nothing
@@ -223,24 +289,66 @@ function POINTS_MODIFIER_PER_CATEGORY(conn,game_team_id,perks,new_stats,callback
 				}
 				next();
 			},function(err,rs){
-				callback(err,extra_points);	
+
+				callback(err,extra_points,extra_points_value);	
 			});
 	}else{
 		callback(null,[]);	
 	}
 	
 }
+function getExtraPointsByValue(perks){
+	var extra_points_value = {
+		passing_and_attacking:0,
+		defending:0,
+		goalkeeping:0,
+		mistakes_and_errors:0
+
+	};
+	for(var i=0; i < perks.length; i++){
+		switch(perks[i].data.category){
+			case 'passing_and_attacking':
+				if(perks[i].data.point_value !== 'undefined'){
+					extra_points_value.passing_and_attacking += parseFloat(perks[i].data.point_value);
+				}
+				
+			break;
+			case 'defending':
+				if(perks[i].data.point_value !== 'undefined'){
+					extra_points_value.defending += parseFloat(perks[i].data.point_value);
+				}
+			break;
+			case 'goalkeeping':
+				if(perks[i].data.point_value !== 'undefined'){
+					extra_points_value.goalkeeping += parseFloat(perks[i].data.point_value);
+				}
+
+			break;
+			case 'mistakes_and_errors':
+				if(perks[i].data.point_value !== 'undefined'){
+					extra_points_value.mistakes_and_errors += parseFloat(perks[i].data.point_value);
+				}
+
+			break;
+			default:
+				//do nothing
+			break;
+		}
+	}
+	return extra_points_value;
+}
 
 function getExtraPoints(perk_data,points){
 	var extra1 = 0; //extra points from point_percentage
 	perk_data.point_percentage = parseFloat(perk_data.point_percentage);
 	perk_data.point_value = parseFloat(perk_data.point_value);
-	console.log('getExtraPoints',points,perk_data.point_percentage,perk_data.point_value);
-	if(perk_data.point_percentage > 0){
+	//console.log('getExtraPoints','points:',points,'%',perk_data.point_percentage,'v',perk_data.point_value);
+	if(typeof perk_data.point_percentage !== 'undefined' && perk_data.point_percentage > 0){
 		extra1 = points * (perk_data.point_percentage / 100);
 	}
-	console.log('getExtraPoints',(extra1 + perk_data.point_value));
-	return parseFloat(extra1 + perk_data.point_value);
+	//console.log('getExtraPoints',extra1,'+',perk_data.point_value,'=',(extra1 + perk_data.point_value));
+	//return parseFloat(extra1 + perk_data.point_value);
+	return parseFloat(extra1);
 }
 
 function saveExtraPoint(conn,game_id,matchday,game_team_id,modifier_name,extra_points,callback){

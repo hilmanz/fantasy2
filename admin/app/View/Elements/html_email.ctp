@@ -9,7 +9,8 @@
 	<table border="0" cellspacing="0" cellpadding="0" style="max-width:700px; background:#fff; color:#000; margin:0 auto; font-family:Arial, Helvetica, sans-serif; font-size:14px;">
       <tr>
         <td bgcolor="#de1019" height="100" style=" box-shadow:0 0 25px rgba(0,0,0,0.4) inset">
-        	<img style="float:right; width:100%; max-width:686px;" src="http://fm.supersoccer.co.id/images/logo.png" />
+        	<img style="float:right; width:100%; max-width:686px;" 
+          src="https://s3.amazonaws.com/supersoccercoid/newsletter/logo.png" />
         </td>
       </tr>
       <tr>

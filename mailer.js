@@ -221,9 +221,7 @@ function runLoop(){
 						console.log('Sending limit reached :( ---> ',total_sent);
 					}
 					pool.end(function(err){
-						console.log('no more data, pool closed');
-						console.log('closing smtp transport');
-						transport.close();
+						
 					});
 				}else{
 					runLoop();	

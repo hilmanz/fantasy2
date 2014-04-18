@@ -23,6 +23,7 @@ var validator = require('validator');
 var crypto = require('crypto');
 var sha1sum = crypto.createHash('sha1');
 //email setup
+
 var transport = nodemailer.createTransport("SMTP",{
 			    	host: "email-smtp.us-east-1.amazonaws.com", // hostname
 			    	secureConnection: true, // use SSL
@@ -32,7 +33,13 @@ var transport = nodemailer.createTransport("SMTP",{
 			        	pass: "AqkTdt3g+a6jKvD6zYNUkLDnNwjskCkBQ4Joe7tpo9tP"
 			    	}
 			    });
-
+/*
+var transport = nodemailer.createTransport("SES",{
+			    	AWSAccessKeyID: "AKIAJYPEIMSEIVGQHNTA",
+    				AWSSecretKey: "AqkTdt3g+a6jKvD6zYNUkLDnNwjskCkBQ4Joe7tpo9tP",
+    				debug: true
+			    });
+*/
 var secret = 'x4asd1!234@!42b4b00n5';
 var app = express();
 var RedisStore = require('connect-redis')(express);
@@ -66,11 +73,14 @@ app.post('/send', [],function(req,res){
 	    to: req.body.to,
 	    subject: req.body.subject,
 	    generateTextFromHTML:true,
-	    html: req.body.html,
-	    forceEmbeddedImages: true
+	    html: req.body.html+'\r\n',
+	    forceEmbeddedImages: true,
+	    debug:true
 	};
-	
-	var the_hash = sha1sum.update(mailOptions.to+mailOptions.subject+mailOptions.html+secret).digest('hex');
+	console.log('sending',mailOptions.to,mailOptions.subject);
+
+
+	var the_hash = sha1sum.update(mailOptions.to+mailOptions.subject+req.body.html+secret).digest('hex');
 	
 	if(req.body.hash.length > 20 && the_hash == req.body.hash){
 		sendMail(mailOptions,function(err,responseStatus){
@@ -90,7 +100,10 @@ http.createServer(app).listen(app.get('port'), function(){
 function sendMail(mailOptions,callback){
 
 	transport.sendMail(mailOptions,function(error, responseStatus){
-		console.log('sending ',mailOptions,responseStatus);
-							callback(error,responseStatus);
+		if(error){
+			console.log('ERROR',error.message);
+		}
+		//console.log('sent ',mailOptions.to,mailOptions.subject,responseStatus);
+		callback(error,responseStatus);
 	});
 }

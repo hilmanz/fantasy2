@@ -251,7 +251,7 @@ class MerchandisesController extends AppController {
 		$rs = $this->Game->getEcashUrl(array(
 			'transaction_id'=>$transaction_id,
 			'amount'=>$total_ongkir,
-			'clientIpAddress'=>$this->request->clientIp(),
+			'clientIpAddress'=>$this->request->clientIp(false),
 			'description'=>'Shipping Fee #'.$transaction_id,
 			'source'=>'FMPAY'
 		));
@@ -813,7 +813,7 @@ class MerchandisesController extends AppController {
 			$this->MerchandiseOrder->create();
 			$rs = $this->MerchandiseOrder->save($data);	
 			
-
+			
 			$this->process_items($shopping_cart,$ecash_data['transaction_id']);
 				
 		
@@ -946,7 +946,9 @@ class MerchandisesController extends AppController {
 	*/
 	private function process_items($items,$order_id){	
 		$this->loadModel('MerchandiseItemPerk');
-		for($i=0; $i<sizeof($items); $i++){
+		
+		for($i=0; $i < sizeof($items); $i++){
+			
 			$item = $items[$i]['data']['MerchandiseItem'];
 			if($item['merchandise_type']==1){
 				$this->apply_digital_perk($this->userData['team']['id'],
@@ -958,14 +960,15 @@ class MerchandisesController extends AppController {
 														 'limit'=>20)
 													);
 				CakeLog::write('apply_digital_perk',date("Y-m-d H:i:s").'-'.$item['id'].'-'.json_encode($perks));
-				for($i=0;$i<sizeof($perks);$i++){
-
+				for($j=0;$j<sizeof($perks);$j++){
+					
 					$this->apply_digital_perk($this->userData['team']['id'],
 											$perks[$i]['MerchandiseItemPerk']['perk_id'],$order_id);
 				}
 			
 			}
 			$this->reduceStock($item['id']);
+			CakeLog::write('stock','process_items - '.$order_id.' - '.$item['id'].' - REDUCED');
 		}
 	}
 	/*
@@ -1165,8 +1168,12 @@ class MerchandisesController extends AppController {
 		return $rs;
 	}
 	private function ReduceStock($item_id){
+		CakeLog::write('stock','stock '.$item_id.' reduced');
 		$item_id = intval($item_id);
-		$sql = "UPDATE merchandise_items SET stock = stock - 1 WHERE id = {$item_id}";
+		$sql = "UPDATE merchandise_items SET stock = stock - 1 WHERE id = {$item_id} AND n_status = 1";
+		$this->MerchandiseItem->query($sql);
+
+		$sql = "UPDATE merchandise_items SET stock = 0 WHERE id = {$item_id} AND stock < 0";
 		$this->MerchandiseItem->query($sql);
 		
 	}

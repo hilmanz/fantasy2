@@ -129,6 +129,22 @@
 			</td>
 		</tr>
 		<tr>
+			<td valign="top">
+				Status
+			</td>
+			<td>
+				<select name="n_status">
+					<option value="1" <?php if($rs['MerchandiseItem']['n_status']==1): echo 'selected';endif;?>>
+						Publish
+					</option>
+					<option value="0" <?php if($rs['MerchandiseItem']['n_status']==0): echo 'selected';endif;?>>
+						Hide
+					</option>
+				</select>
+				
+			</td>
+		</tr>
+		<tr>
 			<td colspan="2">
 				<input type="submit" name="btn" value="UPDATE"/>
 			</td>

@@ -71,7 +71,7 @@ class MerchandisesController extends AppController {
 			if(isset($_FILES['pic']['name'])){
 				$this->update_pic($id);
 			}
-			$this->Session->setFlash('Update Completfed !');
+			$this->Session->setFlash('Update Completed !');
 			$this->MerchandiseItem->save($this->request->data);
 			$this->redirect('/merchandises/');
 		}

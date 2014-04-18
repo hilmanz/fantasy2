@@ -357,7 +357,9 @@ class ApiController extends AppController {
 			$best_players = array();
 		}
 		$response['best_players'] = $best_players;
-
+		if(sizeof($best_players)==0){
+			$response['stats']['best_player'] = new stdClass();
+		}
 		//players weekly salaries
 		$weekly_salaries = 0;
 		foreach($players as $p){
@@ -510,16 +512,27 @@ class ApiController extends AppController {
 	            'matchday' => 'asc'
 	        ));
 		$weekly_points = $this->Weekly_point->find('all',$options);
-		$weekly_team_points = array();
-		while(sizeof($weekly_points) > 0){
-			$p = array_shift($weekly_points);
+		if(sizeof($weekly_points) > 0){
+			$weekly_team_points = array();
+			while(sizeof($weekly_points) > 0){
+				$p = array_shift($weekly_points);
+				$weekly_team_points[] = array(
+						'game_id'=>$p['Weekly_point']['game_id'],
+						'matchday'=>$p['Weekly_point']['matchday'],
+						'matchdate'=>$p['Weekly_point']['matchdate'],
+						'points'=>$p[0]['TotalPoints']
+					);
+			}
+		}else{
 			$weekly_team_points[] = array(
-					'game_id'=>$p['Weekly_point']['game_id'],
-					'matchday'=>$p['Weekly_point']['matchday'],
-					'matchdate'=>$p['Weekly_point']['matchdate'],
-					'points'=>$p[0]['TotalPoints']
-				);
+						'game_id'=>'',
+						'matchday'=>$p['Weekly_point']['matchday'],
+						'matchdate'=>$p['Weekly_point']['matchdate'],
+						'points'=>$p[0]['TotalPoints']
+					);
 		}
+		
+
 		unset($weekly_points);
 
 
@@ -2718,6 +2731,8 @@ class ApiController extends AppController {
 		//get data from redis store
 		$rs = $this->Game->getFromTmp(intval(@$game_team_id),$transaction_id);
 		$transaction_tmp = unserialize(decrypt_param($rs['data']));
+
+
 		CakeLog::write('debug','pay_with_ecash_completed'.'-'.json_encode($transaction_tmp));
 		$shopping_cart = unserialize(decrypt_param($transaction_tmp['profile']['param']));
 		
@@ -2803,7 +2818,10 @@ class ApiController extends AppController {
 		CakeLog::write('debug','INPUT : '.json_encode(@$rs));
 
 		$this->process_items($shopping_cart);
-			
+		
+
+		$this->Game->storeToTmp(intval(@$game_team_id),$transaction_id,'');
+
 		if(isset($rs['MerchandiseOrder'])){
 			return true;
 		}
@@ -2847,6 +2865,7 @@ class ApiController extends AppController {
 	*/
 	private function process_items($items){	
 		CakeLog::write('debug',json_encode($items));
+		
 		for($i=0; $i<sizeof($items); $i++){
 			$item = $items[$i]['data']['MerchandiseItem'];
 			if($item['merchandise_type']==1){
@@ -2854,16 +2873,20 @@ class ApiController extends AppController {
 											$item['perk_id']);
 			}
 			$this->reduceStock($item['id']);
+			CakeLog::write('stock','process_items - '.$order_id.' - '.$item['id'].' - REDUCED');
 		}
+		
+		
 	}
 
 	private function ReduceStock($item_id){
 		$item_id = intval($item_id);
-		$sql = "UPDATE merchandise_items SET stock = stock - 1 WHERE id = {$item_id}";
+		$sql = "UPDATE merchandise_items SET stock = stock - 1 WHERE id = {$item_id}  AND n_status = 1";
 		$this->MerchandiseItem->query($sql);
 
 		$sql = "UPDATE merchandise_items SET stock = 0 WHERE id = {$item_id} AND stock < 0";
 		$this->MerchandiseItem->query($sql);
+		CakeLog::write('api_stock','stock '.$item_id.' reduced');
 		
 	}
 

@@ -375,11 +375,13 @@ class Game extends AppModel {
 		
 		$matchday = 0;
 		for($i=0;$i<sizeof($fixtures);$i++){
-			if($fixtures[$i]['period']!='FullTime'){
+			//strtotime($fixtures[$i]['match_date']) > (time()-24*60*60*7)
+			if($fixtures[$i]['period']=='FullTime'){
 				$matchday = $fixtures[$i]['matchday'];
-				break;
 			}
 		}
+		$matchday+=1;
+
 		$response = $this->api_call('/livematches/'.$matchday);
 		$is_live = 1;
 		$show_stats = 0;

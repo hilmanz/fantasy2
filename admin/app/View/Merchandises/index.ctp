@@ -39,6 +39,7 @@ $edit_url = $this->Html->url('/merchandises/edit/');
 									response.data[i].MerchandiseItem.price_credit,
 									response.data[i].MerchandiseItem.price_money,
 									response.data[i].stock,
+									response.data[i].MerchandiseItem.n_status,
 									'<a href="<?=$edit_url?>'+response.data[i].MerchandiseItem.id+'">Edit</a>'
 								]);
 						}
@@ -69,6 +70,7 @@ $edit_url = $this->Html->url('/merchandises/edit/');
 				{ "sTitle": "Credit" },
 				{ "sTitle": "IDR"},
 				{ "sTitle": "stock"},
+				{ "sTitle": "status"},
 				{ "sTitle": "Action"}
 			]
 		} );
