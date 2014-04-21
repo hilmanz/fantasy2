@@ -229,8 +229,7 @@ class AppController extends Controller {
 
 						
 					}
-
-
+					
 					$this->closeTime = $close_time;
 					
 					$this->set('close_time',$close_time);

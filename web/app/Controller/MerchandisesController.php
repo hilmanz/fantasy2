@@ -961,7 +961,7 @@ class MerchandisesController extends AppController {
 													);
 				CakeLog::write('apply_digital_perk',date("Y-m-d H:i:s").'-'.$item['id'].'-'.json_encode($perks));
 				for($j=0;$j<sizeof($perks);$j++){
-					
+
 					$this->apply_digital_perk($this->userData['team']['id'],
 											$perks[$i]['MerchandiseItemPerk']['perk_id'],$order_id);
 				}

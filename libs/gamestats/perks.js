@@ -190,7 +190,7 @@ function apply_jersey_perks(conn,game_id,matchday,game_team_id,callback){
 		function(cb){
 			//get all perks available
 			getAllPerks(conn,game_team_id,function(err,perks){
-				console.log('apply_jersey_perks',game_team_id,'perks',perks);
+				console.log('apply_jersey_perks',game_id,game_team_id,'perks',perks);
 				cb(err,perks);
 			});
 		},
@@ -275,7 +275,7 @@ function POINTS_MODIFIER_PER_CATEGORY(conn,game_team_id,perks,new_stats,callback
 							case 'mistakes_and_errors':
 								if(stats.category == 'mistakes_and_errors'){
 									extra_points.push({
-										mistakes_and_errors:getExtraPoints(perks[i].data,
+										mistakes_and_errors: -1 * getExtraPoints(perks[i].data,
 																			 stats.points)});
 								}
 								
@@ -326,7 +326,7 @@ function getExtraPointsByValue(perks){
 			break;
 			case 'mistakes_and_errors':
 				if(perks[i].data.point_value !== 'undefined'){
-					extra_points_value.mistakes_and_errors += parseFloat(perks[i].data.point_value);
+					extra_points_value.mistakes_and_errors -= parseFloat(perks[i].data.point_value);
 				}
 
 			break;

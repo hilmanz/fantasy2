@@ -429,6 +429,9 @@ function update_team_stats(queue_id,game_id,team,player_stats,team_summary,done)
 													if(is_team_budget_below_zero){
 														var penalty = Math.floor(balance/100000) * 100;
 														console.log('PENALTY : ',penalty);
+														if(penalty < -500){
+															penalty = -500;
+														}
 														conn.query("INSERT INTO \
 																	ffgame_stats.game_team_extra_points\
 																	(game_id,matchday,game_team_id,\
@@ -473,6 +476,9 @@ function update_team_stats(queue_id,game_id,team,player_stats,team_summary,done)
 													if(is_team_budget_below_zero){
 														var penalty = Math.floor(balance/100000) * 100;
 														var msg_id = "BUDGET_BELOW_ZERO_"+matchday;
+														if(penalty < -500){
+															penalty = -500;
+														}
 														var msg = "Kamu mendapatkan potongan poin sebesar "+penalty+" karena keuangan kamu negatif";
 														conn.query("INSERT IGNORE INTO "+config.database.frontend_schema+".notifications\
 																	(content,url,dt,game_team_id,msg_id)\
