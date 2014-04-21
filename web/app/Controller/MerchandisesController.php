@@ -849,6 +849,7 @@ class MerchandisesController extends AppController {
 			$total_coins = 0;
 			$all_digital = true;
 			$kg = 0;
+			$all_stock_ok = true;
 			for($i=0;$i<sizeof($shopping_cart);$i++){
 				if($shopping_cart[$i]['qty']<=0){
 					$shopping_cart[$i]['qty'] = 1;
@@ -862,6 +863,9 @@ class MerchandisesController extends AppController {
 				if($item['merchandise_type']==0){
 					$all_digital = false;
 				}
+				if($item['stock'] <= 0){
+					$all_stock_ok = false;
+				}
 			}
 			
 			//1. check if the coins are sufficient
@@ -872,7 +876,7 @@ class MerchandisesController extends AppController {
 			}
 			
 			//2. if fund is available, we create transaction id and order detail.
-			if(!$no_fund){
+			if(!$no_fund && $all_stock_ok){
 
 				$data = $this->request->data;
 				$data['merchandise_item_id'] = 0;
