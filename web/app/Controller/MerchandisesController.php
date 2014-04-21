@@ -498,19 +498,24 @@ class MerchandisesController extends AppController {
 			}
 		}
 
+		if(intval($item['MerchandiseItem']['stock']) == 0){
+			$can_add = false;
+		}
 
 		if($can_add && $canAddPerk){
+			
 			$shopping_cart[] = array(
 				'item_id'=>$item_id,
 				'qty'=>1
 			);	
+			$this->Session->write('shopping_cart',$shopping_cart);
+			$this->set('canAddPerk',$canAddPerk);
+			$this->set('item',$item['MerchandiseItem']);
+			$this->Session->write('out_of_stock',null);
+		}else{
+			$this->set('item',$item['MerchandiseItem']);
+			$this->render('out_of_stock');
 		}
-		
-		$this->Session->write('shopping_cart',$shopping_cart);
-		$this->set('canAddPerk',$canAddPerk);
-		$this->set('item',$item['MerchandiseItem']);
-		$this->Session->write('out_of_stock',null);
-		
 
 		
 	}
@@ -1139,6 +1144,7 @@ class MerchandisesController extends AppController {
 				}
 			}
 		}
+		
 		if($stock_available){
 			return true;
 		}else{
