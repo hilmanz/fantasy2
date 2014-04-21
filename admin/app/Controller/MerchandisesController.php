@@ -55,8 +55,18 @@ class MerchandisesController extends AppController {
 	public function edit($id){
 		$this->loadModel('MerchandiseItem');
 		$this->loadModel('MerchandiseOrder');
+		$this->loadModel('MerchandiseItemPerks');
 		
 		$rs = $this->MerchandiseItem->findById($id);
+		$perks = $this->MerchandiseItemPerks->find('all', 
+								array(
+							        'conditions' => array('MerchandiseItemPerks.merchandise_item_id' => $id),
+							        'limit'=>300
+							    ));
+		$rs_perks = array();
+		foreach ($perks as $key => $value) {
+			$rs_perks[] = $value['MerchandiseItemPerks']['perk_id'];
+		}
 
 		if($this->request->is('post')){
 			$this->MerchandiseItem->id = $id;
@@ -64,13 +74,22 @@ class MerchandisesController extends AppController {
 			//add stock with additional new stock.
 			$this->request->data['stock'] = $rs['MerchandiseItem']['stock'] + 
 											intval($this->request->data['new_stock']);
-
-
-
-			
+	
 			if(isset($_FILES['pic']['name'])){
 				$this->update_pic($id);
 			}
+
+			$this->MerchandiseItemPerks->delete_by_item_id($id);
+
+			$i=0;
+			foreach ($this->request->data['perk_nondigital'] as $key => $value)
+	        {
+	        	$perk_nondigital[$i]['merchandise_item_id']	= $id;
+	        	$perk_nondigital[$i]['perk_id']	= $value;
+	        $i++;
+	        }
+	        $this->MerchandiseItemPerks->saveMany($perk_nondigital);
+
 			$this->Session->setFlash('Update Completed !');
 			$this->MerchandiseItem->save($this->request->data);
 			$this->redirect('/merchandises/');
@@ -80,6 +99,7 @@ class MerchandisesController extends AppController {
 		$this->loadModel('MasterPerk');
 		$perks = $this->MasterPerk->find('all',array('limit'=>300));
 		$this->set('perks',$perks);
+		$this->set('rs_perks', $rs_perks);
 
 		$this->set('rs',$rs);
 		
@@ -135,6 +155,7 @@ class MerchandisesController extends AppController {
 		$this->loadModel('MerchandiseItemPerk');
 		$this->loadModel('MasterPerk');
 		if($this->request->is('post')){
+			print_r($this->request->data);
 			$dir_path = Configure::read('avatar_img_dir')."merchandise/";
 			$filename = $_FILES['pic']['name'];
 			$dir = new Folder($dir_path, true, 0777);
@@ -180,6 +201,22 @@ class MerchandisesController extends AppController {
 						'perk_id'=>$added_perk[$i]
 					));
 				}
+
+				$last_id = $this->MerchandiseItem->id;
+				$perk_nondigital = array();
+				$i=0;
+				foreach ($this->request->data['perk_nondigital'] as $key => $value)
+		        {
+		        	$perk_nondigital[$i]['merchandise_item_id']	= $last_id;
+		        	$perk_nondigital[$i]['perk_id']	= $value;
+		        $i++;
+		        }
+
+		        $this->loadModel('MerchandiseItemPerks');
+
+		        //insert into merchandise_item_perks
+		        $this->MerchandiseItemPerks->saveMany($perk_nondigital);
+
 				$this->Session->setFlash('New Merchandise has been added successfully !');
 			}else{
 				$this->Session->setFlash('Cannot add the merchandise, please try again later!');
