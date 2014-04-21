@@ -152,3 +152,11 @@ CREATE TABLE ffgame.game_bets (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQUE_BET` (`game_id`,`game_team_id`,`bet_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE fantasy.merchandise_item_perks (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `merchandise_item_id` bigint(21) DEFAULT NULL,
+  `perk_id` bigint(21) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE_ITEM_PERK` (`merchandise_item_id`,`perk_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
