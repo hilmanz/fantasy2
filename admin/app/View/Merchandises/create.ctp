@@ -107,105 +107,27 @@
 			</td>
 		</tr>
 		<tr>
-			<td valign="top" colspan="2">
-				<h3>Create Perk <input type="checkbox" value="1" name="chx"/></h3>
+			<td valign="top">
+				Perks Non Digital Item
 			</td>
-			
-		</tr>
-		<tr>
-			<td colspan="2">
-				<table width="100%" class="perklist">
-					<tr>
-						<td>Perk</td>
-						<td>Category</td>
-						<td>Amount</td>
-						<td>Attributes</td>
-						<td></td>
-					</tr>
+			<td>
+				<table width="100%">
+					<tbody>
+						<?php foreach($perks as $perk):?>
+							<tr>
+								<td>
+									<input id="perk_<?=$perk['MasterPerk']['id']?>" 
+									type="checkbox" name="perk_nondigital[]" value="<?=$perk['MasterPerk']['id']?>" />
+								</td>
+								<td valign="top">
+									<label for="perk_<?=$perk['MasterPerk']['id']?>">
+										<?=h($perk['MasterPerk']['name'])?>
+									</label>
+								</td>
+							</tr>
+						<?php endforeach;?>
+					</tbody>
 				</table>
-			</td>
-		</tr>
-		<tr class="attributes">
-			<td>
-				Category
-			</td>
-			<td valign="top">
-				<select name="perk_name">
-					<option value="ACCESSORIES">ACCESSORIES</option>
-					<option value="IMMEDIATE_MONEY">IMMEDIATE MONEY</option>
-					<option value="EXTRA_POINTS_PERCENTAGE">EXTRA POINTS PERCENTAGE</option>
-					<option value="EXTRA_POINTS_VALUE">EXTRA POINTS VALUE</option>
-					<option value="INCOME_MODIFIER">INCOME MODIFIER</option>
-					<option value="FREE_PLAYER">FREE PLAYER</option>
-					<option value="TRANSFER_DISCOUNT">TRANSFER DISCOUNT</option>
-					<option value="POINTS_MODIFIER_PER_CATEGORY">POINTS MODIFIER PER_CATEGORY</option>
-				</select>
-			</td>
-		</tr>
-		<tr class="attributes">
-			<td valign="top">
-				Name
-			</td>
-			<td>
-				<input type="text" name="perk_ident" value=""/>
-			</td>
-		</tr>
-		<tr class="attributes">
-			<td valign="top">
-				Description
-			</td>
-			<td>
-				<textarea name="perk_description"></textarea>
-			</td>
-		</tr>
-		<tr class="attributes">
-			<td valign="top">
-				Amount
-			</td>
-			<td valign="top">
-				<input type="text" name="perk_amount" value="1"/>
-			</td>
-		</tr>
-		<tr class="attributes">
-			<td valign="top">
-				Attributes
-			</td>
-			<td>
-				<div>
-				<input type="text" data-id="txt-1" name="attributes[]" value="type" placeholder="name" style="width:300px;" 
-				class="txt-attr"/> &nbsp;
-				
-				<input type="text" data-id="val-1" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
-				</div>
-				<div>
-				<input type="text" data-id="txt-2" name="attributes[]" value="category" placeholder="name" style="width:300px;"
-				class="txt-attr"/> &nbsp;
-				<input type="text" data-id="val-2" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
-				
-				</div>
-				<div>
-				<input type="text" data-id="txt-3" name="attributes[]" value="point_percentage" placeholder="name" style="width:300px;"
-				class="txt-attr"/> &nbsp;
-				<input type="text" data-id="val-3" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
-				</div>
-				<div>
-				<input type="text" data-id="txt-4" name="attributes[]" value="point_value" placeholder="name" style="width:300px;"
-				class="txt-attr"/> &nbsp;
-				<input type="text" data-id="val-4" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
-				</div>
-				<div>
-				<input type="text" data-id="txt-5" name="attributes[]" value="duration" placeholder="name" style="width:300px;"
-				class="txt-attr"/> &nbsp;
-				<input type="text" data-id="val-5" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
-				</div>
-				<div>
-				<input type="text" data-id="txt-6" name="attributes[]" value="" placeholder="name" style="width:300px;"
-				class="txt-attr"/> &nbsp;
-				<input type="text" data-id="val-6" name="attribute_values[]" value="" placeholder="value" style="width:300px;"/>
-				</div>
-				<div>
-					<input type="button" name="btn-add-attributes" value="ADD ATTRIBUTES" class="button" />
-				</div>
 			</td>
 		</tr>
 		<tr>
@@ -216,117 +138,3 @@
 		</tr>
 	</table>
 </form>
-<script id="tplperkrow" type="text/template">
-<% for(var i in perks){ %>
-	<tr class="perkrows perk-<%=i%>">
-		<td><%=perks[i].name%></td>
-		<td><%=perks[i].perk_name%></td>
-		<td><%=perks[i].amount%></td>
-		<td>
-		<%
-		if(perks[i].attributes != null){
-			for(var j in perks[i].attributes){
-		%>
-			<p><%=j%> : <%=perks[i].attributes[j]%></p>
-		<% }}else{%>
-			N/A
-		<%}%>
-		</td>
-		<td><a href="#" onclick="removeItem(<%=i%>);return false;">Remove</a></td>
-	</tr>
-<% } %>
-</script>
-<script>
-var options = {
-	'type':[
-		'booster','jersey','money','free_player','transfer_window'
-	],
-	'category':[
-		'passing_and_attacking','defending','goalkeeping','mistakes_and_errors'
-	]
-};
-
-var perks = [];
-
-function removeItem(rowId){
-	var new_perks = [];
-	for(var i=0; i < perks.length;i++){
-		if(i!=rowId){
-			new_perks.push(perks[i]);
-		}
-	}
-	$(".perk-"+rowId).remove();
-	perks = new_perks;
-	updatePerkValues();
-}
-function updatePerkValues(){
-	$("input[name=perks]").val(JSON.stringify(perks));
-}
-$(document).ready(function(e){
-	$(".attributes").hide();
-	$(".txt-attr").keyup(function(e){
-		addValueField($(this).val(),this);
-	});
-	$("input[name=chx]").change(function(e){
-		console.log($(this).is(':checked'));
-		if($(this).is(':checked')){
-			$('.attributes').show();
-		}else{
-			$('.attributes').hide();
-		}
-	});
-
-	$('.txt-attr').each(function(i,k){
-		addValueField($(k).val(),k);
-	});
-
-	$("input[name=btn-add-attributes]").click(function(e){
-		console.log($("select[name=perk_name]").val());
-		console.log($("input[name=perk_ident]").val());
-		console.log($("textarea[name=perk_description]").val());
-		console.log($("input[name=perk_amount]").val());
-		var new_attributes = {};
-		$('.txt-attr').each(function(i,k){
-			var t = $(k).attr('data-id').split('-');
-			var id = t[1];
-			if($('.txt-attr-val-'+id).val()!=""){
-				new_attributes[$(k).val()] = $('.txt-attr-val-'+id).val();	
-			}
-			
-		});
-		perks.push({
-				perk_name:$("select[name=perk_name]").val(),
-				name:$("input[name=perk_ident]").val(),
-				description:$("textarea[name=perk_description]").val(),
-				amount:$("input[name=perk_amount]").val(),
-				attributes:new_attributes
-			});
-
-		console.log(perks);
-		displayPerks(perks);
-		updatePerkValues();
-	});
-});
-function displayPerks(perks){
-	$(".perkrows").remove();
-	append_view(tplperkrow,'.perklist',{perks:perks});
-}
-function addValueField(name,obj){
-	console.log(name);
-	$(obj).next().remove();
-
-	var t = $(obj).attr('data-id').split('-');
-
-	if(typeof options[name] !== 'undefined'){
-		var el = options[name];
-		var str = "<select name='attribute_values[]' data-id='val-"+t[1]+"' class='txt-attr-val-"+t[1]+"'>";
-		for(var i in el){
-			str += "<option value='"+el[i]+"'>"+el[i]+"</option>";
-		}
-		str += "</select>";
-		$(obj).after("&nbsp;"+str);
-	}else{
-		$(obj).after('&nbsp;<input type="text" name="attribute_values[]" data-id="val-'+t[1]+'" value="" placeholder="value" style="width:300px;" class="txt-attr-val-'+t[1]+'"/>');
-	}
-}
-</script>

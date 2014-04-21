@@ -145,6 +145,36 @@
 			</td>
 		</tr>
 		<tr>
+			<td valign="top">
+				Perks Non Digital Item
+			</td>
+			<td>
+				<table width="100%">
+					<tbody>
+						<?php foreach($perks as $perk):?>
+						<?php
+							$checked = '';
+							if(in_array($perk['MasterPerk']['id'], $rs_perks)){
+								$checked = 'checked="checked"';
+							}
+						?>
+							<tr>
+								<td>
+									<input <?=$checked?> id="perk_<?=$perk['MasterPerk']['id']?>" 
+									type="checkbox" name="perk_nondigital[]" value="<?=$perk['MasterPerk']['id']?>" />
+								</td>
+								<td valign="top">
+									<label for="perk_<?=$perk['MasterPerk']['id']?>">
+										<?=h($perk['MasterPerk']['name'])?>
+									</label>
+								</td>
+							</tr>
+						<?php endforeach;?>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
 			<td colspan="2">
 				<input type="submit" name="btn" value="UPDATE"/>
 			</td>
