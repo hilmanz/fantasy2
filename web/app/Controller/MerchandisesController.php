@@ -623,7 +623,26 @@ class MerchandisesController extends AppController {
 				$all_digital = false;
 			}
 		}
+
+
 		$admin_fee = Configure::read('PO_ADMIN_FEE');
+		if(count($shopping_cart) > 1)
+		{
+			$admin_fee = Configure::read('PO_ADMIN_FEE');
+		}
+		else
+		{
+			//check enable or disable admin fee
+			$rs_adminfee = $this->MerchandiseItem->findById($shopping_cart[0]['item_id']);
+			if($rs_adminfee['MerchandiseItem']['enable_admin_fee'] != 1)
+			{
+				$admin_fee = 0;
+			}
+			else
+			{
+				$admin_fee = Configure::read('PO_ADMIN_FEE');
+			}
+		}
 		
 		if($all_digital){
 			$admin_fee = 0;
@@ -778,6 +797,24 @@ class MerchandisesController extends AppController {
 			}
 			
 			$admin_fee = Configure::read('PO_ADMIN_FEE');
+			if(count($shopping_cart) > 1)
+			{
+				$admin_fee = Configure::read('PO_ADMIN_FEE');
+			}
+			else
+			{
+				//check enable or disable admin fee
+				$rs_adminfee = $this->MerchandiseItem->findById($shopping_cart[0]['item_id']);
+				if($rs_adminfee['MerchandiseItem']['enable_admin_fee'] != 1)
+				{
+					$admin_fee = 0;
+				}
+				else
+				{
+					$admin_fee = Configure::read('PO_ADMIN_FEE');
+				}
+			}
+
 			if($all_digital){
 				$admin_fee = 0;
 			}
