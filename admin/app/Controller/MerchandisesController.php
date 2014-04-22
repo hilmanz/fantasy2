@@ -155,7 +155,6 @@ class MerchandisesController extends AppController {
 		$this->loadModel('MerchandiseItemPerk');
 		$this->loadModel('MasterPerk');
 		if($this->request->is('post')){
-			print_r($this->request->data);
 			$dir_path = Configure::read('avatar_img_dir')."merchandise/";
 			$filename = $_FILES['pic']['name'];
 			$dir = new Folder($dir_path, true, 0777);
