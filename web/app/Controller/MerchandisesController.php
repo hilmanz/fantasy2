@@ -617,7 +617,7 @@ class MerchandisesController extends AppController {
 				$all_digital = false;
 			}
 		}
-		$admin_fee = Configure::write('PO_ADMIN_FEE');
+		$admin_fee = Configure::read('PO_ADMIN_FEE');
 		
 		if($all_digital){
 			$admin_fee = 0;
@@ -771,7 +771,7 @@ class MerchandisesController extends AppController {
 				}
 			}
 			
-			$admin_fee = Configure::write('PO_ADMIN_FEE');
+			$admin_fee = Configure::read('PO_ADMIN_FEE');
 			if($all_digital){
 				$admin_fee = 0;
 			}
