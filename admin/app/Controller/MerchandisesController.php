@@ -80,16 +80,18 @@ class MerchandisesController extends AppController {
 			}
 
 			$this->MerchandiseItemPerks->delete_by_item_id($id);
-
-			$i=0;
-			foreach ($this->request->data['perk_nondigital'] as $key => $value)
-	        {
-	        	$perk_nondigital[$i]['merchandise_item_id']	= $id;
-	        	$perk_nondigital[$i]['perk_id']	= $value;
-	        $i++;
-	        }
-	        $this->MerchandiseItemPerks->saveMany($perk_nondigital);
-
+			if(isset($this->request->data['perk_nondigital']))
+			{
+				$i=0;
+				foreach ($this->request->data['perk_nondigital'] as $key => $value)
+		        {
+		        	$perk_nondigital[$i]['merchandise_item_id']	= $id;
+		        	$perk_nondigital[$i]['perk_id']	= $value;
+		        $i++;
+		        }
+		        $this->MerchandiseItemPerks->saveMany($perk_nondigital);
+			}
+			
 			$this->Session->setFlash('Update Completed !');
 			$this->MerchandiseItem->save($this->request->data);
 			$this->redirect('/merchandises/');

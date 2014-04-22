@@ -32,6 +32,7 @@ $edit_url = $this->Html->url('/merchandises/edit/');
 					if(response.data.length > 0){
 						for(var i in response.data){
 							data.push([
+									response.data[i].MerchandiseItem.id,
 									'<img src="<?=$pic_dir?>'+response.data[i].MerchandiseItem.pic+'"/>',
 									response.data[i].MerchandiseItem.name,
 									response.data[i].MerchandiseCategory.name,
@@ -63,6 +64,7 @@ $edit_url = $this->Html->url('/merchandises/edit/');
 
 			"aaData": data,
 			"aoColumns": [
+				{ "sTitle": "ID" },
 				{ "sTitle": "" },
 				{ "sTitle": "Name" },
 				{ "sTitle": "Category" },
