@@ -2602,7 +2602,7 @@ class ApiController extends AppController {
 			}
 		}
 
-		$admin_fee = 50000;
+		$admin_fee = Configure::write('PO_ADMIN_FEE');
 		if($all_digital){
 			$admin_fee = 0;
 		}
@@ -2754,7 +2754,7 @@ class ApiController extends AppController {
 			}
 		}
 		
-		$admin_fee = 50000;
+		$admin_fee = Configure::read('PO_ADMIN_FEE');
 		if($all_digital){
 			$admin_fee = 0;
 		}

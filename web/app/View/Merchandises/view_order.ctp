@@ -116,9 +116,9 @@
 		                        	
 		                        	if($rs['MerchandiseOrder']['payment_method']=='ecash'){
 		                        		$admin_fee = Configure::read('PO_ADMIN_FEE');
-		                        		if($admin_fee==0){
+		                        		/*if($admin_fee==0){
 		                        			$admin_fee = 50000;
-		                        		}
+		                        		}*/
 		                        	}
 		                        	?>
 
