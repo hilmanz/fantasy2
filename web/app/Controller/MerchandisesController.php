@@ -512,9 +512,15 @@ class MerchandisesController extends AppController {
 			$this->set('canAddPerk',$canAddPerk);
 			$this->set('item',$item['MerchandiseItem']);
 			$this->Session->write('out_of_stock',null);
-		}else{
+		}else if(intval($item['MerchandiseItem']['stock']) == 0){
 			$this->set('item',$item['MerchandiseItem']);
 			$this->render('out_of_stock');
+		}else if(!$canAddPerk){
+			$this->set('item',$item['MerchandiseItem']);
+			$this->render('cannot_add_perk');
+		}else{
+			$this->set('item',$item['MerchandiseItem']);
+			$this->render('catalog_error');
 		}
 
 		
