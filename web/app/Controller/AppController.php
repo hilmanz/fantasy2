@@ -295,14 +295,15 @@ class AppController extends Controller {
 	//get current active user perks
 	//we only try to retrieve the perks once, and stored it to session for further use.
 	protected function getUserPerks(){
+
 		$perks = $this->Session->read('MyPerk');
-		$perks = null;
+		
 		if(!is_array($perks)){
 			$this->loadModel('DigitalPerk');
 			$this->loadModel('MasterPerk');
 			$this->DigitalPerk->bindModel(
 				array('belongsTo'=>
-						array('MasterPerk')
+						array('MasterPerk'=>array('type'=>'INNER'))
 					)
 				
 			);

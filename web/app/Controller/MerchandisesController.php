@@ -482,7 +482,7 @@ class MerchandisesController extends AppController {
 			
 		}
 
-
+		
 		if($shopping_cart == null){
 			$shopping_cart = array();
 			$can_add = true;

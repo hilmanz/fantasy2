@@ -167,6 +167,12 @@ class MarketController extends AppController {
 			
 		}
 		
+		//still can't transfer ?
+		//we check if the user has transfer window perk in active.
+		if(!$can_transfer){
+			$can_transfer = $this->isTransferWindowPerkActive($rs);
+		}
+
 		$this->set('can_purchase',$can_transfer);
 		//-->
 
@@ -197,6 +203,58 @@ class MarketController extends AppController {
 		$this->set('OPTA_CUSTOMER_ID',Configure::read('OPTA_CUSTOMER_ID'));
 		//-->
 
+	}
+	/*
+	* check if there's any transfer window perk active.
+	* @returns boolean (only if the perk lifetime is still valid)
+	*/
+	private function isTransferWindowPerkActive(){
+		
+		$game_team_id = $this->userData['team']['id'];
+
+		$activeTransferWindowPerk = $this->Session->read('active_transfer_window_perk');
+		if($activeTransferWindowPerk==null){
+			$activeTransferWindowPerk = $this->getActiveTransferWindowPerk($game_team_id);
+		}
+		
+		if(isset($activeTransferWindowPerk['MasterPerk']) &&
+				isset($activeTransferWindowPerk['DigitalPerk'])){
+			$redeem_dt = strtotime($activeTransferWindowPerk['DigitalPerk']['redeem_dt']);
+			$perk_expiry_ts = $redeem_dt + (intval($activeTransferWindowPerk['MasterPerk']['data']['hour']) * 60 * 60);
+			if(time() < $perk_expiry_ts){
+				return true;
+			}else{
+				//reset the session
+				$this->Session->write('active_transfer_window_perk',null);
+			}
+		}
+	}
+	private function getActiveTransferWindowPerk(){
+		$this->loadModel('DigitalPerk');
+		$this->loadModel('MasterPerk');
+
+		$this->DigitalPerk->bindModel(array(
+							'belongsTo'=>array('MasterPerk'=>array('type'=>'INNER'))));
+		$perks =  $this->DigitalPerk->find('all',array(
+				'conditions'=>array(
+					'DigitalPerk.game_team_id' => $this->userData['team']['id'],
+					'DigitalPerk.available > 0',
+					'DigitalPerk.n_status' => 1
+				),
+				'limit'=>100
+			));
+		
+		for($i=0;$i<sizeof($perks);$i++){
+			$p = $perks[$i];
+			if($p['MasterPerk']['perk_name']=='ACCESSORIES'){
+				$data = unserialize($p['MasterPerk']['data']);
+				if($data['type']=='transfer_window'){
+					$p['MasterPerk']['data'] = $data;
+					$this->Session->write('active_transfer_window_perk',$p);
+					return $p;
+				}
+			}
+		}
 	}
 	public function error(){
 		$this->render('error');
