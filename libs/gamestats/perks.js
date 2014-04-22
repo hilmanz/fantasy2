@@ -98,6 +98,7 @@ exports.apply_player_perk = function(conn,game_team_id,player_id,new_stats,match
 					for(var i in summary){
 						items.push({category:i,total:summary[i]});
 					}
+
 					async.eachSeries(items,function(item,next){
 						var modifier_name = item.category + '_' + player_id;
 						if(item.total != 0){
@@ -240,6 +241,7 @@ function POINTS_MODIFIER_PER_CATEGORY(conn,game_team_id,perks,new_stats,callback
 		async.eachSeries(
 			new_stats,
 			function(stats,next){
+				console.log('getExtraPoints',stats.category);
 				for(var i in perks){
 					if(perks[i].perk_name == 'POINTS_MODIFIER_PER_CATEGORY'
 					   && perks[i].data.type == 'booster'){
@@ -264,12 +266,12 @@ function POINTS_MODIFIER_PER_CATEGORY(conn,game_team_id,perks,new_stats,callback
 
 							break;
 							case 'goalkeeping':
-								if(stats.category == 'goalkeeping'){
+								if(stats.category == 'goalkeeper'){
 									extra_points.push({
 										goalkeeping:getExtraPoints(perks[i].data,
 																			 stats.points)});
 								}
-								
+								console.log('getExtraPoints',JSON.stringify(extra_points));
 
 							break;
 							case 'mistakes_and_errors':
