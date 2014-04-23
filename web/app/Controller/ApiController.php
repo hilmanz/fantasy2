@@ -2653,7 +2653,7 @@ class ApiController extends AppController {
 		if($rs['data']!='#'){
 			$this->Game->storeToTmp(intval(@$game_team_id),$transaction_id,encrypt_param(serialize($transaction_data)));
 		}
-		CakeLog::write('debug',intval(@$game_team_id).'-'.$transaction_id.'-'.encrypt_param(serialize($transaction_data)));
+		CakeLog::write('debug',intval(@$game_team_id).'-'.$transaction_id.'-'.json_encode($transaction_data));
 
 		$this->layout="ajax";
 		$this->set('response',array('status'=>1,'data'=>$rs['data'],'transaction_id'=>$transaction_id));
@@ -2727,11 +2727,13 @@ class ApiController extends AppController {
 		CakeLog::write('debug','pay_with_ecash_completed - finished '.json_encode($rs));
 		$this->layout="ajax";
 		if($rs){
-			CakeLog::write('debug','pay_with_ecash_completed - status : 1');
+			
 			$this->set('response',array('status'=>1));
+			CakeLog::write('debug','pay_with_ecash_completed - status : 1');
+
 		}else{
-			CakeLog::write('debug','pay_with_ecash_completed - status : 0');
 			$this->set('response',array('status'=>0,'error'=>@$rs['error']));
+			CakeLog::write('debug','pay_with_ecash_completed - status : 0');
 		}
 		
 		$this->render('default');
@@ -2845,6 +2847,10 @@ class ApiController extends AppController {
 		$this->MerchandiseOrder->create();
 		try{
 			$rs = $this->MerchandiseOrder->save($data);	
+			if($this->MerchandiseOrder->getInsertID() > 0){
+				$this->process_items($shopping_cart,$data['po_number']);	
+			}
+			
 		}catch(Exception $e){
 			//$rs = array('MerchandiseOrder'=>$data);
 			$rs['error'] = $e->getMessage();
@@ -2853,16 +2859,28 @@ class ApiController extends AppController {
 		
 		CakeLog::write('debug','INPUT : '.json_encode(@$rs));
 
-		$this->process_items($shopping_cart);
 		
-
+		
+		//di production di nyalain ya.
 		$this->Game->storeToTmp(intval(@$game_team_id),$transaction_id,'');
 
+
 		if(isset($rs['MerchandiseOrder'])){
+			$this->Game->storeToTmp(intval(@$game_team_id),'final_'.$transaction_id,'SUCCESS');
 			return true;
 		}
+
+		$final_transaction = $this->Game->getFromTmp(intval(@$game_team_id),'final_'.$transaction_id);
 		
-		
+
+		if($final_transaction['data']=='SUCCESS'){
+			CakeLog::write('debug','final_'.$transaction_id.'[SUCCESS]:'.json_encode($final_transaction));
+			return true;
+		}else{
+			CakeLog::write('debug','final_'.$transaction_id.'[FAILED]:'.json_encode($final_transaction));
+			$this->Game->storeToTmp(intval(@$game_team_id),'final_'.$transaction_id,'FAILED');	
+			return false;
+		}
 	}
 	/*api call for purchasing item using coins
 	$game_team_id -> user's game_team_id
@@ -2888,7 +2906,7 @@ class ApiController extends AppController {
 		
 		if($is_transaction_ok == true){
 			//check accross the items, we apply the perk for all digital items
-			$this->process_items($result['items']);
+			$this->process_items($result['items'],$order_id);
 		}
 
 		$this->layout="ajax";
@@ -2899,7 +2917,7 @@ class ApiController extends AppController {
 	* process digital items
 	* when the digital items redeemed, we reduce its stock.
 	*/
-	private function process_items($items){	
+	private function process_items($items,$order_id){	
 		CakeLog::write('debug',json_encode($items));
 		
 		for($i=0; $i<sizeof($items); $i++){

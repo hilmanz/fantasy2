@@ -487,6 +487,10 @@ class MerchandisesController extends AppController {
 			$shopping_cart = array();
 			$can_add = true;
 
+		}else if(!is_array($shopping_cart)){
+			$shopping_cart = array();
+			$can_add = true;
+
 		}else{
 			$can_add = true;
 			//make sure that the item is not in the cart yet
@@ -875,7 +879,7 @@ class MerchandisesController extends AppController {
 			}
 		}else{
 			$final_transaction = $this->Session->read('final_'.$ecash_data['transaction_id']);
-		
+
 			if(!isset($final_transaction)){
 				$final_transaction = 'FAILED';
 			}
