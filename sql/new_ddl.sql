@@ -160,3 +160,7 @@ CREATE TABLE fantasy.merchandise_item_perks (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQUE_ITEM_PERK` (`merchandise_item_id`,`perk_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `fantasy`.`merchandise_items` ADD COLUMN `enable_admin_fee` TINYINT(3) DEFAULT '1' NULL AFTER `perk_id`;
+
+ALTER TABLE `fantasy`.`merchandise_items`     ADD COLUMN `admin_fee` INT(8) DEFAULT '0' NULL AFTER `enable_admin_fee`,     ADD COLUMN `enable_ongkir` TINYINT(3) DEFAULT '1' NULL AFTER `admin_fee`;
