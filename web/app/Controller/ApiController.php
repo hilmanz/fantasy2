@@ -2610,8 +2610,8 @@ class ApiController extends AppController {
 		else
 		{
 			//check enable or disable admin fee
-			$rs_adminfee = $this->MerchandiseItem->findById($shopping_cart[0]['item_id']);
-			if($rs_adminfee['MerchandiseItem']['enable_admin_fee'] != 1)
+			$rs_adminfee = $shopping_cart[0]['data']['MerchandiseItem'];
+			if($rs_adminfee['enable_admin_fee'] != 1)
 			{
 				$admin_fee = 0;
 			}
@@ -2780,8 +2780,8 @@ class ApiController extends AppController {
 		else
 		{
 			//check enable or disable admin fee
-			$rs_adminfee = $this->MerchandiseItem->findById($shopping_cart[0]['item_id']);
-			if($rs_adminfee['MerchandiseItem']['enable_admin_fee'] != 1)
+			$rs_adminfee = $shopping_cart[0]['data']['MerchandiseItem'];
+			if($rs_adminfee['enable_admin_fee'] != 1)
 			{
 				$admin_fee = 0;
 			}
