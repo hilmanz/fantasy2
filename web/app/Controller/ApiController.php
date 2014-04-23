@@ -2586,7 +2586,7 @@ class ApiController extends AppController {
 		$description = 'Purchase Order #'.$transaction_id;
 		
 
-		//get total coins to be spent.
+		//get total money to be spent.
 		$total_price = 0;
 		$all_digital = true;
 		$kg = 0;
@@ -2943,6 +2943,8 @@ class ApiController extends AppController {
 		$total_coins = 0;
 		$all_digital = true;
 		$kg = 0;
+		$all_stock_ok = true;
+
 		for($i=0;$i<sizeof($shopping_cart);$i++){
 			if(intval($shopping_cart[$i]['qty']) <= 0){
 				$shopping_cart[$i]['qty'] = 1;
@@ -2954,6 +2956,9 @@ class ApiController extends AppController {
 			//is there any non-digital item ?
 			if($item['merchandise_type']==0){
 				$all_digital = false;
+			}
+			if($item['stock'] <= 0){
+				$all_stock_ok = false;
 			}
 		}
 		$cash = $this->Game->getCash($game_team_id);
@@ -2968,7 +2973,7 @@ class ApiController extends AppController {
 		}
 		
 		//2. if fund is available, we create transaction id and order detail.
-		if(!$no_fund){
+		if(!$no_fund && $all_stock_ok){
 
 			$data = $this->request->data;
 			$data['merchandise_item_id'] = 0;

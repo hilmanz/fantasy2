@@ -725,7 +725,7 @@ class MerchandisesController extends AppController {
 				'transaction_id'=>trim($transaction_id),
 				'status'=>trim($status)
 			);
-			
+
 			$is_valid = true;
 			if(Configure::read('debug')==0){
 				//ini masih blm bisa diimplement,
@@ -860,24 +860,31 @@ class MerchandisesController extends AppController {
 			$this->MerchandiseOrder->create();
 			$rs = $this->MerchandiseOrder->save($data);	
 			
+			if($this->MerchandiseOrder->getInsertID() > 0){
+				$this->process_items($shopping_cart,$ecash_data['transaction_id']);
+				$this->set('apply_digital_perk_error',$this->Session->read('apply_digital_perk_error'));
+				$this->Session->write('apply_digital_perk_error',null);
+				//reset the csrf token
+				$this->Session->write('po_csrf',null);
+				//-->
 			
-			$this->process_items($shopping_cart,$ecash_data['transaction_id']);
-				
-		
-			$this->set('apply_digital_perk_error',$this->Session->read('apply_digital_perk_error'));
-
-			
-			$this->Session->write('apply_digital_perk_error',null);
-			//reset the csrf token
-			$this->Session->write('po_csrf',null);
-			//-->
-
-			//reset the shopping_cart in session (disable these for debug only)
-			$this->Session->write('shopping_cart',null);
-			$this->Session->write($ecash_data['transaction_id'],null);
-			
+			 //reset the shopping_cart in session (disable these for debug only)
+			 $this->Session->write('shopping_cart',null);
+			 $this->Session->write($ecash_data['transaction_id'],null);
+			 $this->Session->write('final_'.$ecash_data['transaction_id'],$ecash_data['status']);
+			}
 		}else{
-			$is_transaction_ok = false;
+			$final_transaction = $this->Session->read('final_'.$ecash_data['transaction_id']);
+		
+			if(!isset($final_transaction)){
+				$final_transaction = 'FAILED';
+			}
+			if($final_transaction == 'SUCCESS'){
+				$is_transaction_ok = true;
+			}else{
+				$is_transaction_ok = false;
+			}
+			
 		}
 		$this->set('is_transaction_ok',$is_transaction_ok);
 		

@@ -380,7 +380,7 @@ Configure::write('REDEEM_MAXIMUM_TRY',5); //how many time user can attempt to re
 Configure::write('DIGITAL_ITEM_CATEGORY',5);
 
 //Administration & Handling Fee
-Configure::write('PO_ADMIN_FEE',0);
+Configure::write('PO_ADMIN_FEE',50000);
 
 
 //Merchandise page settings
