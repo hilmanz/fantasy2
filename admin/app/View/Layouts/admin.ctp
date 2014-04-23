@@ -62,6 +62,9 @@
                                     <a href="<?=$this->Html->url('/funds/add')?>">Add Funds</a>
                                 </li>
                                 <li>
+                                    <a href="<?=$this->Html->url('/coins/add')?>">Add Coins</a>
+                                </li>
+                                <li>
                                     <a href="<?=$this->Html->url('/newsletter')?>">Newsletter</a>
                                 </li>
                                 <li>

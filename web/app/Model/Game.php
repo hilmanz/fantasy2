@@ -308,7 +308,7 @@ class Game extends AppModel {
 		return $this->query($sql,false);
 
 	}
-
+	
 	public function getPerkByType($perks,$perk_type,$reward_type=null){
 		$result = array();
 		for($i=0;$i < sizeof($perks); $i++){

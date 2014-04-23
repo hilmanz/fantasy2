@@ -164,3 +164,15 @@ CREATE TABLE fantasy.merchandise_item_perks (
 ALTER TABLE `fantasy`.`merchandise_items` ADD COLUMN `enable_admin_fee` TINYINT(3) DEFAULT '1' NULL AFTER `perk_id`;
 
 ALTER TABLE `fantasy`.`merchandise_items`     ADD COLUMN `admin_fee` INT(8) DEFAULT '0' NULL AFTER `enable_admin_fee`,     ADD COLUMN `enable_ongkir` TINYINT(3) DEFAULT '1' NULL AFTER `admin_fee`;
+
+
+CREATE TABLE ffgame.add_coin_history (
+  `id` BIGINT(21) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(140) DEFAULT NULL,
+  `team_ids` LONGTEXT,
+  `amount` INT(11) DEFAULT '0',
+  `post_dt` DATETIME DEFAULT NULL,
+  `n_status` TINYINT(3) DEFAULT '0' COMMENT '0->failed, 1->success',
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;

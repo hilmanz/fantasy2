@@ -209,6 +209,41 @@ class Game extends AppModel {
 		return $this->getLastInsertID();
 
 	}
+	/*
+	* helper to add coin transactions
+	*/
+	public function addCoinTransaction($game_team_id,$transaction_name,$amount,$details){
+		//insert the transaction
+		$sql = "INSERT INTO ffgame.game_transactions
+				(game_team_id,transaction_dt,transaction_name,amount,details)
+				VALUES
+				({$game_team_id},NOW(),'{$transaction_name}',{$amount},'{$details}')
+				ON DUPLICATE KEY UPDATE
+				amount = VALUES(amount);";
+		$rs = $this->query($sql,false);
+
+		//and then update the cash 
+		$sql = "INSERT INTO ffgame.game_team_cash
+				(game_team_id,cash)
+				SELECT game_team_id,SUM(amount) AS cash 
+				FROM ffgame.game_transactions
+				WHERE game_team_id = {$game_team_id}
+				GROUP BY game_team_id
+				ON DUPLICATE KEY UPDATE
+				cash = VALUES(cash);";
+
+		$rs = $this->query($sql,false);
+
+		$rs = $this->query("SELECT id FROM ffgame.game_transactions a
+							WHERE game_team_id = {$game_team_id} ORDER BY id DESC LIMIT 1",false);
+
+		return $rs[0]['a']['id'];
+	}
+	public function getCurrentCoin($game_team_id){
+		$sql = "SELECT * FROM ffgame.game_team_cash a WHERE game_team_id = {$game_team_id} LIMIT 1";
+		$rs = $this->query($sql,false);
+		return $rs[0]['a']['cash'];
+	}
 	public function transaction_exists($game_team_id,
 		$item_name,
 		$item_type,
