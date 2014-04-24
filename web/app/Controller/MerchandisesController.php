@@ -412,6 +412,7 @@ class MerchandisesController extends AppController {
 	
 		$can_use_ecash = true;
 		$can_use_coin = true;
+		$enable_ongkir = true;
 		//display the cart content
 		$shopping_cart = $this->Session->read('shopping_cart');
 		for($i=0;$i<sizeof($shopping_cart);$i++){
@@ -428,7 +429,16 @@ class MerchandisesController extends AppController {
 	
 		$this->set('shopping_cart',$shopping_cart);
 
+
+		if(count($shopping_cart) < 2 && count($shopping_cart) != 0)
+		{
+			if($shopping_cart[0]['data']['MerchandiseItem']['enable_ongkir'] == 0)
+			{
+				$enable_ongkir = false;
+			}
+		} 
 		
+		$this->set('enable_ongkir', $enable_ongkir);
 
 		//generate CSRF Token
 		$csrf_token = md5('purchase_order_merchandise-'.date("YmdHis").rand(0,100));
@@ -629,6 +639,7 @@ class MerchandisesController extends AppController {
 		}
 
 		$admin_fee = Configure::read('PO_ADMIN_FEE');
+		$enable_ongkir = true;
 
 		if(count($shopping_cart) > 1)
 		{
@@ -654,6 +665,11 @@ class MerchandisesController extends AppController {
 					$admin_fee = $rs_adminfee['admin_fee'];
 				}
 			}
+
+			if($rs_adminfee['enable_ongkir'] == 0)
+			{
+				$enable_ongkir = false;
+			}
 		}
 		
 		if($all_digital){
@@ -678,6 +694,7 @@ class MerchandisesController extends AppController {
 		$this->set('shopping_cart',$shopping_cart);
 		//add shipping and handling cost
 		$this->set('admin_fee',$admin_fee);
+		$this->set('enable_ongkir', $enable_ongkir);
 		
 
 		//1. create transaction ID

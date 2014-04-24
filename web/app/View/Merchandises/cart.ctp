@@ -121,14 +121,13 @@ var base_coin = {};
                                 Ongkos Kirim
                             </div>
                             <select name="city_id" class="col3">
-                            <?php if($enable_ongkir): ?>
                                 <?php if($city_id==0):?>
                                     <option value="0" selected="selected">Pilih Kota</option>
                                 <?php else:?>
                                     <option value="0">Pilih Kota</option>
                                 <?php endif;?>
 
-                                <?php foreach($ongkir as $cost):?>
+                                <?php $i=0; foreach($ongkir as $cost):?>
                                     <?php if($city_id == $cost['Ongkir']['id']):?>
                                     <option value="<?=intval($cost['Ongkir']['id'])?>" 
                                             selected="selected">
@@ -137,25 +136,14 @@ var base_coin = {};
                                     <?php endif;?>
                                         <?=strtoupper($cost['Ongkir']['kecamatan']." - ".$cost['Ongkir']['city'])?>
                                     </option>
-                                <?php endforeach;?>
-                            <?php else: ?>
-                                <?php if($city_id==0):?>
-                                    <option value="0" selected="selected">Pilih Kota</option>
-                                <?php else:?>
-                                    <option value="0">Pilih Kota</option>
-                                <?php endif;?>
 
-                                <?php foreach($ongkir as $cost):?>
-                                    <?php if($city_id == $cost['Ongkir']['id']):?>
-                                    <option value="0" 
-                                            selected="selected">
-                                    <?php else:?>
-                                    <option value="0">
-                                    <?php endif;?>
-                                        <?=strtoupper($cost['Ongkir']['kecamatan']." - ".$cost['Ongkir']['city'])?>
-                                    </option>
-                                <?php endforeach;?>
-                            <?php endif; ?>
+                                    <?php
+                                        if(!$enable_ongkir)
+                                        {
+                                            $ongkir[$i]['Ongkir']['cost'] = 0;
+                                        }
+                                    ?>
+                                <?php $i++; endforeach;?>
                             </select>
                         </td>
                         

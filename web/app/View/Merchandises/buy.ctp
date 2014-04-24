@@ -113,12 +113,14 @@
 		                    	<td>
 		                    		<?php
 		                    		$ongkos = 0;
-		                    		foreach($ongkir as $cost){
-
-		                    			if($cost['Ongkir']['id']==$city_id){
-		                    				$ongkos = $cost['Ongkir']['cost'];
-		                    				break;
-		                    			}
+		                    		if($enable_ongkir)
+		                    		{
+		                    			foreach($ongkir as $cost){
+			                    			if($cost['Ongkir']['id']==$city_id){
+			                    				$ongkos = $cost['Ongkir']['cost'];
+			                    				break;
+			                    			}
+			                    		}
 		                    		}
 		                    		$total_ongkos = ceil($kg) * intval($ongkos);
 		                    		?>
@@ -172,12 +174,11 @@
 							<input type="text" name="address" value=""/>
 						</div><!-- end .row -->
 						<div class="row">
-							<?php (count($city) == 0) ? $readonly ="" : $readonly ="readonly='true'" ; ?>
 							<label>City</label>
 							<input type="text" 
 									name="city" 
 									value="<?=h($city['city'])?>" 
-									<?=$readonly?>/>
+									readonly="true"/>
 						</div><!-- end .row -->
 						<div class="row">
 							<label>Province</label>

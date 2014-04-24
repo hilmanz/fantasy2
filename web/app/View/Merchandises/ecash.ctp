@@ -95,12 +95,14 @@ $pic = Configure::read('avatar_web_url').
 		                        <td>
 		                        	<?php
 		                    		$ongkos = 0;
-		                    		foreach($ongkir as $cost){
-
-		                    			if($cost['Ongkir']['id']==$city_id){
-		                    				$ongkos = $cost['Ongkir']['cost'];
-		                    				break;
-		                    			}
+		                    		if($enable_ongkir)
+		                    		{
+		                    			foreach($ongkir as $cost){
+		                    				if($cost['Ongkir']['id']==$city_id){
+			                    				$ongkos = $cost['Ongkir']['cost'];
+			                    				break;
+			                    			}
+			                    		}
 		                    		}
 		                    		$total_ongkos = $ongkos * $kg;
 		                    		?>
