@@ -829,6 +829,7 @@ class MerchandisesController extends AppController {
 			}
 			
 			$admin_fee = Configure::read('PO_ADMIN_FEE');
+			$enable_ongkir = true;
 			if(count($shopping_cart) > 1)
 			{
 				$admin_fee = Configure::read('PO_ADMIN_FEE');
@@ -852,6 +853,11 @@ class MerchandisesController extends AppController {
 					{
 						$admin_fee = $rs_adminfee['admin_fee'];
 					}
+				}
+
+				if($rs_adminfee['enable_ongkir'] == 0)
+				{
+					$enable_ongkir = false;
 				}
 			}
 
