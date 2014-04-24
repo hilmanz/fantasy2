@@ -1119,7 +1119,7 @@ class MerchandisesController extends AppController {
 		}
 		
 		$shopping_cart = $this->Session->read('shopping_cart');
-
+		
 		//default value for ongkir
 		$enable_ongkir = true;
 

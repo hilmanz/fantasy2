@@ -2772,13 +2772,15 @@ class ApiController extends AppController {
 
 		$kg = 0;
 		for($i=0;$i<sizeof($shopping_cart);$i++){
-			$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
-			$item = $shopping_cart[$i]['data']['MerchandiseItem'];
-			$kg += intval($shopping_cart[$i]['qty']) * ceil(floatval($item['weight']));
-			$total_price += (intval($shopping_cart[$i]['qty']) * intval($item['price_money']));
-			//is there any non-digital item ?
-			if($item['merchandise_type']==0){
-				$all_digital = false;
+			if($shopping_cart[$i]['item_id'] > 0){
+				$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
+				$item = $shopping_cart[$i]['data']['MerchandiseItem'];
+				$kg += intval($shopping_cart[$i]['qty']) * ceil(floatval($item['weight']));
+				$total_price += (intval($shopping_cart[$i]['qty']) * intval($item['price_money']));
+				//is there any non-digital item ?
+				if($item['merchandise_type']==0){
+					$all_digital = false;
+				}
 			}
 		}
 
@@ -2852,9 +2854,9 @@ class ApiController extends AppController {
 		$data['total_sale'] = intval($total_price);
 		$data['payment_method'] = 'ecash';
 		$data['trace_code'] = $ecash_data['trace_number'];
-		$data['ongkir_id'] = $data['city_id'];
+		$data['ongkir_id'] = intval(@$data['city_id']);
 		//we need ongkir value
-		$ok = $this->Ongkir->findById($data['city_id']);
+		$ok = $this->Ongkir->findById(intval(@$data['city_id']));
 		$data['ongkir_value'] = $total_ongkir;
 		
 

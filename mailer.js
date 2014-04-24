@@ -44,7 +44,7 @@ var dt = new Date();
 var last_t = dt.getTime();
 var n_sent = 0;
 var total_sent = 0;
-var send_limit = 9000;
+var send_limit = 40000;
 console.log('start time',last_t,'sending limit : ',send_limit);
 //console.log(prev_t,last_t);
 //console.log(Math.round((last_t - prev_t)/1000));
