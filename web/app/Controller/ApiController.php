@@ -2603,6 +2603,7 @@ class ApiController extends AppController {
 		}
 
 		$admin_fee = Configure::read('PO_ADMIN_FEE');
+		$enable_ongkir = true;
 		if(count($shopping_cart) > 1)
 		{
 			$admin_fee = Configure::read('PO_ADMIN_FEE');
@@ -2627,6 +2628,12 @@ class ApiController extends AppController {
 					$admin_fee = $rs_adminfee['admin_fee'];
 				}
 			}
+
+			//check ongkir
+			if($rs_adminfee['enable_ongkir'] == 0)
+			{
+				$enable_ongkir = false;
+			}
 		}
 		
 		if($all_digital){
@@ -2635,15 +2642,18 @@ class ApiController extends AppController {
 		$total_price += $admin_fee;
 
 		//include ongkir
-		$ongkirList = $this->getOngkirList();
 		$total_ongkir = 0;
-		foreach($ongkirList as $ongkir){
-			if($ongkir['Ongkir']['id'] == intval($this->request->data['city_id'])){
-				$total_ongkir = intval($ongkir['Ongkir']['cost']);
-				break;
+		if($enable_ongkir)
+		{
+			$ongkirList = $this->getOngkirList();
+			foreach($ongkirList as $ongkir){
+				if($ongkir['Ongkir']['id'] == intval($this->request->data['city_id'])){
+					$total_ongkir = intval($ongkir['Ongkir']['cost']);
+					break;
+				}
 			}
 		}
-
+		
 		$total_price += ($kg*$total_ongkir);
 
 		$transaction_data = array('profile'=>$this->request->data,
@@ -2785,6 +2795,7 @@ class ApiController extends AppController {
 		}
 
 		$admin_fee = Configure::read('PO_ADMIN_FEE');
+		$enable_ongkir = true;
 		if(count($shopping_cart) > 1)
 		{
 			$admin_fee = Configure::read('PO_ADMIN_FEE');
@@ -2809,6 +2820,12 @@ class ApiController extends AppController {
 					$admin_fee = $rs_adminfee['admin_fee'];
 				}
 			}
+
+			//check ongkir
+			if($rs_adminfee['enable_ongkir'] == 0)
+			{
+				$enable_ongkir = false;
+			}
 		}
 		
 		if($all_digital){
@@ -2823,15 +2840,20 @@ class ApiController extends AppController {
 		$data = $transaction_tmp['profile'];
 		CakeLog::write('debug','pay_with_ecash_completed - profile : '.json_encode($data));
 		
-		//calculate ongkir
-		$ongkirList = $this->getOngkirList();
 		$total_ongkir = 0;
-		foreach($ongkirList as $ongkir){
-			if($ongkir['Ongkir']['id'] == intval($data['city_id'])){
-				$total_ongkir = intval($ongkir['Ongkir']['cost']);
-				break;
+
+		if($enable_ongkir)
+		{
+			//calculate ongkir
+			$ongkirList = $this->getOngkirList();
+			foreach($ongkirList as $ongkir){
+				if($ongkir['Ongkir']['id'] == intval($data['city_id'])){
+					$total_ongkir = intval($ongkir['Ongkir']['cost']);
+					break;
+				}
 			}
 		}
+
 		$total_ongkir = $total_ongkir * $kg;
 
 		$total_price += $total_ongkir;
@@ -3255,6 +3277,11 @@ class ApiController extends AppController {
 			if($o['Ongkir']['id'] == $rs['MerchandiseOrder']['ongkir_id']){
 				$deliverTo = $o['Ongkir'];
 			}
+		}
+
+		if($rs['MerchandiseOrder']['ongkir_value'] == 0)
+		{
+			$deliverTo['cost'] = 0;
 		}
 
 		$this->layout="ajax";
