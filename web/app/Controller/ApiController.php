@@ -2617,7 +2617,15 @@ class ApiController extends AppController {
 			}
 			else
 			{
-				$admin_fee = Configure::read('PO_ADMIN_FEE');
+				//check value of admin_fee
+				if($rs_adminfee['admin_fee'] == 0)
+				{
+					$admin_fee = Configure::read('PO_ADMIN_FEE');
+				}
+				else
+				{
+					$admin_fee = $rs_adminfee['admin_fee'];
+				}
 			}
 		}
 		
@@ -2789,7 +2797,15 @@ class ApiController extends AppController {
 			}
 			else
 			{
-				$admin_fee = Configure::read('PO_ADMIN_FEE');
+				//check value of admin_fee
+				if($rs_adminfee['admin_fee'] == 0)
+				{
+					$admin_fee = Configure::read('PO_ADMIN_FEE');
+				}
+				else
+				{
+					$admin_fee = $rs_adminfee['admin_fee'];
+				}
 			}
 		}
 		

@@ -448,7 +448,7 @@ class MerchandisesController extends AppController {
 		//attaching ongkir
 		$ongkir = $this->Ongkir->findById($this->Session->read('city_id'));
 
-		$this->set('city',$ongkir['Ongkir']);
+		$this->set('city',@$ongkir['Ongkir']);
 
 		//attach ongkos kirim list.
 		$this->getOngkirList();
@@ -629,6 +629,7 @@ class MerchandisesController extends AppController {
 		}
 
 		$admin_fee = Configure::read('PO_ADMIN_FEE');
+
 		if(count($shopping_cart) > 1)
 		{
 			$admin_fee = Configure::read('PO_ADMIN_FEE');
@@ -643,7 +644,15 @@ class MerchandisesController extends AppController {
 			}
 			else
 			{
-				$admin_fee = Configure::read('PO_ADMIN_FEE');
+				//check value of admin_fee
+				if($rs_adminfee['admin_fee'] == 0)
+				{
+					$admin_fee = Configure::read('PO_ADMIN_FEE');
+				}
+				else
+				{
+					$admin_fee = $rs_adminfee['admin_fee'];
+				}
 			}
 		}
 		
@@ -814,7 +823,15 @@ class MerchandisesController extends AppController {
 				}
 				else
 				{
-					$admin_fee = Configure::read('PO_ADMIN_FEE');
+					//check value of admin_fee
+					if($rs_adminfee['admin_fee'] == 0)
+					{
+						$admin_fee = Configure::read('PO_ADMIN_FEE');
+					}
+					else
+					{
+						$admin_fee = $rs_adminfee['admin_fee'];
+					}
 				}
 			}
 
@@ -1102,6 +1119,23 @@ class MerchandisesController extends AppController {
 		}
 		
 		$shopping_cart = $this->Session->read('shopping_cart');
+
+		//default value for ongkir
+		$enable_ongkir = true;
+
+		//if shopping cart only 1 item
+		if(count($shopping_cart) < 2 && count($shopping_cart) != 0)
+		{
+			//query for check enable or disable ongkir
+			$rs_enable_ongkir = $this->MerchandiseItem->findById($shopping_cart[0]['item_id']);
+
+			if($rs_enable_ongkir['MerchandiseItem']['enable_ongkir'] != 1)
+			{
+				$enable_ongkir = false;
+			}
+		}
+
+		$this->set('enable_ongkir', $enable_ongkir);
 			
 		
 		$this->request->data['update_type'] = intval(@$this->request->data['update_type']);

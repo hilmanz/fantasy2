@@ -172,12 +172,12 @@
 							<input type="text" name="address" value=""/>
 						</div><!-- end .row -->
 						<div class="row">
-							
+							<?php (count($city) == 0) ? $readonly ="" : $readonly ="readonly='true'" ; ?>
 							<label>City</label>
 							<input type="text" 
 									name="city" 
 									value="<?=h($city['city'])?>" 
-									readonly='true'/>
+									<?=$readonly?>/>
 						</div><!-- end .row -->
 						<div class="row">
 							<label>Province</label>
