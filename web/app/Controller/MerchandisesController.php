@@ -567,7 +567,7 @@ class MerchandisesController extends AppController {
 		$result = $this->pay_with_coins();
 		$is_transaction_ok = $result['is_transaction_ok'];
 		$no_fund = $result['no_fund'];
-		$order_id = $result['order_id'];
+		$order_id = @$result['order_id'];
 		
 		if($is_transaction_ok == true){
 			//check accross the items, we apply the perk for all digital items

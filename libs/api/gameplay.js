@@ -2163,7 +2163,10 @@ function apply_perk(game_team_id,perk_id,done){
 			}
 		],
 		function(err,rs){
-			done(err,rs);
+			conn.end(function(err){
+				done(err,rs);	
+			});
+			
 		});
 	});
 }
@@ -2248,7 +2251,10 @@ function check_perk(game_team_id,perk_id,done){
 			}
 		],
 		function(err,rs){
-			done(err,rs);
+			conn.end(function(err){
+				done(err,rs);	
+			});
+			
 		});
 	});
 }
