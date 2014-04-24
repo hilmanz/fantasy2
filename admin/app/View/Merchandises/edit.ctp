@@ -146,6 +146,84 @@
 		</tr>
 		<tr>
 			<td valign="top">
+				Enable Admin Fee
+			</td>
+			<td>
+				<table width="100%">
+					<tbody>
+					<tr>
+						<td width="10%">
+							<input id="admin_fee_yes" 
+							<?=($rs['MerchandiseItem']['enable_admin_fee']==1) ? 'checked="true"' : '' ;?> 
+							type="radio" name="enable_admin_fee" value="1" />
+						</td>
+						<td>
+							<label for="admin_fee_yes">
+								Yes
+							</label>
+						</td>
+					</tr>
+					<tr>
+						<td width="10%">
+							<input id="admin_fee_no"
+							<?=($rs['MerchandiseItem']['enable_admin_fee']==0) ? 'checked="true"' : '' ;?> 
+							type="radio" name="enable_admin_fee" value="0" />
+						</td>
+						<td>
+							<label for="admin_fee_no">
+								No
+							</label>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
+				Admin Fee
+			</td>
+			<td>
+				IDR <input type="text" name="admin_fee" value="<?=$rs['MerchandiseItem']['admin_fee']?>"/>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
+				Enable Ongkir
+			</td>
+			<td>
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td width="10%">
+								<input id="enable_ongkir_yes" 
+								<?=($rs['MerchandiseItem']['enable_ongkir']==1) ? 'checked="true"' : '' ;?>
+								type="radio" name="enable_ongkir" value="1" />
+							</td>
+							<td>
+								<label for="enable_ongkir_yes">
+									Yes
+								</label>
+							</td>
+						</tr>
+						<tr>
+							<td width="10%">
+								<input id="enable_ongkir_no" 
+								<?=($rs['MerchandiseItem']['enable_ongkir']==0) ? 'checked="true"' : '' ;?>
+								type="radio" name="enable_ongkir" value="0" />
+							</td>
+							<td>
+								<label for="enable_ongkir_no">
+									No
+								</label>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
 				Perks Non Digital Item
 			</td>
 			<td>
