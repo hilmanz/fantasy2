@@ -1031,7 +1031,7 @@ class MerchandisesController extends AppController {
 			$item = $items[$i]['data']['MerchandiseItem'];
 			if($item['merchandise_type']==1){
 				$this->apply_digital_perk($this->userData['team']['id'],
-											$item['perk_id']);
+											$item['perk_id'],$order_id);
 
 			}else if($item['perk_id'] == 0){
 				$perks = $this->MerchandiseItemPerk->find('all',
@@ -1042,7 +1042,7 @@ class MerchandisesController extends AppController {
 				for($j=0;$j<sizeof($perks);$j++){
 
 					$this->apply_digital_perk($this->userData['team']['id'],
-											$perks[$i]['MerchandiseItemPerk']['perk_id'],$order_id);
+											$perks[$j]['MerchandiseItemPerk']['perk_id'],$order_id);
 				}
 			
 			}
@@ -1119,7 +1119,7 @@ class MerchandisesController extends AppController {
 		}
 		
 		$shopping_cart = $this->Session->read('shopping_cart');
-		
+
 		//default value for ongkir
 		$enable_ongkir = true;
 

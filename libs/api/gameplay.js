@@ -2080,6 +2080,7 @@ function apply_perk(game_team_id,perk_id,done){
 							});
 			},
 			function(perk,cb){
+				/*
 				//check if the team has apply the perk. if it has, make sure all of it are disabled.
 				conn.query("SELECT * FROM ffgame.digital_perks \
 							WHERE game_team_id=?\
@@ -2095,6 +2096,8 @@ function apply_perk(game_team_id,perk_id,done){
 									cb(err,perk,true);
 								}
 							});
+				*/
+				cb(null,perk,true);
 			},
 			function(perk,canAddPerk,cb){
 				conn.query("SELECT * FROM ffgame.digital_perks_group WHERE master_perk_id = ? LIMIT 1",
