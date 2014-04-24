@@ -861,10 +861,13 @@ class MerchandisesController extends AppController {
 			$total_price += $admin_fee;
 
 			$total_ongkir = 0;
-			foreach($this->ongkirList as $ongkir){
-				if($ongkir['Ongkir']['id'] == intval($this->Session->read('city_id'))){
-					$total_ongkir = intval($ongkir['Ongkir']['cost']);
-					break;
+			if($enable_ongkir)
+			{
+				foreach($this->ongkirList as $ongkir){
+					if($ongkir['Ongkir']['id'] == intval($this->Session->read('city_id'))){
+						$total_ongkir = intval($ongkir['Ongkir']['cost']);
+						break;
+					}
 				}
 			}
 			
