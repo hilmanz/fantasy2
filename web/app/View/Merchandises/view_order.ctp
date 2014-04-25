@@ -1,4 +1,21 @@
 
+<?php
+	$items = unserialize($rs['MerchandiseOrder']['data']);
+	$total_item = count($items);
+
+	$enable_ongkir = true;
+	$enable_admin_fee = true;
+
+	$admin_fee = Configure::read('PO_ADMIN_FEE');
+	if($total_item < 2 && $total_item != 0)
+	{
+		//check ongkir
+		if($items[0]['data']['MerchandiseItem']['enable_ongkir'] != 1)
+		{
+			$enable_ongkir = false;
+		}
+	}
+?>
 <div id="catalogPage">
       <div class="rowd">
      	 <?php echo $this->element('infobar'); ?>
@@ -91,13 +108,17 @@
 		                        <td>
 		                        	<?php
 		                    		$ongkos = 0;
-		                    		foreach($ongkir as $cost){
 
-		                    			if($cost['Ongkir']['id']==$city_id){
-		                    				$ongkos = $cost['Ongkir']['cost'];
-		                    				break;
-		                    			}
+		                    		if($enable_ongkir)
+		                    		{
+		                    			foreach($ongkir as $cost){
+			                    			if($cost['Ongkir']['id']==$city_id){
+			                    				$ongkos = $cost['Ongkir']['cost'];
+			                    				break;
+			                    			}
+			                    		}
 		                    		}
+
 		                    		$total_ongkos = intval($ongkos) * floatval($kg);
 		                    		?>
 		                        	Rp. <?=number_format($total_ongkos)?>
@@ -111,16 +132,30 @@
 		                        <td></td>
 		                        <td>
 
-		                        	<?php
-		                        	$admin_fee = 0;
-		                        	
-		                        	if($rs['MerchandiseOrder']['payment_method']=='ecash'){
-		                        		$admin_fee = Configure::read('PO_ADMIN_FEE');
-		                        		/*if($admin_fee==0){
-		                        			$admin_fee = 50000;
-		                        		}*/
-		                        	}
-		                        	?>
+                        <?php
+                        	$admin_fee = 0;
+                        	
+                        	if($rs['MerchandiseOrder']['payment_method']=='ecash'){
+                        		$admin_fee = Configure::read('PO_ADMIN_FEE');
+
+	                    		if($total_item < 2 && $total_item != 0)
+								{
+	                        		//check admin fee
+									if($items[0]['data']['MerchandiseItem']['enable_admin_fee'] == 1)
+									{
+										//check if value admin fee = 0 then use Configure
+										if($items[0]['data']['MerchandiseItem']['admin_fee'] != 0)
+										{
+											$admin_fee = $items[0]['data']['MerchandiseItem']['admin_fee'];
+										}
+									}
+									else
+									{
+										$admin_fee = 0;
+									}
+		                        }
+		                    }
+                        ?>
 
 		                        	<?php if($admin_fee==0):?>
 		                        	GRATIS
@@ -129,7 +164,6 @@
 		                        	<?php endif;?>
 		                        	
 		                        </td>
-		                      
 		                    </tr>
 		                    <tr>
 		                    	<td></td>
