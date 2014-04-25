@@ -560,12 +560,17 @@ class MerchandisesController extends AppController {
 			//	(strlen($this->request->data['ct']) > 0)
 			//		&& ($this->Session->read('po_csrf') == $this->request->data['ct'])
 			//  ){
+			$po_number = $this->userData['team']['id'].'-'.date("ymdhis");
+
+			//book item stocks
+			//display the cart content
+			$shopping_cart = $this->Session->read('shopping_cart');
+			$this->book_items($shopping_cart,$po_number);
 
 			if($this->request->data['payment_method']=='coins'){
-
-				$this->process_with_coins();
+				$this->process_with_coins($po_number);
 			}else{
-				$this->pay_with_ecash();
+				$this->pay_with_ecash($po_number);
 				$this->render('ecash');
 			}
 		}else{
@@ -573,8 +578,8 @@ class MerchandisesController extends AppController {
 		}
 		
 	}
-	private function process_with_coins(){
-		$result = $this->pay_with_coins();
+	private function process_with_coins($po_number){
+		$result = $this->pay_with_coins($po_number);
 		$is_transaction_ok = $result['is_transaction_ok'];
 		$no_fund = $result['no_fund'];
 		$order_id = @$result['order_id'];
@@ -602,7 +607,7 @@ class MerchandisesController extends AppController {
 		$this->Session->write('shopping_cart',null);
 
 	}
-	private function pay_with_ecash(){
+	private function pay_with_ecash($po_number){
 
 		
 		
@@ -703,7 +708,9 @@ class MerchandisesController extends AppController {
 		//1. create transaction ID
 		$data = $this->request->data;
 
-		$transaction_id = $this->userData['team']['id'].'-'.date("ymdhis");
+		//$transaction_id = $this->userData['team']['id'].'-'.date("ymdhis");
+		$transaction_id = $po_number;
+
 		$this->Session->write($transaction_id,
 								serialize(array('data'=>$data,'shopping_cart'=>$shopping_cart))
 							 );
@@ -718,6 +725,7 @@ class MerchandisesController extends AppController {
 			'description'=>'Purchase Order #'.$transaction_id,
 			'source'=>'FM'
 		));
+
 		$this->set('transaction_id',$transaction_id);
 		
 		$this->set('ecash_url',$rs['data']);
@@ -940,7 +948,7 @@ class MerchandisesController extends AppController {
 		
 		
 	}
-	private function pay_with_coins(){
+	private function pay_with_coins($po_number){
 		
 		
 
@@ -1002,7 +1010,7 @@ class MerchandisesController extends AppController {
 				}
 				$data['order_date'] = date("Y-m-d H:i:s");
 				$data['data'] = serialize($shopping_cart);
-				$data['po_number'] = $data['game_team_id'].'-'.date("ymdhis");
+				$data['po_number'] = $po_number;
 				$data['total_sale'] = intval($total_coins);
 				$data['payment_method'] = 'coins';
 
@@ -1080,6 +1088,31 @@ class MerchandisesController extends AppController {
 		}
 	}
 	/*
+	* book items stock.
+	* upon checkout, the stock will be locked for 5 minutes to prevent other people to order
+	*/
+	private function book_items($items,$order_id){	
+		$this->loadModel('MerchandiseItemPerk');
+		
+		for($i=0; $i < sizeof($items); $i++){
+			
+			$qty = $items[$i]['qty'];
+			$keyname = 'claim_stock_'.$items[$i]['item_id'].'_'.$this->userData['team']['id'];
+			$ttl = 5*60; //user have 5 minutes to complete the payment.
+			$this->Game->storeToTmp($this->userData['team']['id'],
+									$keyname,
+									$qty,
+									$ttl);
+
+			$this->Game->storeToTmp($this->userData['team']['id'],
+									'purchase_order_'.$order_id,
+									'1',
+									$ttl);
+
+			CakeLog::write('stock','lock item- '.$order_id.' - '.$items[$i]['item_id'].' - qty : '.$qty,' key:'.$keyname);
+		}
+	}
+	/*
 	public function order(){
 		$this->loadModel('MerchandiseItem');
 		$this->loadModel('MerchandiseCategory');
@@ -1136,6 +1169,7 @@ class MerchandisesController extends AppController {
 
 			$item_id = $this->request->data['item_id'];
 			$qty = $this->request->data['qty'];
+
 			for($i=0;$i<sizeof($item_id);$i++){
 				$shopping_cart[] = array('item_id'=>intval($item_id[$i]),
 										  'qty'=>intval($qty[$i]));
@@ -1185,6 +1219,7 @@ class MerchandisesController extends AppController {
 			$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
 			$out_of_stock = $this->Session->read('out_of_stock');
 
+
 			for($j=0;$j<sizeof($out_of_stock);$j++){
 				$shopping_cart[$i]['out_of_stock'] = false;
 				if($out_of_stock[$j]['MerchandiseItem']['id'] == $shopping_cart[$i]['item_id']){
@@ -1212,6 +1247,7 @@ class MerchandisesController extends AppController {
 	* 2. if stock available, redirect to order
 	*/
 	private function checkout($shopping_cart){
+		$game_team_id = $this->userData['team']['id'];
 		$stocks = $this->getItemsStock();
 		$stock_available = true;
 		$out_of_stock = array();
@@ -1223,7 +1259,12 @@ class MerchandisesController extends AppController {
 			foreach($stocks as $item_id=>$stock){
 				if($stock==0){
 					$stock_available = false;
-					$out_of_stock[] = $this->MerchandiseItem->findById($item_id);
+					$claimed_qty = $this->getClaimedStock($game_team_id,$item_id);
+					$item =  $this->MerchandiseItem->findById($item_id);
+					
+					$item['MerchandiseItem']['stock'] = intval($item['MerchandiseItem']['stock']) - intval($claimed_qty);
+					$out_of_stock[] =  $item;
+					
 				}
 			}
 		}
@@ -1246,6 +1287,8 @@ class MerchandisesController extends AppController {
 	* recheck the items stock just before we close the order.
 	*/
 	private function recheckStockBeforePayment(){
+		$game_team_id = $this->userData['team']['id'];
+
 		$stocks = $this->getItemsStock();
 		$stock_available = true;
 		$out_of_stock = array();
@@ -1256,7 +1299,11 @@ class MerchandisesController extends AppController {
 			foreach($stocks as $item_id=>$stock){
 				if($stock==0){
 					$stock_available = false;
-					$out_of_stock[] = $this->MerchandiseItem->findById($item_id);
+
+					$claimed_qty = $this->getClaimedStock($game_team_id,$item_id);
+					$item =  $this->MerchandiseItem->findById($item_id);
+					$item['MerchandiseItem']['stock'] -= intval($claimed_qty);
+					$out_of_stock[] = $item;
 				}
 			}
 		}
@@ -1284,14 +1331,35 @@ class MerchandisesController extends AppController {
 		$rs = array();
 		for($i=0;$i<sizeof($items);$i++){
 			$item = $this->MerchandiseItem->findById(intval($items[$i]['item_id']));
-		
-			if(($item['MerchandiseItem']['stock'] - $items[$i]['qty']) >= 0){
+			$game_team_id = $this->userData['team']['id'];
+			
+			$total_claimed_qty = $this->getClaimedStock($game_team_id,$items[$i]['item_id']);
+
+			if((($item['MerchandiseItem']['stock'] - $total_claimed_qty) - $items[$i]['qty']) >= 0){
 				$rs[intval($item['MerchandiseItem']['id'])] = intval($item['MerchandiseItem']['stock']);
 			}else{
 				$rs[intval($item['MerchandiseItem']['id'])] = 0;
 			}
 		}
 		return $rs;
+	}
+	private function getClaimedStock($game_team_id,$item_id){
+		$pattern = 'claim_stock_'.$item_id.'_*';
+		$claimed = $this->Game->getTmpKeys($game_team_id,
+								$pattern);
+		$total_claimed_qty = 0;
+		if($claimed['status']==1){
+			for($k=0;$k<sizeof($claimed['data']);$k++){
+				//pastikan yg kita cek itu bukan punya si user
+				$arr = explode("_",$claimed['data'][$k]);
+				$owner_id = $arr[3];
+				if($owner_id != $game_team_id){
+					$claimed_qty = $this->Game->getFromTmp($game_team_id,$claimed['data'][$k]);
+					$total_claimed_qty += intval($claimed_qty['data']);	
+				}
+			}
+		}
+		return $total_claimed_qty;
 	}
 	private function ReduceStock($item_id){
 		CakeLog::write('stock','stock '.$item_id.' reduced');

@@ -384,4 +384,4 @@ Configure::write('PO_ADMIN_FEE',50000);
 
 
 //Merchandise page settings
-Configure::write('MERCHANDISE_ENABLE',false);
+Configure::write('MERCHANDISE_ENABLE',true);

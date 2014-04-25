@@ -106,6 +106,7 @@ app.get('/setInputAttempt',[auth.canAccess],gameplay.setInputAttempt);
 app.get('/getInputAttempt',[auth.canAccess],gameplay.getInputAttempt);
 app.get('/storeToTmp',[auth.canAccess],gameplay.storeToRedisTmp);
 app.get('/getFromTmp',[auth.canAccess],gameplay.getFromRedisTmp);
+app.get('/getTmpKeys',[auth.canAccess],gameplay.getRedisKeys);
 app.post('/redeemCode',[auth.canAccess],gameplay.redeemCode);
 
 app.get('/test',function(req,res){

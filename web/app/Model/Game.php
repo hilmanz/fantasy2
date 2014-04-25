@@ -467,11 +467,18 @@ class Game extends AppModel {
 		return $rs;
 	}
 
-	public function storeToTmp($game_team_id,$input_name,$input_value){
+	public function storeToTmp($game_team_id,$input_name,$input_value,$ttl = 86400){
 		$rs = $this->api_call('/storeToTmp',array(
 					'name'=>$input_name,
-					'value'=>$input_value
+					'value'=>$input_value,
+					'ttl'=>$ttl
 				));
+		return $rs;
+	}
+	public function getTmpKeys($game_team_id,$pattern){
+		$rs = $this->api_call('/getTmpKeys',array(
+					'pattern'=>$pattern
+					));
 		return $rs;
 	}
 	public function getFromTmp($game_team_id,$input_name){

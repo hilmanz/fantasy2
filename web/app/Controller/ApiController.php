@@ -2989,6 +2989,30 @@ class ApiController extends AppController {
 		
 		
 	}
+	
+	/*
+	* book items stock.
+	* upon checkout, the stock will be locked for 5 minutes to prevent other people to order
+	*/
+	private function book_items($items,$order_id){	
+		$this->loadModel('MerchandiseItemPerk');
+		
+		for($i=0; $i < sizeof($items); $i++){
+			$item = $items[$i]['data']['MerchandiseItem'];
+			$qty = $items[$i]['qty'];
+			$keyname = 'claim_stock_'.$item['id'].'_'.$this->userData['team']['id'];
+			$ttl = 5*60; //user have 5 minutes to complete the payment.
+			$this->Game->storeToTmp($this->userData['team']['id'],
+									$keyname,
+									$qty,
+									$ttl);
+			$this->Game->storeToTmp($this->userData['team']['id'],
+									'purchase_order_'.$order_id,
+									'1',
+									$ttl);
+			CakeLog::write('stock','lock item- '.$order_id.' - '.$item['id'].' - qty : '.$qty,' key:'.$keyname);
+		}
+	}
 
 	private function ReduceStock($item_id){
 		$item_id = intval($item_id);
@@ -3516,15 +3540,13 @@ class ApiController extends AppController {
 
 		for($i=0;$i<sizeof($arr);$i++){
 			$item = $this->MerchandiseItem->findById(intval($arr[$i]));
-
 			if($item['MerchandiseItem']['stock'] > 0){
 				$items[intval($arr[$i])] = intval($item['MerchandiseItem']['stock']);
 			}else{
 				$items[intval($arr[$i])] = 0;
 			}
-
-
 		}
+
 		$this->layout="ajax";
 		$this->set('response',array('status'=>1,'data'=>$items));
 		$this->render('default');
