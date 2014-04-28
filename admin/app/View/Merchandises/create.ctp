@@ -203,6 +203,46 @@
 			</td>
 		</tr>
 		<tr>
+			<td valign="top">
+				Venue
+			</td>
+			<td>
+				<input type="text" name="json_data[venue]" value="" />
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
+				Tanggal
+			</td>
+			<td>
+				<input type="text" name="json_data[tanggal]" value="" />
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
+				Waktu
+			</td>
+			<td>
+				<input type="text" name="json_data[waktu]" value="" />
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
+				Kelas
+			</td>
+			<td>
+				<input type="text" name="json_data[kelas]" value="" />
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
+				Section
+			</td>
+			<td>
+				<input type="text" name="json_data[section]" value="" />
+			</td>
+		</tr>
+		<tr>
 			<td colspan="2">
 				<input type="hidden" name="perks" value=""/>
 				<input type="submit" name="btn" value="UPLOAD"/>

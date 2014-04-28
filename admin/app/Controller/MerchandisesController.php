@@ -71,6 +71,8 @@ class MerchandisesController extends AppController {
 		if($this->request->is('post')){
 			$this->MerchandiseItem->id = $id;
 			
+			$this->request->data['data'] = json_encode($this->request->data['json_data']);
+			
 			//add stock with additional new stock.
 			$this->request->data['stock'] = $rs['MerchandiseItem']['stock'] + 
 											intval($this->request->data['new_stock']);
@@ -157,6 +159,8 @@ class MerchandisesController extends AppController {
 		$this->loadModel('MerchandiseItemPerk');
 		$this->loadModel('MasterPerk');
 		if($this->request->is('post')){
+			$this->request->data['data'] = json_encode($this->request->data['json_data']);
+			//print_r($this->request->data);
 			$dir_path = Configure::read('avatar_img_dir')."merchandise/";
 			$filename = $_FILES['pic']['name'];
 			$dir = new Folder($dir_path, true, 0777);

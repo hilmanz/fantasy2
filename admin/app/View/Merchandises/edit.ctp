@@ -1,3 +1,6 @@
+<?php
+	$array_data	= json_decode($rs['MerchandiseItem']['data'], true);
+?>
 <form action="<?=$this->Html->url('/merchandises/edit/'.$rs['MerchandiseItem']['id'])?>" method="post" enctype="multipart/form-data">
 	<h3>Edit Merchandise</h3>
 	<table width="100%">
@@ -250,6 +253,46 @@
 						<?php endforeach;?>
 					</tbody>
 				</table>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
+				Venue
+			</td>
+			<td>
+				<input type="text" name="json_data[venue]" value="<?=@$array_data['venue']?>" />
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
+				Tanggal
+			</td>
+			<td>
+				<input type="text" name="json_data[tanggal]" value="<?=@$array_data['tanggal']?>" />
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
+				Waktu
+			</td>
+			<td>
+				<input type="text" name="json_data[waktu]" value="<?=@$array_data['waktu']?>" />
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
+				Kelas
+			</td>
+			<td>
+				<input type="text" name="json_data[kelas]" value="<?=@$array_data['kelas']?>" />
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
+				Section
+			</td>
+			<td>
+				<input type="text" name="json_data[section]" value="<?=@$array_data['section']?>" />
 			</td>
 		</tr>
 		<tr>
