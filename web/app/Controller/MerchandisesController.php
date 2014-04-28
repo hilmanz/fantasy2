@@ -1116,7 +1116,7 @@ class MerchandisesController extends AppController {
 			
 			$qty = $items[$i]['qty'];
 			$keyname = 'claim_stock_'.$items[$i]['item_id'].'_'.$this->userData['team']['id'];
-			$ttl = 5*60; //user have 5 minutes to complete the payment.
+			$ttl = 15*60; //user have 5 minutes to complete the payment.
 			$this->Game->storeToTmp($this->userData['team']['id'],
 									$keyname,
 									$qty,

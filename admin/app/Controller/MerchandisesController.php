@@ -340,20 +340,22 @@ class MerchandisesController extends AppController {
 		$this->loadModel('MerchandiseOrder');
 		$this->loadModel('Ongkir');
 		if($this->request->is('post')){
-			if($this->request->data['n_status']==4){
-				if($this->refund($order_id)){
-					//restock dimatiin dulu, karena takut kalo ada salah ganti status,
-					//jumlah stock jadi nambah, takutnya pas nambah..ada customer baru beli barang ybs.
-					//padahal order ini salah di cancel.
+			//refund dan restock dimatiin dulu, karena takut kalo ada salah ganti status,
+			//jumlah stock jadi nambah, takutnya pas nambah..ada customer baru beli barang ybs.
+			//padahal order ini salah di cancel. - 28/04/2014
+			
+			//if($this->request->data['n_status']==4){
+			//	if($this->refund($order_id)){
+			//		/
 					//$this->restock($order_id);
 
-					$this->update_order($order_id);
-				}else{
-					$this->Session->setFlash('cannot update the order, please try again later !');
-				}
-			}else{
-				$this->update_order($order_id);
-			}
+			//		$this->update_order($order_id);
+			//	}else{
+			//		$this->Session->setFlash('cannot update the order, please try again later !');
+			//	}
+			//}else{
+			$this->update_order($order_id);
+			//}
 		}
 
 		$this->MerchandiseOrder->bindModel(

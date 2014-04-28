@@ -2574,6 +2574,10 @@ class ApiController extends AppController {
 		$this->render('default');
 
 	}
+
+	/*
+	* API untuk mendapatkan url pembayaran ecash.
+	*/
 	public function ecash_url($game_team_id){
 		$this->loadModel('MerchandiseItem');
 		$this->loadModel('MerchandiseCategory');
@@ -2584,7 +2588,7 @@ class ApiController extends AppController {
 		$shopping_cart = unserialize(decrypt_param($this->request->data['param']));
 		$transaction_id = intval(@$game_team_id).'-'.date("YmdHis").'-'.rand(0,99);
 		$description = 'Purchase Order #'.$transaction_id;
-		
+		$fb_id = $this->request->data['fb_id'];
 
 		//get total money to be spent.
 		$total_price = 0;
@@ -2602,6 +2606,9 @@ class ApiController extends AppController {
 			}
 		}
 
+		//book the item stocks
+		$this->book_items($shopping_cart,$transaction_id,$game_team_id,$fb_id);
+		
 		$admin_fee = Configure::read('PO_ADMIN_FEE');
 		$enable_ongkir = true;
 		if(count($shopping_cart) > 1)
@@ -2677,6 +2684,34 @@ class ApiController extends AppController {
 		$this->set('response',array('status'=>1,'data'=>$rs['data'],'transaction_id'=>$transaction_id));
 		$this->render('default');
 	}
+
+	
+	/*
+	* book items stock.
+	* upon checkout, the stock will be locked for 5 minutes to prevent other people to order
+	*/
+	private function book_items($items,$order_id,$game_team_id,$fb_id){	
+		$this->loadModel('MerchandiseItemPerk');
+		
+		for($i=0; $i < sizeof($items); $i++){
+			
+			$qty = $items[$i]['qty'];
+			$keyname = 'claim_stock_'.$items[$i]['item_id'].'_'.$game_team_id.'_'.$fb_id;
+			$ttl = 15*60; //user have 15 minutes to complete the payment.
+			$this->Game->storeToTmp($game_team_id,
+									$keyname,
+									$qty,
+									$ttl);
+
+			$this->Game->storeToTmp($game_team_id,
+									'purchase_order_'.$order_id,
+									'1',
+									$ttl);
+
+			CakeLog::write('api','lock item - '.$order_id.' - '.$items[$i]['item_id'].' - qty : '.$qty,' key:'.$keyname);
+		}
+	}
+
 	/**get ongkir list **/
 	private function getOngkirList(){
 		$this->loadModel('Ongkir');
@@ -2990,29 +3025,7 @@ class ApiController extends AppController {
 		
 	}
 	
-	/*
-	* book items stock.
-	* upon checkout, the stock will be locked for 5 minutes to prevent other people to order
-	*/
-	private function book_items($items,$order_id){	
-		$this->loadModel('MerchandiseItemPerk');
-		
-		for($i=0; $i < sizeof($items); $i++){
-			$item = $items[$i]['data']['MerchandiseItem'];
-			$qty = $items[$i]['qty'];
-			$keyname = 'claim_stock_'.$item['id'].'_'.$this->userData['team']['id'];
-			$ttl = 5*60; //user have 5 minutes to complete the payment.
-			$this->Game->storeToTmp($this->userData['team']['id'],
-									$keyname,
-									$qty,
-									$ttl);
-			$this->Game->storeToTmp($this->userData['team']['id'],
-									'purchase_order_'.$order_id,
-									'1',
-									$ttl);
-			CakeLog::write('stock','lock item- '.$order_id.' - '.$item['id'].' - qty : '.$qty,' key:'.$keyname);
-		}
-	}
+
 
 	private function ReduceStock($item_id){
 		$item_id = intval($item_id);
@@ -3533,6 +3546,9 @@ class ApiController extends AppController {
 		$this->loadModel('MerchandiseItem');
 		$this->loadModel('MerchandiseCategory');
 		$this->loadModel('MerchandiseOrder');
+		
+		$game_team_id = intval(Sanitize::clean($this->request->query('game_team_id')));
+		$fb_id = Sanitize::clean($this->request->query('fb_id'));
 
 		$itemIds = Sanitize::clean($this->request->query('itemId'));
 		$arr = explode(',',$itemIds);
@@ -3540,9 +3556,12 @@ class ApiController extends AppController {
 
 		for($i=0;$i<sizeof($arr);$i++){
 			$item = $this->MerchandiseItem->findById(intval($arr[$i]));
-			if($item['MerchandiseItem']['stock'] > 0){
-				$items[intval($arr[$i])] = intval($item['MerchandiseItem']['stock']);
+			$total_claimed_qty = $this->getClaimedStock($game_team_id,$fb_id,$arr[$i]);
+
+			if((($item['MerchandiseItem']['stock'] - $total_claimed_qty)) > 0){
+				$items[intval($arr[$i])] = intval($item['MerchandiseItem']['stock']) - $total_claimed_qty;
 			}else{
+				
 				$items[intval($arr[$i])] = 0;
 			}
 		}
@@ -3551,6 +3570,41 @@ class ApiController extends AppController {
 		$this->set('response',array('status'=>1,'data'=>$items));
 		$this->render('default');
 	}
+	private function getClaimedStock($game_team_id,$fb_id,$item_id){
+		$pattern = 'claim_stock_'.$item_id.'_*';
+		$claimed = $this->Game->getTmpKeys($game_team_id,
+								$pattern);
+		
+		$total_claimed_qty = 0;
+		if($claimed['status']==1){
+			for($k=0;$k<sizeof($claimed['data']);$k++){
+				//pastikan yg kita cek itu bukan punya si user
+				$arr = explode("_",$claimed['data'][$k]);
+				$owner_id = $arr[3];
+				$owner_fb_id = $arr[4];
+				
+				if($owner_id !=0){
+					if($owner_id != $game_team_id){
+						$claimed_qty = $this->Game->getFromTmp($game_team_id,$claimed['data'][$k]);
+						$total_claimed_qty += intval($claimed_qty['data']);
+
+					}	
+				}else if(strlen($owner_fb_id)>0){
+					if($owner_fb_id != $fb_id){
+						$claimed_qty = $this->Game->getFromTmp($game_team_id,$claimed['data'][$k]);
+						$total_claimed_qty += intval($claimed_qty['data']);	
+					}
+				}else{
+					//do nothing
+
+				}
+				
+			}
+		}
+		
+		return $total_claimed_qty;
+	}
+	
 	//dummy for selling player
 	public function test_buy(){
 		$game_team = $this->Game->getTeam($fb_id);
