@@ -123,6 +123,7 @@ class MerchandisesController extends AppController {
 		//assign it.
 		$this->set('rs',$rs);
 	}
+	
 	public function history(){
 		
 		$fb_id = $this->userDetail['User']['fb_id'];

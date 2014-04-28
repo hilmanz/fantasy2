@@ -182,6 +182,25 @@
 		                </table>
  
 					</div><!-- end .widget -->
+					<?php if($rs['MerchandiseOrder']['n_status']==1):?>
+					<div class="tr widgets">
+						<?php
+							
+							for($i=0;$i<sizeof($shopping_cart);$i++):
+		                        $item = $shopping_cart[$i]['data']['MerchandiseItem'];
+
+		                    	if($item['merchandise_category_id'] == Configure::read('ticket_category_id')):
+		                 ?>
+		             			<?php for($t=0;$t<$shopping_cart[$i]['qty'];$t++):?>
+		             			<?php
+		             			$hashed_data = encrypt_param(serialize($rs['MerchandiseOrder']));
+		             			?>
+		                  		<a href="<?=$this->Html->url('/vouchers/get/'.$i.'/?d='.$hashed_data)?>" 
+		                  			class="button">Download Voucher `<?=$item['name']?>`</a>
+		                  		
+	                    <?php endfor;endif;endfor;?>	
+					</div>
+					<?php endif;?>
 					<div class="tr widgets">
 						<p>
 							<a class="button2" href="<?=$this->Html->url('/merchandises/history')?>">
