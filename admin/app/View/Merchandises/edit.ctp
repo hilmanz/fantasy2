@@ -296,6 +296,14 @@
 			</td>
 		</tr>
 		<tr>
+			<td valign="top">
+				Info
+			</td>
+			<td>
+				<input type="text" name="json_data[info]" value="<?=@$array_data['info']?>" />
+			</td>
+		</tr>
+		<tr>
 			<td colspan="2">
 				<input type="submit" name="btn" value="UPDATE"/>
 			</td>
