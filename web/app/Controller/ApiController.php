@@ -2594,17 +2594,21 @@ class ApiController extends AppController {
 		$total_price = 0;
 		$all_digital = true;
 		$kg = 0;
+		$category = array();
 		for($i=0;$i<sizeof($shopping_cart);$i++){
 
 			$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
 			$item = $shopping_cart[$i]['data']['MerchandiseItem'];
 			$kg += ceil(floatval($item['weight'])) * intval($shopping_cart[$i]['qty']);
 			$total_price += (intval($shopping_cart[$i]['qty']) * intval($item['price_money']));
+			CakeLog::write('debug', "aaaaaaaaaa".json_encode($item));
+			$category[$i] = $item['merchandise_category_id'];
 			//is there any non-digital item ?
 			if($item['merchandise_type']==0){
 				$all_digital = false;
 			}
 		}
+
 
 		//book the item stocks
 		$this->book_items($shopping_cart,$transaction_id,$game_team_id,$fb_id);
@@ -2642,8 +2646,10 @@ class ApiController extends AppController {
 				$enable_ongkir = false;
 			}
 		}
-		
-		if($all_digital){
+
+		$contain_tiket = $this->check_category_ticket($category);
+
+		if($all_digital || $contain_tiket){
 			$admin_fee = 0;
 		}
 		$total_price += $admin_fee;
@@ -2683,6 +2689,23 @@ class ApiController extends AppController {
 		$this->layout="ajax";
 		$this->set('response',array('status'=>1,'data'=>$rs['data'],'transaction_id'=>$transaction_id));
 		$this->render('default');
+	}
+
+
+	/*
+	*return true if order contain ticket category
+	*/
+	private function check_category_ticket($category_id = array())
+	{
+		$ticket_category_id = Configure::read('ticket_category_id');
+		foreach ($category_id as $value) {
+			if($value == $ticket_category_id)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	
