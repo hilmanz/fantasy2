@@ -2844,12 +2844,17 @@ class ApiController extends AppController {
 		$total_price = 0;
 		
 		$all_digital = true;
+		
+		$is_ticket = false;
 
 		$kg = 0;
 		for($i=0;$i<sizeof($shopping_cart);$i++){
 			if($shopping_cart[$i]['item_id'] > 0){
 				$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
 				$item = $shopping_cart[$i]['data']['MerchandiseItem'];
+				if($item['merchandise_category_id'] == Configure::read('ticket_category_id')){
+					$is_ticket = true;
+				}
 				$kg += intval($shopping_cart[$i]['qty']) * ceil(floatval($item['weight']));
 				$total_price += (intval($shopping_cart[$i]['qty']) * intval($item['price_money']));
 				//is there any non-digital item ?
@@ -2953,6 +2958,11 @@ class ApiController extends AppController {
 		try{
 			$rs = $this->MerchandiseOrder->save($data);	
 			if($this->MerchandiseOrder->getInsertID() > 0){
+				$order_id = $this->MerchandiseOrder->getInsertID();
+				if($is_ticket){
+					//send ticket email
+					$this->sendEmailTicket($data['email'],$data['po_number'],$order_id);
+				}
 				$this->process_items($shopping_cart,$data['po_number']);	
 			}
 			
@@ -2986,6 +2996,20 @@ class ApiController extends AppController {
 			$this->Game->storeToTmp(intval(@$game_team_id),'final_'.$transaction_id,'FAILED');	
 			return false;
 		}
+	}
+	private function sendEmailTicket($email,$po_number,$order_id){
+		$url = "http://www.supersoccer.co.id/onlinecatalog/view_order/".intval($order_id);
+		$view = new View($this, false);
+		$body = $view->element('email_ticket',array('subject'=>'Transaksi Berhasil !',
+													'voucher_url'=>$url,
+													'po_number'=>$po_number));
+		
+		$body = mysql_escape_string($body);
+		$rs = $this->Game->query("INSERT IGNORE INTO ffgame.email_queue
+							(subject,email,plain_txt,html_text,queue_dt,n_status)
+							VALUES
+							('transaksi berhasil !','{$email}','{$body}','{$body}',NOW(),0) ;");
+
 	}
 	/*api call for purchasing item using coins
 	$game_team_id -> user's game_team_id

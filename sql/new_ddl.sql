@@ -176,3 +176,7 @@ CREATE TABLE ffgame.add_coin_history (
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `fantasy`.`merchandise_items`     ADD COLUMN `data` TEXT NULL AFTER `weight`;
+ALTER TABLE `fantasy`.`merchandise_orders`     ADD COLUMN `ktp` VARCHAR(30) NULL AFTER `last_name`;
