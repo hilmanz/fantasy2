@@ -30,7 +30,8 @@ class CoinsController extends AppController {
 		while(sizeof($arr)){
 			$team_ids[] = intval(array_shift($arr)) - intval(Configure::read('RANK_RANDOM_NUM'));
 		}	
-		$teams = $this->Game->query("SELECT * FROM ffgame.game_teams game_team
+		$teams = $this->Game->query("SELECT game_team.*,game_users.*,user.*,cash.cash,master_team.*,teams.* 
+			                       FROM ffgame.game_teams game_team
 									INNER JOIN ffgame.game_users game_users
 									ON game_users.id = game_team.user_id
 									INNER JOIN users user
@@ -39,7 +40,9 @@ class CoinsController extends AppController {
 									ON teams.user_id = user.id
 									INNER JOIN ffgame.master_team master_team
 									ON master_team.uid = teams.team_id
-									WHERE game_team.id IN (".implode(',',$team_ids).")");
+									INNER JOIN ffgame.game_team_cash cash
+									ON cash.game_team_id = game_team.id
+									WHERE game_team.id IN (".implode(',',$team_ids).")",false);
 		$this->set('teams',$teams);
 	}
 	public function history($transaction_id=null){

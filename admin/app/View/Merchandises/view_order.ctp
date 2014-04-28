@@ -142,7 +142,7 @@ if($rs['MerchandiseOrder']['data'] == null):
 	<div class="row">
 		<label>Status</label>
 		<!-- sementara kalo statusnya canceled, uda gak bisa dibalikin lagi -->
-		<?php if($rs['MerchandiseOrder']['n_status']!=4):?>
+		
 		<select name="n_status">
 			<option value="0" <?php if($rs['MerchandiseOrder']['n_status']==0):echo 'selected';endif;?>>
 				Pending
@@ -152,9 +152,7 @@ if($rs['MerchandiseOrder']['data'] == null):
 			<option value="3" <?php if($rs['MerchandiseOrder']['n_status']==3):echo 'selected';endif;?>>Closed</option>
 			<option value="4" <?php if($rs['MerchandiseOrder']['n_status']==4):echo 'selected';endif;?>>Canceled</option>
 		</select>
-		<?php else:?>
-		Canceled.
-		<?php endif;?>
+		
 	</div><!-- end .row -->
 	<div class="row">
 		<label>Update Reason</label>

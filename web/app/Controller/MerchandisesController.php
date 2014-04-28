@@ -407,6 +407,7 @@ class MerchandisesController extends AppController {
 	//9. send notification email to user.
 	//10. send notification email to administrator.
 	//11. distribute the digital items
+	//12. we start locking items from here.
 
 	public function buy(){
 	
@@ -426,45 +427,60 @@ class MerchandisesController extends AppController {
 				$can_use_coin = false;
 			}
 		}
-	
-		$this->set('shopping_cart',$shopping_cart);
+		//recheck the stock of all items.
+		$stock_status = $this->recheckStockBeforePayment();
+		$po_number = $this->userData['team']['id'].'-'.date("ymdhis");
+		$this->Session->write('PO_NUMBER',$po_number);
+
+		if($stock_status){
+
+			$this->set('shopping_cart',$shopping_cart);
 
 
-		if(count($shopping_cart) < 2 && count($shopping_cart) != 0)
-		{
-			if($shopping_cart[0]['data']['MerchandiseItem']['enable_ongkir'] == 0)
+			if(count($shopping_cart) < 2 && count($shopping_cart) != 0)
 			{
-				$enable_ongkir = false;
-			}
-		} 
-		
-		$this->set('enable_ongkir', $enable_ongkir);
+				if($shopping_cart[0]['data']['MerchandiseItem']['enable_ongkir'] == 0)
+				{
+					$enable_ongkir = false;
+				}
+			} 
+			
+			$this->set('enable_ongkir', $enable_ongkir);
 
-		//generate CSRF Token
-		$csrf_token = md5('purchase_order_merchandise-'.date("YmdHis").rand(0,100));
-		$this->Session->write('po_csrf',$csrf_token);
-		$this->set('csrf_token',$csrf_token);
+			//generate CSRF Token
+			$csrf_token = md5('purchase_order_merchandise-'.date("YmdHis").rand(0,100));
+			$this->Session->write('po_csrf',$csrf_token);
+			$this->set('csrf_token',$csrf_token);
 
-		//pre-populate user details on the form
-		$name = $this->getDetailedName();
-		$this->set('first_name',$name['first_name']);
-		$this->set('last_name',$name['last_name']);
-		$this->set('phone_number',$this->userDetail['User']['phone_number']);
-		$this->set('email',$this->userDetail['User']['email']);
-		
-		//attach chosen delivery city
-		$this->set('city_id',$this->Session->read('city_id'));
+			//pre-populate user details on the form
+			$name = $this->getDetailedName();
+			$this->set('first_name',$name['first_name']);
+			$this->set('last_name',$name['last_name']);
+			$this->set('phone_number',$this->userDetail['User']['phone_number']);
+			$this->set('email',$this->userDetail['User']['email']);
+			
+			//attach chosen delivery city
+			$this->set('city_id',$this->Session->read('city_id'));
 
-		//attaching ongkir
-		$ongkir = $this->Ongkir->findById($this->Session->read('city_id'));
+			//attaching ongkir
+			$ongkir = $this->Ongkir->findById($this->Session->read('city_id'));
 
-		$this->set('city',@$ongkir['Ongkir']);
+			$this->set('city',@$ongkir['Ongkir']);
 
-		//attach ongkos kirim list.
-		$this->getOngkirList();
+			//attach ongkos kirim list.
+			$this->getOngkirList();
 
-		$this->set('can_use_ecash',$can_use_ecash);
-		$this->set('can_use_coin',$can_use_coin);
+			$this->set('can_use_ecash',$can_use_ecash);
+			$this->set('can_use_coin',$can_use_coin);
+			$this->set('po_number',$po_number);
+
+
+			//book item stocks
+			//display the cart content
+			$this->book_items($shopping_cart,$po_number);
+		}else{
+
+		}
 	}	
 
 	/*
@@ -547,7 +563,8 @@ class MerchandisesController extends AppController {
 		//these is our flags
 		$is_transaction_ok = true;
 		$no_fund = false;
-		
+
+		$po_number = $this->Session->read('PO_NUMBER');
 
 		//recheck the stock of all items.
 		$stock_status = $this->recheckStockBeforePayment();
@@ -560,12 +577,6 @@ class MerchandisesController extends AppController {
 			//	(strlen($this->request->data['ct']) > 0)
 			//		&& ($this->Session->read('po_csrf') == $this->request->data['ct'])
 			//  ){
-			$po_number = $this->userData['team']['id'].'-'.date("ymdhis");
-
-			//book item stocks
-			//display the cart content
-			$shopping_cart = $this->Session->read('shopping_cart');
-			$this->book_items($shopping_cart,$po_number);
 
 			if($this->request->data['payment_method']=='coins'){
 				$this->process_with_coins($po_number);
@@ -584,12 +595,13 @@ class MerchandisesController extends AppController {
 		$no_fund = $result['no_fund'];
 		$order_id = @$result['order_id'];
 		
+
 		if($is_transaction_ok == true){
 			//check accross the items, we apply the perk for all digital items
 			$this->process_items($result['items'],$order_id);
 		}
 
-	
+		
 	
 		$this->set('apply_digital_perk_error',$this->Session->read('apply_digital_perk_error'));
 		$this->set('is_transaction_ok',$is_transaction_ok);
@@ -715,9 +727,6 @@ class MerchandisesController extends AppController {
 								serialize(array('data'=>$data,'shopping_cart'=>$shopping_cart))
 							 );
 
-		
-		
-
 		$rs = $this->Game->getEcashUrl(array(
 			'transaction_id'=>$transaction_id,
 			'amount'=>$total_price,
@@ -727,8 +736,17 @@ class MerchandisesController extends AppController {
 		));
 
 		$this->set('transaction_id',$transaction_id);
-		
-		$this->set('ecash_url',$rs['data']);
+		$hashed_url = encrypt_param($rs['data']);
+		$view = new View();
+		$this->set('ecash_url',$view->Html->url('/merchandises/ecash?r='.$hashed_url));
+	}
+	public function ecash(){
+		//on the last minute, we recheck the stock again, just for sure.
+		$stock_status = $this->recheckStockBeforePayment();
+		if($stock_status){
+			$target = decrypt_param($this->request->query['r']);
+			$this->redirect($target);	
+		}
 	}
 	public function payment(){
 		

@@ -34,6 +34,8 @@ Enter the list of user's IDs.
 					<td>Original Team</td>
 					<td>Email</td>
 					<td>Amount</td>
+					<td>Pilih</td>
+					
 				</tr>
 				<?php if(isset($teams)):foreach($teams as $team):?>
 				<tr>
@@ -45,7 +47,11 @@ Enter the list of user's IDs.
 					<td><?=h($team['master_team']['name'])?></td>
 					<td><?=h($team['user']['email'])?></td>
 					<td>
+						<?=number_format($team['cash']['cash'])?>
+					</td>
+					<td>
 						<input type="checkbox" name="team_id[]" value="<?=intval($team['game_team']['id'])?>" checked='checked'/>
+
 					</td>
 				</tr>
 				<?php endforeach;endif;?>
