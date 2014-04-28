@@ -25,11 +25,14 @@ if(isset($category_name)){
 					<?php if($has_merchandise):?>
 					<?php 
 							foreach($rs as $r):
+						
+						if($r['MerchandiseItem']['merchandise_category_id'] != Configure::read('ticket_category_id')):
 						$pic = Configure::read('avatar_web_url').
 										"merchandise/thumbs/0_".
 										$r['MerchandiseItem']['pic'];
 						$buy_url = $this->Html->url('/merchandises/view/'.$r['MerchandiseItem']['id']);
 						$view_url = $this->Html->url('/merchandises/view/'.$r['MerchandiseItem']['id']);
+
 					?>
 					<div class="catalog-item">
 						<div class="imagesCatalog tr widget">
@@ -61,7 +64,7 @@ if(isset($category_name)){
 						</div>
 						
 					</div>
-					<?php endforeach;?>
+					<?php endif;endforeach;?>
 					<div class="pagings tr">
 						<?php
 			              echo $this->Paginator->prev(__('Sebelumnya'), array(), null, 
@@ -86,7 +89,7 @@ if(isset($category_name)){
 								<option value="0">Categories</option>
 								<?php
 								foreach($categories as $category):
-									;
+									if($category['MerchandiseCategory']['id'] != Configure::read('ticket_category_id')):
 								?>
 								<option value="<?=$category['MerchandiseCategory']['id']?>">
 									<?=h($category['MerchandiseCategory']['name'])?>
@@ -104,7 +107,7 @@ if(isset($category_name)){
 										</option>
 									<?php endforeach;endif;?>
 								<?php
-								endforeach;
+								endif;endforeach;
 								?>
 							</select>
 						</form>

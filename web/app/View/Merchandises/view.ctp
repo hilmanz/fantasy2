@@ -80,11 +80,13 @@ if(isset($category_name)){
 								<option value="0">Categories</option>
 								<?php
 								foreach($categories as $category):
+									if($category['MerchandiseCategory']['id'] != Configure::read('ticket_category_id')):
 								?>
 								<option value="<?=$category['MerchandiseCategory']['id']?>">
 									<?=h($category['MerchandiseCategory']['name'])?>
 								</option>
 								<?php
+								endif;
 								endforeach;
 								?>
 							</select>
