@@ -2649,7 +2649,12 @@ class ApiController extends AppController {
 
 		$contain_tiket = $this->check_category_ticket($category);
 
-		if($all_digital || $contain_tiket){
+		if($contain_tiket){
+			$admin_fee = 0;
+			$enable_ongkir = false;
+		}
+
+		if($all_digital){
 			$admin_fee = 0;
 		}
 		$total_price += $admin_fee;
