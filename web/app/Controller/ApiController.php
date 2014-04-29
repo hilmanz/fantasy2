@@ -2650,7 +2650,7 @@ class ApiController extends AppController {
 		$contain_tiket = $this->check_category_ticket($category);
 
 		if($contain_tiket){
-			$admin_fee = 0;
+			$admin_fee = 5000;
 			$enable_ongkir = false;
 		}
 
