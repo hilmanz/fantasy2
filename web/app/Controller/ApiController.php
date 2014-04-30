@@ -2970,7 +2970,7 @@ class ApiController extends AppController {
 					//send ticket email
 					$this->sendEmailTicket($data['email'],$data['po_number'],$order_id);
 					//generate ticket voucher
-					$this->generateVouchers($data,$shopping_cart);
+					$this->generateVouchers($order_id,$data,$shopping_cart);
 
 				}
 				$this->process_items($shopping_cart,$data['po_number']);	
@@ -3007,40 +3007,49 @@ class ApiController extends AppController {
 			return false;
 		}
 	}
-	private function generateVouchers($order_data,$shopping_cart){
-
-	}
-	public function test_generate_voucher(){
-		$shopping_cart_serialized = 'a:1:{i:0;a:3:{s:7:"item_id";s:2:"66";s:3:"qty";i:3;s:4:"data";a:1:{s:15:"MerchandiseItem";a:17:{s:2:"id";s:2:"66";s:23:"merchandise_category_id";s:1:"8";s:4:"name";s:37:"Boys From Manchester - Tribun Utara B";s:11:"description";s:258:"Tribun Utara (1 Tiket)
-Tiket Pertandingan antara The Boys From Manchester vs Persib Bandung Legend di Stadion Si Jalak Harupat, 24 Mei 2014. Pembeli tiket berkesempatan untuk memenangkan 1 tiket gratis Meet and Greet dengan anggota The Boys From Manchester.";s:3:"pic";s:11:"300-FM2.jpg";s:14:"price_currency";s:1:"0";s:12:"price_credit";s:1:"0";s:11:"price_money";s:6:"100000";s:5:"stock";s:2:"10";s:6:"weight";s:4:"1.00";s:4:"data";s:169:"{"venue":"Stadion Si Jalak Harupat, Bandung","tanggal":"24 Mei 2014","waktu":"16.00","kelas":"Tribun Utara","section":"A","info":"Tiket ini hanya berlaku untuk 1 orang"}";s:16:"merchandise_type";s:1:"0";s:7:"perk_id";s:1:"0";s:16:"enable_admin_fee";s:1:"0";s:9:"admin_fee";s:1:"0";s:13:"enable_ongkir";s:1:"0";s:8:"n_status";s:1:"1";}}}}';
-		$shopping_cart = unserialize($shopping_cart_serialized);
-		$data['merchandise_item_id'] = 0;
-		$data['user_id'] = 0;
-		$data['order_type'] = 1;
-		$data['game_team_id'] = 0;
-		$data['n_status'] = 1;
-		$data['order_date'] = date("Y-m-d H:i:s");
-		$data['data'] = serialize($shopping_cart);
-		$data['po_number'] = $ecash_data['transaction_id'];
-		$data['total_sale'] = intval($total_price);
-		$data['payment_method'] = 'ecash';
-		$data['trace_code'] = $ecash_data['trace_number'];
-		$data['ongkir_id'] = intval(@$data['city_id']);
-		//we need ongkir value
-		//$ok = $this->Ongkir->findById(intval(@$data['city_id']));
-		$data['ongkir_value'] = $total_ongkir;
-		$data['fb_id'] = '676999439';
-		$data['ktp'] = '1234567890';
-		$data['first_name'] = 'Hapsoro';
-		$data['last_name'] = 'Renaldy';
-		$data['email'] = 'hapsoro.renaldy@gmail.com';
-		$data['address'] = 'jakarta';
-		$data['city'] = 'jakarta';
-		$data['province'] = 'DKI';
-		$data['country'] = 'Indonesia';
-		$data['zip'] = '13230';
+	/*
+	* generate ticket voucher, and saves it in fantasy.merchandise_vouchers
+	*/
+	private function generateVouchers($order_id,$order_data,$shopping_cart){
 		
-		$this->generateVouchers($data,$shopping_cart);
+		$no = 1;
+		for($i=0;$i<sizeof($shopping_cart);$i++){
+			$item = $shopping_cart[$i]['data']['MerchandiseItem'];
+			$qty = $shopping_cart[$i]['qty'];
+			if(Configure::read('ticket_category_id') == $item['merchandise_category_id']){
+				for($j=0;$j < $qty;$j++){
+					$voucher_code = $order_data['po_number'].$no;
+					CakeLog::write('generateVoucher',date("Y-m-d H:i:s")." - ".$order_data['po_number'].' - '.$voucher_code);
+					
+					$sql = "
+					INSERT IGNORE INTO fantasy.merchandise_vouchers
+					(merchandise_order_id,merchandise_item_id,voucher_code,created_dt,n_status)
+					VALUES
+					({$order_id},
+					 {$item['id']},
+					 '{$voucher_code}',
+					 NOW(),
+					 1)";
+					CakeLog::write('generateVoucher',' - >'.$sql);
+					$rs = $this->Game->query($sql);
+					
+					$no++;
+
+					
+				}
+			}	
+		}
+	}
+	//test function for generate a voucher
+	private function test_generate_voucher(){
+		$rs = $this->Game->query("SELECT * FROM fantasy.merchandise_orders a WHERE id=388 LIMIT 1");
+		$data = $rs[0]['a'];
+		$shopping_cart = unserialize($data['data']);
+		
+		$this->generateVouchers($data['id'],$data,$shopping_cart);
+		$this->layout="ajax";
+		$this->set('response',array('status'=>1));
+		$this->render('default');
 	}
 
 	private function sendEmailTicket($email,$po_number,$order_id){
