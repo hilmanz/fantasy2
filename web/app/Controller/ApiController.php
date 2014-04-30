@@ -3029,7 +3029,7 @@ class ApiController extends AppController {
 					 {$item['id']},
 					 '{$voucher_code}',
 					 NOW(),
-					 1)";
+					 0)";
 					CakeLog::write('generateVoucher',' - >'.$sql);
 					$rs = $this->Game->query($sql);
 					
@@ -3065,6 +3065,15 @@ class ApiController extends AppController {
 							VALUES
 							('transaksi berhasil !','{$email}','{$body}','{$body}',NOW(),0) ;");
 
+	}
+
+	public function view_voucher($id){
+		$id = intval($id);
+		$this->Game->query("UPDATE fantasy.merchandise_vouchers 
+							SET n_status = 1 WHERE id = {$id}");
+		$this->layout="ajax";
+		$this->set('response',array('status'=>1));
+		$this->render('default');
 	}
 	/*api call for purchasing item using coins
 	$game_team_id -> user's game_team_id
