@@ -1129,7 +1129,7 @@ class MerchandisesController extends AppController {
 									'1',
 									$ttl);
 
-			CakeLog::write('stock','lock item- '.$order_id.' - '.$items[$i]['item_id'].' - qty : '.$qty,' key:'.$keyname);
+			CakeLog::write('stock','lock item- '.$order_id.' - '.$items[$i]['item_id'].' - qty : '.$qty.' key:'.$keyname);
 		}
 	}
 	/*
@@ -1382,7 +1382,7 @@ class MerchandisesController extends AppController {
 		return $total_claimed_qty;
 	}
 	private function ReduceStock($item_id,$qty=1){
-		CakeLog::write('stock','stock '.$item_id.' {$qty} reduced');
+		CakeLog::write('stock','stock '.$item_id." {$qty} reduced");
 		$item_id = intval($item_id);
 		$sql = "UPDATE merchandise_items SET stock = stock - {$qty} WHERE id = {$item_id} AND n_status = 1";
 		$this->MerchandiseItem->query($sql);

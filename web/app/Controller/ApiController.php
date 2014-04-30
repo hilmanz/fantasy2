@@ -2736,7 +2736,7 @@ class ApiController extends AppController {
 									'1',
 									$ttl);
 
-			CakeLog::write('api','lock item - '.$order_id.' - '.$items[$i]['item_id'].' - qty : '.$qty,' key:'.$keyname);
+			CakeLog::write('api','lock item - '.$order_id.' - '.$items[$i]['item_id'].' - qty : '.$qty.' key:'.$keyname);
 		}
 	}
 
@@ -3012,6 +3012,10 @@ class ApiController extends AppController {
 	*/
 	private function generateVouchers($order_id,$order_data,$shopping_cart){
 		
+		CakeLog::write('generateVoucher',' shopping_cart - >'.json_encode($shopping_cart));
+		CakeLog::write('generateVoucher',' order_data - >'.json_encode($order_data));
+
+
 		$no = 1;
 		for($i=0;$i<sizeof($shopping_cart);$i++){
 			$item = $shopping_cart[$i]['data']['MerchandiseItem'];

@@ -195,3 +195,5 @@ CREATE TABLE fantasy.merchandise_vouchers (
   UNIQUE KEY `UNIQUE_VOUCHER_CODE` (`voucher_code`),
   KEY `IDX_VOUCHER` (`merchandise_order_id`,`merchandise_item_id`,`voucher_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `fantasy`.`merchandise_vouchers`     CHANGE `voucher_code` `voucher_code` VARCHAR(140) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;
