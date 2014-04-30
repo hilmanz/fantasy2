@@ -180,3 +180,18 @@ CREATE TABLE ffgame.add_coin_history (
 
 ALTER TABLE `fantasy`.`merchandise_items`     ADD COLUMN `data` TEXT NULL AFTER `weight`;
 ALTER TABLE `fantasy`.`merchandise_orders`     ADD COLUMN `ktp` VARCHAR(30) NULL AFTER `last_name`;
+
+
+
+
+CREATE TABLE fantasy.merchandise_vouchers (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `merchandise_order_id` bigint(21) DEFAULT NULL,
+  `merchandise_item_id` bigint(21) DEFAULT NULL,
+  `voucher_code` varchar(24) DEFAULT NULL,
+  `created_dt` datetime DEFAULT NULL,
+  `n_status` tinyint(3) DEFAULT '0' COMMENT '0->blm di download, 1-> sudah didownload',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE_VOUCHER_CODE` (`voucher_code`),
+  KEY `IDX_VOUCHER` (`merchandise_order_id`,`merchandise_item_id`,`voucher_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

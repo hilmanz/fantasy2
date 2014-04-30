@@ -1085,6 +1085,7 @@ class MerchandisesController extends AppController {
 		for($i=0; $i < sizeof($items); $i++){
 			
 			$item = $items[$i]['data']['MerchandiseItem'];
+			$qty = $items[$i]['qty'];
 			if($item['merchandise_type']==1){
 				$this->apply_digital_perk($this->userData['team']['id'],
 											$item['perk_id'],$order_id);
@@ -1102,8 +1103,8 @@ class MerchandisesController extends AppController {
 				}
 			
 			}
-			$this->reduceStock($item['id']);
-			CakeLog::write('stock','process_items - '.$order_id.' - '.$item['id'].' - REDUCED');
+			$this->reduceStock($item['id'],$qty);
+			CakeLog::write('stock','process_items - '.$order_id.' - '.$item['id'].' - '.$qty.' REDUCED');
 		}
 	}
 	/*
@@ -1380,10 +1381,10 @@ class MerchandisesController extends AppController {
 		}
 		return $total_claimed_qty;
 	}
-	private function ReduceStock($item_id){
-		CakeLog::write('stock','stock '.$item_id.' reduced');
+	private function ReduceStock($item_id,$qty=1){
+		CakeLog::write('stock','stock '.$item_id.' {$qty} reduced');
 		$item_id = intval($item_id);
-		$sql = "UPDATE merchandise_items SET stock = stock - 1 WHERE id = {$item_id} AND n_status = 1";
+		$sql = "UPDATE merchandise_items SET stock = stock - {$qty} WHERE id = {$item_id} AND n_status = 1";
 		$this->MerchandiseItem->query($sql);
 
 		$sql = "UPDATE merchandise_items SET stock = 0 WHERE id = {$item_id} AND stock < 0";
