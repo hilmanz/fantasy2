@@ -3471,6 +3471,7 @@ class ApiController extends AppController {
 		$this->render('default');
 	}
 	public function view_order($order_id){
+		$order_id = intval($order_id);
 		$this->loadModel('MerchandiseOrder');
 		$this->loadModel('Ongkir');
 		//attach order detail
@@ -3491,8 +3492,44 @@ class ApiController extends AppController {
 			$deliverTo['cost'] = 0;
 		}
 
+		//voucher if any
+
+		$sql = "SELECT a.id AS voucher_id,a.voucher_code,c.name,
+				b.game_team_id,
+				b.po_number,
+				a.merchandise_item_id,
+				b.email,
+				b.first_name,
+				b.last_name,
+				b.fb_id,
+				b.id as order_id,
+				b.ktp,
+				b.phone,
+				b.po_number,
+				c.data
+				FROM fantasy.merchandise_vouchers a
+				INNER JOIN fantasy.merchandise_orders b
+				ON a.merchandise_order_id = b.id 
+				INNER JOIN fantasy.merchandise_items c
+				ON a.merchandise_item_id = c.id
+				WHERE a.merchandise_order_id = {$order_id} LIMIT 100";
+		$voucher = $this->Game->query($sql);
+		$vouchers = array();
+		while(sizeof($voucher) > 0){
+			$v = array_shift($voucher);
+			$voucher_item = $v['b'];
+			$voucher_item['item_name'] = $v['c']['name'];
+			$voucher_item['voucher_id'] = $v['a']['voucher_id'];
+			$voucher_item['voucher_code'] = $v['a']['voucher_code'];
+			$voucher_item['item_data'] = json_decode($v['c']['data']);
+			$voucher_item['item_id'] = $v['a']['merchandise_item_id'];
+			$vouchers[] = $voucher_item;
+		}
 		$this->layout="ajax";
-		$this->set('response',array('status'=>1,'data'=>$rs,'deliveryTo'=>$deliverTo));
+		$this->set('response',array('status'=>1,
+									'data'=>$rs,
+									'deliveryTo'=>$deliverTo,
+									'vouchers'=>$vouchers));
 		$this->render('default');
 
 	}
