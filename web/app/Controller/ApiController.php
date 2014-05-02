@@ -2383,6 +2383,7 @@ class ApiController extends AppController {
 		}
 		
 		$merchandise = $this->MerchandiseItem->find('count',array('conditions'=>array('merchandise_type'=>0,'n_status'=>1)));
+
 		if($merchandise > 0){
 			$response['has_merchandise'] = true;
 		}else{
@@ -2409,6 +2410,7 @@ class ApiController extends AppController {
 			$category_ids = $this->getChildCategoryIds($category_id,$category_ids);
 			$options = array('conditions'=>array(
 									'merchandise_category_id'=>$category_ids,
+									'MerchandiseItem.parent_id'=>0,
 									'merchandise_type'=>0,'n_status'=>1),
 									'offset'=>$start,
 									'limit'=>$total,
@@ -2430,7 +2432,8 @@ class ApiController extends AppController {
 		}else{
 			//if doesnt, we query everything.
 			$options = array(
-						'conditions'=>array('merchandise_type'=>0,'price_money > 0','n_status'=>1),
+						'conditions'=>array('merchandise_type'=>0,'MerchandiseItem.parent_id'=>0,
+											'price_money > 0','n_status'=>1),
 						'offset'=>$start,
 						'limit'=>$total,
 						'order'=>array('MerchandiseItem.id'=>'DESC')
@@ -2460,6 +2463,16 @@ class ApiController extends AppController {
 										"merchandise/thumbs/0_".
 										$rs[$i]['MerchandiseItem']['pic'];
 			$rs[$i]['MerchandiseItem']['picture'] = $pic;
+
+			//check if the item has child_items
+			$opts = array('conditions'=>array('parent_id'=>$rs[$i]['MerchandiseItem']['id']));
+			$child_items = $this->MerchandiseItem->find('count',$opts);
+			
+			if($child_items > 0){
+				$rs[$i]['has_child'] = 1;
+			}else{
+				$rs[$i]['has_child'] = 0;
+			}
 
 		}
 		//assign it.
@@ -2527,6 +2540,10 @@ class ApiController extends AppController {
 		$category = $this->MerchandiseCategory->findById($item['MerchandiseItem']['merchandise_category_id']);
 		$response['current_category'] = $category['MerchandiseCategory'];
 
+		$child_opts = array('conditions'=>array('parent_id'=>$item['MerchandiseItem']['id']),
+							'limit'=>100,
+							'order'=>'MerchandiseItem.id');
+		$response['children'] = $this->MerchandiseItem->find('all',$child_opts);
 
 		$this->layout="ajax";
 		$this->set('response',array('status'=>1,'data'=>$response));

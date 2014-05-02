@@ -197,3 +197,7 @@ CREATE TABLE fantasy.merchandise_vouchers (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `fantasy`.`merchandise_vouchers`     CHANGE `voucher_code` `voucher_code` VARCHAR(140) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;
+
+
+ALTER TABLE `fantasy`.`merchandise_items`     ADD COLUMN `parent_id` BIGINT(21) DEFAULT '0' NULL AFTER `id`;
+ALTER TABLE `fantasy`.`merchandise_items` ADD INDEX `IDX_PARENT_ID` (`parent_id`);
