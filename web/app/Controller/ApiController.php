@@ -2540,11 +2540,13 @@ class ApiController extends AppController {
 		$category = $this->MerchandiseCategory->findById($item['MerchandiseItem']['merchandise_category_id']);
 		$response['current_category'] = $category['MerchandiseCategory'];
 
-		$child_opts = array('conditions'=>array('parent_id'=>$item['MerchandiseItem']['id']),
+		$child_opts = array('conditions'=>array('parent_id'=>$item['MerchandiseItem']['id'],
+												'n_status'=>1),
 							'limit'=>100,
 							'order'=>'MerchandiseItem.id');
-		$response['children'] = $this->MerchandiseItem->find('all',$child_opts);
 
+		$response['children'] = $this->MerchandiseItem->find('all',$child_opts);
+		$response['parent'] = $this->MerchandiseItem->findById($item['MerchandiseItem']['parent_id']);
 		$this->layout="ajax";
 		$this->set('response',array('status'=>1,'data'=>$response));
 		$this->render('default');
