@@ -102,10 +102,17 @@ class MerchandisesController extends AppController {
 
 		$this->loadModel('MasterPerk');
 		$perks = $this->MasterPerk->find('all',array('limit'=>300));
+		$merchandise_items = $this->MerchandiseItem->find('all', array(
+											        'order' => array('MerchandiseItem.id' => 'desc'),
+											        'limit' => 100000
+											    ));
+		
+		$this->set('merchandise_items', $merchandise_items);
 		$this->set('perks',$perks);
 		$this->set('rs_perks', $rs_perks);
 
 		$this->set('rs',$rs);
+
 		
 		$this->loadModel('MerchandiseCategory');
 		$categories = $this->MerchandiseCategory->find('all',array('limit'=>100));
@@ -210,12 +217,14 @@ class MerchandisesController extends AppController {
 				$last_id = $this->MerchandiseItem->id;
 				$perk_nondigital = array();
 				$i=0;
-				foreach ($this->request->data['perk_nondigital'] as $key => $value)
-		        {
-		        	$perk_nondigital[$i]['merchandise_item_id']	= $last_id;
-		        	$perk_nondigital[$i]['perk_id']	= $value;
-		        $i++;
-		        }
+				if(isset($this->request->data['perk_nondigital'])):
+					foreach ($this->request->data['perk_nondigital'] as $key => $value)
+			        {
+			        	$perk_nondigital[$i]['merchandise_item_id']	= $last_id;
+			        	$perk_nondigital[$i]['perk_id']	= $value;
+			        $i++;
+			        }
+		        endif;
 
 		        $this->loadModel('MerchandiseItemPerks');
 
@@ -229,6 +238,12 @@ class MerchandisesController extends AppController {
 		}
 		$this->loadModel('MerchandiseCategory');
 		$categories = $this->MerchandiseCategory->find('all',array('limit'=>100));
+		$merchandise_items = $this->MerchandiseItem->find('all', array(
+													        'order' => array('MerchandiseItem.id' => 'desc'),
+													        'limit' => 100000
+													    ));
+
+		$this->set('merchandise_items', $merchandise_items);
 		$this->set('categories',$categories);
 
 		$this->loadModel('MasterPerk');

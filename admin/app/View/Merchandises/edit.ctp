@@ -304,6 +304,35 @@
 			</td>
 		</tr>
 		<tr>
+			<td valign="top">
+				Button Label
+			</td>
+			<td>
+				<input type="text" name="json_data[button_label]" value="<?=@$array_data['button_label']?>" />
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
+				Parent Id
+			</td>
+			<td>
+				<select name="parent_id">
+					<option value="0">--</option>
+					<?php 
+						foreach ($merchandise_items as $value):
+							$selected = '';
+							if($rs['MerchandiseItem']['parent_id'] == $value['MerchandiseItem']['id']):
+								$selected = 'selected="selected"';
+							endif;
+					?>
+						<option <?=$selected?> value="<?=$value['MerchandiseItem']['id']?>">
+							<?=$value['MerchandiseItem']['name']?>
+						</option>
+					<?php endforeach?>
+				</select>
+			</td>
+		</tr>
+		<tr>
 			<td colspan="2">
 				<input type="submit" name="btn" value="UPDATE"/>
 			</td>
