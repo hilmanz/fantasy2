@@ -2874,6 +2874,12 @@ class ApiController extends AppController {
 			if($shopping_cart[$i]['item_id'] > 0){
 				$shopping_cart[$i]['data'] = $this->MerchandiseItem->findById($shopping_cart[$i]['item_id']);
 				$item = $shopping_cart[$i]['data']['MerchandiseItem'];
+				//check parent, if parent exists, then we concat the parent's name into item's name.
+				$parent_item = $this->MerchandiseItem->findById(intval($item['parent_id']));
+				if(isset($parent_item['MerchandiseItem'])){
+					$shopping_cart[$i]['data']['MerchandiseItem']['name'] = $parent_item['MerchandiseItem']['name'].' '.
+																		$item['name'];	
+				}
 				if($item['merchandise_category_id'] == Configure::read('ticket_category_id')){
 					$is_ticket = true;
 				}
@@ -3505,6 +3511,7 @@ class ApiController extends AppController {
 	}
 	public function view_order($order_id){
 		$order_id = intval($order_id);
+		$this->loadModel('MerchandiseItem');
 		$this->loadModel('MerchandiseOrder');
 		$this->loadModel('Ongkir');
 		//attach order detail
@@ -3539,7 +3546,8 @@ class ApiController extends AppController {
 				b.ktp,
 				b.phone,
 				b.po_number,
-				c.data
+				c.data,
+				c.parent_id as item_parent_id
 				FROM fantasy.merchandise_vouchers a
 				INNER JOIN fantasy.merchandise_orders b
 				ON a.merchandise_order_id = b.id 
@@ -3556,6 +3564,13 @@ class ApiController extends AppController {
 			$voucher_item['voucher_code'] = $v['a']['voucher_code'];
 			$voucher_item['item_data'] = json_decode($v['c']['data']);
 			$voucher_item['item_id'] = $v['a']['merchandise_item_id'];
+			$voucher_item['item_parent_id'] = intval(@$v['c']['item_parent_id']);
+			//check parent, if parent exists, then we concat the parent's name into item's name.
+			$parent_item = $this->MerchandiseItem->findById(intval($voucher_item['item_parent_id']));
+			if(isset($parent_item['MerchandiseItem'])){
+				$voucher_item['item_name'] = $parent_item['MerchandiseItem']['name'].' '.
+																	$voucher_item['item_name'];	
+			}
 			$vouchers[] = $voucher_item;
 		}
 		$this->layout="ajax";
