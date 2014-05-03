@@ -380,7 +380,7 @@ class Game extends AppModel {
 				$matchday = $fixtures[$i]['matchday'];
 			}
 		}
-		//$matchday+=1;
+		$matchday+=1;
 
 		$response = $this->api_call('/livematches/'.$matchday);
 		$is_live = 1;
@@ -406,7 +406,8 @@ class Game extends AppModel {
 				  'live'=>$is_live,
 				  'fixtures'=>$fixtures,
 				  'live_data'=>$response['data'],
-				  'show_stats'=>$show_stats
+				  'show_stats'=>$show_stats,
+				  'matchday'=>$matchday
 				))
 		);
 	}
