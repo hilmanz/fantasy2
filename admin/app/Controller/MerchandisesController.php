@@ -461,8 +461,6 @@ class MerchandisesController extends AppController {
 			}
 		}
 
-		print_r($rs);
-		exit();
 		$this->set('response',array('status'=>1,'data'=>$rs,'next_offset'=>$start+$limit,'rows_per_page'=>$limit));
 		$this->render('response');
 	}
