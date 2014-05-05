@@ -355,6 +355,10 @@ class MerchandisesController extends AppController {
 	public function orders(){
 		//i dunno what to do yet.
 	}
+
+	public function ticketorders(){
+	}
+
 	public function view_order($order_id){
 		$this->loadModel('MerchandiseOrder');
 		$this->loadModel('Ongkir');
@@ -387,6 +391,25 @@ class MerchandisesController extends AppController {
 		$this->set('admin_fee',Configure::read('PO_ADMIN_FEE'));
 		$this->set('rs',$rs);
 	}
+
+	public function view_order_ticket($order_id){
+		$this->loadModel('MerchandiseOrder');
+		$this->loadModel('Ongkir');
+		if($this->request->is('post')){
+			$this->update_order($order_id);
+		}
+
+		$this->MerchandiseOrder->bindModel(
+			array('belongsTo'=>array('MerchandiseItem'))
+		);
+		$rs = $this->MerchandiseOrder->findById($order_id);
+
+		//get ongkir
+		$this->set('ongkir', 'Free');
+		$this->set('admin_fee', 5000);
+		$this->set('rs',$rs);
+	}
+
 	private function restock($order_id){
 		$this->loadModel('MerchandiseItem');
 		$this->MerchandiseOrder->id = $order_id;
@@ -437,9 +460,52 @@ class MerchandisesController extends AppController {
 				$rs[$i]['MerchandiseOrder']['data'] = unserialize($rs[$i]['MerchandiseOrder']['data']);
 			}
 		}
+
+		print_r($rs);
+		exit();
 		$this->set('response',array('status'=>1,'data'=>$rs,'next_offset'=>$start+$limit,'rows_per_page'=>$limit));
 		$this->render('response');
 	}
+
+	public function get_ticket_orders(){
+		$this->layout = 'ajax';
+		$this->loadModel('MerchandiseOrder');
+		$start = intval(@$this->request->query['start']);
+		$limit = 20;
+		if(!isset($this->request->query['status'])){
+			$n_status = array(0,1,2,3,4);
+		}else{
+			$n_status= $this->request->query['status'];
+		}
+
+		$rs = $this->MerchandiseOrder->query("SELECT 
+											    a.voucher_code, a.created_dt, a.n_status, b.po_number, 
+											    b.game_team_id, b.id, b.data, b.first_name, b.last_name, 
+											    c.name
+											FROM
+											    merchandise_vouchers a 
+											        INNER JOIN
+											    merchandise_orders b
+													ON 
+												a.merchandise_order_id = b.id
+													INNER JOIN
+												merchandise_items c
+													ON
+												a.merchandise_item_id = c.id
+													LIMIT 
+												".$start.",".$limit);
+
+
+		for($i=0; $i<sizeof($rs); $i++){
+			if($rs[$i]['b']['data']!=null){
+				$rs[$i]['b']['data'] = unserialize($rs[$i]['b']['data']);
+			}
+		}
+
+		$this->set('response',array('status'=>1,'data'=>$rs,'next_offset'=>$start+$limit,'rows_per_page'=>$limit));
+		$this->render('response');
+	}
+
 	private function refund($order_id){
 		$refund_ok = false;
 		$this->MerchandiseOrder->bindModel(
