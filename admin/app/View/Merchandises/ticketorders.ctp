@@ -58,22 +58,24 @@ $item_url = $this->Html->url('/merchandises/edit/');
 						for(var i in response.data){
 							var status = 'Pending';
 							var item_details = '<a href="<?=$item_url?>'+
-												response.data[i].c.id+'">'+
-												response.data[i].c.id+' - '+response.data[i].c.name+'</a>';
-							
+												response.data[i].b.id+'">'+
+												response.data[i].b.id+' - '+response.data[i].b.id+'</a>';
+							console.log(response.data[i].b.data);
 							if(response.data[i].b.data!=null){
 								item_details = '';
 								for(var t in response.data[i].b.data){
-									try{
-										item_details+= "<a href='"+
-										item_url+
-										response.data[i].b.data[t].data.MerchandiseItem.id+"'>"+
-										response.data[i].b.data[t].data.MerchandiseItem.id
-												+' - '+
-										response.data[i].b.data[t].data.MerchandiseItem.name+
-												'</a><br/>';
-									}catch(e){}
-									
+									if(response.data[i].a.merchandise_item_id == 
+										response.data[i].b.data[t].data.MerchandiseItem.id){
+										try{
+											item_details+= "<a href='"+
+											item_url+
+											response.data[i].b.data[t].data.MerchandiseItem.id+"'>"+
+											response.data[i].b.data[t].data.MerchandiseItem.id
+													+' - '+
+											response.data[i].b.data[t].data.MerchandiseItem.name+
+													'</a><br/>';
+										}catch(e){}
+									}
 								}
 							}
 

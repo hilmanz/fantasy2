@@ -477,19 +477,15 @@ class MerchandisesController extends AppController {
 		}
 
 		$rs = $this->MerchandiseOrder->query("SELECT 
+												a.id, a.merchandise_order_id, a.merchandise_item_id,
 											    a.voucher_code, a.created_dt, a.n_status, b.po_number, 
-											    b.game_team_id, b.id, b.data, b.first_name, b.last_name, 
-											    c.name
+											    b.game_team_id, b.id, b.data, b.first_name, b.last_name
 											FROM
 											    merchandise_vouchers a 
 											        INNER JOIN
 											    merchandise_orders b
 													ON 
 												a.merchandise_order_id = b.id
-													INNER JOIN
-												merchandise_items c
-													ON
-												a.merchandise_item_id = c.id
 													LIMIT 
 												".$start.",".$limit);
 
