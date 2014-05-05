@@ -77,7 +77,8 @@ $item_url = $this->Html->url('/merchandises/edit/');
 										response.data[i].MerchandiseOrder.data[t].data.MerchandiseItem.id
 												+' - '+
 										response.data[i].MerchandiseOrder.data[t].data.MerchandiseItem.name+
-												'</a><br/>';
+												' x '+
+												response.data[i].MerchandiseOrder.data[t].qty+'</a><br/>';
 									}catch(e){}
 									
 								}
