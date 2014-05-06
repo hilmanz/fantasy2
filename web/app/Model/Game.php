@@ -360,6 +360,22 @@ class Game extends AppModel {
 		return "<style>".PHP_EOL.$rs[0]['a']['css'].PHP_EOL."</style>".PHP_EOL;
 	}
 
+	public function getPoinBooster($game_team_id){
+		$rs = $this->query("SELECT 
+							    a.available, b.name
+							FROM
+						    ffgame.digital_perks a 
+								INNER JOIN
+						    ffgame.master_perks b 
+								ON 
+							a.master_perk_id = b.id
+								WHERE
+						    a.game_team_id = {$game_team_id} AND n_status = 1
+								LIMIT 100000;");
+
+		return $rs;
+	}
+
 	public function livestats($game_id){
 		$response = $this->api_call_raw('/livestats/'.$game_id);
 		return $response;

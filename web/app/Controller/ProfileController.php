@@ -87,6 +87,22 @@ class ProfileController extends AppController {
 		
 	}
 
+	public function booster()
+	{
+		$userData = $this->getUserData();
+
+		//long banner
+		$long_banner = $this->getBanners('PROFILE_BANNER',2,true);
+		$this->set('long_banner',$long_banner);
+
+		//budget
+		$budget = $this->Game->getBudget($userData['team']['id']);
+		$this->set('team_bugdet',$budget);
+
+		$booster = $this->Game->getPoinBooster($userData['team']['id']);
+		$this->set('booster', $booster);
+	}
+
 	public function update(){
 		if(strlen($this->request->data['email'])>0){
 			$data = array(
