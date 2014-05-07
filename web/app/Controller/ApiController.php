@@ -416,11 +416,6 @@ class ApiController extends AppController {
 		$financial_statement['expenditures'] = $this->expenditures;
 		$financial_statement['starting_budget'] = $this->starting_budget;
 
-
-
-		
-
-
 		$response['finance'] = $finance;
 		$response['finance_details'] = $financial_statement;
 
@@ -4231,6 +4226,86 @@ class ApiController extends AppController {
 		}
 	}
 	//--> and of `tebak-skor` minigame APIs
+
+	//all the stuffs related to ticket agent / retailers
+	private function agent_dummy(){
+		$email = 'dev@supersoccer.co.id';
+		$password = '12345678';
+		$secret = 'qawsedrftg';
+		$hash = sha1($email.$password.$secret);
+		$this->layout="ajax";
+		$this->set('response',array('hash'=>$hash));
+		$this->render('default');
+	}
+
+	public function agent_login(){
+		$this->layout="ajax";
+		$email = Sanitize::clean($this->request->data['email']);
+		$password = Sanitize::clean($this->request->data['password']);
+		
+		if(strlen($email) > 0 && strlen($password) > 0){
+			$this->loadModel('Agent');
+			$agent = $this->Agent->findByEmail($email);
+			$secret = $agent['Agent']['secret'];
+			$hash = sha1($email.$password.$secret);
+			if($agent['Agent']['password'] == $hash){
+				$status = 1;
+				$token = encrypt_param(serialize(array(
+							'name'=>$agent['Agent']['name'],
+							'email'=>$agent['Agent']['email'],
+							'agent_id'=>$agent['Agent']['id'],
+							'login_dt'=>date("Y-m-d H:i:s"),
+							'ts'=>time()
+						 )));
+			}else{
+				$status = 0;
+				$token = '';
+			}
+			$data = array(
+							'name'=>$agent['Agent']['name'],
+							'email'=>$agent['Agent']['email'],
+							'agent_id'=>$agent['Agent']['id']
+						 );
+			$this->set('response',array('status'=>$status,'token'=>$token,'data'=>$data));
+		}else{
+			$this->set('response',array('status'=>0));
+		}
+
+		
+		$this->render('default');
+	}
+	public function agent_catalog(){
+		$this->layout="ajax";
+
+		$agent_id = intval(@$this->request->query['agent_id']);
+		$token = @$this->request->query['token'];
+		if($agent_id > 0){
+			
+			if($this->agent_validate($agent_id,$token)){
+				//do something
+				$this->set('response',array('status'=>1));
+			}else{
+				$this->set('response',array('status'=>0,'error'=>'invalid token'));
+			}
+		}else{
+			$this->set('response',array('status'=>0,'error'=>'invalid agent'));
+		}
+		$this->render('default');
+	}
+	//use for validating the token
+	private function agent_validate($agent_id,$token){
+		
+		$tokeninfo = @unserialize(decrypt_param($token));
+	
+		$this->loadModel('Agent');
+		$agent = $this->Agent->findById($agent_id);
+		if($agent['Agent']['id'] == $tokeninfo['agent_id'] &&
+				$agent['Agent']['email'] == $tokeninfo['email']){
+			return true;
+		}
+	}
+	
+	//--> end of ticketing stuffs
 }
 
 
