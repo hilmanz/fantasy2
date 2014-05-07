@@ -4297,6 +4297,105 @@ class ApiController extends AppController {
 		}
 		$this->render('default');
 	}
+	/*
+	* api for requesting item quota
+	* /api/agent_request_quota?agent_id=[n]&item_id=[n]&qty=[n]
+	* Response :JSON
+	*/
+	public function agent_request_quota(){
+		$this->layout="ajax";
+
+		$agent_id = intval(@$this->request->query['agent_id']);
+		$item_id = intval(@$this->request->query['item_id']);
+		$qty = intval(@$this->request->query['qty']);
+
+		$token = @$this->request->query['token'];
+
+		if($agent_id > 0){
+			if($this->agent_validate($agent_id,$token)){
+				//do something
+				$rs = $this->setAgentRequestQuota($agent_id,$item_id,$qty);
+				$this->set('response',array('status'=>1,'data'=>$rs));
+			}else{
+				$this->set('response',array('status'=>0,'error'=>'invalid token'));
+			}
+		}else{
+			$this->set('response',array('status'=>0,'error'=>'invalid agent'));
+		}
+		$this->render('default');
+	}
+	/*
+	* API for vieweing the request quota history
+	* /api/agent_request_quota?agent_id=[n]&start=0&total=10
+	* Response :JSON
+	*/
+	public function agent_request_history(){
+		$this->layout="ajax";
+
+		$agent_id = intval(@$this->request->query['agent_id']);
+		$start = intval(@$this->request->query['start']);
+		$total = intval(@$this->request->query['total']);
+		
+		if($total > 20){
+			$total = 20;
+		}else if($total==0){
+			$total = 10;
+		}else{}
+
+		$token = @$this->request->query['token'];
+
+		if($agent_id > 0){
+			if($this->agent_validate($agent_id,$token)){
+				//do something
+				$rs = $this->getAgentRequestHistory($agent_id,$start,$total);
+				$this->set('response',array('status'=>1,'data'=>$rs));
+			}else{
+				$this->set('response',array('status'=>0,'error'=>'invalid token'));
+			}
+		}else{
+			$this->set('response',array('status'=>0,'error'=>'invalid agent'));
+		}
+		$this->render('default');
+	}
+
+	private function getAgentRequestHistory($agent_id,$start,$total){
+		$this->loadModel('AgentRequest');
+		$rs = $this->AgentRequest->query("SELECT * FROM 
+											fantasy.agent_requests a
+											INNER JOIN fantasy.merchandise_items b
+											ON a.merchandise_item_id = b.id
+											INNER JOIN fantasy.merchandise_items c
+											ON b.parent_id = c.id
+											WHERE a.agent_id = {$agent_id}
+											LIMIT {$start},{$total};");
+		$items = array();
+		for($i=0;$i<sizeof($rs);$i++){
+			$item = $rs[$i]['a'];
+			$item['item_name'] = $rs[$i]['c']['name'].' '.$rs[$i]['c']['name'];
+			$item['price'] = $rs[$i]['b']['price_money'];
+			$item['data'] = json_decode($rs[$i]['b']['data']);
+			$items[] = $item;
+		}
+		return $items;
+	}
+	private function setAgentRequestQuota($agent_id,$item_id,$qty){
+		$this->loadModel('AgentRequest');
+		$this->AgentRequest->create();
+		$data = array(
+			'agent_id'=>$agent_id,
+			'merchandise_item_id'=>$item_id,
+			'request_quota'=>$qty,
+			'request_date'=>date("Y-m-d H:i:s"),
+			'n_status'=>0
+		);
+		$rs = $this->AgentRequest->save($data);
+		if(isset($rs['AgentRequest'])){
+			return $rs['AgentRequest'];	
+		}else{
+			return 0;
+		}
+		
+	}
 	//use for validating the token
 	private function agent_validate($agent_id,$token){
 		
@@ -4310,7 +4409,7 @@ class ApiController extends AppController {
 		}
 	}
 	private function getAgentCatalog(){
-		$rs = $this->Game->query("SELECT a.parent_id,a.name,a.description,a.price_money,
+		$rs = $this->Game->query("SELECT a.id,a.parent_id,a.name,a.description,a.price_money as price,
 							b.qty,b.n_status,c.name AS parent_name,
 							c.description AS parent_description,a.data,1 AS agent_id
 							FROM fantasy.merchandise_items a
@@ -4327,6 +4426,7 @@ class ApiController extends AppController {
 			$item['qty'] = intval($rs[$i]['b']['qty']);
 			$item['n_status'] = intval($rs[$i]['b']['n_status']);
 			$item['parent'] = $rs[$i]['c'];
+			$item['data'] = json_decode($item['data']);
 			$items[] = $item;
 		}
 		return $items;

@@ -278,3 +278,17 @@ CREATE TABLE fantasy.agent_vouchers (
   UNIQUE KEY `UNIQUE_VOUCHER_CODE` (`voucher_code`),
   KEY `IDX_VOUCHER` (`agent_order_id`,`merchandise_item_id`,`voucher_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+
+CREATE TABLE fantasy.agent_requests (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `agent_id` int(11) DEFAULT NULL,
+  `merchandise_item_id` bigint(11) DEFAULT NULL,
+  `request_quota` int(5) DEFAULT '0',
+  `request_date` datetime DEFAULT NULL,
+  `n_status` tinyint(3) DEFAULT '0' COMMENT '0->pending, 1->approved, 2->rejected',
+  PRIMARY KEY (`id`),
+  KEY `IDX_AGENT_ITEM_REQUEST` (`agent_id`,`merchandise_item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
