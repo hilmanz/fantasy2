@@ -4242,7 +4242,7 @@ class ApiController extends AppController {
 		$this->layout="ajax";
 		$email = Sanitize::clean($this->request->data['email']);
 		$password = Sanitize::clean($this->request->data['password']);
-		
+
 		if(strlen($email) > 0 && strlen($password) > 0){
 			$this->loadModel('Agent');
 			$agent = $this->Agent->findByEmail($email);
@@ -4274,16 +4274,21 @@ class ApiController extends AppController {
 		
 		$this->render('default');
 	}
+	/*
+	* /api/agent_catalog?agent_id=[n]&token=[s]
+	* Response :JSON
+	*/
 	public function agent_catalog(){
 		$this->layout="ajax";
 
 		$agent_id = intval(@$this->request->query['agent_id']);
 		$token = @$this->request->query['token'];
+
 		if($agent_id > 0){
-			
 			if($this->agent_validate($agent_id,$token)){
 				//do something
-				$this->set('response',array('status'=>1));
+				$catalog = $this->getAgentCatalog($agent_id);
+				$this->set('response',array('status'=>1,'data'=>$catalog));
 			}else{
 				$this->set('response',array('status'=>0,'error'=>'invalid token'));
 			}
@@ -4304,7 +4309,28 @@ class ApiController extends AppController {
 			return true;
 		}
 	}
-	
+	private function getAgentCatalog(){
+		$rs = $this->Game->query("SELECT a.parent_id,a.name,a.description,a.price_money,
+							b.qty,b.n_status,c.name AS parent_name,
+							c.description AS parent_description,a.data,1 AS agent_id
+							FROM fantasy.merchandise_items a
+							LEFT JOIN fantasy.agent_items b
+							ON a.id = b.merchandise_item_id AND b.agent_id = 1
+							INNER JOIN fantasy.merchandise_items c
+							ON a.parent_id = c.id
+							WHERE a.merchandise_category_id= ".Configure::read('ticket_category_id')." 
+							AND a.parent_id <> 0 AND a.n_status = 1;");
+		$items = array();
+		for($i=0;$i<sizeof($rs);$i++){
+			$item = $rs[$i]['a'];
+			$item['agent_id'] = intval($rs[$i][0]['agent_id']);
+			$item['qty'] = intval($rs[$i]['b']['qty']);
+			$item['n_status'] = intval($rs[$i]['b']['n_status']);
+			$item['parent'] = $rs[$i]['c'];
+			$items[] = $item;
+		}
+		return $items;
+	}
 	//--> end of ticketing stuffs
 }
 
