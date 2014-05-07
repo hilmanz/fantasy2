@@ -107,6 +107,7 @@ function simulate(done){
 			},
 			function(rs,cb){
 				client.get('simulator_'+game_id,function(err,data){
+					
 					var d = rs[parseInt(data)];
 					var fs = require('fs');
 					fs.writeFile("./data/"+d.saved_file,d.content, 

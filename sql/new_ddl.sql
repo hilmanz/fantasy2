@@ -292,3 +292,14 @@ CREATE TABLE fantasy.agent_requests (
   PRIMARY KEY (`id`),
   KEY `IDX_AGENT_ITEM_REQUEST` (`agent_id`,`merchandise_item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE fantasy.agent_items (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `agent_id` int(11) DEFAULT NULL,
+  `merchandise_item_id` bigint(11) DEFAULT NULL,
+  `qty` int(5) DEFAULT '0',
+  `n_status` tinyint(3) DEFAULT '0',
+  `last_update` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE_ITEMS` (`agent_id`,`merchandise_item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

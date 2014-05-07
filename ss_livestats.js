@@ -15,6 +15,8 @@ var redis = require('redis');
 var player_stats_category = require(path.resolve('./libs/game_config')).player_stats_category;
 var S = require('string');
 var argv = require('optimist').argv;
+var request = require('request');
+var url = require('url');
 
 var pool  = mysql.createPool({
    host     : config.database.host,
@@ -160,7 +162,7 @@ function saveDataAndGenerateEvents(resultData,done){
 	});
 }
 function triggerEvents(newData,oldData,done){
-
+	var has_new_events = false;
 	var live_events = {	
 		goal:0,
 		shot:0,
@@ -203,10 +205,34 @@ function triggerEvents(newData,oldData,done){
 	live_events = checkYellowEvents(newData,oldData,live_events);
 	live_events = checkRedEvents(newData,oldData,live_events);
 	live_events = checkGKSaveEvents(newData,oldData,live_events);
+
+	for(var n in live_events){
+		if(live_events[n] == 1){
+			has_new_events = true;
+		}
+	}
 	//bungkus
 	newData.events = live_events;
-	console.log(live_events);
-	done(null,newData);
+	
+	if(has_new_events){
+		//send events
+		var uri = url.format({
+			protocol:'http',
+			host:'fast-peak-8943.herokuapp.com',
+			pathname:'fm_receiver',
+			query:live_events
+		});
+		console.log(uri);
+		request(uri,
+				function(err,response,body){
+					done(null,newData);
+				});
+	}else{
+		console.log(live_events);
+		done(null,newData);
+	}
+	
+	
 }
 
 function checkGKSaveEvents(new_data,old_data,live_events){
