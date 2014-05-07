@@ -4,7 +4,8 @@ the application will check if there's a  new file exists in data folder.
 **/
 var fs = require('fs');
 var path = require('path');
-var config = require('./config').config;
+//var config = require('./config').config;
+var config = require('./config_ucl').config;
 var xmlparser = require('xml2json');
 var master = require('./libs/master');
 
@@ -15,7 +16,7 @@ var FILE_PREFIX = config.updater_file_prefix+config.competition.id+'-'+config.co
 var squad_file = FILE_PREFIX+'-squads.xml';
 open_squad_file(squad_file,function(err,doc){
 		//console.log(xmlparser.toJson(doc.toString()));
-		console.log('opening file');
+		console.log('opening file',squad_file);
 		master.update_team_data(JSON.parse(xmlparser.toJson(doc.toString())),onDataProcessed);
 });
 

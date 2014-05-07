@@ -4,7 +4,8 @@ populating the ffgame.game_fixtures
 /////THE MODULES/////////
 var fs = require('fs');
 var path = require('path');
-var config = require('./config').config;
+//var config = require('./config').config;
+var config = require('./config_ucl').config;
 var xmlparser = require('xml2json');
 var master = require('./libs/master');
 var async = require('async');

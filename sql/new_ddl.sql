@@ -201,3 +201,80 @@ ALTER TABLE `fantasy`.`merchandise_vouchers`     CHANGE `voucher_code` `voucher_
 
 ALTER TABLE `fantasy`.`merchandise_items`     ADD COLUMN `parent_id` BIGINT(21) DEFAULT '0' NULL AFTER `id`;
 ALTER TABLE `fantasy`.`merchandise_items` ADD INDEX `IDX_PARENT_ID` (`parent_id`);
+
+
+CREATE TABLE fantasy.agents (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(42) DEFAULT NULL,
+  `email` varchar(64) DEFAULT NULL,
+  `password` varchar(64) DEFAULT NULL,
+  `secret` varchar(64) DEFAULT NULL,
+  `phone` varchar(64) DEFAULT NULL,
+  `address` text,
+  `n_status` tinyint(3) DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE_EMAIL` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE fantasy.agent_vouchers (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `agent_order_id` bigint(21) DEFAULT NULL,
+  `merchandise_item_id` bigint(21) DEFAULT NULL,
+  `voucher_code` varchar(140) DEFAULT NULL,
+  `created_dt` datetime DEFAULT NULL,
+  `n_status` tinyint(3) DEFAULT '0' COMMENT '0->blm di download, 1-> sudah didownload',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE_VOUCHER_CODE` (`voucher_code`),
+  KEY `IDX_VOUCHER` (`agent_order_id`,`merchandise_item_id`,`voucher_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE fantasy.agent_orders (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `agent_id` int(11) DEFAULT NULL,
+  `fb_id` bigint(21) DEFAULT NULL,
+  `po_number` varchar(40) DEFAULT NULL,
+  `transaction_id` varchar(40) DEFAULT NULL COMMENT 'this is the actual Purchase Order Number',
+  `merchandise_item_id` bigint(21) DEFAULT NULL,
+  `game_team_id` bigint(21) DEFAULT NULL,
+  `user_id` bigint(21) DEFAULT NULL,
+  `first_name` varchar(30) DEFAULT NULL,
+  `last_name` varchar(30) DEFAULT NULL,
+  `ktp` varchar(30) DEFAULT NULL,
+  `email` varchar(140) DEFAULT NULL,
+  `address` text,
+  `phone` varchar(40) DEFAULT NULL,
+  `city` varchar(40) DEFAULT NULL,
+  `province` varchar(40) DEFAULT NULL,
+  `country` varchar(40) DEFAULT NULL,
+  `zip` varchar(10) DEFAULT NULL,
+  `order_type` tinyint(3) DEFAULT '0' COMMENT '0->using in-game currency, 1-> using credit, 2->using real money',
+  `order_date` datetime DEFAULT NULL,
+  `notes` text,
+  `data` text,
+  `payment_method` varchar(12) DEFAULT 'coins',
+  `total_sale` int(11) DEFAULT '0',
+  `trace_code` varchar(30) DEFAULT NULL,
+  `ongkir_id` bigint(21) DEFAULT NULL,
+  `ongkir_value` int(21) DEFAULT '0',
+  `n_status` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE_PO` (`po_number`),
+  KEY `IDX_ORDER_ITEMS` (`po_number`,`merchandise_item_id`,`game_team_id`,`user_id`),
+  KEY `IDX_TRANSACTION_ID` (`transaction_id`),
+  KEY `IDX_FB` (`fb_id`),
+  KEY `IDX_ONGKIR_CITY_ID` (`ongkir_id`),
+  KEY `IDX_AGENT_ID` (`agent_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE fantasy.agent_vouchers (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `agent_order_id` bigint(21) DEFAULT NULL,
+  `merchandise_item_id` bigint(21) DEFAULT NULL,
+  `voucher_code` varchar(140) DEFAULT NULL,
+  `created_dt` datetime DEFAULT NULL,
+  `n_status` tinyint(3) DEFAULT '0' COMMENT '0->blm di download, 1-> sudah didownload',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQUE_VOUCHER_CODE` (`voucher_code`),
+  KEY `IDX_VOUCHER` (`agent_order_id`,`merchandise_item_id`,`voucher_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

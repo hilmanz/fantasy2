@@ -8,7 +8,7 @@ var express = require('express')
   , http = require('http')
   , async = require('async')
   , path = require('path');
-
+var S = require('string');
 var fs = require('fs');
 var redis = require('redis');
 var dummy_api_key = '1234567890';
@@ -82,6 +82,7 @@ function accessDenied(req,res){
 function extractData(filename,callback){
 	async.waterfall([
 			function(callback){
+				console.log('opening ',filename);
 				open_file(filename,function(err,content){
 					callback(null,content);
 				});
@@ -91,8 +92,12 @@ function extractData(filename,callback){
 				callback(null,json);
 			},
 			function(json,callback){
+				if(json.SoccerFeed.SoccerDocument.length > 1){
+					json.SoccerFeed.SoccerDocument = json.SoccerFeed.SoccerDocument[0];
+				}
 				try{
 					console.log(json.SoccerFeed.SoccerDocument);
+
 					var data = {
 						game_id: json.SoccerFeed.SoccerDocument.uID,
 						competition_id: json.SoccerFeed.SoccerDocument.Competition.uID,
@@ -146,6 +151,7 @@ function extractData(filename,callback){
 					data.team = json.SoccerFeed.SoccerDocument.Team;
 					callback(null,json,data);
 				}catch(e){
+					console.log(e.message);
 					callback(new Error('document is empty'),null,null);
 				}
 			},
@@ -279,6 +285,7 @@ function update_match_data(data,done){
 				 data.venue.Country,
 				 data.attendance],
 				function(err,rs){
+					console.log(S(this.sql).collapseWhitespace().s);
 					conn.end(function(err){
 						done(err,rs);
 					});

@@ -23,6 +23,8 @@ exports.update_team_data = function(data,callback){
 		var team_data = [];
 		for(var i in data.SoccerFeed.SoccerDocument.Team){
 				var team = data.SoccerFeed.SoccerDocument.Team[i];
+				console.log(team);
+
 				//insert / update the team sequentially.. it's slower but better.
 				var sql = "INSERT INTO ffgame.master_team\
 						   (uid,name,founded,symid,stadium_id,stadium_name,stadium_capacity)\
@@ -35,25 +37,30 @@ exports.update_team_data = function(data,callback){
 						   stadium_id = VALUES(stadium_id),\
 						   stadium_name = VALUES(stadium_name),\
 						   stadium_capacity = VALUES(stadium_capacity);";
+				try{
+
+
+					var query = conn.query(sql,[team.uID,team.Name,team.Founded,
+									team.SYMID,'',team.Stadium.Name,
+									team.Stadium.Capacity],
+									function(err,result){
+										if(err) console.log(err.message);
+										//console.log(result);
+									});
+					(function(){
+						var t = team;
+						var q = conn.query("SELECT uid FROM ffgame.master_team WHERE symid=? LIMIT 1;",
+									[t.SYMID]);
+						q.on('result',function(row){
+							team_data.push({team_id: row.uid,
+											players: t.Player});
+						});
+
+					}());
+				}catch(e){
+					//do nothing
+				}
 				
-				var query = conn.query(sql,[team.uID,team.Name,team.Founded,
-								team.SYMID,'',team.Stadium.Name,
-								team.Stadium.Capacity],
-								function(err,result){
-									if(err) console.log(err.message);
-									//console.log(result);
-								});
-
-				(function(){
-					var t = team;
-					var q = conn.query("SELECT uid FROM ffgame.master_team WHERE symid=? LIMIT 1;",
-								[t.SYMID]);
-					q.on('result',function(row){
-						team_data.push({team_id: row.uid,
-										players: t.Player});
-					});
-
-				}());
 
 		}
 	function onTeamInserted(err,result){
