@@ -4435,12 +4435,27 @@ class ApiController extends AppController {
 	}
 	private function saveAgentOrder($agent_id,$po_number,$order_data){
 		$this->loadModel('MerchandiseItem');
-		
+		$this->loadModel('AgentItem');
+		//sanitize
+		$order_data['item_id'] = intval($order_data['item_id']);
+		$order_data['qty'] = intval($order_data['qty']);
+		//
+
+		//item detail
 		$item = $this->MerchandiseItem->findById(intval($order_data['item_id']));
-		if(isset($item['MerchandiseItem'])){
 
+		//agent's stock
+		$agent_stock = $this->AgentItem->find('first',array(
+			'conditions'=>array('agent_id'=>$agent_id,
+								'merchandise_item_id'=>$order_data['item_id'])
+		));
 
-		
+		//stock before purchased
+		$current_stock = intval($agent_stock['AgentItem']['qty']);
+		//stock after purchased
+		$new_stock = $current_stock - intval($order_data['qty']);
+
+		if(isset($item['MerchandiseItem']) && $new_stock >= 0 && $current_stock > 0){
 			$total_price = intval($item['MerchandiseItem']['price_money']) * intval($order_data['qty']);
 			
 			$data = $order_data;
@@ -4470,6 +4485,8 @@ class ApiController extends AppController {
 			$rs = $this->AgentOrder->save($data);
 			$order_id = $this->AgentOrder->getInsertID();
 			if(intval($order_id) > 0){
+				//reduce the stock
+				$this->reduceAgentStock($agent_id,$order_data['item_id'],$order_data['qty']);
 				return $order_id;
 			}else{
 				return 0;
@@ -4477,6 +4494,10 @@ class ApiController extends AppController {
 		}else{
 			return 0;
 		}
+	}
+	private function reduceAgentStock($agent_id,$item_id,$qty){
+		return $this->Game->query("UPDATE fantasy.agent_items SET qty = qty - {$qty} 
+							WHERE agent_id={$agent_id} AND merchandise_item_id={$item_id}");
 	}
 	/*
 	* generate ticket voucher, and saves it in fantasy.merchandise_vouchers

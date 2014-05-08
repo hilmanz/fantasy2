@@ -225,7 +225,7 @@ function triggerEvents(newData,oldData,done){
 		});
 		console.log(uri);*/
 		var options = {
-			url:'http://fast-peak-8943.herokuapp.com/fm_receiver',
+			url:'http://10.0.1.86:3000/fm_receiver',
 			body:JSON.stringify(live_events),
 			method:'POST'
 		};
