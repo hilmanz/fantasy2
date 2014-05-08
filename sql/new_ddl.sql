@@ -304,3 +304,5 @@ CREATE TABLE fantasy.agent_items (
   UNIQUE KEY `UNIQUE_ITEMS` (`agent_id`,`merchandise_item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+ALTER TABLE `fantasy`.`agent_vouchers`     ADD COLUMN `agent_id` INT(11) NULL AFTER `id`;
+ALTER TABLE `fantasy`.`agent_vouchers` DROP KEY `IDX_VOUCHER`, ADD INDEX `IDX_VOUCHER` (`agent_id`, `agent_order_id`, `merchandise_item_id`, `voucher_code`);

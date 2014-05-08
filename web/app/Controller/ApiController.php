@@ -4357,8 +4357,181 @@ class ApiController extends AppController {
 		}
 		$this->render('default');
 	}
+	/*
+	* API for vieweing the request quota history
+	* /api/agent_orders?agent_id=[n]&start=0&total=10
+	* Response :JSON
+	*/
+	public function agent_orders(){
+		$this->layout="ajax";
 
+		$agent_id = intval(@$this->request->query['agent_id']);
+		$start = intval(@$this->request->query['start']);
+		$total = intval(@$this->request->query['total']);
+		
+		if($total > 20){
+			$total = 20;
+		}else if($total==0){
+			$total = 10;
+		}else{}
+
+		$token = @$this->request->query['token'];
+
+		if($agent_id > 0){
+			if($this->agent_validate($agent_id,$token)){
+				//do something
+				$rs = $this->getAgentOrders($agent_id,$start,$total);
+				$this->set('response',array('status'=>1,'data'=>$rs));
+			}else{
+				$this->set('response',array('status'=>0,'error'=>'invalid token'));
+			}
+		}else{
+			$this->set('response',array('status'=>0,'error'=>'invalid agent'));
+		}
+		$this->render('default');
+	}
+	/*
+	* API for vieweing the request quota history
+	* POST :  /api/agent_checkout/
+	* PostData : ?agent_id=[n]&d=[hashed_data]
+	* Response :JSON
+	*/
+	public function agent_checkout(){
+		$this->layout="ajax";
+
+		$agent_id = intval(@$this->request->data['agent_id']);
+		
+		$order_data = unserialize(decrypt_param(@$this->request->data['d']));
+
+		$token = @$this->request->data['token'];
+
+		$po_number = '1001'.$agent_id.'-'.date("YmdHis").'-'.rand(1000,9999);
+
+		if($agent_id > 0){
+			if($this->agent_validate($agent_id,$token)){
+				//save order
+				$order_id = $this->saveAgentOrder($agent_id,$po_number,$order_data);
+				if($order_id > 0){
+					//generate vouchers
+					$this->generateAgentVouchers($agent_id,$order_id,$po_number,
+													$order_data['item_id'],$order_data['qty']);
+					$this->set('response',array('status'=>1,
+												'data'=>array('po_number'=>$po_number,
+															'order_id'=>$order_id,
+															'item_id'=>$order_data['item_id'],
+															'qty'=>$order_data['qty'])));	
+				}else{
+					$this->set('response',array('status'=>0,'error'=>'cannot complete the purchase'));
+				}
+				
+				
+			}else{
+				$this->set('response',array('status'=>0,'error'=>'invalid token'));
+			}
+		}else{
+			$this->set('response',array('status'=>0,'error'=>'invalid agent'));
+		}
+		$this->render('default');
+	}
+	private function saveAgentOrder($agent_id,$po_number,$order_data){
+		$this->loadModel('MerchandiseItem');
+		
+		$item = $this->MerchandiseItem->findById(intval($order_data['item_id']));
+		if(isset($item['MerchandiseItem'])){
+
+
+		
+			$total_price = intval($item['MerchandiseItem']['price_money']) * intval($order_data['qty']);
+			
+			$data = $order_data;
+
+			$shopping_cart = array(
+				array('item_id'=>$order_data['item_id'],
+					'qty'=>$order_data['qty'],
+					'data'=>$item)
+			);
+			$data['merchandise_item_id'] = $order_data['item_id'];
+			$data['user_id'] = 0;
+			$data['order_type'] = 1;
+			$data['game_team_id'] = 0;
+			$data['agent_id'] = $agent_id;
+			$data['n_status'] = 3;
+			$data['order_date'] = date("Y-m-d H:i:s");
+			$data['data'] = serialize($shopping_cart);
+			$data['po_number'] = $po_number;
+			$data['total_sale'] = intval($total_price);
+			$data['payment_method'] = 'direct';
+			$data['trace_code'] = 0;
+			$data['ongkir_id'] = intval(@$data['city_id']);
+			$data['ongkir_value'] = 0;
+			
+			$this->loadModel('AgentOrder');
+			$this->AgentOrder->create();
+			$rs = $this->AgentOrder->save($data);
+			$order_id = $this->AgentOrder->getInsertID();
+			if(intval($order_id) > 0){
+				return $order_id;
+			}else{
+				return 0;
+			}
+		}else{
+			return 0;
+		}
+	}
+	/*
+	* generate ticket voucher, and saves it in fantasy.merchandise_vouchers
+	*/
+	private function generateAgentVouchers($agent_id,$order_id,$po_number,$item_id,$qty){
+		
+		$n_vouchers = 0;
+		$no = 1;
+		$qty = intval($qty);
+		
+			for($j=0;$j < $qty;$j++){
+				$voucher_code = $po_number.$no;
+				CakeLog::write('generateAgentVoucher',date("Y-m-d H:i:s")." - ".$po_number.' - '.$voucher_code);
+				
+				$sql = "
+				INSERT IGNORE INTO fantasy.agent_vouchers
+				(agent_id,agent_order_id,merchandise_item_id,voucher_code,created_dt,n_status)
+				VALUES
+				({$agent_id},
+				{$order_id},
+				 {$item_id},
+				 '{$voucher_code}',
+				 NOW(),
+				 0)";
+				CakeLog::write('generateAgentVoucher',' - >'.$sql);
+				$rs = $this->Game->query($sql);
+				
+				$no++;
+				$n_vouchers++;
+				
+			}
+			
+		return $n_vouchers;
+	}
 	private function getAgentRequestHistory($agent_id,$start,$total){
+		$this->loadModel('AgentRequest');
+		$rs = $this->AgentRequest->query("SELECT * FROM 
+											fantasy.agent_requests a
+											INNER JOIN fantasy.merchandise_items b
+											ON a.merchandise_item_id = b.id
+											INNER JOIN fantasy.merchandise_items c
+											ON b.parent_id = c.id
+											WHERE a.agent_id = {$agent_id}
+											LIMIT {$start},{$total};");
+		$items = array();
+		for($i=0;$i<sizeof($rs);$i++){
+			$item = $rs[$i]['a'];
+			$item['item_name'] = $rs[$i]['c']['name'].' '.$rs[$i]['c']['name'];
+			$item['price'] = $rs[$i]['b']['price_money'];
+			$item['data'] = json_decode($rs[$i]['b']['data']);
+			$items[] = $item;
+		}
+		return $items;
+	}
+	private function getAgentOrders($agent_id,$start,$total){
 		$this->loadModel('AgentRequest');
 		$rs = $this->AgentRequest->query("SELECT * FROM 
 											fantasy.agent_requests a

@@ -30,6 +30,7 @@ class MerchandisesController extends AppController {
 		$this->loadModel('MerchandiseCategory');
 		$this->loadModel('MerchandiseOrder');
 		$this->loadModel('Ongkir');
+		$this->loadModel('DigitalPerk');
 
 		$userData = $this->getUserData();
 		$user = $this->userDetail;
