@@ -103,12 +103,12 @@ function processGameId(conn,game_id,done){
 			});
 		},
 		function(match_info,lineup,subs,goals,cb){
-			getStats(conn,match_info,function(err,stats){
-				cb(err,match_info,lineup,subs,goals,stats);
+			getStats(conn,match_info,function(err,stats,allstats){
+				cb(err,match_info,lineup,subs,goals,stats,allstats);
 			});
 		},
-		function(match_info,lineup,subs,goals,stats,cb){
-			generateResultData(match_info,lineup,subs,goals,stats,function(err,result){
+		function(match_info,lineup,subs,goals,stats,allstats,cb){
+			generateResultData(match_info,lineup,subs,goals,stats,allstats,function(err,result){
 				cb(null,result);
 			});
 		},
@@ -207,24 +207,32 @@ function triggerEvents(newData,oldData,done){
 	live_events = checkGKSaveEvents(newData,oldData,live_events);
 
 	for(var n in live_events){
-		if(live_events[n] == 1){
+		if(live_events[n] != 0){
 			has_new_events = true;
 		}
 	}
 	//bungkus
+	live_events.matchtime = newData.match_info.matchtime;
 	newData.events = live_events;
 	
 	if(has_new_events){
 		//send events
-		var uri = url.format({
+		/*var uri = url.format({
 			protocol:'http',
 			host:'fast-peak-8943.herokuapp.com',
 			pathname:'fm_receiver',
 			query:live_events
 		});
-		console.log(uri);
-		request(uri,
+		console.log(uri);*/
+		var options = {
+			url:'http://fast-peak-8943.herokuapp.com/fm_receiver',
+			body:JSON.stringify(live_events),
+			method:'POST'
+		};
+		console.log('SENDING to ',options);
+		request(options,
 				function(err,response,body){
+					console.log('response : ',body);
 					done(null,newData);
 				});
 	}else{
@@ -236,92 +244,159 @@ function triggerEvents(newData,oldData,done){
 }
 
 function checkGKSaveEvents(new_data,old_data,live_events){
+	var has_event = false;
 	if(old_data == null){
 		if(new_data.home.stats.gk_save > 0 || new_data.away.stats.gk_save > 0){
-			live_events.GKSave = 1;
+			has_event = true;
 		}
 	}else{
 		if(old_data.home.stats.gk_save != new_data.home.stats.gk_save){
-			live_events.GKSave = 1;
+			has_event = true;
 		}
 		if(old_data.away.stats.gk_save != new_data.away.stats.gk_save){
-			live_events.GKSave = 1;
+			has_event = true;
 		}
+	}
+	if(has_event){
+		
+		var home_event = comparePlayerStats(new_data.home.team_id,'gk_save',new_data,old_data);
+		var away_event = comparePlayerStats(new_data.away.team_id,'gk_save',new_data,old_data);
+		live_events.GKSave = {
+			home:home_event,
+			away:away_event
+		};
+		
 	}
 	return live_events;
 }
 function checkRedEvents(new_data,old_data,live_events){
+	var has_event = false;
 	if(old_data == null){
 		if(new_data.home.stats.red_card > 0 || new_data.away.stats.red_card > 0){
-			live_events.RedCard = 1;
+			has_event = true;
 		}
 	}else{
 		if(old_data.home.stats.red_card != new_data.home.stats.red_card){
-			live_events.RedCard = 1;
+			has_event = true;
 		}
 		if(old_data.away.stats.red_card != new_data.away.stats.red_card){
-			live_events.RedCard = 1;
+			has_event = true;
 		}
+	}
+	if(has_event){
+		
+		var home_event = comparePlayerStats(new_data.home.team_id,'yellow_card',new_data,old_data);
+		var away_event = comparePlayerStats(new_data.away.team_id,'yellow_card',new_data,old_data);
+		live_events.RedCard = {
+			home:home_event,
+			away:away_event
+		};
+		
 	}
 	return live_events;
 }
 function checkYellowEvents(new_data,old_data,live_events){
+	var has_event = false;
 	if(old_data == null){
 		if(new_data.home.stats.yellow_card > 0 || new_data.away.stats.yellow_card > 0){
-			live_events.YellowCard = 1;
+			has_event = true;
 		}
 	}else{
 		if(old_data.home.stats.yellow_card != new_data.home.stats.yellow_card){
-			live_events.YellowCard = 1;
+			has_event = true;
 		}
 		if(old_data.away.stats.yellow_card != new_data.away.stats.yellow_card){
-			live_events.YellowCard = 1;
+			has_event = true;
 		}
+	}
+	if(has_event){
+		
+		var home_event = comparePlayerStats(new_data.home.team_id,'yellow_card',new_data,old_data);
+		var away_event = comparePlayerStats(new_data.away.team_id,'yellow_card',new_data,old_data);
+		live_events.YellowCard = {
+			home:home_event,
+			away:away_event
+		};
+		
 	}
 	return live_events;
 }
 function checkThrowsEvents(new_data,old_data,live_events){
+	var has_event = false;
 	if(old_data == null){
 		if(new_data.home.stats.throwin > 0 || new_data.away.stats.throwin > 0){
-			live_events.throwin = 1;
+			has_event = true;
 		}
 	}else{
 		if(old_data.home.stats.throwin != new_data.home.stats.throwin){
-			live_events.throwin = 1;
+			has_event = true;
 		}
 		if(old_data.away.stats.throwin != new_data.away.stats.throwin){
-			live_events.throwin = 1;
+			has_event = true;
 		}
+	}
+	if(has_event){
+		
+		var home_event = comparePlayerStats(new_data.home.team_id,'total_throws',new_data,old_data);
+		var away_event = comparePlayerStats(new_data.away.team_id,'total_throws',new_data,old_data);
+		live_events.throwin = {
+			home:home_event,
+			away:away_event
+		};
+		
 	}
 	return live_events;
 }
 function checkShotEvents(new_data,old_data,live_events){
+	var has_event = false;
 	if(old_data == null){
 		if(new_data.home.stats.shot > 0 || new_data.away.stats.shot > 0){
-			live_events.shot = 1;
+			has_event = true;
 		}
 	}else{
 		if(old_data.home.stats.shot != new_data.home.stats.shot){
-			live_events.shot = 1;
+			has_event = true;
 		}
 		if(old_data.away.stats.shot != new_data.away.stats.shot){
-			live_events.shot = 1;
+			has_event = true;
 		}
+	}
+	if(has_event){
+		
+		var home_event = comparePlayerStats(new_data.home.team_id,'total_scoring_att',new_data,old_data);
+		var away_event = comparePlayerStats(new_data.away.team_id,'total_scoring_att',new_data,old_data);
+		live_events.shot = {
+			home:home_event,
+			away:away_event
+		};
+		
 	}
 	return live_events;
 }
+
 function checkCornerEvents(new_data,old_data,live_events){
+	var has_event = false;
 	if(old_data == null){
 		if(new_data.home.stats.corner > 0 || new_data.away.stats.corner > 0){
-			live_events.corner = 1;
+			has_event = true;
 		}
 	}else{
 		if(old_data.home.stats.corner != new_data.home.stats.corner){
-			live_events.corner = 1;
+			has_event = true;
 		}
 		if(old_data.away.stats.corner != new_data.away.stats.corner){
-			live_events.corner = 1;
+			has_event = true;
 		}
+	}
+	if(has_event){
+		
+		var home_event = comparePlayerStats(new_data.home.team_id,'corner',new_data,old_data);
+		var away_event = comparePlayerStats(new_data.away.team_id,'corner',new_data,old_data);
+		live_events.corner = {
+			home:home_event,
+			away:away_event
+		};
+		
 	}
 	return live_events;
 }
@@ -366,6 +441,77 @@ function checkGoalEvents(new_data,old_data,live_events){
 	}
 	return live_events;
 }
+function comparePlayerStats(team_id,stats_name,new_data,old_data){
+	//get new_data players
+	if(stats_name == 'corner'){
+		console.log('corner !');
+		players1 = getPlayerCorners(team_id,new_data);
+		players2 = getPlayerCorners(team_id,old_data);
+	}else{
+		players1 = getPlayerStats(team_id,stats_name,new_data);
+		players2 = getPlayerStats(team_id,stats_name,old_data);	
+	}
+	
+	
+	console.log('players1',players1);
+	console.log('players2',players2);
+	var new_stats = [];
+	for(var i in players1){
+		var is_found = false;
+		for(var j in players2){
+			if(players1[i].player_id == players2[j].player_id){
+				is_found = true;
+				//compare the total
+				if(players1[i].total > players2[j].total){
+					new_stats.push(players1[i]);
+				}
+			}
+		}
+		if(!is_found){
+			//kalo data lama gak ada,  kita push data player ybs langsung ke events
+			if(players1[i].total > 0){
+				new_stats.push(players1[i]);
+			}
+		}
+		
+	}
+	return new_stats;
+}
+function getPlayerCorners(team_id,data){
+	var stats1 = getPlayerStats(team_id,'total_cross',data);
+	var stats2 = getPlayerStats(team_id,'total_cross_nocorner',data);
+	var rs = [];
+	for(var i in stats1){
+		for(var j in stats2){
+			if(stats2[j].player_id == stats1[i].player_id){
+				stats1[i].stats_name = 'corner';
+				stats1[i].total = stats1[i].total - stats2[j].total;
+				if(stats1[i].total > 0){
+					rs.push(stats1[i]);
+				}
+			}
+		}
+	}
+	return rs;
+}
+function getPlayerStats(team_id,stats_name,data){
+	var players = [];
+	
+	console.log('team_id',team_id,'stats_name',stats_name);
+	if(data!=null){
+		for(var i in data.overall){
+			console.log(data[i]);
+			console.log('check',data.overall[i].team_id,'==',team_id);
+			if(data.overall[i].team_id == team_id){
+				console.log('check',data.overall[i].stats_name,'==',stats_name);
+				if(data.overall[i].stats_name == stats_name){
+					players.push(data.overall[i]);
+				}
+			}
+		}
+	}
+	return players;
+}
 function checkSubsEvents(new_data,old_data,live_events){
 	if(old_data == null){
 
@@ -407,7 +553,7 @@ function checkSubsEvents(new_data,old_data,live_events){
 	}
 	return live_events;
 }
-function generateResultData(match_info,lineup,subs,goals,stats,done){
+function generateResultData(match_info,lineup,subs,goals,stats,allstats,done){
 	console.log(match_info);
 	var result = {
 		match_info:match_info,
@@ -447,12 +593,12 @@ function generateResultData(match_info,lineup,subs,goals,stats,done){
 			subs:subs.away,
 			goals:goals.away
 		},
+		overall: allstats
 		
 	};
 	done(null,result);
 }
 function getStats(conn,match_info,done){
-	
 	async.waterfall([
 			function(cb){
 				getMatchStats(conn,match_info.game_id,function(err,all_stats){
@@ -461,14 +607,14 @@ function getStats(conn,match_info,done){
 			},
 			function(all_stats,cb){
 				distributePoints(match_info,all_stats,function(err,rs){
-					cb(err,rs);
+					cb(err,rs,all_stats);
 				});
 			}
 		],
-		function(err,stats){
+		function(err,stats,all_stats){
 			//final product
 			//console.log(stats);
-			done(err,stats);
+			done(err,stats,all_stats);
 		});
 	
 }

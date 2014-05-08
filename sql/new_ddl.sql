@@ -303,3 +303,4 @@ CREATE TABLE fantasy.agent_items (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQUE_ITEMS` (`agent_id`,`merchandise_item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
