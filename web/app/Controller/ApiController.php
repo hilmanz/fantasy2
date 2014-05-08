@@ -4552,22 +4552,27 @@ class ApiController extends AppController {
 		}
 		return $items;
 	}
+	/**
+	* basically it returns all the vouchers
+	*/
 	private function getAgentOrders($agent_id,$start,$total){
 		$this->loadModel('AgentRequest');
-		$rs = $this->AgentRequest->query("SELECT * FROM 
-											fantasy.agent_requests a
-											INNER JOIN fantasy.merchandise_items b
-											ON a.merchandise_item_id = b.id
-											INNER JOIN fantasy.merchandise_items c
-											ON b.parent_id = c.id
-											WHERE a.agent_id = {$agent_id}
-											LIMIT {$start},{$total};");
+		$this->loadModel('MerchandiseItem');
+		$rs = $this->AgentRequest->query("SELECT * FROM fantasy.agent_vouchers a
+											INNER JOIN fantasy.agent_orders b
+											ON a.agent_order_id = b.id
+											WHERE a.agent_id = {$agent_id} 
+											ORDER BY a.id DESC LIMIT {$start},{$total};");
 		$items = array();
 		for($i=0;$i<sizeof($rs);$i++){
-			$item = $rs[$i]['a'];
-			$item['item_name'] = $rs[$i]['c']['name'].' '.$rs[$i]['c']['name'];
-			$item['price'] = $rs[$i]['b']['price_money'];
-			$item['data'] = json_decode($rs[$i]['b']['data']);
+			$item = $rs[$i]['b'];
+			$item['voucher_code'] = $rs[$i]['a']['voucher_code'];
+			$item_data = unserialize($rs[$i]['b']['data']);
+			
+			$item_parent = $this->MerchandiseItem->findById($item_data[0]['data']['MerchandiseItem']['parent_id']);
+			
+			$item['data'] = json_decode($item_data[0]['data']['MerchandiseItem']['data'] );
+			$item['item_name'] = $item_parent['MerchandiseItem']['name'].' '.$item_data[0]['data']['MerchandiseItem']['name'];
 			$items[] = $item;
 		}
 		return $items;
