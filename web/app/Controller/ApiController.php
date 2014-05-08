@@ -4451,7 +4451,7 @@ class ApiController extends AppController {
 		));
 
 		//stock before purchased
-		$current_stock = intval($agent_stock['AgentItem']['qty']);
+		$current_stock = intval(@$agent_stock['AgentItem']['qty']);
 		//stock after purchased
 		$new_stock = $current_stock - intval($order_data['qty']);
 
