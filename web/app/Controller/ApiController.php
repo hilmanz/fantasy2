@@ -4246,9 +4246,10 @@ class ApiController extends AppController {
 		if(strlen($email) > 0 && strlen($password) > 0){
 			$this->loadModel('Agent');
 			$agent = $this->Agent->findByEmail($email);
-			$secret = $agent['Agent']['secret'];
+			$secret = @$agent['Agent']['secret'];
 			$hash = sha1($email.$password.$secret);
-			if($agent['Agent']['password'] == $hash){
+
+			if(@$agent['Agent']['password'] == $hash){
 				$status = 1;
 				$token = encrypt_param(serialize(array(
 							'name'=>$agent['Agent']['name'],
@@ -4257,15 +4258,16 @@ class ApiController extends AppController {
 							'login_dt'=>date("Y-m-d H:i:s"),
 							'ts'=>time()
 						 )));
-			}else{
-				$status = 0;
-				$token = '';
-			}
-			$data = array(
+				$data = array(
 							'name'=>$agent['Agent']['name'],
 							'email'=>$agent['Agent']['email'],
 							'agent_id'=>$agent['Agent']['id']
 						 );
+			}else{
+				$status = 0;
+				$token = '';
+				$data = '';
+			}
 			$this->set('response',array('status'=>$status,'token'=>$token,'data'=>$data));
 		}else{
 			$this->set('response',array('status'=>0));
