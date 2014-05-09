@@ -4451,7 +4451,7 @@ class ApiController extends AppController {
 		));
 
 		//stock before purchased
-		$current_stock = intval($agent_stock['AgentItem']['qty']);
+		$current_stock = intval(@$agent_stock['AgentItem']['qty']);
 		//stock after purchased
 		$new_stock = $current_stock - intval($order_data['qty']);
 
@@ -4573,6 +4573,7 @@ class ApiController extends AppController {
 			
 			$item['data'] = json_decode($item_data[0]['data']['MerchandiseItem']['data'] );
 			$item['item_name'] = $item_parent['MerchandiseItem']['name'].' '.$item_data[0]['data']['MerchandiseItem']['name'];
+			$item['voucher_id'] = $rs[$i]['a']['voucher_code'];
 			$items[] = $item;
 		}
 		return $items;
