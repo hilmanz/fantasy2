@@ -641,4 +641,140 @@ class MerchandisesController extends AppController {
 			return array('id'=>0);
 		}
 	}
+
+	//methods for ticket agents
+	public function agent($sub=null,$id=null){
+		switch($sub){
+			case 'request':
+				$this->showAgentRequests();
+			break;
+			case 'approve_request':
+				$this->approveAgentRequest($id);
+			break;
+			case 'reject_request':
+				$this->rejectAgentRequest($id);
+			break;
+			default:
+				$this->showAgentList();
+			break;
+		}
+	}
+	/*
+	* upon approving request, the following steps will occur : 
+	* 1.  check if the stock is sufficient.
+		   n_stock = total_stock - claimed_stock
+	* 2. update agent_request n_status to 1
+	* 3. add stock to agent_item
+	* 4. reduce master stock (merchandise_items)
+	* 
+	*/
+	private function approveAgentRequest($request_id){
+		$this->loadModel('Agent');
+		$this->loadModel('AgentRequest');
+		$this->loadModel('MerchandiseItem');
+
+		$req = $this->AgentRequest->findById($request_id);
+		$item = $this->MerchandiseItem->findById($req['AgentRequest']['merchandise_item_id']);
+		$stock_left = intval($item['MerchandiseItem']['stock']) - 
+					  intval($this->getClaimedStock($req['AgentRequest']['merchandise_item_id']));
+		
+		if($stock_left < intval($req['AgentRequest']['request_quota'])){
+			$request_quota = $stock_left;
+		}else{
+			$request_quota = intval($req['AgentRequest']['request_quota']);
+		}
+		if($stock_left > 0 && $req['AgentRequest']['n_status'] == 0){
+			$this->AgentRequest->id = $request_id;
+			$rs = $this->AgentRequest->save(array('n_status'=>1));
+			if(isset($rs['AgentRequest']) && $rs['AgentRequest']['n_status'] == 1){
+				$rs = $this->transferStockToAgent($req['AgentRequest']['agent_id'],$item,$request_quota);
+				if($rs){
+					$this->Session->setFlash('Request successfully approved !');	
+				}else{
+					$this->Session->setFlash('Unable to transfer the item stocks !');	
+				}
+			}
+		}else{
+			$this->Session->setFlash('Maaf, stock tidak cukup !');
+		}
+		$this->redirect('/merchandises/agent/request');
+	}
+	private function rejectAgentRequest($request_id){
+		$this->loadModel('Agent');
+		$this->loadModel('AgentRequest');
+		$this->loadModel('MerchandiseItem');
+
+		
+		$this->AgentRequest->id = $request_id;
+		$rs = $this->AgentRequest->save(array('n_status'=>2));
+		
+		$this->Session->setFlash('Request telah ditolak !');
+		
+		$this->redirect('/merchandises/agent/request');
+	}
+	private function transferStockToAgent($agent_id,$item,$request_quota){
+		$rs1 = $this->MerchandiseItem->query("UPDATE merchandise_items SET stock = stock - {$request_quota}
+										WHERE id = {$item['MerchandiseItem']['id']};",false);
+
+
+		$rs2 = $this->AgentRequest->query("INSERT INTO agent_items(agent_id,merchandise_item_id,qty,last_update,n_status) 
+									VALUES({$agent_id},{$item['MerchandiseItem']['id']},{$request_quota},NOW(),1)
+									ON DUPLICATE KEY UPDATE
+									qty = qty + VALUES(qty);");
+		
+		return true;
+	}
+	private function showAgentRequests(){
+		$this->loadModel('Agent');
+		$this->loadModel('AgentRequest');
+		$this->loadModel('MerchandiseItem');
+		$this->paginate = array('limit'=>10,
+								'conditions'=>array('AgentRequest.n_status'=>0),
+								'order'=>array('AgentRequest.id'=>'desc'));
+		$rs = $this->paginate('AgentRequest');
+		for($i=0; $i<sizeof($rs);$i++){
+			//agent
+			$agent = $this->Agent->findById($rs[$i]['AgentRequest']['agent_id']);
+			$rs[$i]['Agent'] = $agent['Agent'];
+			//item
+			$item = $this->MerchandiseItem->findById($rs[$i]['AgentRequest']['merchandise_item_id']);
+			//parent item
+			$parent = $this->MerchandiseItem->findById($item['MerchandiseItem']['parent_id']);
+			if(isset($parent['MerchandiseItem'])){
+				$item['MerchandiseItem']['name'] = $parent['MerchandiseItem']['name'].
+													' - '.$item['MerchandiseItem']['name'];
+			}
+			$rs[$i]['Item'] = $item['MerchandiseItem'];
+			$rs[$i]['Item']['stock'] = intval($rs[$i]['Item']['stock']) - 
+											intval($this->getClaimedStock($rs[$i]['Item']['id']));
+		}
+
+		$this->set('rs',$rs);
+
+		$this->render('agent_requests');
+
+	}
+	private function showAgentList(){
+		$this->loadModel('Agent');
+		$this->paginate = array('limit'=>10,
+								'order'=>array('Agent.name'));
+		$agents = $this->paginate('Agent');
+		$this->set('agents',$agents);
+	}
+	private function getClaimedStock($item_id){
+		$pattern = 'claim_stock_'.$item_id.'_*';
+		$claimed = $this->Game->getTmpKeys(0,
+								$pattern);
+		$total_claimed_qty = 0;
+		if($claimed['status']==1){
+			for($k=0;$k<sizeof($claimed['data']);$k++){
+				//pastikan yg kita cek itu bukan punya si user
+				$arr = explode("_",$claimed['data'][$k]);
+				$owner_id = $arr[3];
+				$claimed_qty = $this->Game->getFromTmp(0,$claimed['data'][$k]);
+				$total_claimed_qty += intval($claimed_qty['data']);	
+			}
+		}
+		return $total_claimed_qty;
+	}
 }

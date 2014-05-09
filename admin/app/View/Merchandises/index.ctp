@@ -6,6 +6,7 @@
 	<a href="<?=$this->Html->url('/merchandises/categories')?>" class="button">Categories</a>
 	<a href="<?=$this->Html->url('/merchandises/orders')?>" class="button">Purchase Orders</a>
 	<a href="<?=$this->Html->url('/merchandises/ticketorders')?>" class="button">Ticket Orders</a>
+	<a href="<?=$this->Html->url('/merchandises/agent')?>" class="button">Ticket Agent</a>
 	<a href="<?=$this->Html->url('/merchandises/ongkir')?>" class="button">Ongkos Kirim</a>
 </div>
 

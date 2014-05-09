@@ -277,4 +277,25 @@ class Game extends AppModel {
 									array('game_id'=>$game_id));
 		return $response;
 	}
+	//wrapper to redis
+	public function storeToTmp($game_team_id,$input_name,$input_value,$ttl = 86400){
+		$rs = $this->api_call('/storeToTmp',array(
+					'name'=>$input_name,
+					'value'=>$input_value,
+					'ttl'=>$ttl
+				));
+		return $rs;
+	}
+	public function getTmpKeys($game_team_id,$pattern){
+		$rs = $this->api_call('/getTmpKeys',array(
+					'pattern'=>$pattern
+					));
+		return $rs;
+	}
+	public function getFromTmp($game_team_id,$input_name){
+		
+		$rs = $this->api_call('/getFromTmp',array('name'=>$input_name));
+		return $rs;
+	}
+	//end of redis wrapper
 }
