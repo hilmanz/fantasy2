@@ -4626,8 +4626,8 @@ class ApiController extends AppController {
 		
 	}
 	private function setAgentReturnedQuota($agent_id,$item_id,$qty){
-		$this->loadModel('AgentReturnedQuota');
-		$this->AgentReturnedQuota->create();
+		$this->loadModel('AgentReturnedStock');
+		$this->AgentReturnedStock->create();
 		$data = array(
 			'agent_id'=>$agent_id,
 			'merchandise_item_id'=>$item_id,
@@ -4635,15 +4635,15 @@ class ApiController extends AppController {
 			'request_date'=>date("Y-m-d H:i:s"),
 			'n_status'=>0
 		);
-		$rs = $this->AgentReturnedQuota->save($data);
-		if(isset($rs['AgentReturnedQuota'])){
+		$rs = $this->AgentReturnedStock->save($data);
+		if(isset($rs['AgentReturnedStock'])){
 			
 			//reduce agent stock
 			$this->reduceAgentStock($agent_id,$item_id,$qty);
 			//increase ss stock
 			$this->Game->query("UPDATE fantasy.merchandise_items SET stock = stock + {$qty} 
 								WHERE id={$item_id}");
-			return $rs['AgentReturnedQuota'];	
+			return $rs['AgentReturnedStock'];	
 		}else{
 			return 0;
 		}
