@@ -4547,7 +4547,7 @@ class ApiController extends AppController {
 		$items = array();
 		for($i=0;$i<sizeof($rs);$i++){
 			$item = $rs[$i]['a'];
-			$item['item_name'] = $rs[$i]['c']['name'].' '.$rs[$i]['c']['name'];
+			$item['item_name'] = $rs[$i]['c']['name'].' - '.$rs[$i]['b']['name'];
 			$item['price'] = $rs[$i]['b']['price_money'];
 			$item['data'] = json_decode($rs[$i]['b']['data']);
 			$items[] = $item;
