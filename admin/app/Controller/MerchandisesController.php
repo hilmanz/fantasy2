@@ -659,6 +659,43 @@ class MerchandisesController extends AppController {
 			break;
 		}
 	}
+
+	public function agent_sales($agent_id = null)
+	{
+		if($agent_id != NULL)
+		{
+			$this->loadModel('AgentVoucher');
+			$this->paginate = array(
+									'fields' => 'AgentVoucher.voucher_code, AgentVoucher.created_dt, 
+												AgentOrder.po_number,AgentOrder.first_name,AgentOrder.last_name, 
+												AgentOrder.email, MerchandiseItem.name',
+									'joins' => array(
+										        array(
+										        	'table' => 'agent_orders',
+										            'alias' => 'AgentOrder',
+										            'type' => 'INNER',
+										            'conditions' => array(
+										                'AgentVoucher.agent_order_id = AgentOrder.id'
+										            )
+										        ),
+										        array(
+										        	'table' => 'merchandise_items',
+										            'alias' => 'MerchandiseItem',
+										            'type' => 'INNER',
+										            'conditions' => array(
+										                'AgentVoucher.merchandise_item_id = MerchandiseItem.id'
+										            )
+										        )
+										    ),
+									'limit'=>10,
+									'order'=>array('AgentVoucher.n_status'),
+									'conditions' => array('AgentVoucher.agent_id' => $agent_id));
+
+			$agent_sales = $this->paginate('AgentVoucher');
+			$this->set('agent_sales',$agent_sales);
+		}
+	}
+
 	/*
 	* upon approving request, the following steps will occur : 
 	* 1.  check if the stock is sufficient.

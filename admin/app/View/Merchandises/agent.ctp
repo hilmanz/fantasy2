@@ -33,7 +33,7 @@
 			<td>
 				<a href="#" class="button">View Profile</a>
 				<a href="#" class="button">View Stocks</a>
-				<a href="#" class="button">View Sales</a>
+				<a href="<?=$this->Html->url('/merchandises/agent_sales/'.$agent['Agent']['id'])?>" class="button">View Sales</a>
 			</td>
 		</tr>
 		<?php endforeach;?>	
