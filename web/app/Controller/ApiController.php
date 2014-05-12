@@ -4661,13 +4661,13 @@ class ApiController extends AppController {
 			return true;
 		}
 	}
-	private function getAgentCatalog(){
+	private function getAgentCatalog($agent_id){
 		$rs = $this->Game->query("SELECT a.id,a.parent_id,a.name,a.description,a.price_money as price,
 							b.qty,b.n_status,c.name AS parent_name,
 							c.description AS parent_description,a.data,1 AS agent_id
 							FROM fantasy.merchandise_items a
 							LEFT JOIN fantasy.agent_items b
-							ON a.id = b.merchandise_item_id AND b.agent_id = 1
+							ON a.id = b.merchandise_item_id AND b.agent_id = {$agent_id}
 							INNER JOIN fantasy.merchandise_items c
 							ON a.parent_id = c.id
 							WHERE a.merchandise_category_id= ".Configure::read('ticket_category_id')." 
