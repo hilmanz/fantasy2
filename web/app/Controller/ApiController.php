@@ -4671,7 +4671,7 @@ class ApiController extends AppController {
 							INNER JOIN fantasy.merchandise_items c
 							ON a.parent_id = c.id
 							WHERE a.merchandise_category_id= ".Configure::read('ticket_category_id')." 
-							AND a.parent_id <> 0 AND a.n_status = 1;");
+							AND a.parent_id <> 0 AND a.n_status = 1 LIMIT 1000;");
 		$items = array();
 		for($i=0;$i<sizeof($rs);$i++){
 			$item = $rs[$i]['a'];
