@@ -4331,7 +4331,7 @@ class ApiController extends AppController {
 	* /api/agent_return_quota?agent_id=[n]&item_id=[n]&qty=[n]
 	* Response :JSON
 	*/
-	public function agent_request_quota(){
+	public function agent_return_quota(){
 		$this->layout="ajax";
 
 		$agent_id = intval(@$this->request->query['agent_id']);
