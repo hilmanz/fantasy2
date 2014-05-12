@@ -4327,6 +4327,33 @@ class ApiController extends AppController {
 		$this->render('default');
 	}
 	/*
+	* api for returning item quotas
+	* /api/agent_return_quota?agent_id=[n]&item_id=[n]&qty=[n]
+	* Response :JSON
+	*/
+	public function agent_request_quota(){
+		$this->layout="ajax";
+
+		$agent_id = intval(@$this->request->query['agent_id']);
+		$item_id = intval(@$this->request->query['item_id']);
+		$qty = intval(@$this->request->query['qty']);
+
+		$token = @$this->request->query['token'];
+
+		if($agent_id > 0){
+			if($this->agent_validate($agent_id,$token)){
+				//do something
+				$rs = $this->setAgentReturnedQuota($agent_id,$item_id,$qty);
+				$this->set('response',array('status'=>1,'data'=>$rs));
+			}else{
+				$this->set('response',array('status'=>0,'error'=>'invalid token'));
+			}
+		}else{
+			$this->set('response',array('status'=>0,'error'=>'invalid agent'));
+		}
+		$this->render('default');
+	}
+	/*
 	* API for vieweing the request quota history
 	* /api/agent_request_quota?agent_id=[n]&start=0&total=10
 	* Response :JSON
@@ -4593,6 +4620,30 @@ class ApiController extends AppController {
 		$rs = $this->AgentRequest->save($data);
 		if(isset($rs['AgentRequest'])){
 			return $rs['AgentRequest'];	
+		}else{
+			return 0;
+		}
+		
+	}
+	private function setAgentReturnedQuota($agent_id,$item_id,$qty){
+		$this->loadModel('AgentReturnedQuota');
+		$this->AgentReturnedQuota->create();
+		$data = array(
+			'agent_id'=>$agent_id,
+			'merchandise_item_id'=>$item_id,
+			'returned_quota'=>$qty,
+			'request_date'=>date("Y-m-d H:i:s"),
+			'n_status'=>0
+		);
+		$rs = $this->AgentReturnedQuota->save($data);
+		if(isset($rs['AgentReturnedQuota'])){
+			
+			//reduce agent stock
+			$this->reduceAgentStock($agent_id,$item_id,$qty);
+			//increase ss stock
+			$this->Game->query("UPDATE fantasy.merchandise_items SET stock = stock + {$qty} 
+								WHERE id={$item_id}");
+			return $rs['AgentReturnedQuota'];	
 		}else{
 			return 0;
 		}

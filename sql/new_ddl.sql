@@ -306,3 +306,14 @@ CREATE TABLE fantasy.agent_items (
 
 ALTER TABLE `fantasy`.`agent_vouchers`     ADD COLUMN `agent_id` INT(11) NULL AFTER `id`;
 ALTER TABLE `fantasy`.`agent_vouchers` DROP KEY `IDX_VOUCHER`, ADD INDEX `IDX_VOUCHER` (`agent_id`, `agent_order_id`, `merchandise_item_id`, `voucher_code`);
+
+CREATE TABLE fantasy.agent_returned_stocks (
+  `id` bigint(21) NOT NULL AUTO_INCREMENT,
+  `agent_id` int(11) DEFAULT NULL,
+  `merchandise_item_id` bigint(11) DEFAULT NULL,
+  `returned_quota` int(5) DEFAULT '0',
+  `request_date` datetime DEFAULT NULL,
+  `n_status` tinyint(3) DEFAULT '0' COMMENT '0->pending, 1->approved, 2->rejected',
+  PRIMARY KEY (`id`),
+  KEY `IDX_AGENT_ITEM_REQUEST` (`agent_id`,`merchandise_item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

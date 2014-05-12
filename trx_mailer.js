@@ -74,7 +74,8 @@ app.post('/send', [],function(req,res){
 	sendMail(mailOptions,function(err,responseStatus){
 		if(err){
 			res.send(200,{status:0,
-					  responseStatus:responseStatus});	
+					  responseStatus:responseStatus,
+					  err:err.message});	
 		}else{
 			res.send(200,{status:1,
 					  responseStatus:responseStatus});
