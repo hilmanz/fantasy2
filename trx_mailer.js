@@ -28,8 +28,8 @@ var transport = nodemailer.createTransport("SMTP",{
 			    	secureConnection: true, // use SSL
 			    	port: 465, // port for secure SMTP
 			    	auth: {
-			        	user: "postmaster@sandbox6048e62f52c444e28b8529f4e62f0c1e.mailgun.org",
-			        	pass: "22q7hrefk9j8"
+			        	user: config.mailgun.user,
+			        	pass: config.mailgun.pass
 			    	}
 			    });
 
@@ -62,7 +62,7 @@ app.post('/send', [],function(req,res){
 	
 	
 	var mailOptions = {
-	    from: 'postmaster@sandbox6048e62f52c444e28b8529f4e62f0c1e.mailgun.org',
+	    from: config.mailgun.user,
 	    to: req.body.to,
 	    subject: req.body.subject,
 	    generateTextFromHTML:true,
