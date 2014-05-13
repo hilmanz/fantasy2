@@ -34,7 +34,7 @@ exports.config = {
 	mailgun:{
 		//user: "postmaster@sandbox6048e62f52c444e28b8529f4e62f0c1e.mailgun.org",
 		//pass: "22q7hrefk9j8"
-		user: "postmaster@supersoccer.co.id",
-		pass: "8zxfyu7rg1m4"
+		user: "postmaster@mg.supersoccer.co.id",
+		pass: "7xr67iht6bu6"
 	}
 };

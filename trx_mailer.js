@@ -37,7 +37,7 @@ var secret = 'x4asd1!234@!42b4b00n5';
 var app = express();
 var RedisStore = require('connect-redis')(express);
 var queues = [];
-app.set('port', 3102);
+app.set('port', 3103);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(express.favicon());
