@@ -87,10 +87,113 @@ app.get('/get/:game_id',[],function(req,res){
 	});
 });
 
+app.get('/livestats/:game_id',[],function(req,res){
+	
+	var game_id = req.params.game_id;
+	async.waterfall([
+		function(cb){
+			client.get('teamstats_'+game_id,function(err,rs){
+				cb(err,JSON.parse(rs));
+			});
+		},
+		function(teamstats,cb){
+			client.get('goals_'+game_id,function(err,rs){
+				cb(err,teamstats,JSON.parse(rs));
+			});
+		},
+		function(teamstats,goals,cb){
+			client.get('playerrefs_'+game_id,function(err,rs){
+				cb(err,teamstats,goals,JSON.parse(rs));
+			});
+		},
+		function(teamstats,goals,playerrefs,cb){
+			client.get('fixture_'+game_id,function(err,rs){
+				cb(err,teamstats,goals,playerrefs,JSON.parse(rs));
+			});
+		},
+		function(teamstats,goals,playerrefs,fixture,cb){
+			client.get('accstats_'+game_id,function(err,rs){
+				cb(err,teamstats,goals,playerrefs,fixture,JSON.parse(rs));
+			});
+		},
+		function(teamstats,goals,playerrefs,fixture,player_stats,cb){
+			reformatResults(teamstats,goals,playerrefs,fixture,player_stats,function(err,rs){
+				cb(err,rs);
+			});
+		}
+	],
+	function(err,rs){
+		res.send(200,{status:1,data:rs});
+	});
+});
+
 http.createServer(app).listen(3999, function(){
   console.log('ready');
 });
 
+
+
+function reformatResults(teamstats,goals,playerrefs,fixture,player_stats,done){
+	
+	var team_stats = formatTeamStats(teamstats);
+	var goals = formatGoalStats(goals);
+	var players = formatPlayerRefs(playerrefs);
+	//var player_stats = formatPlayerStats(player_stats);
+
+
+	done(null,{
+		team_stats:team_stats,
+		goals:goals,
+		lineup:players,
+		matchinfo:fixture
+	});
+}
+
+function formatPlayerRefs(data){
+	var stats = {};
+	//console.log(goals);
+	
+	for(var i in data){
+		if(typeof stats[data[i].team_id] === 'undefined'){
+			stats[data[i].team_id] = [];
+
+		}
+		
+		stats[data[i].team_id].push(data[i]);
+	}
+	
+	return stats;
+}
+function formatGoalStats(goals){
+	var stats = {};
+	//console.log(goals);
+	
+	for(var i in goals){
+		if(typeof stats[goals[i].team_id] === 'undefined'){
+			stats[goals[i].team_id] = [];
+
+		}
+		
+		stats[goals[i].team_id].push(goals[i]);
+	}
+	
+	return stats;
+}
+function formatTeamStats(teamstats){
+	var stats = {};
+
+	for(var i in teamstats){
+		if(typeof stats[teamstats[i].team_id] === 'undefined'){
+			stats[teamstats[i].team_id] = {};
+
+		}
+		if(typeof stats[teamstats[i].team_id][teamstats[i].stats_name] === 'undefined'){
+			stats[teamstats[i].team_id][teamstats[i].stats_name] = 0;
+		}
+		stats[teamstats[i].team_id][teamstats[i].stats_name] += parseInt(teamstats[i].stats_value);
+	}
+	return stats;
+}
 
 function simulate(done){
 	var game_id = 'f750260';
@@ -201,3 +304,4 @@ function resetData(done){
 function accessDenied(req,res){
 	res.send(401,'Access Denied');
 }
+

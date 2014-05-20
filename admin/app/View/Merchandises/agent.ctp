@@ -42,3 +42,31 @@
 	<?php echo $this->Paginator->numbers();?>
 	<?php endif;?>
 </div>
+<div class="row">
+	<form action="<?=$this->Html->url('/merchandises/add_agent')?>" method="POST">
+	<table class="table">
+		<tr>
+			<td>Name</td>
+			<td><input type="text" name="name" value=""/></td>
+		</tr>
+		<tr>
+			<td>Email</td>
+			<td><input type="text" name="email" value=""/></td>
+		</tr>
+		<tr>
+			<td>Password</td>
+			<td><input type="text" name="password" value=""/></td>
+		</tr>
+		<tr>
+			<td>Telp</td>
+			<td><input type="text" name="phone" value=""/></td>
+		</tr>
+		<tr>
+			<td>Address</td>
+			<td><input type="text" name="address" value=""/></td>
+		</tr>
+		
+	</table>
+	<input type="submit" name="btn" value="Add Agent"/>
+	</form>
+</div>

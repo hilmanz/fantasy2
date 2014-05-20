@@ -62,7 +62,7 @@ app.post('/send', [],function(req,res){
 	
 	
 	var mailOptions = {
-	    from: config.mailgun.user,
+	    from: config.mailgun.from,
 	    to: req.body.to,
 	    subject: req.body.subject,
 	    generateTextFromHTML:true,

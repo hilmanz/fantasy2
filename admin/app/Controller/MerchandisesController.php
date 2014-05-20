@@ -814,4 +814,26 @@ class MerchandisesController extends AppController {
 		}
 		return $total_claimed_qty;
 	}
+	public function add_agent(){
+		$this->loadModel('Agent');
+
+
+
+		$data = array(
+			'email'=>trim($this->request->data['email']),
+			'password'=>trim($this->request->data['password']),
+			'secret'=>md5(date("YmdHis")),
+			'name'=>$this->request->data['name'],
+			'phone'=>$this->request->data['phone'],
+			'address'=>$this->request->data['address'],
+			'n_status'=>1
+		);
+
+		$data['password'] = sha1($data['email'].$data['password'].$data['secret']);
+		
+		$this->Agent->create();
+		$this->Agent->save($data);
+		
+		$this->redirect('/merchandises/agent');
+	}
 }
